@@ -1,0 +1,49 @@
+/* THE LANDING PAGES' GRAMMAR — one set, shared by index.html and app.html
+   (founder/534, 536): the section, its wrap, the headline sizes, the two-column
+   row, the ONEWAY + word lockup with no rule between them, and one button
+   shape, a small rounded pill. A page's own identity lives in the page. */
+/* ── the page grammar, one set ───────────────────────────────────────── */
+.lp{position:relative;padding:clamp(72px,11vw,128px) 0 0}
+.lp-wrap{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
+.lp-h2{font-family:var(--font-display,var(--font));font-weight:900;letter-spacing:-.035em;line-height:1.04;
+  font-size:clamp(34px,5vw,60px);margin:0;color:#fff}
+.lp-h3{font-family:var(--font-display,var(--font));font-weight:850;letter-spacing:-.03em;line-height:1.08;
+  font-size:clamp(26px,3.4vw,40px);margin:0;color:#fff}
+.lp-p{font-size:clamp(16px,1.6vw,18px);line-height:1.6;color:rgba(255,255,255,.74);margin:18px 0 0;max-width:40ch}
+.lp-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:clamp(36px,6vw,80px)}
+.lp-two + .lp-two{margin-top:clamp(72px,10vw,120px)}
+.lp-flip > :first-child{order:2}
+/* the lockup: the wordmark and the product's word, no rule between them (534) */
+.lk{display:inline-flex;align-items:baseline;gap:.34em;margin:0 0 18px}
+.lk img{height:clamp(20px,2.2vw,26px);width:auto;display:block;align-self:center}
+.lk span{font-family:var(--font-display,var(--font));font-style:italic;font-weight:900;letter-spacing:-.03em;
+  font-size:clamp(22px,2.5vw,30px);line-height:1;color:rgba(255,255,255,.92)}
+/* ONE BUTTON SHAPE for the whole page: a rounded pill, small, sleek (534) */
+.lp-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.lp-acts--c{justify-content:center}
+.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 18px;
+  border-radius:999px;font:650 14px/1 var(--font);letter-spacing:-.005em;color:#fff;white-space:nowrap;
+  background:rgba(255,255,255,.08);box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1px rgba(255,255,255,.12);
+  transition:background .2s,transform .2s var(--ease,cubic-bezier(.4,0,.2,1)),box-shadow .2s}
+.pill:hover{background:rgba(255,255,255,.14);transform:translateY(-1px)}
+.pill--solid{background:#fff;color:#0b0b14;box-shadow:0 8px 24px -10px rgba(255,255,255,.45)}
+.pill--solid:hover{background:#fff;opacity:.9}
+@media(max-width:820px){
+  .lp-two{grid-template-columns:minmax(0,1fr)}
+  .lp-flip > :first-child{order:0}
+}
+
+/* A REAL PHONE — the vendor iPhone 17 Pro frame (fastlane/frameit, MIT) over a
+   capture of the running App; measured cutout left 5.333% · top 2.5% ·
+   89.333% × 95%, screen corner 15.8% of its width (founder/412). */
+.lp-phone{position:relative;width:min(290px,72vw);aspect-ratio:1350/2760;margin:0 auto;
+  filter:drop-shadow(0 50px 60px rgba(0,0,0,.7)) drop-shadow(0 0 60px rgba(139,92,255,.22))}
+.lp-phone .scr{position:absolute;left:5.333%;top:2.5%;width:89.333%;height:95%;overflow:hidden;border-radius:15.8% / 7.28%;background:#000}
+.lp-phone .scr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.lp-phone > .fr{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+
+/* founder/532: ONEWAY Sans is one cut at every size (founder/469), so its word
+   space is the text cut's — 0.262em, where SF Pro Display sets 0.218 at title
+   sizes. A headline's words sat apart. The word space is closed at display
+   sizes only; the letters keep the spacing he approved. */
+.lp-h2,.lp-h3{word-spacing:-.04em}

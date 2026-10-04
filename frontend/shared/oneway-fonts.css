@@ -1,0 +1,29 @@
+/* ONEWAY — THE ONE FACE, OURS, SELF-HOSTED  (frontend/shared/oneway-fonts.css)
+
+   ★ FOUNDER/461: one face, *"used across the whole platform"*, and it must
+     actually be there. ★ FOUNDER/462: the Instagram/Twitter kind.
+   ★ FOUNDER/464: *"we will make our own standard one-way font out of a
+     combination of both the Twitter and Instagram fonts … powerful, easy to
+     look at every day, and something that feels familiar, not jarring."*
+
+   ONEWAY SANS. The brief — what Chirp and Instagram Sans share, where they
+   differ, which side ONEWAY takes — is context/ONEWAY_SANS.md. v0 is built
+   by tools/fonts/build_oneway_sans.py from the shared DNA (derived from
+   Inter under the SIL OFL 1.1, renamed as the licence requires, the spurred
+   G baked in); v1 is the drawing. Same family name, same file name, so the
+   drawing lands without a line of CSS changing.
+
+   One variable file, wght 100–900, in the TEXT cut at every size (469: the
+   display cut tightened titles the other faces kept roomy). Served from this repository — /assets/fonts — never from a
+   font CDN. Every surface ONEWAY draws links this file first. Licence:
+   assets/fonts/OFL-oneway-sans.txt. */
+@font-face{font-family:'ONEWAY Sans';font-style:normal;font-weight:100 900;font-display:swap;
+  src:url(/assets/fonts/ONEWAYSans[wght].woff2?v=0.4) format('woff2')}   /* v0.4 — the @ where Apple's sits, the shy pairs kerned (532) */
+/* Space Grotesk stays on disk only for the wordmark catalogue a person may
+   choose for their own name; it is not the platform's face (462). */
+@font-face{font-family:'Space Grotesk';font-style:normal;font-weight:300 700;font-display:swap;
+  src:url(/assets/fonts/space-grotesk-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+/* the one stack, for any surface that wants it by name — ours, then the
+   phone's own face (which is what Instagram and X shipped for years) */
+:root{--ow-face:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}

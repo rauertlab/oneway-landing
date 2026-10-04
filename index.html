@@ -1,0 +1,2556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <!-- ═══ MOBILE RENDER SAFE-FLOOR + ON-DEVICE BISECTION (Priority Zero: the
+       iPhone Safari renderer crash) ═══════════════════════════════════════
+       Set BEFORE first paint so nothing heavy ever composites on a phone.
+       Default (?fx=safe): every known iOS renderer-crash trigger is stripped —
+       backdrop-filter, filter/blur, SVG turbulence, mix-blend-mode, will-change
+       (the canvas is already removed on touch devices). To find the exact
+       culprit, load the live page on the iPhone with ONE subsystem re-enabled:
+         ?fx=backdrop  → only backdrop-filter left on
+         ?fx=filter    → only filters + SVG turbulence left on
+         ?fx=blend     → only mix-blend-mode left on
+         ?fx=all       → strip nothing (the original page)
+       Whichever value crashes names the culprit. Desktop is never touched. -->
+  <!-- ═══ THE SAFE FLOOR, FROM ONE PLACE ═══════════════════════════════
+       Was an inline gate reading `innerWidth<768`, which is wrong twice: a
+       zero width (background tab, prerender, embedded webview) read as
+       "phone", and a narrow DESKTOP window read as "phone" too. The second is
+       the case the App's canon already forbids — *"a coarse pointer is the
+       safe floor's question, not window width … width is layout, not
+       capability"* — and this page never got that ruling. Now no surface owns
+       its own copy of the question. Loaded before first paint so nothing heavy
+       ever composites on a real phone. -->
+  <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
+  <style>
+    /* Safe floor — strip every heavy compositor feature on mobile. */
+    html[data-fx="safe"] *, html[data-fx="safe"] *::before, html[data-fx="safe"] *::after{
+      backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+      filter:none!important;mix-blend-mode:normal!important;will-change:auto!important;}
+    /* Single-subsystem re-enable for on-device bisection (everything else stays stripped). */
+    html[data-fx="backdrop"] *{filter:none!important;mix-blend-mode:normal!important;will-change:auto!important;}
+    html[data-fx="filter"] *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;mix-blend-mode:normal!important;will-change:auto!important;}
+    html[data-fx="blend"] *{backdrop-filter:none!important;-webkit-backdrop-filter:none!important;filter:none!important;will-change:auto!important;}
+    /* html[data-fx="all"] strips nothing — the original page, for reproducing the crash. */
+  </style>
+  <!-- THE PERSON'S OWN COLOUR, ON THE FRONT DOOR TOO.
+       The landing page already read `--ow-user-hue` (the Center map recolours
+       from it) but never loaded the module that SETS it, so it always fell
+       back to 200 and the front door was the one surface that did not look
+       like you. This is the same shared module every other page uses; since
+       2026-08-24 it resolves the hue from the ACCOUNT and treats localStorage
+       as a cache, so the colour follows the person and not the browser. -->
+  <!-- ★ FOUNDER/397: *"this is not the design of Popits that is anywhere near
+       acceptable… Please go look at Popits and posts on the app right now."*
+       The App's own Popit material is loaded here — the same stylesheet and the
+       same constructors (OW.glance, OW.card) the App renders with — so a
+       Center or an event on this page IS the App's row for it, not a copy. -->
+  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=d7eb798c">
+  <script src="/frontend/shared/oneway-hue.js?v=a5042fdf"></script>
+  <script src="/frontend/shared/oneway-popit.js?v=f6d663cb"></script>
+  <script src="/frontend/shared/oneway-links.js?v=c3df779e"></script>
+  <!-- ★ FOUNDER/401: a Center opens RIGHT OVER this page — the App's own
+       surface for it, projected, not a trip to the App. These are the App's
+       surfaces and the one projection verb; a page anywhere can carry them. -->
+  <script src="/frontend/app/popit-live.js?v=288ab8cd"></script>
+  <!-- A CENTER'S SITE, PROJECTED (B, founder/437): the pages Lightbulb wrote, natively in
+       the site's own fonts and colours, and the company's own site exactly, as the
+       Center's categories. After popit-live.js, whose Center surface asks OW.site for them. -->
+  <script src="/frontend/shared/oneway-site.js?v=a700d81d"></script>
+  <script src="/frontend/shared/oneway-feed.js?v=c4ea1b02"></script>
+  <script src="/frontend/shared/ow-time.js?v=b4d77e6d"></script>
+  <script src="/frontend/app/posts/posts.js?v=db830747"></script>
+  <script src="/frontend/app/events/events.js?v=e036f0d2"></script>
+  <script src="/frontend/app/messaging/messaging.js?v=85b7e02b"></script>
+  <script src="/frontend/shared/canvas.js?v=a92dd187"></script>
+  <script src="/frontend/shared/oneway-projection.js?v=7d765e5f"></script>
+  <script>
+  /* OPEN OVER THIS PAGE. The App's surface for the thing unfolds from the row
+     that was pressed and the page steps back behind it (founder/401). Only if
+     that surface is not loaded here does the press go to the App. */
+  function project(kind, id, from, fallbackHref){
+    if(window.OW && OW.project){
+      OW.project.open(kind, id, from).then(function(ok){ if(!ok && fallbackHref) location.href=fallbackHref; });
+    } else if(fallbackHref){ location.href=fallbackHref; }
+  }
+  </script>
+  <script src="/frontend/shared/oneway-galaxy.js?v=224cb07e"></script>
+  <title>ONEWAY — Your Profile Center, and everyone you belong to</title>
+  <meta name="description" content="ONEWAY gives every person a Profile Center and connects them to the communities, Centers, websites, events and messages they belong to. Brain connects everything."/>
+  <!-- Social / link unfurl metadata. Required for share previews on
+       Slack, Discord, Messages, X, LinkedIn, Facebook, iMessage. -->
+  <link rel="canonical" href="https://oneway.center/"/>
+  <meta property="og:type"        content="website"/>
+  <meta property="og:site_name"   content="ONEWAY"/>
+  <meta property="og:title"       content="ONEWAY — Your place on the internet"/>
+  <meta property="og:description" content="ONEWAY gives every person a Profile Center and connects them to the communities, Centers, and organizations they belong to. Brain connects everything."/>
+  <meta property="og:image"       content="https://oneway.center/app-icon-1024.png"/>
+  <meta property="og:image:alt"   content="ONEWAY"/>
+  <meta property="og:url"         content="https://oneway.center/"/>
+  <meta name="twitter:card"        content="summary_large_image"/>
+  <meta name="twitter:title"       content="ONEWAY — Your place on the internet"/>
+  <meta name="twitter:description" content="Your Profile Center and everyone you belong to. Join Centers, build relationships, and run organizations with Brain and ONEWAY OS."/>
+  <meta name="twitter:image"       content="https://oneway.center/app-icon-1024.png"/>
+  <!-- ONEWAY's icon is the loading globe, vibrant blue (founder/471 §12) -->
+  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=2d54bb4b"/>
+  <link rel="stylesheet" href="/frontend/landing/reserve.css?v=5131d5f3"/>
+  <!-- founder/530: "WE MOVED TO A ONEWAY FONT." The landing page draws in ONEWAY
+       Sans alone, from /assets/fonts (S16). It still fetched Space Grotesk,
+       Outfit and Inter from Google and Satoshi from Fontshare — four faces
+       nothing on the page should wear; the last few rules that named them now
+       name ours. -->
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#000;
+      --surface:#080808;
+      --border:rgba(255,255,255,0.07);
+      --border-hi:rgba(255,255,255,0.12);
+      --white:#fff;
+      --off:#d4d4d4;
+      --muted:rgba(255,255,255,0.64);
+      --dim:rgba(255,255,255,0.22);
+      --font:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;   /* founder/461: one face, the whole platform */
+      /* THE THIRD VOICE — small, tracked, uppercase — set in the platform's own
+         family. ★ FOUNDER, 2026-08-26: *"start ditching that sub font that we
+         are using that is thin."* It was Poiret One, one hairline weight,
+         synthesised bold on every label; founder/388 said remove it here too.
+         Same token the App carries (oneway-popit.css --ow-font-atmos). */
+      --font-atmos:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      /* THE DISPLAY FACE — wordmark, headlines, Center names, key numbers.
+         ★ FOUNDER/390: "everything moved under that new font we discussed…
+         more minimal and futuristic font wise". The face tried on 09-12 was
+         Space Grotesk — geometric, even, a little technical. It leads here so
+         he can say whether this is it; Satoshi stays behind it, and the App
+         and OS tokens follow once he does. */
+      --font-display:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+      --ai:#06b6d4;
+      --vend:#f59e0b;
+      --soft:#a78bfa;
+      --ease:cubic-bezier(.4,0,.2,1);
+      /* Default = ONEWAY / user identity. A Center scope overrides --ow-h1/--ow-h2 */
+      --ow-h1:139,92,255;   /* primary  (violet) */
+      --ow-h2:93,226,255;   /* secondary (cyan)  */
+    }
+    /* hue transitions feel like the world responding to where you are */
+    .po-rest,.po-modal,.nav-center,.po-ic,.nl-ic{transition-property:transform,box-shadow,background,color,opacity}
+    html{scroll-behavior:smooth;overflow-x:hidden;background:var(--bg)}
+    body{font-family:var(--font);background:transparent;color:var(--white);-webkit-font-smoothing:antialiased;line-height:1.6}
+    /* Persistent atmosphere — no scene is ever flat black. A subtle, fixed,
+       hue-tinted field behind every section; it is what remains once the hero's
+       animated atmosphere fades past the first viewport. CSS-only, no perf cost,
+       so every scene still feels like the same world (atmosphere is structural). */
+    body::before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
+      background:
+        radial-gradient(115% 75% at 16% 4%, rgba(74,66,138,.15), transparent 56%),
+        radial-gradient(115% 80% at 86% 20%, rgba(34,74,140,.12), transparent 56%),
+        radial-gradient(140% 95% at 52% 114%, rgba(40,96,116,.11), transparent 60%);}
+    /* atmospheric type utility — dreamy, airy, wide-tracked. Swap the prototype face
+       in --font-atmos to retune the whole world layer in one line. */
+    .ow-atmos{font-family:var(--font-atmos);font-weight:400;letter-spacing:.2em}
+    a{color:inherit;text-decoration:none}
+    ::-webkit-scrollbar{width:2px}
+    ::-webkit-scrollbar-thumb{background:#1c1c1c;border-radius:2px}
+
+    /* ── NAV ──────────────────────────────────────────────── */
+    .nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      height:56px;display:flex;align-items:center;
+      padding:0 max(36px,env(safe-area-inset-right)) 0 max(36px,env(safe-area-inset-left));
+      transition:background .35s var(--ease),border-color .35s var(--ease);
+      border-bottom:1px solid transparent;
+    }
+    .nav.scrolled{
+      background:rgba(0,0,0,0.9);
+      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+      border-bottom-color:var(--border);
+    }
+    /* Centered brand: the ONEWAY wordmark lands here from the hero on scroll and
+       becomes the persistent navbar logo; hovering it reveals the directory. */
+    .nav-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      display:flex;flex-direction:column;align-items:center}
+    .nav-brand::after{content:"";position:absolute;top:100%;left:-20px;right:-20px;height:18px} /* hover bridge to menu */
+    .nav-logo{display:inline-flex;align-items:center;opacity:0;transition:opacity .4s var(--ease)}
+    .nav-logo img{height:19px;display:block;opacity:0}   /* hidden: #flyLogo is the one visible logo; this is the hover target + landing reference */
+    /* Directory becomes a clean rounded menu that drops down under the logo on hover */
+    /* The directory is a Popit side-menu (LBP material): translucent gel, thick rounded
+       rim (bright inner + soft outer halo), internal glow, with a selection ring on the
+       hovered item — exactly the Kart-Parts panel language, in ONEWAY's deep-space hue. */
+    .nav-center{
+      --h:var(--ow-h1);--h2:var(--ow-h2);
+      position:absolute;top:100%;left:50%;margin-top:14px;
+      transform:translateX(-50%) translateY(6px);
+      display:flex;flex-direction:column;align-items:stretch;gap:4px;
+      padding:12px;min-width:214px;
+      background:radial-gradient(120% 80% at 50% -12%, rgba(var(--h),.34), rgba(var(--h),.05) 60%),
+        linear-gradient(180deg, rgba(40,40,66,.86), rgba(16,16,32,.9));
+      backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
+      border:0;border-radius:26px;
+      box-shadow:inset 0 2px 1px rgba(255,255,255,.22), inset 0 -16px 30px rgba(0,0,0,.4),
+        0 0 0 2px rgba(var(--h),.5), 0 0 0 6px rgba(var(--h),.12),
+        0 34px 72px -28px rgba(0,0,0,.8), 0 0 60px -18px rgba(var(--h),.55);
+      opacity:0;visibility:hidden;pointer-events:none;
+      transition:opacity .28s var(--ease),transform .28s var(--ease),visibility .28s;
+    }
+    .nav-brand:hover .nav-center{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+    .nav:not(.scrolled) .nav-center{display:none} /* directory available once the logo is in the bar */
+    .nav-link{
+      display:flex;align-items:center;gap:11px;
+      font-size:13.5px;font-weight:600;color:rgba(255,255,255,.8);
+      padding:8px 14px 8px 8px;border-radius:16px;white-space:nowrap;text-align:left;
+      box-shadow:0 0 0 1.5px rgba(var(--h),0);
+      transition:color .2s,background .2s,box-shadow .2s,transform .2s;
+    }
+    .nav-link:hover{color:#fff;background:rgba(var(--h),.14);
+      box-shadow:0 0 0 2px rgba(var(--h),.7);transform:translateX(2px)}
+    .nl-ic{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:11px;
+      background:radial-gradient(120% 120% at 50% 0,rgba(var(--h),.85),rgba(var(--h2),.4));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 10px -3px rgba(var(--h),.7)}
+    .nl-ic svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+    .nav-signin{font-size:13px;color:var(--muted);padding:7px 14px;transition:color .2s;font-weight:500}
+    .nav-signin:hover{color:var(--white)}
+    .nav-cta{
+      font-size:13px;font-weight:700;color:#000;
+      background:var(--white);padding:8px 20px;border-radius:999px;
+      transition:opacity .2s,transform .2s;
+    }
+    .nav-cta:hover{opacity:.85;transform:translateY(-1px)}
+    /* ONEWAY OS entry — logo lockup pill that routes to the OS dashboard
+       (unauthenticated visitors are redirected to login.html). */
+    .nav-os{
+      display:inline-flex;align-items:center;gap:8px;
+      background:var(--white);color:#000;
+      padding:6px 16px 6px 14px;border-radius:999px;
+      transition:opacity .2s,transform .2s;
+    }
+    .nav-os:hover{opacity:.85;transform:translateY(-1px)}
+    .nav-os img{height:13px;display:block}
+    .nav-os .os{font-size:13px;font-weight:900;font-style:italic;letter-spacing:-.01em;
+      padding-left:0;line-height:1}
+    .nav-app{
+      display:inline-flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.08);color:var(--white);
+      border:1px solid rgba(255,255,255,.12);
+      padding:6px 14px;border-radius:999px;
+      font-size:13px;font-weight:700;
+      transition:background .2s,transform .2s,border-color .2s;
+    }
+    .nav-app:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);transform:translateY(-1px)}
+    .nav-app img{height:13px;display:block}
+
+    /* ── HERO ─────────────────────────────────────────────── */
+    .hero{
+      position:relative;min-height:100vh;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;overflow:hidden;padding:96px 24px 80px;
+    }
+    #hero-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+    .hero-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;max-width:860px}
+
+    /* HERO LOGO — the wordmark IS the headline. No tagline, no subcopy. */
+    .hero-mark{
+      display:block;
+      width:min(58vw, 680px);
+      max-height:24vh;
+      height:auto;
+      object-fit:contain;
+      margin:0 auto 22px;   /* the promise sits high — the wordmark introduces it, never pushes it down */
+      visibility:hidden;   /* holds hero layout + start geometry; #flyLogo is the visible one */
+    }
+    @media (max-width:640px){ .hero-mark{ width:48vw; max-height:12vh; margin:0 auto 18px; } }
+    /* SINGLE-ELEMENT logo: the only visible wordmark. Starts over the hero mark, shrinks
+       and rises into the navbar slot on scroll, then stays as the navbar logo. */
+    #flyLogo{
+      position:fixed; top:0; left:0; z-index:200; pointer-events:none;
+      width:min(58vw, 680px); max-height:24vh; height:auto; object-fit:contain;
+      transform-origin:center center; will-change:transform;
+      filter:drop-shadow(0 8px 40px rgba(255,255,255,.06));
+      opacity:0; animation:flyFade .9s .15s var(--ease) forwards;
+    }
+    @keyframes flyFade{to{opacity:1}}
+    /* MOBILE HERO — dense + alive, not a poster. Smaller logo + pills, less dead space,
+       shorter hero so meaningful content reaches the fold sooner. */
+    @media (max-width:640px){
+      #flyLogo{ width:48vw; max-height:12vh; }
+      /* bottom padding reserves the scroll hint's lane (line+label ≈ 78px, sitting
+         14px off the floor) — the hero's last flow element must never land on it */
+      .hero{ min-height:70vh; padding:68px 18px 104px; }
+      .hero-btns{ margin-bottom:14px; gap:8px; flex-wrap:nowrap; }
+      .h-btn-os, .h-btn-app{ padding:8px 13px; gap:7px; }
+      .h-btn-os img, .h-btn-app img{ height:11px; }
+      .h-btn-os .os{ font-size:12px; padding-left:0; }
+      .h-btn-app span{ font-size:12px; }
+      .hero-scroll{ bottom:14px; }
+    }
+
+    /* CTA row */
+    .hero-btns{
+      display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+      margin-bottom:56px;
+      opacity:0;animation:fadeUp .9s .48s var(--ease) forwards;
+    }
+    .h-btn-primary{
+      font-size:14px;font-weight:700;color:#000;
+      background:var(--white);padding:13px 30px;border-radius:999px;
+      transition:opacity .2s,transform .2s;
+    }
+    .h-btn-primary:hover{opacity:.88;transform:translateY(-2px)}
+    .h-btn-ghost{
+      font-size:14px;font-weight:500;color:rgba(255,255,255,.7);
+      border:1px solid rgba(255,255,255,.15);
+      padding:13px 30px;border-radius:999px;
+      transition:border-color .2s,color .2s,transform .2s;
+      display:flex;align-items:center;gap:8px;
+    }
+    .h-btn-ghost:hover{border-color:rgba(255,255,255,.35);color:#fff;transform:translateY(-2px)}
+    /* Hero CTAs mirror the top-right nav lockups exactly — the ONEWAY wordmark
+       is always the real logo image (logo-white / logo-black), never font text. */
+    .h-btn-os{display:inline-flex;align-items:center;gap:10px;background:var(--white);color:#000;
+      padding:12px 24px 12px 22px;border-radius:999px;transition:opacity .2s,transform .2s}
+    .h-btn-os:hover{opacity:.88;transform:translateY(-2px)}
+    .h-btn-os img{height:16px;display:block}
+    .h-btn-os .os{font-size:15px;font-weight:900;font-style:italic;letter-spacing:-.01em;
+      padding-left:0;line-height:1}   /* 534: no rule between ONEWAY and the word */
+    .h-btn-app{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);color:var(--white);
+      border:1px solid rgba(255,255,255,.14);padding:12px 22px;border-radius:999px;
+      transition:background .2s,transform .2s,border-color .2s}
+    .h-btn-app:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.24);transform:translateY(-2px)}
+    .h-btn-app img{height:16px;display:block}
+    .h-btn-app span{font-size:15px;font-weight:700;line-height:1}
+
+    /* mini stats */
+    .hero-stats{
+      display:flex;align-items:center;gap:0;
+      border:1px solid var(--border);border-radius:999px;
+      overflow:hidden;
+      opacity:0;animation:fadeUp .9s .62s var(--ease) forwards;
+    }
+    .h-stat{
+      padding:10px 24px;font-size:12px;color:var(--muted);
+      border-right:1px solid var(--border);white-space:nowrap;
+    }
+    .h-stat:last-child{border-right:none}
+    .h-stat strong{color:var(--white);font-weight:700}
+
+    .hero-scroll{
+      position:absolute;bottom:32px;left:50%;transform:translateX(-50%);
+      display:flex;flex-direction:column;align-items:center;gap:8px;
+      opacity:0;animation:fadeIn 1s 1.2s forwards;pointer-events:none;
+    }
+    .hero-scroll span{font-family:var(--font-atmos);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
+    .scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,rgba(255,255,255,.25),transparent);animation:scrollPulse 2s ease-in-out infinite}
+    @keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)}}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:.6}}
+
+    /* ── TYPEWRITER SCROLL-REVEAL ─────────────────────────────
+       Every word in a [data-typewriter] block is wrapped in a span on load.
+       When the block scrolls into view, each span fades + slides into place
+       in sequence with a staggered delay, simulating typing. A blinking
+       caret pulses at the end while typing, then fades.                    */
+    [data-typewriter]{display:inline-block;position:relative}
+    [data-typewriter] .tw-w{
+      display:inline-block;
+      opacity:0;transform:translateY(4px);
+      transition:opacity .18s var(--ease), transform .18s var(--ease);
+      white-space:pre;
+    }
+    [data-typewriter].tw-on .tw-w{opacity:1;transform:none}
+    [data-typewriter] .tw-caret{
+      display:inline-block;width:.55ch;height:1em;vertical-align:-0.12em;
+      background:currentColor;margin-left:.08em;border-radius:1px;opacity:0;
+      transition:opacity .25s linear;
+    }
+    [data-typewriter].tw-on .tw-caret{opacity:.7;animation:twBlink .9s steps(2) infinite}
+    [data-typewriter].tw-done .tw-caret{opacity:0;animation:none}
+    @keyframes twBlink{0%,49%{opacity:.7}50%,100%{opacity:0}}
+    @media (prefers-reduced-motion:reduce){
+      [data-typewriter] .tw-w{opacity:1;transform:none;transition:none}
+      [data-typewriter] .tw-caret{display:none}
+      .om-spark,.ow-model .om-arrow::after,.ow-model .om-node.om-brain{animation:none}
+      .ow-model .om-arrow::after{opacity:.7}
+      .po-rest{animation:none}
+      .owc-brain .bead{animation:none}
+      /* P0: comprehensive reduced-motion reset — tame every ambient animation (marquee, glows,
+         pulses, drift). FLIP open/close uses WAAPI (unaffected), so Popits still function. */
+      *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}
+    }
+    /* P0 a11y: visible keyboard focus + screen-reader-only utility */
+    a:focus-visible,button:focus-visible,input:focus-visible,.po-rest:focus-visible,[tabindex]:focus-visible{outline:2px solid rgba(var(--ow-h1),.9);outline-offset:3px}
+    .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* ── TRUST STRIP ──────────────────────────────────────── */
+    .trust-strip{
+      border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+      padding:18px 0;overflow:hidden;
+    }
+    .trust-track{
+      display:inline-flex;white-space:nowrap;
+      animation:trustScroll 30s linear infinite;
+    }
+    .trust-item{
+      font-size:12px;font-weight:500;color:rgba(255,255,255,.25);
+      padding:0 28px;letter-spacing:.04em;
+    }
+    .trust-item b{color:rgba(255,255,255,.55);font-weight:700}
+    @keyframes trustScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* ── SECTION BASE ─────────────────────────────────────── */
+    .product-sec{padding:120px 0;position:relative;overflow:hidden}
+    .sec-wrap{max-width:1100px;margin:0 auto;padding:0 52px}
+    .sec-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+    .sec-grid.flip .sec-text{order:2}
+    .sec-grid.flip .sec-vis{order:1}
+
+    .sec-badge{
+      display:inline-flex;align-items:center;gap:7px;
+      font-family:var(--font-atmos);
+      font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+      border:1px solid;padding:5px 12px;border-radius:999px;margin-bottom:22px;
+    }
+    .sec-h2{
+      font-family:var(--font-display);
+      font-size:clamp(32px,3.8vw,52px);font-weight:900;
+      letter-spacing:-.03em;line-height:1.08;margin-bottom:18px;
+    }
+    .sec-p{font-size:clamp(15px,1.5vw,17px);color:var(--muted);line-height:1.9;margin-bottom:22px;max-width:44ch}
+    .chip-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
+    /* chips → small gummy objects (was flat outlined pills) — inherit the surrounding hue */
+    .chip{
+      position:relative;font-size:11.5px;font-weight:650;color:#fff;
+      padding:7px 13px;border-radius:13px 9px 12px 10px;
+      background:radial-gradient(80% 62% at 38% 14%,rgba(255,255,255,.28),transparent 70%),linear-gradient(160deg,rgba(var(--ow-h1),.48),rgba(var(--ow-h2),.32));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -5px 11px rgba(0,0,0,.2),0 0 0 1px rgba(var(--ow-h1),.42),0 3px 8px -4px rgba(0,0,0,.5);
+    }
+    .sec-cta{
+      display:inline-flex;align-items:center;gap:9px;
+      font-size:14px;font-weight:700;
+      padding:13px 26px;border-radius:999px;
+      border:1.5px solid;
+      transition:background .2s,transform .25s var(--ease);
+    }
+    .sec-cta:hover{transform:translateY(-2px)}
+    .cta-arrow{font-size:15px;transition:transform .2s var(--ease)}
+    .sec-cta:hover .cta-arrow{transform:translateX(4px)}
+
+    /* dividers */
+    .flow-div{
+      height:1px;max-width:1100px;margin:0 auto;
+      background:linear-gradient(90deg,transparent 0%,var(--border-hi) 50%,transparent 100%);
+      opacity:0;transition:opacity 1.2s;
+    }
+    .flow-div.in{opacity:1}
+
+    /* ambient glows */
+    @keyframes glowBreathe{0%,100%{opacity:.42;transform:scale(1)}50%{opacity:.68;transform:scale(1.12)}}
+    .glow{position:absolute;pointer-events:none;filter:blur(80px);opacity:.55;animation:glowBreathe 9s ease-in-out infinite}
+    .glow-vend{animation-delay:-3s}
+    .glow-soft{animation-delay:-6s}
+    .glow-ai{top:-5%;left:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(139,92,255,.1) 0%,transparent 70%)}
+    .glow-vend-pos{top:-5%;right:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(245,158,11,.09) 0%,transparent 70%)}
+    .glow-soft-pos{top:-5%;left:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(167,139,250,.09) 0%,transparent 70%)}
+    .glow-ice-pos{top:-5%;right:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(14,165,233,.08) 0%,transparent 70%)}
+
+    /* ── ICEBERG ACCENT ───────────────────────────────────── */
+    --ice:#0ea5e9;
+    .ice-badge{color:#0ea5e9;border-color:rgba(14,165,233,.28)}
+    .ice-cta{color:#0ea5e9;border-color:rgba(14,165,233,.32)}
+    .ice-cta:hover{background:rgba(14,165,233,.07)}
+
+    /* Iceberg search preview */
+    .ice-vis{background:#030c18;border:1px solid rgba(14,165,233,.16);border-radius:18px;overflow:hidden;padding:0}
+    .ice-vis-bar{padding:12px 16px;border-bottom:1px solid rgba(14,165,233,.1);display:flex;align-items:center;gap:10px;background:rgba(3,14,26,.6)}
+    .ice-search-row{padding:14px 16px;display:flex;align-items:center;gap:10px;background:rgba(7,24,40,.7);border-bottom:1px solid rgba(14,165,233,.08);margin:14px 16px 0;border-radius:12px;border:1px solid rgba(14,165,233,.2)}
+    .ice-result{padding:12px 16px;margin:0 16px 8px;border-radius:10px;background:rgba(14,165,233,.04);border:1px solid rgba(14,165,233,.08);transition:.15s}
+    .ice-result:hover{background:rgba(14,165,233,.08);border-color:rgba(14,165,233,.2)}
+    .ice-result-title{font-size:12px;font-weight:700;color:#e0f2fe;margin-bottom:3px}
+    .ice-result-src{font-size:10px;color:rgba(14,165,233,.5);margin-bottom:5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+    .ice-result-text{font-size:11.5px;color:rgba(224,242,254,.5);line-height:1.5}
+    .ice-answer-box{margin:12px 16px 16px;padding:12px 14px;background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.2);border-radius:12px}
+    .ice-answer-label{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#0ea5e9;margin-bottom:6px}
+    .ice-answer-text{font-size:12px;color:rgba(224,242,254,.8);line-height:1.65}
+
+    /* ── BRAIN ACCENT (Center hue, not cyan) ───────────────── */
+    .ai-badge{color:#b9a4ff;border-color:rgba(139,92,255,.3)}
+    .ai-cta{color:#c2b1ff;border-color:rgba(139,92,255,.34)}
+    .ai-cta:hover{background:rgba(139,92,255,.09)}
+
+    /* ── BRAIN VISUAL — "the world this Brain understands", in the gummy/stitch
+       material (NOT an admin dashboard): hand-cut tilted panel, stitched seam,
+       Center hue, memories as soft cards connected by a thread, nodes breathing. ── */
+    .ai-vis{
+      --bh:139,92,255;--bh2:93,226,255;
+      position:relative;display:flex;flex-direction:column;gap:12px;padding:24px 22px;min-height:360px;
+      border:0;transform:rotate(-1deg);
+      border-radius:32px 23px 29px 25px / 27px 31px 23px 29px;
+      background:
+        radial-gradient(120% 80% at 18% -12%,rgba(var(--bh),.2),transparent 56%),
+        radial-gradient(110% 70% at 92% 112%,rgba(var(--bh2),.16),transparent 60%),
+        linear-gradient(165deg,#181530,#0e0d1c);
+      box-shadow:inset 0 2px 1px rgba(255,255,255,.16),inset 0 -34px 56px rgba(0,0,0,.4),
+        0 0 0 1.6px rgba(var(--bh),.42),0 34px 66px -30px rgba(0,0,0,.72),0 0 70px -30px rgba(var(--bh),.5);
+    }
+    /* ★ FOUNDER/493: *"there should be no more grey popits around the
+       platform or dotted ones."*  The dashed inner ring is gone from every
+       Popit on this page; the lit rim and the glow are the Popit. */
+    .ai-vis > *{position:relative;z-index:1}
+    .ai-vis-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
+    .ai-vis-label{font:700 12px/1 var(--font-atmos);color:#c2b1ff;letter-spacing:.18em;text-transform:uppercase}
+    /* (removed) .ai-live / .live-dot "Live" status pill — forbidden dashboard signifier (§16.1) */
+    .ai-row{position:relative;display:flex;align-items:center;gap:13px;padding:14px 16px;border:0;
+      border-radius:19px 14px 17px 15px;
+      background:linear-gradient(160deg,rgba(var(--bh),.17),rgba(var(--bh),.06));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.16),inset 0 0 0 1.5px rgba(var(--bh),.26),0 7px 16px -9px rgba(0,0,0,.5);
+      transition:transform .2s}
+    .ai-row:hover{transform:translateX(3px)}
+    .ai-row::before{content:"";position:absolute;left:31px;top:-13px;width:2px;height:13px;border-radius:2px;
+      background:linear-gradient(180deg,rgba(var(--bh),0),rgba(var(--bh),.55))}   /* thread between memories */
+    .ai-row:nth-child(2)::before{display:none}
+    .ai-icon{width:38px;height:38px;border-radius:13px 10px 12px 11px;flex:none;display:grid;place-items:center;
+      background:radial-gradient(70% 60% at 40% 18%,rgba(255,255,255,.18),transparent 60%),rgba(8,6,20,.55);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1.5px rgba(var(--bh),.4),0 0 16px -6px rgba(var(--bh),.7);
+      animation:aiBreath 3.4s ease-in-out infinite}
+    .ai-row:nth-child(3) .ai-icon{animation-delay:-1.1s}
+    .ai-row:nth-child(4) .ai-icon{animation-delay:-2.2s}
+    @keyframes aiBreath{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1.5px rgba(var(--bh),.4),0 0 13px -8px rgba(var(--bh),.55)}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1.5px rgba(var(--bh),.72),0 0 22px -3px rgba(var(--bh),.95)}}
+    .ai-icon svg{width:19px;height:19px}
+    .ai-info{flex:1;min-width:0}
+    .ai-name{font:700 14.5px/1.1 'ONEWAY Sans',sans-serif;color:#fff;margin-bottom:3px;letter-spacing:.01em}
+    .ai-status{font-size:12.5px;color:rgba(255,255,255,.66);line-height:1.45}
+    .ai-bar{display:none}   /* no dashboard progress bars */
+    .ai-output{position:relative;margin-top:4px;padding:15px 16px;border-radius:18px 14px 16px 15px;
+      background:linear-gradient(160deg,rgba(var(--bh),.12),rgba(255,255,255,.03));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1.5px rgba(var(--bh),.22)}
+    .ai-out-label{font:700 11px/1 var(--font-atmos);letter-spacing:.18em;text-transform:uppercase;color:#b9a4ff;margin-bottom:8px}
+    .ai-out-text{font-size:12.5px;color:rgba(255,255,255,.62);line-height:1.6}
+
+    /* ── VEND ACCENT ─────────────────────────────────────── */
+    .vend-badge{color:var(--vend);border-color:rgba(245,158,11,.28)}
+    .vend-cta{color:var(--vend);border-color:rgba(245,158,11,.32)}
+    .vend-cta:hover{background:rgba(245,158,11,.07)}
+
+    /* ── VEND VISUAL ─────────────────────────────────────── */
+    .vend-vis{
+      background:#0d0800;border:1px solid rgba(245,158,11,.15);
+      border-radius:18px;padding:32px;min-height:360px;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+      position:relative;overflow:hidden;
+    }
+    .vend-vis::before{
+      content:'';position:absolute;inset:0;pointer-events:none;
+      background:radial-gradient(ellipse at 50% 100%,rgba(245,158,11,.07) 0%,transparent 65%);
+    }
+    .vend-machines{display:flex;gap:18px;align-items:flex-end;position:relative;z-index:1}
+    .vm{display:flex;flex-direction:column;align-items:center;gap:8px}
+    .vm-body{
+      width:68px;background:#120a00;
+      border:1.5px solid rgba(245,158,11,.25);
+      border-radius:11px;overflow:hidden;
+    }
+    .vm-body.tall{height:148px}.vm-body.short{height:112px}
+    .vm-screen{
+      height:28px;background:rgba(245,158,11,.08);
+      border-bottom:1px solid rgba(245,158,11,.18);
+      display:flex;align-items:center;justify-content:center;
+    }
+    .vm-screen span{font-size:8px;font-weight:700;color:rgba(245,158,11,.75);letter-spacing:.07em;text-transform:uppercase}
+    .vm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:6px}
+    .vi{aspect-ratio:1;background:rgba(245,158,11,.04);border-radius:3px;border:1px solid rgba(245,158,11,.09)}
+    .vi.on{background:rgba(245,158,11,.16);border-color:rgba(245,158,11,.28);animation:vendOn 2.8s ease-in-out infinite}
+    .vi.on.d2{animation-delay:.7s}.vi.on.d3{animation-delay:1.4s}.vi.on.d4{animation-delay:2s}
+    @keyframes vendOn{0%,100%{background:rgba(245,158,11,.1)}50%{background:rgba(245,158,11,.28)}}
+    .vm-label{font-size:9px;font-weight:700;color:rgba(245,158,11,.4);letter-spacing:.12em;text-transform:uppercase}
+    .vend-stat{
+      font-size:11.5px;color:rgba(245,158,11,.5);
+      border:1px solid rgba(245,158,11,.13);padding:7px 16px;border-radius:999px;
+      position:relative;z-index:1;
+    }
+    .vend-stat strong{color:var(--vend);font-weight:700}
+
+    /* ── SOFT ACCENT ─────────────────────────────────────── */
+    .soft-badge{color:var(--soft);border-color:rgba(167,139,250,.28)}
+    .soft-cta{color:var(--soft);border-color:rgba(167,139,250,.32)}
+    .soft-cta:hover{background:rgba(167,139,250,.07)}
+
+    /* ── STUDIO VISUAL — browser preview ──────────────────── */
+    .browser-win{
+      border-radius:14px;overflow:hidden;
+      border:1px solid rgba(167,139,250,.18);
+      background:#06020e;min-height:360px;
+    }
+    .bw-bar{
+      display:flex;align-items:center;gap:6px;
+      padding:11px 14px;background:#0d0618;
+      border-bottom:1px solid rgba(167,139,250,.12);
+    }
+    .bw-dot{width:10px;height:10px;border-radius:50%}
+    .bw-url{
+      margin-left:8px;flex:1;
+      font-size:10.5px;color:rgba(255,255,255,.22);
+      background:rgba(255,255,255,.04);border-radius:5px;
+      padding:4px 10px;border:1px solid rgba(255,255,255,.06);
+    }
+    /* mini site preview inside browser */
+    .site-preview{padding:0}
+    .sp-nav{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:10px 18px;border-bottom:1px solid rgba(167,139,250,.08);
+    }
+    .sp-logo{font-size:11px;font-weight:800;color:rgba(167,139,250,.7);letter-spacing:.05em}
+    .sp-links{display:flex;gap:10px}
+    .sp-link{width:30px;height:6px;background:rgba(255,255,255,.08);border-radius:3px}
+    .sp-hero{
+      padding:28px 18px 20px;
+      background:linear-gradient(135deg,rgba(167,139,250,.05) 0%,transparent 60%);
+    }
+    .sp-h1-a{height:14px;width:75%;background:rgba(255,255,255,.18);border-radius:3px;margin-bottom:8px}
+    .sp-h1-b{height:14px;width:55%;background:rgba(167,139,250,.35);border-radius:3px;margin-bottom:14px}
+    .sp-sub{height:7px;width:85%;background:rgba(255,255,255,.07);border-radius:2px;margin-bottom:5px}
+    .sp-sub2{height:7px;width:65%;background:rgba(255,255,255,.06);border-radius:2px;margin-bottom:18px}
+    .sp-btns{display:flex;gap:8px}
+    .sp-btn-p{height:24px;width:90px;background:rgba(167,139,250,.5);border-radius:999px}
+    .sp-btn-g{height:24px;width:72px;background:rgba(255,255,255,.06);border-radius:999px;border:1px solid rgba(255,255,255,.1)}
+    .sp-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:12px 18px 18px}
+    .sp-card{background:rgba(255,255,255,.03);border:1px solid rgba(167,139,250,.08);border-radius:8px;padding:10px}
+    .sp-card-img{height:36px;background:rgba(167,139,250,.1);border-radius:5px;margin-bottom:7px}
+    .sp-card-t{height:7px;width:75%;background:rgba(255,255,255,.1);border-radius:2px;margin-bottom:4px}
+    .sp-card-s{height:5px;width:55%;background:rgba(255,255,255,.05);border-radius:2px}
+    /* demo sites gallery strip */
+    .demo-strip{
+      display:flex;gap:8px;padding:10px 18px;
+      border-top:1px solid rgba(167,139,250,.08);overflow:hidden;
+    }
+    .ds-thumb{
+      flex-shrink:0;width:80px;height:50px;border-radius:6px;overflow:hidden;
+      border:1px solid rgba(167,139,250,.12);position:relative;
+    }
+    .ds-thumb-inner{width:100%;height:100%;display:flex;flex-direction:column}
+    .ds-bar{height:8px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;padding:0 4px;gap:2px}
+    .ds-dot{width:3px;height:3px;border-radius:50%;flex-shrink:0}
+    .ds-body{flex:1}
+    .demo-strip-label{
+      font-family:var(--font-atmos);
+      font-size:10px;font-weight:700;color:rgba(255,255,255,.2);
+      letter-spacing:.16em;text-transform:uppercase;
+      display:flex;align-items:center;padding:0 18px 12px;
+      gap:8px;
+    }
+    .demo-strip-label::before{content:'';width:14px;height:1px;background:rgba(167,139,250,.3)}
+
+    /* ── FINAL CTA SECTION ────────────────────────────────── */
+    .final-cta{
+      padding:120px 24px;text-align:center;position:relative;overflow:hidden;
+      border-top:1px solid var(--border);
+    }
+    .final-cta::before{
+      content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);
+      width:600px;height:600px;pointer-events:none;
+      background:radial-gradient(ellipse,rgba(255,255,255,.04) 0%,transparent 65%);
+    }
+    .final-cta-inner{position:relative;z-index:2;max-width:640px;margin:0 auto}
+    .final-cta-eyebrow{
+      font-family:var(--font-atmos);
+      font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+      color:rgba(255,255,255,.25);margin-bottom:20px;
+    }
+    .final-cta-h{
+      font-size:clamp(36px,5vw,72px);font-weight:900;letter-spacing:-.04em;line-height:.95;
+      margin-bottom:20px;
+    }
+    .final-cta-sub{
+      font-size:16px;color:var(--muted);line-height:1.75;margin-bottom:40px;
+    }
+    .final-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .fcta-primary{
+      font-size:14px;font-weight:700;color:#000;
+      background:var(--white);padding:14px 32px;border-radius:999px;
+      transition:opacity .2s,transform .2s;
+    }
+    .fcta-primary:hover{opacity:.85;transform:translateY(-2px)}
+    .fcta-ghost{
+      font-size:14px;font-weight:500;color:var(--muted);
+      border:1px solid var(--border-hi);padding:14px 32px;border-radius:999px;
+      transition:all .2s;
+    }
+    .fcta-ghost:hover{color:var(--white);border-color:rgba(255,255,255,.3);transform:translateY(-2px)}
+
+    /* ── PRODUCT LINKS STRIP (below CTA) ──────────────────── */
+    .product-links{
+      display:flex;justify-content:center;gap:24px;margin-top:36px;
+      padding-top:36px;border-top:1px solid var(--border);
+    }
+    .pl-item{
+      display:flex;flex-direction:column;align-items:center;gap:6px;
+      font-size:12px;color:var(--muted);cursor:pointer;transition:color .2s;
+      text-decoration:none;
+    }
+    .pl-item:hover{color:var(--white)}
+    .pl-dot{width:6px;height:6px;border-radius:50%;margin-bottom:2px}
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    footer{
+      padding:40px 36px 32px;
+      border-top:1px solid var(--border);
+    }
+    .footer-inner{
+      max-width:1100px;margin:0 auto;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .footer-left{display:flex;align-items:center;gap:28px}
+    .footer-logo{opacity:.4;height:12px}
+    .footer-links{display:flex;gap:20px}
+    .footer-links a{font-size:12px;color:var(--dim);transition:color .15s}
+    .footer-links a:hover{color:var(--off)}
+    .footer-right{font-size:12px;color:var(--dim)}
+
+    /* ── REVEAL ANIMATIONS ────────────────────────────────── */
+    .rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+    .rv.in{opacity:1;transform:translateY(0)}
+    .rv-r{opacity:0;transform:translateX(26px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+    .rv-r.in{opacity:1;transform:translateX(0)}
+    .rv-l{opacity:0;transform:translateX(-26px);transition:opacity .85s var(--ease),transform .85s var(--ease)}
+    .rv-l.in{opacity:1;transform:translateX(0)}
+    .d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+    .d4{transition-delay:.32s}.d5{transition-delay:.40s}.d6{transition-delay:.48s}
+
+    /* ── RESPONSIVE ───────────────────────────────────────── */
+    @media(max-width:960px){
+      /* minmax(0,1fr) (not 1fr) so a wide child can't blow the single column past
+         the viewport and shove the whole grid off-screen left. Visuals shrink to fit. */
+      .sec-grid{grid-template-columns:minmax(0,1fr);gap:48px}
+      .sec-grid.flip .sec-text,.sec-grid.flip .sec-vis{order:unset}
+      .sec-vis,.ai-vis,.ice-vis,.vend-vis{max-width:100%;min-width:0}
+      .sec-wrap{padding:0 28px}
+      .product-sec{padding:88px 0}
+      .footer-inner{flex-direction:column;gap:20px;text-align:center}
+      .footer-left{flex-direction:column;gap:14px}
+    }
+    @media(max-width:680px){
+      .nav{padding:0 20px}
+      .nav-center{display:none}
+      .hero-stats{flex-direction:column;border-radius:12px;gap:0}
+      .h-stat{border-right:none;border-bottom:1px solid var(--border)}
+      .h-stat:last-child{border-bottom:none}
+    }
+    @media(max-width:480px){
+      .sec-wrap{padding:0 20px}
+      .sec-h2{font-size:32px}
+      .hero-mark{width:85vw}
+      .hero-btns{flex-direction:column;width:100%;max-width:280px}
+      .h-btn-primary, .h-btn-ghost{width:100%;text-align:center;justify-content:center}
+      .ai-vis, .vend-vis{transform:scale(0.9);transform-origin:top center}
+      .sec-grid{gap:32px}
+    }
+    /* ── RESPONSIVE NAV ──────────────────────────────────────────────
+       The wordmark is absolutely centered (it's where #flyLogo docks). Below
+       ~860px that centered mark collides with the right cluster (Sign in + App
+       + OS pills, ~332px). Fix: left-align the brand so the logo docks top-left,
+       and slim the product pills (hide the redundant inner ONEWAY wordmark + OS
+       divider; keep the distinct App=ghost / OS=solid fills). One clean row at
+       iPad portrait, half-window desktop, and phone widths — no overlap.
+       #flyLogo follows automatically: measureLogo() re-runs on resize. */
+    @media (max-width:860px){
+      .nav-brand{position:static;left:auto;top:auto;transform:none;
+        flex-direction:row;align-items:center;margin-right:auto}
+      .nav-center{left:0;transform:translateY(6px)}
+      .nav-brand:hover .nav-center{transform:translateY(0)}
+      .nav-right{gap:6px}
+      .nav-app img,.nav-os img{display:none}
+      .nav-os{padding:6px 13px}
+      .nav-os .os{padding-left:0;border-left:none}
+      .nav-app{padding:6px 13px}
+      .nav-signin{padding:7px 10px}
+    }
+    @media (max-width:360px){
+      .nav-right{gap:4px}
+      .nav-signin{padding:7px 6px}
+      .nav-app,.nav-os{padding:6px 11px}
+    }
+
+    /* ══ MOBILE SCROLL-CRASH HARDENING ══════════════════════════════════
+       iOS kills tabs under compositor pressure while scrolling. The three
+       biggest costs on this page: backdrop-filter layers scrolled over a
+       live fixed canvas, and 90-110px box-shadow glows rasterized per
+       element. On phones: no blur filters, clamped glows. The design reads
+       almost identically — the crash surface doesn't. */
+    @media (max-width:768px){
+      *,*::before,*::after{ -webkit-backdrop-filter:none!important; backdrop-filter:none!important }
+      .po-rest{ box-shadow:
+        inset 0 6px 5px rgba(255,255,255,.85), inset 0 -30px 46px rgba(0,0,0,.18),
+        inset 0 0 30px rgba(var(--h),.82), inset 0 0 0 2px rgba(255,255,255,.27),
+        0 0 0 3px rgba(var(--h),.62), 0 14px 26px -10px rgba(0,0,0,.5) !important }
+      .po-rest:hover{ box-shadow:
+        inset 0 3px 2px rgba(255,255,255,.74), inset 0 0 0 2px rgba(255,255,255,.3),
+        0 0 0 3px rgba(255,255,255,.88), 0 16px 30px -12px rgba(0,0,0,.6) !important }
+      .ow-glass{ box-shadow:inset 0 3px 2px rgba(255,255,255,.26), inset 0 0 0 2px rgba(255,255,255,.09),
+        0 0 0 3px rgba(var(--h),.58), 0 22px 44px -26px rgba(0,0,0,.78) !important }
+      .po-modal{ box-shadow:0 30px 60px -24px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.3) !important }
+    }
+  </style>
+<style>/* static copy: what needs the backend, or shows test accounts, is not shown */#ecoRun,#ecosystem .lp-acts,#account .deck-wrap,#account .lp-acts,#account .cn-wrap,#app .lp-acts,#os .lp-acts,.nav-signin{display:none!important}#account .lp-two{grid-template-columns:1fr!important}</style>
+</head>
+<body>
+
+<!-- FULL-PAGE 3D CANVAS BACKGROUND -->
+<canvas id="hero-canvas"></canvas>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-brand">
+    <a href="/" class="nav-logo" aria-label="ONEWAY">
+      <img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/>
+    </a>
+    <div class="nav-center">
+      <a href="#account" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span>Accounts</a>
+      <a href="#app" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 17c.8-2.2 2.5-3.2 4.5-3.2s3.7 1 4.5 3.2"/></svg></span>ONEWAY App</a>
+      <a href="#os" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>ONEWAY OS</a>
+    </div>
+  </div>
+  <div class="nav-right">
+    <a href="/login.html" class="nav-signin">Sign in</a>
+    <!-- ★ FOUNDER/493: *"Remove the random oneway app and os buttons."*
+         Two pills in the top-right that went to the same two pages the nav
+         beside them already links to — the same door twice, in two shapes,
+         one of them inverted. The nav keeps the doors; the corner keeps the
+         one thing only the corner can do, which is sign you in. -->
+  </div>
+</nav>
+
+<!-- HERO — Center-connected diagram over the black geometric canvas. -->
+<style>
+  .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-atmos);font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#a9b0ff;margin-bottom:18px}
+  /* handcrafted world marker — a tiny tilted gummy bead, NOT a glowing status LED */
+  .hero-h1{font-family:var(--font-display);font-size:clamp(40px,7vw,76px);line-height:1.0;font-weight:900;letter-spacing:-.035em;margin:0;color:#fff}
+  .hero-h1 .accent{background:linear-gradient(120deg,#a78bfa,#8b5cff 60%,#5b9dff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero-tagline{font-size:clamp(15px,2.2vw,19px);color:rgba(255,255,255,.66);max-width:600px;margin:20px auto 26px;line-height:1.55;text-align:center}
+  /* Architecture section — the canonical Brain bled into the page background */
+  .ow-arch{position:relative;padding:64px 24px 72px;border-bottom:1px solid rgba(255,255,255,.06);
+    display:flex;flex-direction:column;overflow:hidden}
+  /* The Brain canvas breaks out of any box and fills the section, edge-masked so
+     it melts into the black geometric background instead of sitting in a card. */
+  .ow-brain-bleed{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.92;pointer-events:none;
+    -webkit-mask-image:radial-gradient(72% 62% at 50% 54%,#000 34%,transparent 100%);
+    mask-image:radial-gradient(72% 62% at 50% 54%,#000 34%,transparent 100%)}
+  .ow-lm-floatcap{position:absolute;top:26px;left:28px;z-index:2;pointer-events:none}
+  .ow-lm-floatcap .ow-lm-title{font:600 12.5px/1 'ONEWAY Sans',system-ui,sans-serif;color:rgba(223,243,255,.8);letter-spacing:.02em}
+  .ow-lm-floatcap .ow-lm-sub{font:500 11px/1.3 'ONEWAY Sans',system-ui,sans-serif;color:rgba(180,220,255,.45);margin-top:4px}
+  .ow-arch-head{position:relative;z-index:2;max-width:680px;margin:0 auto 8px;text-align:center}
+  .ow-arch-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-atmos);font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(169,176,255,.85);margin-bottom:16px}
+  .ow-arch-h2{font-family:var(--font-display);font-size:clamp(25px,3.5vw,36px);font-weight:900;letter-spacing:-.03em;line-height:1.14;margin:0;color:#fff}
+  .ow-arch-sub{font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.5);margin:14px auto 0;max-width:440px}
+  /* The ACTUAL OS Brain "Living map" stage (matches dashboard.html #ow-bn-map-stage) */
+  .ow-lm-stage{position:relative;max-width:900px;margin:38px auto 0;border-radius:24px;overflow:hidden;
+    background:#040410;border:1px solid rgba(0,200,255,0.18);
+    box-shadow:0 40px 110px -50px rgba(80,120,255,.5)}
+  .ow-lm-head{position:absolute;top:16px;left:20px;z-index:2;pointer-events:none}
+  .ow-lm-title{font:600 13px/1 'ONEWAY Sans',system-ui,sans-serif;color:#dff3ff;letter-spacing:.01em}
+  .ow-lm-sub{font:500 11px/1.3 'ONEWAY Sans',system-ui,sans-serif;color:rgba(180,220,255,.55);margin-top:4px}
+  .ow-lm-legend{position:absolute;top:26px;right:28px;z-index:2;display:flex;align-items:center;gap:12px;pointer-events:none}
+  .ow-lm-count{font:600 11px/1 'ONEWAY Sans',system-ui,sans-serif;color:#7aa2ff}
+  .ow-lm-count b{font-size:13px;color:#a9c2ff}
+  .ow-lm-key{display:inline-flex;align-items:center;gap:5px;font:500 10.5px 'ONEWAY Sans',system-ui,sans-serif;color:rgba(180,220,255,.7)}
+  .ow-lm-key i{width:8px;height:8px;border-radius:50%}
+  .ow-lm-key .k-brain{background:hsl(248 78% 70%);box-shadow:0 0 8px hsl(248 78% 70% / .8)}
+  .ow-lm-key .k-system{background:hsl(248 82% 62%);box-shadow:0 0 8px hsl(248 82% 62% / .8)}
+  .ow-lm-key .k-agent{background:hsl(282 92% 74%);box-shadow:0 0 8px hsl(282 92% 74% / .8)}
+  @media(max-width:620px){ .ow-arch{min-height:680px} .ow-lm-legend{display:none} }
+  /* explainer floats at the bottom of the section, over the Brain */
+  .ow-brain-legend{position:relative;z-index:2;display:flex;gap:12px;flex-wrap:wrap;justify-content:center;max-width:900px;margin:auto auto 0}
+  .ow-brain-legend > div{flex:1;min-width:240px;display:flex;gap:11px;align-items:flex-start;
+    background:rgba(10,12,22,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+    border:1px solid rgba(140,170,255,.12);border-radius:14px;padding:14px 16px;
+    font-size:12.5px;line-height:1.45;color:rgba(255,255,255,.6)}
+  .ow-brain-legend b{display:block;color:#fff;font-weight:600;font-size:13.5px;margin-bottom:3px}
+  .ow-brain-legend .dot{width:9px;height:9px;border-radius:50%;flex:none;margin-top:4px}
+  .ow-brain-legend .dot.node{background:rgba(139,92,255,.6)}
+  .ow-brain-legend .dot.edge{background:rgba(139,92,255,.3)}
+  .ow-brain-legend .dot.pulse{background:#a78bfa;box-shadow:0 0 0 4px rgba(167,139,250,.25)}
+  @media(max-width:620px){ .ow-brainpanel{height:320px} .ow-brain-orbit .ob{font-size:11px;padding:5px 9px} .ow-brain-orbit .ob-tl,.ow-brain-orbit .ob-bl{left:16px} .ow-brain-orbit .ob-tr,.ow-brain-orbit .ob-br{right:16px} }
+  .ow-centerdiagram{width:100%;max-width:740px;margin:36px auto 0;position:relative}
+  .ow-centerdiagram svg{width:100%;height:auto;display:block}
+  .ow-cd-svg{width:100%;height:auto;display:block;overflow:visible}
+  .ow-cd-node rect{fill:rgba(255,255,255,.045);stroke:rgba(255,255,255,.14)}
+  .ow-cd-node text{fill:#eef0f6;font-family:'ONEWAY Sans',system-ui,sans-serif;font-size:14px;font-weight:640;letter-spacing:-.01em}
+  .ow-cd-line{stroke:url(#cdline);stroke-width:1.6;fill:none}
+  .ow-cd-flow{stroke:#a9b0ff;stroke-width:2;stroke-linecap:round;stroke-dasharray:2 120;opacity:.8;animation:cdflow 3.4s linear infinite}
+  @keyframes cdflow{to{stroke-dashoffset:-122}}
+  .ow-cd-hub text{fill:#fff;font-family:var(--font-display);font-weight:900;letter-spacing:-.01em}
+  @media(max-width:560px){ .ow-centerdiagram{margin-top:34px} .ow-cd-node text{font-size:15px} }
+</style>
+<img id="flyLogo" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY" aria-hidden="true"/>
+<style>
+  /* 2026-07 hero — the first impression: three answers in ten seconds; organization leads */
+  #hero{position:relative}
+  #heroGlobe{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);
+    width:min(92vmin,920px);height:min(92vmin,920px);z-index:1;opacity:.32;pointer-events:none}
+  /* THE PROMISE — three statements, tight as one block of type, each ARRIVING on
+     its own beat. Not a fade: each line is masked by its own edge and rises out
+     from behind it, the way a sign is unveiled. Tight leading holds them as one
+     voice; the reveal is what gives each line its moment — spacing never has to. */
+  /* ★ FOUNDER/411 §1: "Minimal. Large typography. Strong visual. No
+     explanation." — the opening line is the largest type on the page */
+  .hero-h1{font-family:var(--font-display);font-size:clamp(38px,6.4vw,86px);font-weight:900;
+    letter-spacing:-.04em;line-height:1.02;color:#fff;text-align:center;margin:0;
+    text-shadow:0 2px 40px rgba(0,0,0,.5)}
+  .hero-h1{word-spacing:-.04em}   /* founder/532: the display word space, as landing.css */
+  .hero-h1 span{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+  .hero-h1 span > i{display:block;font-style:inherit}
+  @media(prefers-reduced-motion:no-preference){
+    .hero-h1 span > i{transform:translateY(112%);opacity:0;
+      animation:heroLine 1.05s cubic-bezier(.16,.84,.28,1) forwards}
+    .hero-h1 span:nth-child(1) > i{animation-delay:.08s}
+    .hero-h1 span:nth-child(2) > i{animation-delay:.26s}
+    .hero-h1 span:nth-child(3) > i{animation-delay:.44s}
+  }
+  @keyframes heroLine{to{transform:none;opacity:1}}
+  .hero-sub{font-family:var(--font);font-size:clamp(15px,1.7vw,18.5px);font-weight:500;
+    color:rgba(255,255,255,.86);max-width:58ch;line-height:1.62;margin:18px auto 26px;text-align:center}
+  .hero-sub em{font-style:italic;color:rgba(255,255,255,.68)}
+  .hero-sub strong{color:#cfd3ff;font-weight:800}
+  @media (max-width:640px){ .hero-sub{max-width:34ch} #heroGlobe{opacity:.26} }
+</style>
+<header class="hero" id="hero">
+  <canvas id="heroGlobe" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY" class="hero-mark"/>
+    <!-- ★ FOUNDER/383 (2026-09-14): the person arriving is being INTRODUCED TO
+         THE BRAND; "Your gateway…" *"goes further down for app"* and "Connect
+         your x in one place" is *"for os"*. So the hero carries the brand's own
+         belief — his sentence, from the belief section below — and each
+         product's line sits on that product. Spacious by law: type and air. -->
+    <!-- ★ FOUNDER/411 §1 OPENING: *"We build experiences people want to return to." Minimal. Large typography. Strong visual. No explanation.* -->
+    <h1 class="hero-h1"><span><i>We build &amp; elevate experiences</i></span><span><i>people want to return&nbsp;to.</i></span></h1>
+    <div class="hero-btns">
+      <a href="#app" class="h-btn-app" aria-label="Download the ONEWAY app"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>Download App</span></a>
+      <a href="#os" class="h-btn-os" aria-label="Explore ONEWAY OS"><img src="logo-black.png" alt="ONEWAY"/><span class="os">Explore ONEWAY OS</span></a>
+    </div>
+    <!-- ★ FOUNDER/412: no "early access", no gemstone — the words are the line -->
+    <div class="hero-beta">Selective server beta — open when accessible</div>
+  </div>
+</header>
+<script>
+/* Ambient hero globe — slow, elegant, non-interactive (interaction belongs to the demo section). */
+(function(){
+  var cv=document.getElementById('heroGlobe'); if(!cv) return;
+  /* iOS crash hardening: skip the second canvas entirely on phones (it renders at
+     opacity .26 there anyway), and cap DPR — Safari kills tabs over GPU memory. */
+  if(Math.min(screen.width,innerWidth)<=640){ cv.remove(); return; }
+  var ctx=cv.getContext('2d'), DPR=Math.min(devicePixelRatio||1,1.5), W,H,R;
+  function size(){ var r=cv.getBoundingClientRect(); W=cv.width=r.width*DPR; H=cv.height=r.height*DPR; R=Math.min(W,H)*0.36; }
+  size(); addEventListener('resize',size);
+  var N=620, pts=[], GA=Math.PI*(3-Math.sqrt(5));
+  for(var i=0;i<N;i++){ var y=1-(i/(N-1))*2, rad=Math.sqrt(1-y*y), th=GA*i;
+    pts.push({x:Math.cos(th)*rad, y:y, z:Math.sin(th)*rad, city:(i%47===0)}); }
+  var tilt=-0.42, ct=Math.cos(tilt), st=Math.sin(tilt), rot=0;
+  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function frame(){
+    ctx.clearRect(0,0,W,H); rot+=0.00105;
+    var cr=Math.cos(rot), sr=Math.sin(rot), cx=W/2, cy=H/2, t=performance.now()/1000;
+    for(var i=0;i<N;i++){ var p=pts[i];
+      var x=p.x*cr+p.z*sr, z=-p.x*sr+p.z*cr, y=p.y*ct-z*st; z=p.y*st+z*ct;
+      if(z<-0.15) continue;
+      var depth=(z+1)/2, px=cx+x*R, py=cy+y*R;
+      if(p.city){ var tw=0.65+0.35*Math.sin(t*1.6+i);
+        ctx.fillStyle='rgba(207,211,255,'+(0.5*depth*tw+0.12)+')';
+        ctx.beginPath(); ctx.arc(px,py,(1.9+depth)*DPR*0.9,0,7); ctx.fill();
+      } else {
+        ctx.fillStyle='rgba(169,176,255,'+(0.34*depth+0.045)+')';
+        ctx.beginPath(); ctx.arc(px,py,(0.7+depth*0.8)*DPR*0.8,0,7); ctx.fill();
+      }
+    }
+    ctx.strokeStyle='rgba(169,176,255,.14)'; ctx.lineWidth=1.2*DPR;
+    ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
+    if(!reduced) requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+
+
+
+<!-- Landing story motifs — flow nodes, glass showcase panels, lifecycle.
+     Reuses the page's tokens (purple accent, glass, geometric) so it reads as
+     one cinematic page, not stacked SaaS cards. -->
+<style>
+  .ow-model{position:relative;display:flex;flex-wrap:wrap;gap:10px 6px;align-items:center;justify-content:center;margin-top:42px}
+  /* #what ontology flow → a vertical descent (lore), not a corporate left→right row */
+  .ow-model.om-vert{flex-direction:column;flex-wrap:nowrap;gap:10px;max-width:none;margin-top:34px}
+  .ow-model.om-vert .om-arrow{transform:rotate(90deg);width:20px;height:22px}
+  /* flow nodes → gummy hue objects (was glass pills); Brain node = a glowing gummy bead */
+  .ow-model .om-node{position:relative;font-size:14px;font-weight:650;color:#fff;padding:11px 18px;border-radius:15px 11px 14px 12px;
+    background:radial-gradient(80% 60% at 38% 12%,rgba(255,255,255,.26),transparent 70%),linear-gradient(160deg,rgba(var(--ow-h1),.48),rgba(var(--ow-h2),.3));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -6px 12px rgba(0,0,0,.2),0 0 0 1px rgba(var(--ow-h1),.42),0 4px 10px -5px rgba(0,0,0,.5)}
+  .ow-model .om-node.om-brain{color:#fff;
+    background:radial-gradient(80% 62% at 40% 10%,rgba(255,255,255,.34),transparent 68%),linear-gradient(150deg,rgb(var(--ow-h1)),rgb(var(--ow-h2)));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -7px 13px rgba(0,0,0,.22),0 0 0 1.5px rgba(var(--ow-h1),.6),0 0 20px -5px rgba(var(--ow-h1),.8);animation:omPulse 3s ease-in-out infinite}
+  @keyframes omPulse{0%,100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -7px 13px rgba(0,0,0,.22),0 0 0 1.5px rgba(var(--ow-h1),.6),0 0 15px -6px rgba(var(--ow-h1),.55)}50%{box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -7px 13px rgba(0,0,0,.22),0 0 0 1.5px rgba(var(--ow-h1),.72),0 0 26px -2px rgba(var(--ow-h1),.95)}}
+  /* connector = a small track the arrow sits in; a glowing signal travels across it
+     (left→right on desktop; the parent rotates 90° on mobile so it flows top→down). */
+  .ow-model .om-arrow{position:relative;width:34px;height:18px;display:inline-flex;align-items:center;justify-content:center;
+    color:rgba(169,176,255,.4);font-size:15px;font-weight:700}
+  .ow-model .om-arrow::after{content:"";position:absolute;left:3px;top:50%;width:6px;height:6px;margin-top:-3px;border-radius:50%;
+    background:rgb(var(--ow-h2));box-shadow:0 0 9px 2px rgba(var(--ow-h1),.85);animation:omSignal 2.1s linear infinite}
+  .ow-model .om-arrow:nth-of-type(2)::after{animation-delay:.7s}
+  .ow-model .om-arrow:nth-of-type(3)::after{animation-delay:1.4s}
+  @keyframes omSignal{0%{transform:translateX(0);opacity:0}18%{opacity:1}82%{opacity:1}100%{transform:translateX(26px);opacity:0}}
+  /* tiny Brain nodes drifting around the flow */
+  .om-spark{position:absolute;width:7px;height:7px;border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(circle,rgba(255,255,255,.85),rgba(var(--ow-h1),.3) 65%,transparent 72%);
+    box-shadow:0 0 11px 2px rgba(var(--ow-h1),.5);animation:omFloat 7s ease-in-out infinite}
+  @keyframes omFloat{0%,100%{transform:translate(0,0);opacity:.3}50%{transform:translate(var(--mx,8px),var(--my,-10px));opacity:.85}}
+  @media(max-width:560px){ .ow-model{flex-direction:column;gap:8px} .ow-model .om-arrow{transform:rotate(90deg)} .om-spark{display:none} }
+  /* Profile Center / Center panels — converged onto the canonical Popit material (was
+     glassmorphism). Hue-driven gummy body, stitched #poSeam, candy grain, hand-cut
+     silhouette — same family as the Living Centers + the opened Popit sheets. */
+  .ow-glass{--h:var(--ow-h1);--h2:var(--ow-h2);position:relative;color:#fff;padding:22px 24px;
+    border-radius:34px 28px 36px 30px / 30px 36px 28px 34px;
+    background:radial-gradient(120% 56% at 50% -12%,rgba(var(--h),.5),transparent 56%),
+      radial-gradient(100% 60% at 50% 118%,rgba(var(--h2),.24),transparent 60%),
+      linear-gradient(180deg,rgba(34,33,58,.92),rgba(13,13,26,.95));
+    -webkit-backdrop-filter:blur(14px) saturate(165%);backdrop-filter:blur(14px) saturate(165%);
+    box-shadow:inset 0 3px 2px rgba(255,255,255,.26),inset 0 -30px 54px rgba(0,0,0,.4),
+      inset 0 0 0 2px rgba(255,255,255,.09),
+      0 0 0 3px rgba(var(--h),.58),0 0 0 8px rgba(var(--h),.12),
+      0 46px 92px -42px rgba(0,0,0,.78),0 0 84px -30px rgba(var(--h),.58);
+    transform:rotate(-1deg)}
+  /* the dashed seam is gone — founder/493 */
+  .ow-glass::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+    background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size:120px 120px;mix-blend-mode:overlay;opacity:.1}
+  .ow-glass > *{position:relative;z-index:1}
+  .ow-glass .gh{display:flex;align-items:center;gap:13px;margin-bottom:16px}
+  /* avatar → a small gummy bead carrying the Center's hue (was a flat #8b5cff chip) */
+  .ow-glass .gh .av{width:44px;height:44px;flex:none;border-radius:16px 12px 14px 11px;
+    background:radial-gradient(70% 55% at 36% 20%,rgba(255,255,255,.72),transparent 70%),linear-gradient(150deg,rgb(var(--h)),rgb(var(--h2)));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -6px 12px rgba(0,0,0,.25),0 0 16px -2px rgb(var(--h))}
+  .ow-glass .gh .gt{font-weight:800;color:#fff;font-size:16px;letter-spacing:-.01em}
+  .ow-glass .gh .gs{font-family:var(--font-atmos);font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.62);margin-top:3px}
+  .ow-glass .gchips{display:flex;flex-wrap:wrap;gap:7px}
+  /* chips → small gummy objects living inside the panel (same family as .owc-sys) */
+  .ow-glass .gchips span{position:relative;font-size:11.5px;font-weight:650;color:#fff;padding:7px 12px;border-radius:13px 9px 12px 10px;
+    background:radial-gradient(80% 62% at 38% 14%,rgba(255,255,255,.3),transparent 70%),linear-gradient(160deg,rgba(var(--h),.6),rgba(var(--h2),.4));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -6px 12px rgba(0,0,0,.2),0 0 0 1px rgba(var(--h),.48),0 4px 9px -4px rgba(0,0,0,.5)}
+  /* live chips — a running signal, not a static label: green heartbeat dot */
+  .ow-glass .gchips span.live{padding-left:21px}
+  .ow-glass .gchips span.live::before{content:"";position:absolute;left:9px;top:50%;margin-top:-3px;width:6px;height:6px;border-radius:50%;background:#5fe3a1;box-shadow:0 0 8px #5fe3a1;animation:livePulse 2.4s ease-in-out infinite}
+  /* ── CENTER EVOLUTION — one Center Popit that grows through four stages.
+     Not cards, not tabs: the animation itself tells the story. One major change
+     per stage; fades + connection growth only (no bounce/spin). ── */
+  .ow-evo{position:relative;width:min(640px,92vw);height:360px;margin:8px auto 0}
+  .ow-evo .evo-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .ow-evo .evo-lines .el{fill:none;stroke-width:1.6;stroke-linecap:round;stroke:rgba(169,176,255,.55);
+    stroke-dasharray:4 7;opacity:0;transition:opacity 1s ease}
+  .ow-evo .evo-lines .el.gold{stroke:rgba(236,168,58,.55)}
+  .ow-evo .evo-lines .el.cyan{stroke:rgba(93,226,255,.5)}
+  /* the Center — the largest Popit; the same gummy material as every bead on the page */
+  .evo-core{position:absolute;left:50%;top:50%;width:128px;height:172px;margin:-86px 0 0 -64px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:#fff;
+    border-radius:49px 43px 51px 45px / 53px 48px 46px 50px;
+    background:
+      radial-gradient(33% 20% at 39% 12%,rgba(255,255,255,.82),transparent 72%),
+      radial-gradient(128% 84% at 50% 124%,rgba(var(--ow-h2),.92),transparent 62%),
+      radial-gradient(74% 58% at 79% 44%,rgba(var(--ow-h1),.48),transparent 74%),
+      linear-gradient(159deg,rgba(var(--ow-h1),.95) 8%,rgba(var(--ow-h1),.8) 46%,rgba(var(--ow-h2),.6) 100%);
+    box-shadow:inset 0 6px 5px rgba(255,255,255,.85),inset 0 -30px 46px rgba(0,0,0,.18),
+      inset 0 0 30px rgba(var(--ow-h1),.82),inset 0 0 0 2px rgba(255,255,255,.27),
+      0 0 0 3px rgba(var(--ow-h1),.62),0 22px 44px -10px rgba(0,0,0,.5),0 0 96px 10px rgba(var(--ow-h1),.68);
+    transition:transform 1.2s cubic-bezier(.3,.9,.3,1)}
+  /* the dashed seam is gone — founder/493 */
+  .evo-core svg{width:44px;height:44px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 7px rgba(0,0,0,.45))}
+  .evo-core .ecn{font-family:var(--font-display);font-weight:800;font-size:12.5px;letter-spacing:.05em;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+  .ow-evo[data-stage="2"] .evo-core{transform:scale(1.04)}
+  .ow-evo[data-stage="3"] .evo-core{transform:scale(1.08)}
+  .ow-evo[data-stage="4"] .evo-core{transform:scale(1.1)}
+  /* satellites — smaller Popits of the same family, appearing as the Center grows */
+  .evo-sat{position:absolute;display:flex;flex-direction:column;align-items:center;gap:7px;
+    opacity:0;transform:scale(.7);transition:opacity 1s ease,transform 1s cubic-bezier(.3,.9,.3,1);pointer-events:none}
+  .evo-sat .esb{--eh:139,92,255;--eh2:93,226,255;width:58px;height:74px;display:grid;place-items:center;
+    border-radius:24px 20px 25px 21px / 26px 23px 22px 25px;
+    background:radial-gradient(40% 24% at 40% 14%,rgba(255,255,255,.75),transparent 74%),
+      radial-gradient(120% 80% at 50% 120%,rgba(var(--eh2),.85),transparent 64%),
+      linear-gradient(159deg,rgba(var(--eh),.95) 10%,rgba(var(--eh2),.6) 100%);
+    box-shadow:inset 0 4px 4px rgba(255,255,255,.7),inset 0 -14px 22px rgba(0,0,0,.2),
+      inset 0 0 0 1.5px rgba(255,255,255,.25),0 0 0 2px rgba(var(--eh),.55),
+      0 12px 26px -8px rgba(0,0,0,.5),0 0 44px 2px rgba(var(--eh),.5)}
+  .evo-sat .esb svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 4px rgba(0,0,0,.4))}
+  .evo-sat .esl{font-family:var(--font-atmos);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+  .evo-sat.gold .esb{--eh:236,168,58;--eh2:255,138,66}
+  .evo-sat.cyan .esb{--eh:93,226,255;--eh2:139,92,255}
+  .evo-sat.mini .esb{width:44px;height:56px}
+  .evo-sat.mini .esb svg{width:20px;height:20px}
+  /* placement (percent of the 640×360 stage — matches the SVG line endpoints) */
+  .evo-web{left:70%;top:14%}
+  .evo-team{left:12%;top:20%}
+  .evo-sys{left:71%;top:62%}
+  .evo-c2{left:6%;top:60%}
+  .evo-c3{left:29%;top:1%}
+  /* stage reveals — cumulative; ONE major change per stage */
+  .ow-evo[data-stage="2"] .evo-web,.ow-evo[data-stage="3"] .evo-web,.ow-evo[data-stage="4"] .evo-web,
+  .ow-evo[data-stage="3"] .evo-team,.ow-evo[data-stage="4"] .evo-team,
+  .ow-evo[data-stage="3"] .evo-sys,.ow-evo[data-stage="4"] .evo-sys,
+  .ow-evo[data-stage="4"] .evo-c2,.ow-evo[data-stage="4"] .evo-c3{opacity:1;transform:scale(1)}
+  .ow-evo[data-stage="2"] .el-web,.ow-evo[data-stage="3"] .el-web,.ow-evo[data-stage="4"] .el-web,
+  .ow-evo[data-stage="3"] .el-team,.ow-evo[data-stage="4"] .el-team,
+  .ow-evo[data-stage="3"] .el-sys,.ow-evo[data-stage="4"] .el-sys,
+  .ow-evo[data-stage="4"] .el-c2,.ow-evo[data-stage="4"] .el-c3{opacity:1}
+  /* the stage line — indicators, not tabs (non-interactive) */
+  .evo-stages{display:flex;gap:clamp(14px,4vw,34px);justify-content:center;margin-top:26px}
+  .evo-stages span{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(255,255,255,.3);transition:color .6s ease,text-shadow .6s ease}
+  .evo-stages span.on{color:#cfd3ff;text-shadow:0 0 14px rgba(139,92,255,.8)}
+  .evo-cap{margin-top:12px;font-size:14.5px;color:rgba(255,255,255,.62);min-height:22px;transition:opacity .45s ease}
+  @media(max-width:560px){
+    .ow-evo{height:300px}
+    .evo-core{width:104px;height:140px;margin:-70px 0 0 -52px}
+    .evo-sat .esb{width:48px;height:62px}
+    .evo-web{left:71%}.evo-team{left:6%}.evo-sys{left:72%}
+    .evo-stages{flex-wrap:wrap;gap:10px 18px}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .evo-core,.evo-sat,.ow-evo .evo-lines .el{transition:none}
+  }
+</style>
+
+
+
+<!-- EVERYTHING BECOMES A CENTER — the category-defining idea, pure type. No objects,
+     no cards: one unavoidable realization before the visitor reserves their name. -->
+
+
+
+<!-- APP vs OS — the core distinction, taught as two Popits. App = ONEWAY/user identity
+     hue; OS = a distinct deep-gold operational identity (still ONEWAY). -->
+<style>
+  .pd-links{display:flex;gap:10px 22px;justify-content:center;flex-wrap:wrap;margin:22px 0 0}
+  .pd-links a{font-size:14.5px;font-weight:700;color:rgb(var(--ow-h2,93,226,255));text-decoration:none}
+  .pd-links a:hover{text-decoration:underline}
+  .pd-links a.go::after{content:' →'}
+</style>
+<!-- ═══════════════════════════════════════════════════════════════════════
+     THE LANDING, IN ONE CHART — founder/411 and /412 (2026-09-15), verbatim in
+     docs/founder/. Eight sections, in this order, and nothing else:
+
+       1 Opening      We build experiences people want to return to.
+       2 Mission      Making entertainment and the Internet better for all sides.
+       3 Ecosystem    A modern ecosystem for people to easily and conveniently
+                      connect with cities, communities, and businesses.
+       4 Profiles + Centers   Create a Profile or a Center.  (the signature scroll)
+       5 The App      The ONEWAY App · Experience ONEWAY.
+       6 The OS       ONEWAY OS · The environment behind the experience.
+       7 OS+ / OS Max
+       8 Explore ONEWAY
+
+     412: *"almost all on localhost physical contents wise can be moved or
+     better arranged and want transitioned to this exactly."* So the galaxy,
+     the living map, the reserve-list rows, the flagship Center, the phone, the
+     OS wordmark and the reservation are the same objects they were — moved
+     into this order. Nothing on this page is written for it: every row is a
+     read from the running platform, every product line is the founder's.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style>
+  /* ── STATEMENTS (2, 3) — one sentence, large, air around it ─────────────── */
+  .st .sec-wrap{max-width:820px;text-align:center}
+  .st-line{font-size:clamp(28px,4.2vw,58px);line-height:1.06;margin:0 auto;max-width:20ch}
+  .st-sub{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;
+    font-size:clamp(15px,1.6vw,19px);line-height:1.5;color:rgba(255,255,255,.5);margin:26px auto 0;max-width:34ch}
+  /* the beta line under the hero buttons — words, no ornament (412: no gemstones) */
+  .hero-beta{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(169,176,255,.72);margin:18px 0 0;opacity:0;animation:fadeUp .9s .62s var(--ease) forwards}
+
+  /* ── THE SIGNATURE SCROLL (4) — a Profile, a Center, its inside, its OS ── */
+  .story{position:relative;max-width:560px;margin:44px auto 0;text-align:left}
+  .story-step{position:relative;padding:0 0 34px 26px}
+  .story-step::before{content:"";position:absolute;left:6px;top:10px;bottom:-4px;width:1.5px;
+    background:linear-gradient(180deg,rgba(var(--ow-h1),.55),rgba(var(--ow-h2),.22))}
+  .story-step:last-child::before{display:none}
+  .story-step::after{content:"";position:absolute;left:2px;top:7px;width:9px;height:9px;border-radius:50%;
+    background:rgb(var(--ow-h1));box-shadow:0 0 11px rgba(var(--ow-h1),.85)}
+  .story-cap{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+    color:rgba(255,255,255,.5);margin:0 0 12px;line-height:1.3}
+  .story .po-list{display:flex;flex-direction:column;gap:10px}
+  .story .po-glance{width:100%;text-align:left}
+  .story .po-river{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+  .story .po-empty{font-size:14px;color:rgba(255,255,255,.55);padding:4px}
+  /* THE CENTER, OPENED — founder/410: *"If events of a center are being shown,
+     make the card larger and have events be an actual subcategory of the card
+     and center itself. But don't oversize the cards for meaningless
+     information."* One card in the Home Popit's material; its face, its name,
+     where it is, its own sentence, the people who run it, and EVENTS as a
+     subcategory inside it — only when it has any; a Center with none stays a
+     row. Pressing anything on it opens the real thing over the galaxy. */
+  .flag-card{position:relative;padding:16px 16px 14px;border-radius:24px 19px 22px 20px;color:#fff;text-align:left;
+    --h:var(--ow-h1);--h2:var(--ow-h2);
+    background:
+      radial-gradient(130% 80% at 18% -6%, rgba(var(--h),.42), transparent 64%),
+      radial-gradient(120% 90% at 92% 108%, rgba(var(--h2),.28), transparent 60%),
+      linear-gradient(158deg, rgba(var(--h),.14), rgba(var(--h2),.09) 62%, rgba(14,16,30,.5)),
+      linear-gradient(0deg,#0b0d18,#0b0d18);
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.26),inset 0 0 0 1.5px rgba(var(--h),.30),
+      0 0 54px -10px rgba(var(--h),.55),0 18px 40px -20px rgba(0,0,0,.7)}
+  .flag-id{display:flex;align-items:center;gap:14px;cursor:pointer;border:0;background:none;color:#fff;padding:0;width:100%;text-align:left;font-family:var(--font)}
+  .flag-face{flex:none;width:60px;height:60px;overflow:hidden;border-radius:18px 14px 17px 15px;
+    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.85),rgba(var(--h2),.55) 70%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 18px -4px rgba(var(--h),.7);display:grid;place-items:center}
+  .flag-face[data-shape="round"]{border-radius:50%}.flag-face[data-shape="square"]{border-radius:8px}
+  .flag-face img{width:100%;height:100%;object-fit:cover;display:block}
+  .flag-face i{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:20px;color:#fff}
+  .flag-name{font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1.15}
+  .flag-sig{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px}
+  .flag-bio{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.82);margin:14px 2px 0}
+  .flag-people{display:flex;align-items:center;gap:8px;margin:14px 2px 0;flex-wrap:wrap}
+  .flag-people button{display:inline-flex;align-items:center;gap:8px;border:0;background:rgba(255,255,255,.06);color:#fff;
+    padding:5px 11px 5px 5px;border-radius:999px;font:600 12.5px var(--font);cursor:pointer;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
+  .flag-people .fp{width:24px;height:24px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+    background:linear-gradient(150deg,rgb(var(--h)),rgba(var(--h2),.75));font:800 10px var(--font-display)}
+  .flag-people .fp[data-shape="rounded"]{border-radius:8px 6px 7px 6px}.flag-people .fp[data-shape="square"]{border-radius:4px}
+  .flag-people .fp img{width:100%;height:100%;object-fit:cover}
+  .flag-sub{display:flex;align-items:baseline;gap:8px;margin:18px 2px 10px;
+    font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:-.01em}
+  .flag-sub b{font-weight:800}.flag-sub span{font-size:12px;color:rgba(255,255,255,.5);font-weight:700}
+  .flag-evs{display:flex;flex-direction:column;gap:8px}
+  .flag-evs .po-glance{width:100%;min-height:54px;padding:10px 14px}
+  /* the same Center, from the inside — founder/411: *"the interface
+     transitions from public Oneway → private Oneway OS."* The card turns to
+     its operating side: the OS's own sections for this Center. */
+  .flag-os{margin-top:0;--h:38,150,222;--h2:139,92,255}
+  .flag-os .flag-sig{color:#8fdbe6}
+  .os-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 2px 0}
+  .os-nav span{display:block;text-align:center;font:700 12px var(--font);padding:12px 6px;border-radius:14px 11px 13px 12px;
+    background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(var(--h),.28);color:rgba(255,255,255,.86)}
+  .os-nav span.on{background:linear-gradient(150deg,rgba(var(--h),.55),rgba(var(--h2),.35));box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
+  @media(max-width:520px){.os-nav{grid-template-columns:repeat(2,1fr)}}
+
+  /* ── THE APP (5): the journey, and a real phone ────────────────────────── */
+  .jn{list-style:none;margin:22px 0 0;padding:0 0 0 26px;position:relative}
+  .jn::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1.5px;
+    background:linear-gradient(180deg,rgba(var(--ow-h1),.55),rgba(var(--ow-h2),.25))}
+  .jn li{position:relative;font-family:var(--font-display);font-weight:800;font-size:clamp(17px,1.9vw,22px);letter-spacing:-.02em;
+    padding:5px 0;color:rgba(255,255,255,.92)}
+  .jn li::before{content:"";position:absolute;left:-24px;top:50%;margin-top:-4px;width:8px;height:8px;border-radius:50%;
+    background:rgb(var(--ow-h1));box-shadow:0 0 10px rgba(var(--ow-h1),.8)}
+  /* ★ FOUNDER/412: *"REAL IPHONE 18 PRO model best u can get."* The best real
+     one obtainable on 2026-09-15 is Apple's iPhone 17 Pro frame as distributed
+     by fastlane/frameit-frames (MIT; the Facebook Design device set) — no 18
+     Pro frame exists in any public set yet. Nothing here is drawn: the frame
+     is the vendor PNG; the screen behind it is a 3× capture of the running
+     App. Measured cutout: left 5.333% · top 2.5% · 89.333% × 95% of the frame;
+     screen corner radius 15.8% of the screen's width. */
+  .ph-stage{perspective:1500px;perspective-origin:18% 50%;display:flex;justify-content:center}
+  .ph-real{position:relative;width:min(330px,68vw);aspect-ratio:1350/2760;
+    transform:rotateY(26deg) rotateX(4deg) rotateZ(-3deg);transform-style:preserve-3d;
+    filter:drop-shadow(0 60px 80px rgba(0,0,0,.75)) drop-shadow(0 0 70px rgba(139,92,255,.28));
+    animation:phFloat 7s ease-in-out infinite}
+  .ph-real .shot{position:absolute;left:5.333%;top:2.5%;width:89.333%;height:95%;overflow:hidden;
+    border-radius:15.8% / 7.28%;background:#000}
+  .ph-real .shot img{width:100%;height:100%;object-fit:cover;display:block}
+  .ph-real .frame{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+  @keyframes phFloat{0%,100%{transform:translateY(0) rotateY(26deg) rotateX(4deg) rotateZ(-3deg)}50%{transform:translateY(-14px) rotateY(22deg) rotateX(6deg) rotateZ(-2deg)}}
+  @media(prefers-reduced-motion:reduce){.ph-real{animation:none}}
+  .ph-wrap{display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:clamp(18px,4vw,56px);max-width:980px;margin:0 auto;text-align:left}
+  .ph-lock{display:inline-flex;align-items:center;gap:clamp(12px,1.8vw,22px)}
+  .ph-lock img{height:clamp(34px,5.4vw,66px);display:block;filter:drop-shadow(0 8px 40px rgba(167,139,250,.16))}
+  .ph-lock .mk{font-family:var(--font-display);font-style:italic;font-weight:900;font-size:clamp(32px,5.2vw,64px);line-height:.8;letter-spacing:-.03em;color:#fff;padding-left:0}
+  @media(max-width:760px){.ph-wrap{grid-template-columns:1fr;text-align:center}.ph-lock{justify-content:center}.jn{display:inline-block;text-align:left}
+    .ph-wrap .pd-links{justify-content:center!important}
+    .ph-stage{perspective-origin:50% 50%;margin-top:26px}.ph-real{width:min(260px,64vw)}}
+  /* the two hero doors never wrap their own words; the beta line tightens on a phone */
+  .h-btn-os span,.h-btn-app span{white-space:nowrap}
+  @media(max-width:640px){.hero-beta{letter-spacing:.12em;font-size:10px}}
+
+  /* ── THE OS (6): the real thing, public beside private, the wordmark ──── */
+  .os-shot{position:relative;max-width:980px;margin:34px auto 0;border-radius:18px;overflow:hidden;
+    background:#06070f;box-shadow:0 0 0 1px rgba(139,92,255,.22),0 40px 90px -40px rgba(0,0,0,.9),0 0 80px -30px rgba(38,150,222,.35)}
+  .os-shot .bar{display:flex;align-items:center;gap:6px;padding:10px 14px;background:#0c0e1c;border-bottom:1px solid rgba(255,255,255,.06)}
+  .os-shot .bar i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.14)}
+  .os-shot .bar em{margin-left:8px;font-style:normal;font-size:10.5px;color:rgba(255,255,255,.3);background:rgba(255,255,255,.04);
+    border-radius:5px;padding:3px 10px;border:1px solid rgba(255,255,255,.06)}
+  .os-shot img{width:100%;height:auto;display:block}
+  .pp{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:640px;margin:34px auto 0;text-align:left}
+  .pp .col{padding:18px 20px 16px;border-radius:22px 17px 20px 18px;color:#fff;
+    --h:var(--ow-h1);--h2:var(--ow-h2);
+    background:radial-gradient(130% 80% at 18% -6%,rgba(var(--h),.36),transparent 64%),
+      linear-gradient(158deg,rgba(var(--h),.12),rgba(var(--h2),.08) 62%,rgba(14,16,30,.5)),linear-gradient(0deg,#0b0d18,#0b0d18);
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.22),inset 0 0 0 1.5px rgba(var(--h),.28),0 0 40px -12px rgba(var(--h),.5)}
+  .pp .col.priv{--h:38,150,222;--h2:139,92,255}
+  .pp .k{font-family:var(--font-atmos);font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+  .pp .n{font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;margin-top:4px}
+  .pp ul{list-style:none;margin:12px 0 0;padding:0}
+  .pp li{font:700 14px/1.9 var(--font);color:rgba(255,255,255,.86)}
+  @media(max-width:520px){.pp{grid-template-columns:1fr}}
+  /* THE WORDMARK — "Connect your ___ in one place." ★ FOUNDER/412: *"i want
+     that connect your x word mark to look just as smooth as it did when it
+     was the main word mark here."* When it was the hero's, it sat on ONE
+     unwrapped line at its own size and the sentence closed around each word;
+     in a wrapping .sec-h2 the width change moved the line breaks. It is that
+     line again: nowrap, its own scale, the width breathing to the next word. */
+  .os-connect{font-family:var(--font-display);font-weight:900;letter-spacing:-.025em;
+    font-size:clamp(17px,3.2vw,40px);color:rgba(255,255,255,.94);text-align:center;
+    margin:40px auto 0;line-height:1.2;white-space:nowrap}
+  .rot-word{display:inline-block;text-align:center;white-space:nowrap;vertical-align:baseline;
+    background:linear-gradient(120deg,#a78bfa,#8b5cff 60%,#5b9dff);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    transition:width .42s cubic-bezier(.4,0,.2,1),opacity .3s ease,transform .3s ease}
+  .rot-word.sw{opacity:0;transform:translateY(5px)}
+  .rot-measure{position:absolute;visibility:hidden;white-space:nowrap;pointer-events:none;left:-9999px}
+  .os-lock .mk{font-style:italic}
+
+  /* ── OS+ / OS MAX (7): the ladder, compact ────────────────────────────── */
+  .ladder{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:30px auto 0;
+    font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:-.01em;color:rgba(255,255,255,.88)}
+  .ladder i{font-style:normal;color:rgba(255,255,255,.3)}
+  .tiers2{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:30px auto 0;text-align:left}
+  .tiers2 .ow-glass{margin:0}
+  .tiers2 .gt{font-size:18px}
+  .tiers2 p{font-size:14.5px;line-height:1.6;color:rgba(255,255,255,.78);margin:12px 0 0}
+  @media(max-width:640px){.tiers2{grid-template-columns:1fr}}
+
+  /* ── EXPLORE (8): four doors, then the name ───────────────────────────── */
+  .xp{max-width:560px;margin:30px auto 0;display:flex;flex-direction:column;gap:10px;text-align:left}
+  .xp .po-glance{width:100%}
+  .xp .po-glance__sig{display:block}
+  .rsv-wrap{max-width:560px;margin:56px auto 0}
+  .rsv-h{font-family:var(--font-display);font-weight:800;font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;text-align:center;margin:0 0 6px}
+  .rsv-l{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);text-align:center;margin:0 0 18px}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     THE LANDING AFTER THE HERO — founder/534 (2026-09-25), verbatim in
+     docs/founder/534-*.md. What he ruled, and where each ruling is:
+
+       mission line        → the LEFT of the screen, typing in as it arrives
+       ecosystem line      → the right (493: "move both groups of text to
+                             different sides … typing appear animations")
+       the account card    → real demo people, their actual stats, and a demo
+                             live status — "playing x on x" (the live activity
+                             status of recovered/1973: what friends are doing on
+                             the platforms that broadcast it)
+       "Where you can go"  → removed ("this is all moronic")
+       the 1–6 list        → removed ("the random item bar check lists")
+       Centers             → part of Account
+       the OS              → a physical all-in-one desktop, the black Brain
+                             view inside its UI
+       OS+ / OS Max        → removed; the ladder is the page's last row, as
+                             small rounded link buttons
+       reserve your name   → rebuilt in the App's Popit material
+     Shorter beats longer (493). Every face, name and count is a read.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style>
+  /* ── 2 · 3 THE TWO LINES — one on each side, each typing in ─────────── */
+  .side{padding-top:clamp(56px,9vw,110px)}
+  .side .lp-h2{max-width:17ch}
+  .side--l{text-align:left}
+  .side--r{text-align:right}
+  .side--r .lp-h2{margin-left:auto;max-width:19ch;font-size:clamp(28px,3.9vw,50px)}
+  .side--r .lp-acts{justify-content:flex-end}
+  .ty-w{display:inline-block;white-space:nowrap}
+  .ty-c{opacity:0;transition:opacity .09s linear}
+  .ty-c.on{opacity:1}
+  .ty-caret{display:inline-block;width:0;position:relative}
+  .ty-caret::after{content:"";position:absolute;left:.04em;bottom:.08em;width:.07em;height:.86em;border-radius:1px;
+    background:rgba(255,255,255,.8);animation:twBlink .9s steps(2) infinite}
+  .ty-slide{transition:transform 1.1s cubic-bezier(.16,.84,.28,1),opacity .6s ease}
+  .side--l .ty-slide.ty-armed:not(.in){transform:translateX(-7vw);opacity:0}
+  .side--r .ty-slide.ty-armed:not(.in){transform:translateX(7vw);opacity:0}
+  @media(prefers-reduced-motion:reduce){.ty-c{opacity:1}.ty-caret{display:none}.ty-slide{transform:none!important;opacity:1!important}}
+
+  /* the ecosystem, as the faces in it — a slow drift, each face pressable */
+  .eco-run{position:relative;margin:34px 0 0;overflow:hidden;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+  .eco-run[hidden]{display:none}
+  .eco-track{display:flex;gap:18px;width:max-content;padding:6px 0 4px;animation:ecoDrift 46s linear infinite}
+  .eco-run:hover .eco-track{animation-play-state:paused}
+  @keyframes ecoDrift{to{transform:translateX(-50%)}}
+  @media(prefers-reduced-motion:reduce){.eco-track{animation:none}}
+  .eco-it{display:flex;flex-direction:column;align-items:center;gap:8px;width:76px;border:0;background:none;padding:0;cursor:pointer;color:#fff;font:inherit}
+  .eco-it .f{position:relative;width:62px;height:62px;overflow:hidden;display:grid;place-items:center;border-radius:20px;
+    --h:var(--ow-h1);--h2:var(--ow-h2);
+    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.9),rgba(var(--h2),.55) 72%);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 24px -8px rgba(var(--h),.8);transition:transform .25s var(--ease)}
+  .eco-it[data-kind="person"] .f{border-radius:50%}
+  .eco-it .f img{width:100%;height:100%;object-fit:cover;display:block}
+  .eco-it .f i{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:19px}
+  .eco-it:hover .f{transform:translateY(-3px) scale(1.05)}
+  .eco-it b{font-weight:600;font-size:12px;line-height:1.2;color:rgba(255,255,255,.7);max-width:76px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  /* ── 4 · THE ACCOUNT — people as they are, right now ─────────────────── */
+  .deck-wrap{display:flex;flex-direction:column;align-items:center;min-width:0}
+  .deck{position:relative;width:min(380px,100%);height:var(--deck-h,340px);margin:0 auto;transition:height .35s var(--ease)}
+  .pcard{position:absolute;left:0;right:0;top:0;padding:20px 20px 18px;border-radius:28px;color:#fff;text-align:left;cursor:pointer;
+    --h:139,92,255;--h2:93,226,255;
+    background:linear-gradient(180deg,rgba(var(--h),.30),rgba(var(--h),.07) 46%,rgba(var(--h2),.07)),linear-gradient(0deg,#0e0f1d,#0e0f1d);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 0 1px rgba(255,255,255,.07),0 28px 60px -30px rgba(0,0,0,.9),0 0 70px -26px rgba(var(--h),.7);
+    display:flex;flex-direction:column;
+    transform-origin:50% 0;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .5s ease,filter .5s ease}
+  .pcard[data-at="0"]{z-index:3}
+  .pcard[data-at="1"]{z-index:2;transform:translateY(-14px) scale(.94);opacity:.55;filter:saturate(.7)}
+  .pcard[data-at="2"]{z-index:1;transform:translateY(-26px) scale(.88);opacity:.28;filter:saturate(.5)}
+  .pcard[data-at="3"],.pcard[data-at="out"]{z-index:0;transform:translateY(-34px) scale(.84);opacity:0;pointer-events:none}
+  .pcard:not([data-at="0"]) *{pointer-events:none}
+  .pc-top{display:flex;align-items:center;gap:13px}
+  .pc-face{position:relative;flex:none;width:56px;height:56px}
+  .pc-face .in{width:100%;height:100%;overflow:hidden;display:grid;place-items:center;border-radius:50%;
+    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.95),rgba(var(--h2),.6) 72%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+  .pc-face[data-shape="rounded"] .in{border-radius:18px}.pc-face[data-shape="square"] .in{border-radius:10px}
+  .pc-face img{width:100%;height:100%;object-fit:cover;display:block}
+  .pc-face i{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:20px}
+  .pc-face::after{content:"";position:absolute;right:-1px;bottom:-1px;width:15px;height:15px;border-radius:50%;
+    background:#35d07f;box-shadow:0 0 0 3px #10111f,0 0 12px rgba(53,208,127,.7)}
+  .pc-id{min-width:0;flex:1}
+  .pc-name{display:block;font-family:var(--font-display);font-weight:800;font-size:19px;letter-spacing:-.02em;line-height:1.15;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pc-handle{display:block;font-size:13.5px;color:rgba(255,255,255,.56);margin-top:2px}
+  .pc-on{flex:none;font-size:12px;font-weight:650;color:#7ce8ad;padding:5px 10px;border-radius:999px;background:rgba(53,208,127,.12)}
+  /* the live status — what they are doing, where, and for how long */
+  .pc-live{display:flex;align-items:center;gap:12px;margin-top:16px;padding:11px 12px;border-radius:18px;
+    background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
+  .pc-mark{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;overflow:hidden;background:rgba(0,0,0,.35);color:#fff}
+  .pc-mark svg{width:22px;height:22px}
+  .pc-mark img{width:100%;height:100%;object-fit:cover}
+  .pc-live-t{font-size:14px;line-height:1.35;color:rgba(255,255,255,.8)}
+  .pc-live-t b{color:#fff;font-weight:700}
+  .pc-live-s{font-size:12.5px;color:rgba(255,255,255,.5);margin-top:2px;font-variant-numeric:tabular-nums}
+  .pc-bio{margin:14px 0 0;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.86)}
+  .pc-links{display:flex;gap:12px;margin-top:14px}
+  .pc-sp{flex:1 1 auto;min-height:16px}
+  .pc-links a{display:grid;place-items:center;width:28px;height:28px;color:#fff}
+  .pc-links svg{width:21px;height:21px}
+  .pc-stats{display:flex;gap:18px;margin-top:0;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:13.5px;color:rgba(255,255,255,.6)}
+  .pc-stats b{color:#fff;font-weight:700;margin-right:4px;font-variant-numeric:tabular-nums}
+  /* the people in the deck, as faces you can press (493: "the clickable
+     profile pictures that is fantastic") */
+  .deck-faces{display:flex;gap:10px;margin-top:22px}
+  .deck-faces button{width:40px;height:40px;padding:0;border:0;border-radius:50%;overflow:hidden;cursor:pointer;display:grid;place-items:center;
+    --h:139,92,255;--h2:93,226,255;color:#fff;font:800 14px var(--font-display);
+    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.95),rgba(var(--h2),.6) 72%);
+    box-shadow:0 0 0 2px rgba(255,255,255,.0);opacity:.55;transition:opacity .25s,box-shadow .25s,transform .25s}
+  .deck-faces button img{width:100%;height:100%;object-fit:cover}
+  .deck-faces button i,.pc-face i,.pc-mark i,.eco-it .f i,.flag-people .fp i{font-style:normal}
+  .deck-faces button.on{opacity:1;box-shadow:0 0 0 2px #fff,0 0 18px -2px rgba(var(--h),.9)}
+  .deck-faces button:hover{transform:translateY(-2px);opacity:1}
+
+  /* the Centers, inside Account (534) */
+  .cn-wrap{min-width:0;width:100%;max-width:460px;margin:0 auto;text-align:left}
+  .cn-wrap .po-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+  .cn-wrap .po-glance{width:100%;text-align:left}
+  .cn-wrap .flag-card{border-radius:28px}
+
+  /* ── 5 · THE APP — the phones, nothing to read beside them ──────────── */
+  .phones{position:relative;display:flex;justify-content:center;align-items:flex-end;min-width:0;padding:10px 0}
+  .phones .ph-real{width:min(250px,42vw);flex:none;transform:rotate(-4deg);animation:phA 8s ease-in-out infinite}
+  .phones .ph-real:first-child{z-index:1}
+  .phones .ph-real + .ph-real{margin-left:calc(min(250px,42vw) * -0.3);z-index:0;transform:translateY(-34px) rotate(5deg);animation:phB 8s -4s ease-in-out infinite}
+  @keyframes phA{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-10px) rotate(-3deg)}}
+  @keyframes phB{0%,100%{transform:translateY(-34px) rotate(5deg)}50%{transform:translateY(-44px) rotate(4deg)}}
+  @media(prefers-reduced-motion:reduce){.phones .ph-real{animation:none}}
+
+  /* ── 6 · THE OS — an all-in-one desktop, the Brain on its screen ────── */
+  .aio{position:relative;width:min(820px,100%);margin:44px auto 0}
+  .aio-body{position:relative;border-radius:22px;padding:12px 12px 0;
+    background:linear-gradient(180deg,#1b1c24,#0c0c11);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06),0 50px 90px -40px rgba(0,0,0,.95),0 0 120px -50px rgba(139,92,255,.55)}
+  .aio-screen{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+  .aio-screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
+    background:linear-gradient(118deg,rgba(255,255,255,.07),transparent 34%,transparent 70%,rgba(255,255,255,.025))}
+  .aio-chin{height:clamp(34px,6vw,58px);display:grid;place-items:center;border-radius:0 0 22px 22px;margin:0 -12px;
+    background:linear-gradient(180deg,#d9dbe3,#b9bcc7 60%,#a7aab6);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
+  .aio-chin img{height:clamp(9px,1.3vw,13px);opacity:.55}
+  .aio-neck{width:22%;height:clamp(44px,8vw,86px);margin:0 auto;
+    background:linear-gradient(90deg,#8e919c,#d4d6de 45%,#e6e8ee 55%,#9a9da8);
+    clip-path:polygon(9% 0,91% 0,100% 100%,0 100%)}
+  .aio-foot{width:36%;height:10px;margin:0 auto;border-radius:3px 3px 10px 10px;
+    background:linear-gradient(180deg,#e2e4ea,#9fa2ad);box-shadow:0 18px 30px -8px rgba(0,0,0,.8)}
+  /* the OS inside it: the rail, the bar, and the Brain in black */
+  .aio-ui{position:absolute;inset:0;display:grid;grid-template-columns:clamp(34px,6%,54px) minmax(0,1fr);grid-template-rows:clamp(24px,7%,40px) minmax(0,1fr)}
+  .aio-bar{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(10,10,18,.9)}
+  .aio-bar img{height:clamp(7px,1vw,11px);opacity:.9}
+  .aio-bar b{font-family:var(--font-display);font-style:italic;font-weight:900;font-size:clamp(8px,1.1vw,12px);color:#fff}
+  .aio-bar em{margin-left:auto;font-style:normal;font-size:clamp(8px,1vw,11.5px);font-weight:600;color:rgba(255,255,255,.55)}
+  .aio-rail{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.4vw,14px);padding-top:clamp(8px,1.6vw,16px);
+    border-right:1px solid rgba(255,255,255,.06);background:rgba(10,10,18,.9)}
+  .aio-rail i{width:clamp(16px,2.6vw,28px);height:clamp(16px,2.6vw,28px);border-radius:30%;display:grid;place-items:center;color:rgba(255,255,255,.45)}
+  .aio-rail i.on{color:#fff;background:linear-gradient(160deg,rgba(139,92,255,.7),rgba(93,226,255,.4))}
+  .aio-rail svg{width:58%;height:58%;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .aio-brain{position:relative;overflow:hidden;background:radial-gradient(70% 70% at 50% 50%,#0b0a1c,#000 75%)}
+  .aio-brain canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .aio-brain .still{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+  .aio-brain .cap{position:absolute;left:clamp(10px,2vw,20px);top:clamp(8px,1.6vw,16px);z-index:2;text-align:left}
+  .aio-brain .cap b{display:block;font-size:clamp(9px,1.3vw,14px);font-weight:700;color:#fff}
+  .aio-brain .cap span{display:block;font-size:clamp(7px,.95vw,11px);color:rgba(255,255,255,.5);margin-top:2px}
+
+  /* ── THE LAST ROW — the ladder, as small rounded link buttons (534) ─── */
+  .end{padding:clamp(96px,13vw,150px) 0 clamp(80px,10vw,110px);text-align:center}
+  .end .lp-h2{font-size:clamp(30px,5vw,56px)}
+  .ladder2{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:34px auto 0;max-width:640px}
+  .ladder2 a{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 15px 0 11px;border-radius:999px;
+    font:650 13.5px/1 var(--font);color:#fff;white-space:nowrap;--h:139,92,255;
+    background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.1);
+    transition:background .2s,transform .2s var(--ease)}
+  .ladder2 a::before{content:"";width:9px;height:9px;border-radius:50%;background:rgb(var(--h));box-shadow:0 0 10px rgba(var(--h),.9)}
+  .ladder2 a:hover{background:rgba(255,255,255,.13);transform:translateY(-1px)}
+  .ladder2 i{font-style:normal;color:rgba(255,255,255,.28);font-size:13px}
+  @media(max-width:520px){.ladder2 i{display:none}.ladder2{max-width:320px}}
+  /* the footer's links wrap as whole names, never "ONEWAY / App" (534) */
+  .footer-links{flex-wrap:wrap;justify-content:center;gap:10px 20px}
+  .footer-links a{white-space:nowrap}
+  /* the hero's buttons stand clear of the line above them at every width (534) */
+  .hero-btns{margin-top:clamp(26px,4.5vh,44px)}
+</style>
+
+<!-- ═══ 2 · MISSION — left ══════════════════════════════════════════════ -->
+<section class="lp side side--l" id="mission">
+  <div class="lp-wrap">
+    <h2 class="lp-h2 ty ty-slide">Making entertainment, connection, and the Internet better for all&nbsp;sides.</h2>
+  </div>
+</section>
+
+<!-- ═══ 3 · ECOSYSTEM — right, and the faces in it ═════════════════════ -->
+<section class="lp side side--r" id="ecosystem">
+  <div class="lp-wrap">
+    <h2 class="lp-h2 ty ty-slide">A modern ecosystem for people to easily and conveniently connect with cities, communities, and&nbsp;businesses.</h2>
+  </div>
+  <div class="eco-run" id="ecoRun" hidden><div class="eco-track" id="ecoStrip"></div></div>
+  <div class="lp-wrap"><div class="lp-acts"><a class="pill" href="/ecosystem.html">Explore the ecosystem</a></div></div>
+</section>
+
+<!-- ═══ 4 · ACCOUNT — the person, and every place they belong to ═══════ -->
+<section class="lp" id="account">
+  <div class="lp-wrap lp-two">
+    <div class="rv d2">
+      <div class="lk"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>Account</span></div>
+      <h2 class="lp-h2" style="max-width:12ch">Your digital passport.</h2>
+      <p class="lp-p">You get one @name across ONEWAY, with your picture, your colour and your links. One sign-in covers the App and the OS, and you can change any of it.</p>
+      <div class="lp-acts"><a class="pill pill--solid" href="/signup.html">Create your account</a><a class="pill" href="/accounts.html">ONEWAY Accounts</a></div>
+    </div>
+    <div class="deck-wrap rv d3">
+      <div class="deck" id="deck" aria-label="People on ONEWAY, right now"></div>
+      <div class="deck-faces" id="deckFaces" role="group" aria-label="Choose a person"></div>
+    </div>
+  </div>
+  <div class="lp-wrap lp-two lp-flip">
+    <div class="rv d2">
+      <h3 class="lp-h3" style="max-width:14ch">And every place you belong&nbsp;to.</h3>
+      <p class="lp-p">Cities, communities, venues and businesses each have a Center, free on the App. The people who run a Center manage it from ONEWAY OS.</p>
+      <div class="lp-acts"><a class="pill" href="/ecosystem.html#centers">What a Center is</a></div>
+    </div>
+    <div class="cn-wrap rv d3"><div id="cnCard"></div><div class="po-list" id="cnRows"></div></div>
+  </div>
+</section>
+
+<!-- ═══ 5 · THE APP ═════════════════════════════════════════════════════ -->
+<section class="lp" id="app">
+  <div class="lp-wrap lp-two">
+    <div class="rv d2">
+      <div class="lk"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>App</span></div>
+      <h2 class="lp-h2" style="max-width:11ch">Experience ONEWAY.</h2>
+      <p class="lp-p">See what your friends and the places you love are posting, and what is coming up at each of them.</p>
+      <div class="lp-acts"><a class="pill pill--solid" href="/oneway-app.html">Open the App</a><a class="pill" href="/app.html">The ONEWAY App</a></div>
+    </div>
+    <div class="phones rv d3">
+      <div class="ph-real">
+        <div class="shot"><img src="/frontend/site/app-screen-home.webp" alt="The ONEWAY App — Home" loading="lazy" decoding="async"/></div>
+        <img class="frame" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
+      </div>
+      <div class="ph-real">
+        <div class="shot"><img src="/frontend/site/app-screen-center.webp" alt="The ONEWAY App — a Center" loading="lazy" decoding="async"/></div>
+        <img class="frame" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 6 · ONEWAY OS — the all-in-one desktop ══════════════════════════ -->
+<section class="lp" id="os">
+  <div class="lp-wrap" style="text-align:center">
+    <div class="lk rv d2"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>OS</span></div>
+    <h2 class="lp-h2 rv d2" style="margin:0 auto;max-width:17ch">The environment behind the&nbsp;experience.</h2>
+    <div class="aio rv d3" role="img" aria-label="ONEWAY OS on an all-in-one desktop, its Brain open">
+      <div class="aio-body">
+        <div class="aio-screen">
+          <div class="aio-ui">
+            <div class="aio-bar"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt=""/><b>OS</b><em>Brain</em></div>
+            <div class="aio-rail" aria-hidden="true">
+              <i><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></i>
+              <i><svg viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></i>
+              <i class="on"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="2.5"/><circle cx="5" cy="6" r="1.8"/><circle cx="19" cy="6" r="1.8"/><circle cx="5" cy="18" r="1.8"/><circle cx="19" cy="18" r="1.8"/><path d="M6.4 7.3l3.8 3.2M17.6 7.3l-3.8 3.2M6.4 16.7l3.8-3.2M17.6 16.7l-3.8-3.2"/></svg></i>
+              <i><svg viewBox="0 0 24 24"><rect x="4" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="1.6"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="1.6"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="1.6"/></svg></i>
+              <i><svg viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.6.5 1 1.2 1.1 2.2h5c.1-1 .5-1.7 1.1-2.2A6 6 0 0 0 12 3z"/></svg></i>
+              <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></i>
+            </div>
+            <div class="aio-brain" id="aioBrain">
+              <img class="still" src="/frontend/site/os-brain.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
+              <canvas id="ow-map" aria-hidden="true"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="aio-chin"><img src="logo-black.png" alt=""/></div>
+      </div>
+      <div class="aio-neck"></div>
+      <div class="aio-foot"></div>
+    </div>
+    <p class="os-connect rv d3">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</p>
+    <div class="lp-acts lp-acts--c rv d4"><a class="pill pill--solid" href="/oneway-os.html">Open ONEWAY OS</a><a class="pill" href="/os.html">ONEWAY OS</a></div>
+  </div>
+</section>
+
+<!-- ═══ 7 · RESERVE YOUR NAME ═══════════════════════════════════════════ -->
+<section class="lp" id="explore">
+  <div class="lp-wrap">
+    <div class="rsv rv d2" id="rsv" style="--ow-h1:139,92,255;--ow-h2:93,226,255">
+      <h2 class="rsv-t">Reserve your name.</h2>
+      <p class="rsv-note">Name reservations open when ONEWAY launches.</p>
+      <div class="rsv-done" id="rsv-done" hidden>
+        <span class="rsv-done-chip">Reserved</span>
+        <div class="rsv-done-handle" id="rsv-done-handle">@you</div>
+        <p>Held for <strong id="rsv-done-email" style="color:#fff"></strong> · <span class="rsv-ref" id="rsv-done-ref">—</span></p>
+        <button type="button" class="pill rsv-again" id="rsv-again">Reserve another name</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ THE LAST ROW — the line, then the ladder ═══════════════════════
+     ★ FOUNDER/534: the App → OS → OS+ → OS Max ladder "could be at the
+     bottom and buttons should appear more rounded smaller and sleaker but
+     these are good link buttons." -->
+<section class="end" id="return" aria-label="ONEWAY">
+  <div class="lp-wrap">
+    <h2 class="lp-h2">Go anywhere. Connect everywhere.</h2>
+    <nav class="ladder2" aria-label="ONEWAY, from the App to OS Max">
+      <a href="#app" style="--h:139,92,255">ONEWAY App</a><i>›</i>
+      <a href="#os" style="--h:38,150,222">ONEWAY OS</a><i>›</i>
+      <a href="#os" style="--h:93,226,255">OS+</a><i>›</i>
+      <a href="#os" style="--h:255,168,58">OS Max</a>
+    </nav>
+  </div>
+</section>
+
+<script src="/frontend/shared/brainmap.js?v=d994a7b0"></script>
+<script>
+/* THE BRAIN ON THE DESKTOP'S SCREEN — the OS's own canvas, live where a
+   pointer can afford it; a still of the same map everywhere else (the safe
+   floor: no always-on canvas on a phone, ever). */
+(function(){
+  try{
+    var c=document.getElementById('ow-map'); if(!c) return;
+    var phone=(window.owIsNarrow ? window.owIsNarrow(641) : Math.min(screen.width, innerWidth) <= 640) || matchMedia('(pointer:coarse)').matches;
+    if(phone || !window.OW_BRAINMAP){ c.remove(); return; }
+    var ctl=window.OW_BRAINMAP.mount(c, { tree: window.OW_BRAINMAP.presetOneway() });
+    var still=document.querySelector('#aioBrain .still'); if(still) still.remove();
+    if(ctl && ctl.resize){
+      requestAnimationFrame(function(){ ctl.resize(); });
+      addEventListener('resize', function(){ ctl.resize(); }, {passive:true});
+    }
+  }catch(_){}
+})();
+</script>
+<script>
+/* THE TWO LINES TYPE THEMSELVES IN (founder/493 #2, 534). Each word is kept
+   whole (a word never breaks across lines), each letter is laid out from the
+   start and only its ink appears, so the line never reflows while it types;
+   the caret has no width. Words are split on ordinary spaces only, so a
+   non-breaking space still binds its pair. */
+(function(){
+  var els=[].slice.call(document.querySelectorAll('.ty'));
+  if(!els.length) return;
+  var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  els.forEach(function(el){
+    var text=el.textContent; el.setAttribute('aria-label', text.replace(/ /g,' '));
+    if(still){ el.classList.add('in'); return; }
+    var inner=document.createElement('span'); inner.setAttribute('aria-hidden','true');
+    var chars=[];
+    text.split(' ').forEach(function(word, wi, all){
+      var w=document.createElement('span'); w.className='ty-w';
+      for(var k=0;k<word.length;k++){ var c=document.createElement('span'); c.className='ty-c'; c.textContent=word[k]; w.appendChild(c); chars.push(c); }
+      inner.appendChild(w);
+      if(wi<all.length-1){ var sp=document.createElement('span'); sp.className='ty-c'; sp.textContent=' '; inner.appendChild(sp); chars.push(sp); }
+    });
+    el.textContent=''; el.appendChild(inner); el._ty=chars; el.classList.add('ty-armed');
+  });
+  if(still) return;
+  function play(el){
+    if(el._played) return; el._played=true; el.classList.add('in');
+    var chars=el._ty||[], n=0, per=Math.max(16, Math.min(38, 1500/Math.max(1,chars.length)));
+    var caret=document.createElement('span'); caret.className='ty-caret';
+    (function step(){
+      if(n<chars.length){ chars[n].classList.add('on'); chars[n].parentNode.insertBefore(caret, chars[n].nextSibling); n++; setTimeout(step, per); }
+      else setTimeout(function(){ if(caret.parentNode) caret.parentNode.removeChild(caret); }, 1400);
+    })();
+  }
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ play(e.target); io.unobserve(e.target); } }); },{threshold:.35});
+    els.forEach(function(el){ io.observe(el); });
+  }
+  /* fail-open: a line already on screen, or one the observer missed, plays anyway */
+  function sweep(){ els.forEach(function(el){ if(el._played) return; var r=el.getBoundingClientRect(); if(r.top<innerHeight*.9 && r.bottom>0) play(el); }); }
+  addEventListener('scroll', sweep, {passive:true}); setTimeout(sweep, 900); setTimeout(sweep, 2500);
+})();
+</script>
+<script>
+/* ═══ THE LIVE PARTS — every face, name and count is a read ══════════════
+   ★ FOUNDER/534: "the card needs to be redesigned to show demo real users
+     with actual stats and a demo online status. playing x on x going back to
+     the live status we talked about" — the live activity status of
+     recovered/1973 (*"people could see their friends' live activity status
+     and what they're doing on other platforms … like how Discord could sync
+     with Xbox"*). The PEOPLE are real accounts and their name, face, bio,
+     links and counts are read from the platform every time the page opens.
+     The STATUS is the demo he asked for — ONEWAY does not receive activity
+     from Xbox, Spotify or Twitch yet — and it lives here, in DEMO, and
+     nowhere in any account. If a person cannot be read, the last read of
+     them (SNAPSHOT, 2026-09-25) stands in, so the card never reads as an
+     error on a page served without the API. */
+(function(){
+  if(!window.OW) return;
+  var NOT={cancelled:1,draft:1,ended:1};
+  function pair(h){ var p=(OW.hue&&OW.hue.fromAngle)?OW.hue.fromAngle(h):null; return p?{h1:p[0],h2:p[1]||p[0]}:null; }
+  function inZone(iso, zone, opts){ var d=new Date(iso); if(isNaN(d)) return ''; try{ return new Intl.DateTimeFormat(undefined, zone?Object.assign({timeZone:zone},opts):opts).format(d); }catch(e){ return new Intl.DateTimeFormat(undefined,opts).format(d); } }
+  function J(u,h){ return fetch(u,{headers:Object.assign({accept:'application/json'},h||{})}).then(function(r){ return r.ok?r.json():null; }).catch(function(){ return null; }); }
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function initials(n){ return OW.initials?OW.initials(n):String(n||'').slice(0,2).toUpperCase(); }
+  function faceInner(pic, name){ var src=pic?(OW.imageUrl?OW.imageUrl(pic):pic):''; return src?'<img src="'+esc(src)+'" alt="" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement(\'i\'),{textContent:'+esc(JSON.stringify(initials(name)))+'}))">':'<i>'+esc(initials(name))+'</i>'; }
+  function personHref(em){ return '/oneway-app.html#center/@'+encodeURIComponent(em); }
+
+  var CONTROLLER='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 7h9a5 5 0 0 1 4.9 6l-.6 3.2a2.4 2.4 0 0 1-4.2 1L15 15.5H9L7.4 17.2a2.4 2.4 0 0 1-4.2-1L2.6 13A5 5 0 0 1 7.5 7z"/><path d="M7.5 10v3M6 11.5h3"/><circle cx="15.5" cy="11" r=".6" fill="currentColor"/><circle cx="17.5" cy="12.8" r=".6" fill="currentColor"/></svg>';
+  /* the demo statuses — "playing x on x" (534). started = seconds ago. */
+  var DEMO=[
+    { email:'loop.ada@ow.test',  verb:'Playing',      what:'Minecraft',        on:'Xbox',    mark:{svg:CONTROLLER, bg:'#107C10'}, started:4324, tail:'elapsed' },
+    { email:'ada.ops@ow.test',   verb:'Listening to', what:'Clair de Lune',    on:'Spotify', mark:{platform:'spotify'}, started:134, tail:'elapsed' },
+    { email:'walk.1484@ow.test', verb:'At',           what:'Four Queens Hotel & Casino', on:'', mark:{center:'bfe9764db5f4'}, started:1080, tail:'here' },
+    { email:'mira.seam@ow.test', verb:'Watching',     what:'Rocket League',    on:'Twitch',  mark:{platform:'twitch'}, started:1560, tail:'elapsed' }
+  ];
+  /* the last read of each person, 2026-09-25 — used only when the platform cannot be reached */
+  var SNAPSHOT={
+    'loop.ada@ow.test':{person:{email:'loop.ada@ow.test',name:'loop.ada',handle:'loop.ada',picture:'/assets/post-media/fixture-boardwalk-1.jpg',shape:'rounded',hue:180,links:[{url:'https://instagram.com/loop.ada'},{url:'https://tiktok.com/@loop.ada'},{url:'https://youtube.com/@loop.ada'}]},counts:{followers:4,following:4},posts:12},
+    'ada.ops@ow.test':{person:{email:'ada.ops@ow.test',name:'ada.ops',handle:'ada.ops',picture:'/assets/profile-avatars/mara.svg',shape:'round',bio:'Front desk at the Boardwalk. Organist on Sundays.',website:'https://adaops.example',links:[{url:'https://instagram.com/ada.ops'},{url:'https://open.spotify.com/user/adaops'},{url:'https://x.com/adaops'}]},counts:{followers:1,following:2},posts:12},
+    'walk.1484@ow.test':{person:{email:'walk.1484@ow.test',name:'Noor Walk',handle:'walk.1484',shape:'round',bio:'New to the boardwalk. Early mornings, long walks, strong coffee.'},counts:{followers:0,following:2},posts:1},
+    'mira.seam@ow.test':{person:{email:'mira.seam@ow.test',name:'Mira Seam',handle:'mira.seam',shape:'rounded',hue:210},counts:{followers:1,following:5},posts:8}
+  };
+  var people=Promise.all(DEMO.map(function(d){ return J('/api/oneway/people/'+encodeURIComponent(d.email)+'/profile').then(function(x){ return (x&&x.person&&x.person.email)?x:SNAPSHOT[d.email]; }); }));
+  var discovery=J('/api/oneway/centers/discovery').then(function(j){
+    var rows=((j&&j.buttons)||[]).filter(function(x){ return x&&x.name&&x.center_id; });
+    var lead=rows.filter(function(x){ return x.reserve; }); if(!lead.length) lead=rows;
+    return lead.slice(0,8);
+  });
+
+  /* ── 3 · THE ECOSYSTEM — Centers and people, interleaved, drifting ── */
+  var run=document.getElementById('ecoRun'), strip=document.getElementById('ecoStrip');
+  Promise.all([discovery, people]).then(function(r){
+    if(!strip) return;
+    var cs=r[0].map(function(x){ return {kind:'center', id:x.center_id, name:x.name, pic:x.picture||'', hue:x.hue}; });
+    var ps=r[1].filter(Boolean).map(function(d){ var p=d.person; return {kind:'person', id:p.email, name:p.name||p.handle||p.email, pic:p.picture||'', hue:p.hue}; });
+    if(cs.length+ps.length<4) return;              /* nothing to show is shown as nothing (402) */
+    var mixed=[]; while(cs.length||ps.length){ if(cs.length) mixed.push(cs.shift()); if(cs.length) mixed.push(cs.shift()); if(ps.length) mixed.push(ps.shift()); }
+    function make(it, dup){
+      var b=document.createElement('button'); b.type='button'; b.className='eco-it'; b.setAttribute('data-kind',it.kind);
+      if(dup){ b.tabIndex=-1; b.setAttribute('aria-hidden','true'); } else b.setAttribute('aria-label','Open '+it.name);
+      var hp=(typeof it.hue==='number')?pair(it.hue):null;
+      b.innerHTML='<span class="f">'+faceInner(it.pic, it.name)+'</span><b>'+esc(it.name)+'</b>';
+      if(hp){ var f=b.firstChild; f.style.setProperty('--h',hp.h1); f.style.setProperty('--h2',hp.h2); }
+      b.addEventListener('click',function(){ if(it.kind==='center') project('center', it.id, b, '/oneway-app.html#/c/'+encodeURIComponent(it.id)); else project('person', it.id, b, personHref(it.id)); });
+      return b;
+    }
+    /* the track is the row twice, so the drift loops without a seam */
+    mixed.forEach(function(it){ strip.appendChild(make(it,false)); });
+    mixed.forEach(function(it){ strip.appendChild(make(it,true)); });
+    run.hidden=false;
+  });
+
+  /* ── 4 · THE DECK — each person as they are, what they are doing now ── */
+  var deck=document.getElementById('deck'), faces=document.getElementById('deckFaces');
+  var centerFace=J('/api/oneway/centers/bfe9764db5f4/app').then(function(a){ var id=(a&&a.identity)||{}; return {pic:id.picture||'', name:id.name||'Four Queens'}; });
+  function clock(s){ s=Math.max(0,Math.floor(s)); var h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):String(m))+':'+String(x).padStart(2,'0'); }
+  function ago(s){ var m=Math.max(1,Math.round(s/60)); return m<60?m+' min':Math.floor(m/60)+'h '+(m%60)+'m'; }
+  Promise.all([people, centerFace]).then(function(r){
+    if(!deck) return;
+    var list=r[0], cf=r[1], born=Date.now()/1000, cards=[], buttons=[];
+    list.forEach(function(d, i){
+      if(!d||!d.person) return;
+      var p=d.person, s=DEMO[i], c=d.counts||{}, posts=(c.posts!=null)?c.posts:(Array.isArray(d.posts)?d.posts.length:(d.posts||0));
+      var hp=(typeof p.hue==='number')?pair(p.hue):null;
+      var el=document.createElement('article'); el.className='pcard'; el.tabIndex=0; el.setAttribute('aria-label',(p.name||p.handle)+', online');
+      if(hp){ el.style.setProperty('--h',hp.h1); el.style.setProperty('--h2',hp.h2); }
+      var mark=s.mark.svg?'<span class="pc-mark" style="background:'+s.mark.bg+'">'+s.mark.svg+'</span>'
+        : s.mark.platform?'<span class="pc-mark" style="color:'+esc((OW.links&&OW.links.hueOf&&OW.links.hueOf(s.mark.platform))||'#fff')+'">'+((OW.links&&OW.links.icon)?OW.links.icon(s.mark.platform,''):'')+'</span>'
+        : '<span class="pc-mark">'+faceInner(cf.pic, cf.name)+'</span>';
+      var urls=(p.links||[]).map(function(l){ return l&&(l.url||l.href); }).filter(Boolean); if(p.website) urls.unshift(p.website);
+      var links=''; if(OW.links&&OW.links.platformOf){ urls.slice(0,5).forEach(function(u){ var pf=OW.links.platformOf(u); if(!pf) return;
+        var hue=OW.links.hueOf?OW.links.hueOf(pf.key):''; links+='<a href="'+esc(pf.href)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(pf.name)+'" title="'+esc(pf.name)+'"'+(hue&&hue!=='#000000'?' style="color:'+esc(hue)+'"':'')+'>'+OW.links.icon(pf.key,pf.href)+'</a>'; }); }
+      el.innerHTML=
+        '<div class="pc-top"><span class="pc-face" data-shape="'+esc(p.shape||'round')+'"><span class="in">'+faceInner(p.picture||'', p.name||p.handle)+'</span></span>'+
+          '<div class="pc-id"><span class="pc-name">'+esc(p.name||p.handle)+'</span><span class="pc-handle">@'+esc(p.handle||p.email.split('@')[0])+'</span></div>'+
+          '<span class="pc-on">Online</span></div>'+
+        '<div class="pc-live">'+mark+'<div><div class="pc-live-t">'+esc(s.verb)+' <b>'+esc(s.what)+'</b>'+(s.on?' on <b>'+esc(s.on)+'</b>':'')+'</div><div class="pc-live-s" data-t></div></div></div>'+
+        (p.bio?'<p class="pc-bio">'+esc(p.bio)+'</p>':'')+
+        (links?'<div class="pc-links">'+links+'</div>':'')+
+        '<div class="pc-sp"></div><div class="pc-stats"><span><b>'+(posts||0)+'</b>posts</span><span><b>'+(c.followers||0)+'</b>followers</span><span><b>'+(c.following||0)+'</b>following</span></div>';
+      el.querySelectorAll('.pc-links a').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); }); });
+      el.addEventListener('click',function(){ if(el.getAttribute('data-at')==='0') project('person', p.email, el, personHref(p.email)); });
+      el._tick=function(now){ var t=el.querySelector('[data-t]'); if(!t) return; var secs=s.started+(now-born); t.textContent=s.tail==='here'?'Here for '+ago(secs):clock(secs)+' elapsed'; };
+      deck.appendChild(el); cards.push(el);
+      var b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label',p.name||p.handle);
+      if(hp){ b.style.setProperty('--h',hp.h1); b.style.setProperty('--h2',hp.h2); }
+      b.innerHTML=faceInner(p.picture||'', p.name||p.handle); faces.appendChild(b); buttons.push(b);
+    });
+    if(!cards.length) return;
+    var front=0, timer=null, still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function lay(){
+      cards.forEach(function(el,i){ var at=(i-front+cards.length)%cards.length; el.setAttribute('data-at', at>3?'out':String(at)); el.setAttribute('aria-hidden', at===0?'false':'true'); });
+      buttons.forEach(function(b,i){ b.classList.toggle('on', i===front); b.setAttribute('aria-pressed', String(i===front)); });
+      /* one height for every card, the tallest, so a card behind never shows below the one in front */
+      cards.forEach(function(el){ el.style.height='auto'; });
+      var h=0; cards.forEach(function(el){ h=Math.max(h, el.offsetHeight); });
+      if(h){ cards.forEach(function(el){ el.style.height=h+'px'; }); deck.style.setProperty('--deck-h', h+'px'); }
+    }
+    function go(i){ front=(i+cards.length)%cards.length; lay(); }
+    function auto(){ clearInterval(timer); if(!still) timer=setInterval(function(){ go(front+1); }, 5200); }
+    buttons.forEach(function(b,i){ b.addEventListener('click',function(){ go(i); auto(); }); });
+    deck.addEventListener('mouseenter',function(){ clearInterval(timer); }); deck.addEventListener('mouseleave',auto);
+    function tick(){ var now=Date.now()/1000; cards.forEach(function(el){ el._tick(now); }); }
+    tick(); setInterval(tick, 1000);
+    lay(); auto();
+    addEventListener('resize', function(){ lay(); }, {passive:true});
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(lay);
+  });
+
+  /* ── 4b · CENTERS — the first with something coming up as one card (410),
+     the rest as rows, each wearing its own picture */
+  var cardHost=document.getElementById('cnCard'), rowsHost=document.getElementById('cnRows');
+  discovery.then(function(lead){
+    lead=lead.slice(0,6);
+    if(!lead.length){ var w=cardHost&&cardHost.parentNode; if(w) w.hidden=true; return; }
+    return Promise.all(lead.map(function(x){ return J('/api/oneway/centers/'+encodeURIComponent(x.center_id)+'/app'); })).then(function(apps){
+      apps=apps.filter(function(a){ return a&&a.exists!==false&&!a.hidden; });
+      var withEv=apps.filter(function(a){ return ((a.events||{}).items||[]).some(function(e){ return e&&e.title&&!NOT[String(e.state||'').toLowerCase()]&&e.starts_at; }); });
+      var a=withEv[0]||apps[0];
+      if(a){
+        var CID=a.center_id||'', id=a.identity||{}, h=a.header||{}, zone=(a.where&&a.where.time&&a.where.time.timezone)||'';
+        var hue=(typeof id.hue==='number')?pair(id.hue):(typeof h.hue==='number'?pair(h.hue):null);
+        var card=document.createElement('div'); card.className='flag-card';
+        if(hue){ card.style.setProperty('--h',hue.h1); card.style.setProperty('--h2',hue.h2); }
+        var evs=((a.events||{}).items||[]).filter(function(e){ return e&&e.title&&!NOT[String(e.state||'').toLowerCase()]&&!(e.legacy&&!e.starts_at); })
+          .sort(function(x,y){ return String(x.starts_at||'~').localeCompare(String(y.starts_at||'~')); }).slice(0,3);
+        var where=[h.category||id.kind, h.location||(a.where&&a.where.label)].filter(Boolean).join(' · ');
+        card.innerHTML='<button type="button" class="flag-id" aria-label="Open '+esc(id.name||'this Center')+'"><span class="flag-face" data-shape="'+esc(id.shape||'rounded')+'">'+faceInner(id.picture||'', id.name||'')+'</span>'+
+          '<span><span class="flag-name">'+esc(id.name||h.name||'A Center')+'</span>'+(where?'<span class="flag-sig" style="display:block">'+esc(where)+'</span>':'')+'</span></button>'+
+          (id.description?'<p class="flag-bio">'+esc(id.description)+'</p>':'');
+        card.querySelector('.flag-id').addEventListener('click',function(){ project('center', CID, card, '/oneway-app.html#/c/'+encodeURIComponent(CID)); });
+        var fcs=((a.people||{}).faces||[]).filter(function(f){ return f&&f.email; }).slice(0,4);
+        if(fcs.length){ var pl=document.createElement('div'); pl.className='flag-people';
+          fcs.forEach(function(f){ var b=document.createElement('button'); b.type='button';
+            b.innerHTML='<span class="fp" data-shape="'+esc(f.shape||'round')+'">'+faceInner(f.picture||'', f.name||f.email)+'</span>'+esc(f.name||f.email.split('@')[0]);
+            b.addEventListener('click',function(e){ e.stopPropagation(); project('person', f.email, b, personHref(f.email)); }); pl.appendChild(b); });
+          card.appendChild(pl); }
+        if(evs.length){
+          var sub=document.createElement('div'); sub.className='flag-sub'; sub.innerHTML='<b>Events</b><span>'+evs.length+'</span>'; card.appendChild(sub);
+          var list=document.createElement('div'); list.className='flag-evs'; card.appendChild(list);
+          evs.forEach(function(e){
+            var iso=e.starts_at||''; var mk=iso?{mon:inZone(iso,zone,{month:'short'}), day:+inZone(iso,zone,{day:'numeric'})}:null;
+            var hour=iso?inZone(iso,zone,{hour:'numeric',minute:'2-digit'}):''; var venue=(e.mode==='digital'||e.mode==='online')?'Online':(e.place||'');
+            var n=OW.glance({ id:'cn-ev-'+e.id, label:e.title, when:mk, icon:'event', hue:hue, signal:[hour, venue].filter(Boolean).join(' · ') },{open:false});
+            n.addEventListener('click',function(ev){ ev.stopPropagation(); project('event', e.id, n, '/oneway-app.html#event/'+encodeURIComponent(e.id)); });
+            list.appendChild(n);
+          });
+        }
+        cardHost.appendChild(card);
+      }
+      lead.filter(function(x){ return !a || x.center_id!==a.center_id; }).slice(0,3).forEach(function(x){
+        var n=OW.glance({ id:'cn-'+x.center_id, label:x.name, face:{ image:x.picture||'', name:x.name, shape:x.shape||'rounded' },
+          signal:[x.kind].filter(Boolean).join(' · '), hue:(typeof x.hue==='number')?pair(x.hue):null },{open:false});
+        n.addEventListener('click',function(){ project('center', x.center_id, n, '/oneway-app.html#/c/'+encodeURIComponent(x.center_id)); });
+        rowsHost.appendChild(n);
+      });
+    });
+  });
+})();
+</script>
+<script>
+/* THE ROTATING NOUN — "Connect your ___ in one place." ★ FOUNDER/412: as
+   smooth as when it was the main wordmark. Runs after the sentence exists;
+   the first width is measured once the display face has loaded. */
+(function(){
+  var el=document.getElementById('rotWord'); if(!el) return;
+  var words=['communities','people','hotel','casino','city','convention center',
+             'stadium','restaurant','museum','school','church','club','neighborhood',
+             'business','brand','organization'];
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var m=document.createElement('span'); m.className='rot-measure'; el.parentNode.appendChild(m);
+  function sync(){ var cs=getComputedStyle(el); m.style.font=cs.font; m.style.letterSpacing=cs.letterSpacing; }
+  function widthOf(w){ m.textContent=w; return m.getBoundingClientRect().width; }
+  function fit(){ sync(); el.style.width=widthOf(el.textContent)+'px'; }
+  fit();
+  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
+  addEventListener('resize', fit, {passive:true});
+  var i=0;
+  setInterval(function(){
+    var next=words[(i+1)%words.length];
+    sync();
+    el.style.width=widthOf(next)+'px';
+    el.classList.add('sw');
+    setTimeout(function(){ i=(i+1)%words.length; el.textContent=next; el.classList.remove('sw'); },220);
+  },1900);
+})();
+</script>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY" class="footer-logo"/>
+      <div class="footer-links">
+        <a href="#app">ONEWAY App</a>
+        <a href="#os">ONEWAY OS</a>
+      </div>
+    </div>
+    <!-- ★ FOUNDER/493: *"Put 2027, Oneway Technologies LLC"* -->
+    <div class="footer-right">2027, Oneway Technologies LLC</div>
+  </div>
+</footer>
+<script>
+/* ── NAV SCROLL ─────────────────────────────────────────── */
+const nav = document.getElementById('mainNav');
+// SINGLE-ELEMENT logo transition. One fixed wordmark (#flyLogo) is the ONLY visible logo.
+// It starts exactly over the (hidden) hero mark and physically shrinks + rises into the
+// (hidden) navbar slot as you scroll, then stays there as the navbar logo. The same
+// object the whole way — no second logo, no crossfade, no teleport.
+const fly = document.getElementById('flyLogo');
+const heroMark = document.querySelector('.hero-mark');
+const navLogoImg = document.querySelector('.nav-logo img');
+let _geo = null;
+function measureLogo(){
+  if(!fly || !heroMark || !navLogoImg) return;
+  const hr = heroMark.getBoundingClientRect(), nr = navLogoImg.getBoundingClientRect();
+  const prevT = fly.style.transform; fly.style.transform = 'none';
+  const fr = fly.getBoundingClientRect();
+  fly.style.transform = prevT;
+  if(hr.width > 0 && nr.width > 0 && fr.width > 0){
+    _geo = {
+      fw: fr.width, fh: fr.height,
+      hcx: hr.left + hr.width/2, hcy: hr.top + hr.height/2 + window.scrollY,  // hero centre, PAGE-relative (valid even if measured while scrolled — e.g. mobile rotate/resize)
+      ncx: nr.left + nr.width/2, ncy: nr.top + nr.height/2,   // navbar centre (fixed in viewport)
+      s1: nr.width / fr.width                                 // final scale (matches navbar logo)
+    };
+  }
+}
+function onScroll(){
+  // Popit open: body is position:fixed, so scrollY collapses to 0 — freezing here keeps
+  // the nav + flying wordmark exactly where they were instead of teleporting to the hero.
+  if(document.body.classList.contains('po-locked')) return;
+  if(fly && _geo){
+    const span = Math.max(1, innerHeight * 0.62);
+    const p = Math.min(1, Math.max(0, scrollY / span));
+    const e = 1 - Math.pow(1 - p, 3);                         // easeOutCubic — decelerate into the dock
+    nav.classList.toggle('scrolled', p > 0.9 || scrollY > innerHeight * 0.7);
+    // Blend from "scrolling with the hero" toward "parked in the navbar". Monotonic, no
+    // overshoot: at p=0 the logo sits on the hero; at p=1 it sits exactly on the navbar slot.
+    const startCy = _geo.hcy - scrollY;
+    const cx = _geo.hcx + (_geo.ncx - _geo.hcx) * e;
+    const cy = startCy + (_geo.ncy - startCy) * e;
+    const s = 1 + (_geo.s1 - 1) * e;
+    fly.style.transform = 'translate(' + (cx - _geo.fw/2) + 'px,' + (cy - _geo.fh/2) + 'px) scale(' + s + ')';
+  } else {
+    nav.classList.toggle('scrolled', scrollY > 20);
+  }
+}
+window.addEventListener('scroll', onScroll, { passive: true });
+window.addEventListener('resize', () => { measureLogo(); onScroll(); }, { passive: true });
+window.addEventListener('load', () => { measureLogo(); onScroll(); });
+measureLogo(); onScroll();
+
+/* ── FULL-PAGE 3D PARTICLE FIELD ─────────────────────────── */
+(function () {
+  const canvas = document.getElementById('hero-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, CX, CY;
+
+  const DEPTH  = 1600;   // far clip
+  const FOV    = 900;    // perspective focal length
+  /* Touch devices (any orientation) never run the always-on canvas — innerWidth
+     alone misses an iPhone held sideways. */
+  /* CANON: touch, not width. A narrow desktop window keeps its full galaxy. */
+  const isMob  = window.owSafeFloor ? window.owSafeFloor()
+               : (window.matchMedia && matchMedia('(pointer:coarse)').matches);
+  const PCOUNT = isMob ? 70 : 120;     // flight particles — fewer than the App's field: the spiral is the sky here
+  const SCOUNT = isMob ? 5 : 9;        // wireframe shapes
+  let _mobSkip = false;
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { canvas.remove(); return; }
+  /* PHONES: no always-on canvas at all. The signature Center-light constellation
+     (.wn buttons) and CSS gradients carry the hero; the ambient starfield is a
+     desktop luxury. This removes the single biggest GPU-memory consumer on
+     iOS Safari — the real cause of scroll crashes. */
+  if (isMob) { canvas.remove(); return; }
+
+  function resize() {
+    /* NEVER SIZE THE CANVAS TO ZERO. A 0×0 canvas draws nothing and stays that
+       way, which looks exactly like the starfield having died. Falls back the
+       same way the gate does, so a load with no viewport yet still paints. */
+    W = canvas.width  = (window.innerWidth  || document.documentElement.clientWidth  || 1280);
+    H = canvas.height = (window.innerHeight || document.documentElement.clientHeight || 800);
+    CX = W / 2; CY = H / 2;
+  }
+  window.addEventListener('resize', resize, { passive: true });
+  /* A TAB THAT LOADED HIDDEN HAS NO VIEWPORT, AND NO RESIZE EVENT ANNOUNCES
+     THAT IT GOT ONE. Open the landing page in a background tab — cmd-click, or
+     a restored session — and the browser reports width 0 and throttles the
+     animation frame. That is how the starfield was being lost: the old gate
+     read 0 as "phone" and removed the canvas outright, so switching to the tab
+     showed a page that had permanently given up its depth. The gate no longer
+     does that; this makes sure the canvas is re-measured the moment the tab is
+     actually looked at, instead of keeping the fallback size it guessed at
+     while nobody could see it. Measured 2026-08-24: hidden tab reports
+     innerWidth 0, clientWidth 0, visualViewport 0×0. */
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) { resize(); }
+  }, { passive: true });
+  resize();
+
+  /* ── colour palette ───────────────────────────────────────────────────
+     THREE ACCENTS THAT FOLLOW THE PERSON. These were fixed, so the starfield
+     stayed cyan/violet/amber no matter what colour someone had chosen for the
+     rest of the platform — the most visible surface ONEWAY has, and the only
+     one that did not know them.
+
+     The triad is kept as a RELATIONSHIP rather than three colours: the user's
+     hue, +71°, +211°. At the default of 187° those resolve to the exact
+     palette that has always been here, so nothing changes for somebody who has
+     never picked a hue — and the whole galaxy rotates coherently for somebody
+     who has, instead of one accent clashing with the other two.
+
+     MUTATED IN PLACE, ON PURPOSE. Every particle, shape and bokeh holds a
+     REFERENCE to one of these arrays, so rewriting their contents recolours
+     ~230 objects on the next frame with no rebuild and no dropped animation. */
+  const WHITE  = [255,255,255];
+  const CYAN   = [6,182,212];
+  const PURPLE = [167,139,250];
+  const AMBER  = [245,158,11];
+  /* One triad, shared by all five galaxies — see oneway-galaxy.js. */
+  if (window.OW && window.OW.galaxy) { window.OW.galaxy.follow({ CYAN, PURPLE, AMBER }); }
+  function rndCol() {
+    const r = Math.random();
+    if (r < 0.10) return CYAN;
+    if (r < 0.18) return PURPLE;
+    if (r < 0.24) return AMBER;
+    return WHITE;
+  }
+
+  /* ── perspective projection ── */
+  function project(x, y, z) {
+    if (z <= -FOV + 1) return null;
+    const s = FOV / (FOV + z);
+    return { sx: CX + x * s, sy: CY + y * s, s };
+  }
+
+  /* ── 3-axis rotation ── */
+  function rot3(vx, vy, vz, rx, ry, rz) {
+    // X
+    let y1 = vy * Math.cos(rx) - vz * Math.sin(rx);
+    let z1 = vy * Math.sin(rx) + vz * Math.cos(rx);
+    // Y
+    let x2 = vx * Math.cos(ry) + z1 * Math.sin(ry);
+    let z2 = -vx * Math.sin(ry) + z1 * Math.cos(ry);
+    // Z
+    let x3 = x2 * Math.cos(rz) - y1 * Math.sin(rz);
+    let y3 = x2 * Math.sin(rz) + y1 * Math.cos(rz);
+    return [x3, y3, z2];
+  }
+
+  /* ── particles ── */
+  function mkParticle(initial) {
+    const col = rndCol();
+    const isAccent = col !== WHITE;
+    return {
+      x:   (Math.random() - 0.5) * W  * 3.5,
+      y:   (Math.random() - 0.5) * H  * 3.5,
+      z:   initial ? Math.random() * DEPTH : DEPTH,
+      vz:  -(0.25 + Math.random() * 0.55),
+      col,
+      alpha: isAccent ? (0.45 + Math.random() * 0.45) : (0.12 + Math.random() * 0.55),
+      r:   isAccent ? (0.8 + Math.random() * 2.2) : (0.35 + Math.random() * 1.4),
+    };
+  }
+  const particles = Array.from({ length: PCOUNT }, (_, i) => mkParticle(true));
+
+  /* ── THE SPIRAL — the landing page's own galaxy ──────────────────────────
+     ★ FOUNDER/385–386 (2026-09-14): *"That galaxy background is a huge part
+       of one way and the one on the landing page should look distinct from
+       the one on the app and OS."*
+
+     Five surfaces ran one starfield — a random field flown through. The App
+     and the OS keep that: their sky is a place you are IN. The landing page
+     is where a person first SEES ONEWAY, so its sky is a galaxy you are
+     looking AT: two logarithmic arms wound around a bright core, tilted like
+     a disc, turning once every few minutes, with the flight particles and
+     wireframes kept underneath at a fraction of their old density so the
+     structure reads. Its stars sit on the arms (with the scatter a real arm
+     has), the core is a warm-white radial glow, and the arms take the same
+     triad the rest of the world takes — CYAN · PURPLE · AMBER — rotated with
+     the person's hue by oneway-galaxy.js like everything else.
+
+     Not a picture of a galaxy: it is drawn, every frame, from a few numbers,
+     so a different viewport is a different galaxy of the same family. */
+  /* ★ FOUNDER/388: *"make the galaxy only appear every 1 in x chances"* — the
+     spiral is a rare sky. One load in SPIRAL_ODDS carries it; the others keep
+     the field. `?galaxy=1` forces it (so it can be looked at on purpose),
+     `?galaxy=0` withholds it. Decided per load, remembered by nobody: a rare
+     thing that a person cannot make appear is what makes seeing it an event. */
+  const SPIRAL_ODDS = 4;
+  const SHOW_SPIRAL = /[?&]galaxy=1\b/.test(location.search) ? true
+                    : /[?&]galaxy=0\b/.test(location.search) ? false
+                    : (Math.random() < 1 / SPIRAL_ODDS);
+  const SPIRAL_N = 980;                       /* stars on the arms */
+  const SPIRAL = {
+    arms: 2, wind: 0.24,                      /* log-spiral tightness (b in r = a·e^(bθ)) */
+    turns: 2.6,                               /* how far each arm winds */
+    tilt: 0.42,                               /* the disc seen at an angle (y squash) */
+    lean: -0.26,                              /* the disc's rotation on screen (radians) */
+    speed: 0.000105,                          /* radians per ms — one revolution ≈ 10 min */
+    cx: 0.62, cy: 0.46,                       /* where it sits — right of the type, behind it */
+    scale: 0.62                               /* radius as a fraction of min(W,H) */
+  };
+  const spiralStars = Array.from({ length: SPIRAL_N }, (_, i) => {
+    const arm = i % SPIRAL.arms;
+    const t = Math.pow(Math.random(), 0.72) * SPIRAL.turns * Math.PI * 2;   /* denser toward the core */
+    const r = 0.055 + 0.08 * Math.exp(SPIRAL.wind * t);                     /* log spiral, normalised */
+    const scatter = (Math.random() - 0.5) * (0.05 + 0.09 * (r));            /* arms are bands, not lines */
+    const jitter = (Math.random() - 0.5) * 0.55;                             /* along the arm */
+    const col = Math.random() < 0.34 ? [CYAN, PURPLE, AMBER][arm % 3 === 0 ? (Math.random() < .5 ? 0 : 1) : 2] : WHITE;
+    return { arm, t: t + jitter, r: r + scatter, col,
+             a: 0.32 + Math.random() * 0.62,
+             s: 0.55 + Math.random() * (col === WHITE ? 1.5 : 2.2),
+             tw: Math.random() * Math.PI * 2 };
+  });
+  /* the arms' DUST — a few dozen large, faint discs along each arm, so the
+     arm reads as a band of light between the stars, the way a real one does */
+  const spiralDust = Array.from({ length: 84 }, (_, i) => {
+    const arm = i % SPIRAL.arms;
+    const t = (i / 84) * SPIRAL.turns * Math.PI * 2 * 0.92;
+    return { arm, t, r: 0.055 + 0.08 * Math.exp(SPIRAL.wind * t) + (Math.random() - .5) * .03,
+             col: [CYAN, PURPLE, AMBER][(arm + Math.floor(i / 28)) % 3],
+             s: 26 + Math.random() * 40, a: 0.05 + Math.random() * 0.05 };
+  });
+  let spiralTurn = 0, spiralLast = 0;
+  function drawSpiral(now) {
+    if (!spiralLast) spiralLast = now;
+    spiralTurn += (now - spiralLast) * SPIRAL.speed; spiralLast = now;
+    const R = Math.min(W, H) * SPIRAL.scale;
+    const ox = W * SPIRAL.cx + (mx - 0.5) * 24, oy = H * SPIRAL.cy + (my - 0.5) * 16;
+    const cl = Math.cos(SPIRAL.lean), sl = Math.sin(SPIRAL.lean);
+    /* the core: a warm-white glow with a violet edge — the one bright thing */
+    const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, R * 0.4);
+    g.addColorStop(0,    'rgba(255,248,236,0.30)');
+    g.addColorStop(0.14, 'rgba(255,236,214,0.16)');
+    /* the core's edge is the PERSON'S hue: the CYAN slot is the one
+       oneway-galaxy.js rotates to whoever is signed in (founder/388: "make
+       users hue when signed in able to change hue of this galaxy") */
+    g.addColorStop(0.45, `rgba(${CYAN[0]},${CYAN[1]},${CYAN[2]},0.10)`);
+    g.addColorStop(1,    'rgba(0,0,0,0)');
+    ctx.fillStyle = g; ctx.fillRect(ox - R, oy - R, R * 2, R * 2);
+    /* the dust, under the stars */
+    for (let i = 0; i < spiralDust.length; i++) {
+      const d = spiralDust[i];
+      const th = d.t + spiralTurn + (d.arm * Math.PI * 2 / SPIRAL.arms);
+      let x = Math.cos(th) * d.r * R, y = Math.sin(th) * d.r * R * SPIRAL.tilt;
+      const rx = x * cl - y * sl, ry = x * sl + y * cl;
+      const fade = Math.max(0, 1 - d.r * 0.7);
+      const dg = ctx.createRadialGradient(ox + rx, oy + ry, 0, ox + rx, oy + ry, d.s);
+      dg.addColorStop(0, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},${(d.a * fade).toFixed(3)})`);
+      dg.addColorStop(1, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},0)`);
+      ctx.fillStyle = dg; ctx.fillRect(ox + rx - d.s, oy + ry - d.s, d.s * 2, d.s * 2);
+    }
+    /* the arms: stars, tilted and leaned, twinkling on their own clock */
+    for (let i = 0; i < spiralStars.length; i++) {
+      const st = spiralStars[i];
+      const th = st.t + spiralTurn + (st.arm * Math.PI * 2 / SPIRAL.arms);
+      let x = Math.cos(th) * st.r * R, y = Math.sin(th) * st.r * R * SPIRAL.tilt;
+      const rx = x * cl - y * sl, ry = x * sl + y * cl;
+      const fade = Math.max(0, 1 - st.r * 0.75);                 /* the outer arm thins */
+      const tw = 0.72 + 0.28 * Math.sin(now * 0.0011 + st.tw);
+      const alpha = st.a * fade * tw;
+      if (alpha < 0.02) continue;
+      const [cr, cg, cb] = st.col;
+      ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha.toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(ox + rx, oy + ry, st.s, 0, Math.PI * 2); ctx.fill();
+    }
+  }
+
+  /* ── shapes (wireframe triangles / quads) ── */
+  function mkShape() {
+    const cols = [CYAN, PURPLE, AMBER];
+    const col  = cols[Math.floor(Math.random() * cols.length)];
+    const sides = Math.random() > 0.45 ? 3 : 4;
+    const size  = 28 + Math.random() * 88;
+    const verts = [];
+    for (let i = 0; i < sides; i++) {
+      const a = (i / sides) * Math.PI * 2;
+      verts.push([Math.cos(a) * size, Math.sin(a) * size, (Math.random() - 0.5) * size * 0.6]);
+    }
+    return {
+      x: (Math.random() - 0.5) * W  * 3,
+      y: (Math.random() - 0.5) * H  * 2.5,
+      z: 120 + Math.random() * 1400,
+      vz: -(0.06 + Math.random() * 0.16),
+      rx: Math.random() * Math.PI * 2, drx: (Math.random() - 0.5) * 0.006,
+      ry: Math.random() * Math.PI * 2, dry: (Math.random() - 0.5) * 0.007,
+      rz: Math.random() * Math.PI * 2, drz: (Math.random() - 0.5) * 0.005,
+      verts, col,
+      alpha: 0.18 + Math.random() * 0.28,
+    };
+  }
+  const shapes = Array.from({ length: SCOUNT }, mkShape);
+
+  /* ── ambient nebula blobs ── */
+  const blobs = [
+    { x: 0.22, y: 0.28, vx:  0.00014, vy:  0.0001,  size: 0.55, col: CYAN   },
+    { x: 0.78, y: 0.68, vx: -0.00011, vy:  0.00013, size: 0.50, col: PURPLE },
+    { x: 0.50, y: 0.88, vx:  0.0001,  vy: -0.0001,  size: 0.46, col: AMBER  },
+  ];
+
+  /* ── distant world: slow anchor points, faint links + occasional travelling signals.
+     Suggests a whole network living beneath the surface. Everything very low opacity. ── */
+  const WP_N = (window.owIsNarrow ? window.owIsNarrow(768) : window.innerWidth < 768) ? 9 : 15;
+  const wpts = Array.from({ length: WP_N }, () => ({
+    x: Math.random(), y: Math.random(),
+    vx: (Math.random() - 0.5) * 0.00006, vy: (Math.random() - 0.5) * 0.00006,
+    par: 4 + Math.random() * 7,           // parallax depth
+    tw: Math.random() * Math.PI * 2,      // twinkle phase
+    col: rndCol(),
+  }));
+  const signals = [];
+  function spawnSignal() {
+    const a = Math.floor(Math.random() * wpts.length);
+    let best = -1, bd = 0.16;
+    for (let b = 0; b < wpts.length; b++) {
+      if (b === a) continue;
+      const d = Math.hypot(wpts[a].x - wpts[b].x, wpts[a].y - wpts[b].y);
+      if (d < bd) { best = b; bd = d; }
+    }
+    if (best >= 0) signals.push({ a, b: best, t: 0, sp: 0.004 + Math.random() * 0.004, col: wpts[a].col });
+  }
+
+  /* ── foreground bokeh: a few large, soft, close glows that drift with strong parallax,
+     giving the hero real depth in front of the starfield. ── */
+  const bokeh = Array.from({ length: (window.owIsNarrow ? window.owIsNarrow(768) : window.innerWidth < 768) ? 4 : 7 }, () => ({
+    x: Math.random(), y: Math.random(),
+    vx: (Math.random() - 0.5) * 0.00009, vy: (Math.random() - 0.5) * 0.00009,
+    r: 44 + Math.random() * 78, a: 0.06 + Math.random() * 0.08, col: rndCol(), par: 11 + Math.random() * 8,
+  }));
+
+  /* ── mouse ── */
+  let mx = 0.5, my = 0.5;
+  window.addEventListener('mousemove', e => {
+    mx = e.clientX / W; my = e.clientY / H;
+  }, { passive: true });
+
+  /* ── SCROLL CRASH GUARD ────────────────────────────────────────────────
+     The iOS half of this is handled ABOVE and absolutely: touch devices never
+     reach here — `if (isMob) { canvas.remove(); return; }` deletes the canvas
+     outright, which is the permanent mobile safe floor. So only desktop runs
+     the loop, and on desktop this canvas is NOT hero decoration: it is
+     position:fixed, inset:0 — it is the world's atmosphere for the WHOLE page.
+     Gating it on the hero's visibility therefore switched the atmosphere off
+     the moment you scrolled past the first viewport (measured: 72 frames/600ms
+     in the hero → 0 frames and a cleared canvas below it), which is exactly the
+     "background stunts as you scroll" everyone was seeing. The atmosphere now
+     lives for the whole page; `document.hidden` in frame() still parks it in a
+     background tab, and phones remain untouched. */
+  let heroVisible = true, rafId = 0;
+  /* diagnostic kill-switch: ?fx=off removes the canvas entirely (crash bisection) */
+  if (/[?&]fx=off\b/.test(location.search)) { canvas.remove(); return; }
+
+  /* ── frame ── */
+  function frame() {
+    if (!heroVisible) return;                                        /* stopped — resumed by the observer */
+    if (document.hidden) { rafId = requestAnimationFrame(frame); return; }   /* crash guard: no work in background */
+    if (isMob) { _mobSkip = !_mobSkip; if (_mobSkip) { rafId = requestAnimationFrame(frame); return; } }  /* 30fps on phones */
+    ctx.clearRect(0, 0, W, H);
+
+    const pmx = (mx - 0.5) * 90;
+    const pmy = (my - 0.5) * 55;
+
+    /* nebula blobs (subtle ambient glow) — three full-viewport radial
+       gradients per frame: fine on desktop GPUs, tab-killing on phones */
+    if (!isMob) blobs.forEach((b, i) => {
+      b.x += b.vx; b.y += b.vy;
+      if (b.x < 0 || b.x > 1) b.vx *= -1;
+      if (b.y < 0 || b.y > 1) b.vy *= -1;
+      const bx = (b.x + (mx - 0.5) * 0.04 * (i % 2 ? 1 : -1)) * W;
+      const by = (b.y + (my - 0.5) * 0.03 * (i % 2 ? -1 :  1)) * H;
+      const br = Math.max(W, H) * b.size;
+      const g  = ctx.createRadialGradient(bx, by, 0, bx, by, br);
+      const [r,g2,bl] = b.col;
+      g.addColorStop(0,    `rgba(${r},${g2},${bl},0.13)`);
+      g.addColorStop(0.38, `rgba(${r},${g2},${bl},0.055)`);
+      g.addColorStop(1,    `rgba(${r},${g2},${bl},0)`);
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, W, H);
+    });
+
+    /* the spiral — the landing page's own galaxy, under the depth layers,
+       on the loads that carry it */
+    if (SHOW_SPIRAL) drawSpiral(performance.now());
+
+    /* foreground bokeh — close, soft, strong parallax → depth in front of the field */
+    for (let i = 0; i < bokeh.length; i++) {
+      const bk = bokeh[i];
+      bk.x += bk.vx; bk.y += bk.vy;
+      if (bk.x < -0.15 || bk.x > 1.15) bk.vx *= -1;
+      if (bk.y < -0.15 || bk.y > 1.15) bk.vy *= -1;
+      const bx = bk.x * W + pmx * bk.par, by = bk.y * H + pmy * bk.par;
+      const g = ctx.createRadialGradient(bx, by, 0, bx, by, bk.r);
+      const [r, g2, bl] = bk.col;
+      g.addColorStop(0, `rgba(${r},${g2},${bl},${bk.a})`);
+      g.addColorStop(1, `rgba(${r},${g2},${bl},0)`);
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(bx, by, bk.r, 0, Math.PI * 2); ctx.fill();
+    }
+
+    /* wireframe shapes */
+    for (let i = 0; i < shapes.length; i++) {
+      const sh = shapes[i];
+      sh.rx += sh.drx; sh.ry += sh.dry; sh.rz += sh.drz;
+      sh.z  += sh.vz;
+      if (sh.z < -FOV + 50) { Object.assign(sh, mkShape()); sh.z = DEPTH; continue; }
+
+      const pts = sh.verts.map(v => {
+        const [rx, ry, rz] = rot3(v[0], v[1], v[2], sh.rx, sh.ry, sh.rz);
+        return project(sh.x + rx + pmx * 0.6, sh.y + ry + pmy * 0.6, sh.z + rz);
+      });
+      if (pts.some(p => !p)) continue;
+
+      const s0    = pts[0].s;
+      const alpha = sh.alpha * Math.min(1, s0 * 1.4);
+      if (alpha < 0.015) continue;
+
+      const [r, g2, bl] = sh.col;
+      ctx.beginPath();
+      ctx.moveTo(pts[0].sx, pts[0].sy);
+      for (let j = 1; j < pts.length; j++) ctx.lineTo(pts[j].sx, pts[j].sy);
+      ctx.closePath();
+      ctx.strokeStyle = `rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;
+      ctx.lineWidth   = Math.max(0.25, s0 * 1.1);
+      ctx.stroke();
+    }
+
+    /* star particles */
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      p.z += p.vz;
+      if (p.z < -FOV + 50) { Object.assign(particles[i], mkParticle(false)); continue; }
+
+      const proj = project(p.x + pmx, p.y + pmy, p.z);
+      if (!proj) continue;
+      const { sx, sy, s } = proj;
+      if (sx < -60 || sx > W + 60 || sy < -60 || sy > H + 60) continue;
+
+      const size  = p.r * s * 2.2;
+      const alpha = p.alpha * Math.min(1, s * 2);
+      if (alpha < 0.01 || size < 0.15) continue;
+
+      const [r, g2, bl] = p.col;
+      ctx.beginPath();
+      ctx.arc(sx, sy, Math.max(0.2, size), 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;
+      ctx.fill();
+    }
+
+    /* distant world — faint constellation links between drifting anchor points */
+    for (let i = 0; i < wpts.length; i++) {
+      const p = wpts[i];
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > 1) p.vx *= -1;
+      if (p.y < 0 || p.y > 1) p.vy *= -1;
+    }
+    const LINK = 0.17;
+    for (let i = 0; i < wpts.length; i++) {
+      for (let j = i + 1; j < wpts.length; j++) {
+        const d = Math.hypot(wpts[i].x - wpts[j].x, wpts[i].y - wpts[j].y);
+        if (d > LINK) continue;
+        const a = (1 - d / LINK) * 0.05;   // barely there
+        const ix = wpts[i].x * W + pmx * wpts[i].par, iy = wpts[i].y * H + pmy * wpts[i].par;
+        const jx = wpts[j].x * W + pmx * wpts[j].par, jy = wpts[j].y * H + pmy * wpts[j].par;
+        ctx.strokeStyle = `rgba(150,170,255,${a.toFixed(3)})`;
+        ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(ix, iy); ctx.lineTo(jx, jy); ctx.stroke();
+      }
+    }
+    /* twinkle the anchor points */
+    for (let i = 0; i < wpts.length; i++) {
+      const p = wpts[i]; p.tw += 0.018;
+      const px = p.x * W + pmx * p.par, py = p.y * H + pmy * p.par;
+      const tw = 0.11 + Math.sin(p.tw) * 0.06;
+      const [r, g2, bl] = p.col;
+      ctx.fillStyle = `rgba(${r},${g2},${bl},${Math.max(0, tw).toFixed(3)})`;
+      ctx.beginPath(); ctx.arc(px, py, 1.3, 0, Math.PI * 2); ctx.fill();
+    }
+    /* occasional travelling signal between two nearby anchors */
+    if (Math.random() < 0.011 && signals.length < 3) spawnSignal();
+    for (let s = signals.length - 1; s >= 0; s--) {
+      const sg = signals[s]; sg.t += sg.sp;
+      if (sg.t >= 1) { signals.splice(s, 1); continue; }
+      const A = wpts[sg.a], B = wpts[sg.b];
+      const ax = A.x * W + pmx * A.par, ay = A.y * H + pmy * A.par;
+      const bx = B.x * W + pmx * B.par, by = B.y * H + pmy * B.par;
+      const x = ax + (bx - ax) * sg.t, y = ay + (by - ay) * sg.t;
+      const [r, g2, bl] = sg.col;
+      if (!isMob) {
+        const gr = ctx.createRadialGradient(x, y, 0, x, y, 7);
+        gr.addColorStop(0, `rgba(${r},${g2},${bl},0.45)`); gr.addColorStop(1, `rgba(${r},${g2},${bl},0)`);
+        ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = `rgba(${r},${g2},${bl},0.75)`; ctx.beginPath(); ctx.arc(x, y, 1.3, 0, Math.PI * 2); ctx.fill();
+    }
+
+    rafId = requestAnimationFrame(frame);
+  }
+
+  rafId = requestAnimationFrame(frame);
+}());
+
+/* ── HERO ATMOSPHERE — OFF. It surfaced faint Center names behind the hero
+   ("Harlem", "Williamsburg", "Coney Island" drifting through the sky).
+   ★ FOUNDER/391, 2026-09-14: *"start adding the centers in that spear in the
+     back. That looks horrible and tacky, and there's no point in doing it
+     whatsoever."* Removed rather than dimmed; the sky is the galaxy. ── */
+
+
+/* ── SCROLL REVEAL — fail-open. The observer gives the nice stagger, but content
+   must NEVER stay hidden if an observer stalls (one stall = a "blank page" report).
+   A deterministic rect sweep on scroll/resize/load guarantees visibility. ── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.1 });
+let rvPending = Array.from(document.querySelectorAll('.rv, .rv-r, .rv-l, .flow-div'));
+rvPending.forEach(el => obs.observe(el));
+let rvTick = false;
+function rvSweep(){
+  rvTick = false;
+  if (!rvPending.length) return;
+  /* prune as we go — the sweep gets cheaper with every reveal, and stops
+     costing anything once the page is fully revealed (mobile scroll perf) */
+  rvPending = rvPending.filter(el => {
+    if (el.classList.contains('in')) return false;
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight * 0.94 && r.bottom > 0) { el.classList.add('in'); return false; }
+    return true;
+  });
+}
+function rvQueue(){ if (!rvTick && rvPending.length) { rvTick = true; requestAnimationFrame(rvSweep); } }
+addEventListener('scroll', rvQueue, { passive: true });
+addEventListener('resize', rvQueue, { passive: true });
+addEventListener('load', rvSweep);
+setTimeout(rvSweep, 300); setTimeout(rvSweep, 1200);
+</script>
+
+
+
+
+<!-- ── RC ATMOSPHERE PASS (final polish) — cohesion + inhabited feel. All additive,
+     pointer-events:none, reduced-motion-safe, absolutely positioned (no layout impact),
+     clipped by overflow. Threads anchor to bead LAYOUT positions (offset*, not transform)
+     so they never detach as beads bob; recomputed on resize/orientation (canon §18). ── -->
+<style>
+  .po-shelf{position:relative}
+  .po-constellation{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:visible}
+  .po-constellation line{stroke:rgba(var(--ow-h1),.14);stroke-width:1}
+  .po-orbit{position:absolute;width:4px;height:4px;border-radius:50%;pointer-events:none;z-index:0;
+    background:radial-gradient(circle,rgba(255,255,255,.85),rgba(var(--ow-h1),.35) 60%,transparent 72%);
+    box-shadow:0 0 8px 1px rgba(var(--ow-h1),.4);opacity:.4}
+  .owc-aura{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:1;
+    background:radial-gradient(80% 60% at 30% 12%,rgba(var(--h),.16),transparent 62%)}
+  .owc-mote{position:absolute;width:3px;height:3px;border-radius:50%;pointer-events:none;z-index:1;
+    background:radial-gradient(circle,rgba(255,255,255,.7),rgba(var(--h),.3) 60%,transparent 72%);opacity:.35}
+  .ow-amb-layer{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+  .ow-amb{position:absolute;pointer-events:none}
+  .ow-amb.neb{border-radius:50%;filter:blur(50px)}
+  .ow-amb.ghost{border:1px solid rgba(170,180,255,.05);border-radius:7px}
+  @media (prefers-reduced-motion:no-preference){
+    .po-orbit{animation:owOrbit var(--od,14s) ease-in-out infinite}
+    .owc-mote{animation:owMote var(--md,11s) ease-in-out infinite}
+    .owc-aura{animation:owAura 7.5s ease-in-out infinite}
+  }
+  @keyframes owOrbit{0%,100%{transform:translate(0,0);opacity:.2}50%{transform:translate(var(--ox,10px),var(--oy,-8px));opacity:.58}}
+  @keyframes owMote{0%,100%{transform:translate(0,0);opacity:.16}50%{transform:translate(var(--mx,8px),var(--my,-10px));opacity:.5}}
+  @keyframes owAura{0%,100%{opacity:.6}50%{opacity:1}}
+
+  /* ★ FOUNDER/493 #1: "Make selective server beta … and remove weirdly colored
+     text like that text." The beta line was tinted (violet here, teal on the OS
+     page, indigo on the main page), in tracked capitals — a colour and a voice
+     no other sentence on the page uses. It reads as a plain line now: the
+     page's quiet ink, sentence case (467), at a size that can be read. */
+  .soon,.hero-beta{color:rgba(255,255,255,.62)!important;text-transform:none!important;
+    letter-spacing:0!important;font-size:13px!important;font-weight:500!important}
+
+</style>
+<script>
+(function(){
+  var ns='http://www.w3.org/2000/svg';
+  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* A1 — constellation threads + orbiting motes behind the App/OS + Home/Discovery/Workspace clusters */
+  var shelves=Array.prototype.slice.call(document.querySelectorAll('#appos .po-shelf, #what .po-shelf'));
+  shelves.forEach(function(shelf){
+    var svg=document.createElementNS(ns,'svg'); svg.setAttribute('class','po-constellation');
+    shelf.insertBefore(svg,shelf.firstChild);
+    if(!RM){ for(var i=0;i<4;i++){ var p=document.createElement('i'); p.className='po-orbit';
+      p.style.setProperty('--ox',(Math.random()*22-11).toFixed(0)+'px');
+      p.style.setProperty('--oy',(Math.random()*22-13).toFixed(0)+'px');
+      p.style.setProperty('--od',(11+Math.random()*8).toFixed(1)+'s');
+      p.style.animationDelay='-'+(Math.random()*8).toFixed(1)+'s';
+      shelf.insertBefore(p,shelf.firstChild); } }
+    function draw(){
+      var beads=shelf.querySelectorAll('.po-rest'); if(beads.length<2) return;
+      var w=shelf.clientWidth,h=shelf.clientHeight; if(!w||!h) return;
+      svg.setAttribute('viewBox','0 0 '+w+' '+h); svg.setAttribute('width',w); svg.setAttribute('height',h);
+      var pts=[]; for(var b=0;b<beads.length;b++){ var el=beads[b]; pts.push([el.offsetLeft+el.offsetWidth/2, el.offsetTop+el.offsetHeight/2]); }
+      while(svg.firstChild) svg.removeChild(svg.firstChild);
+      for(var i=0;i<pts.length;i++){ for(var j=i+1;j<pts.length;j++){ var ln=document.createElementNS(ns,'line');
+        ln.setAttribute('x1',pts[i][0]);ln.setAttribute('y1',pts[i][1]);ln.setAttribute('x2',pts[j][0]);ln.setAttribute('y2',pts[j][1]); svg.appendChild(ln); } }
+      var cx=0,cy=0; pts.forEach(function(p){cx+=p[0];cy+=p[1];}); cx/=pts.length; cy/=pts.length;
+      var orbits=shelf.querySelectorAll('.po-orbit');
+      for(var k=0;k<orbits.length;k++){ var a=k/orbits.length*6.283; orbits[k].style.left=(cx+Math.cos(a)*w*0.34)+'px'; orbits[k].style.top=(cy+Math.sin(a)*h*0.34)+'px'; }
+    }
+    draw(); shelf._owDraw=draw;
+  });
+  /* A4 — inhabited panels: soft aura + drifting memory motes inside each .ow-glass */
+  Array.prototype.forEach.call(document.querySelectorAll('.ow-glass'),function(panel){
+    var aura=document.createElement('span'); aura.className='owc-aura'; panel.insertBefore(aura,panel.firstChild);
+    if(!RM){ for(var i=0;i<5;i++){ var m=document.createElement('i'); m.className='owc-mote';
+      m.style.left=(12+Math.random()*74)+'%'; m.style.top=(18+Math.random()*64)+'%';
+      m.style.setProperty('--mx',(Math.random()*16-8).toFixed(0)+'px');
+      m.style.setProperty('--my',(-(4+Math.random()*12)).toFixed(0)+'px');
+      m.style.setProperty('--md',(9+Math.random()*7).toFixed(1)+'s'); m.style.animationDelay='-'+(Math.random()*8).toFixed(1)+'s';
+      panel.insertBefore(m,panel.firstChild); } }
+  });
+  /* A5 — page-wide faint atmosphere (fixed, behind everything; reduces "black void + one object") */
+  var amb=document.createElement('div'); amb.className='ow-amb-layer'; document.body.appendChild(amb);
+  var hues=['139,92,255','93,226,255','176,80,255','139,92,255','93,226,255','139,92,255'];
+  for(var n=0;n<6;n++){ var neb=document.createElement('div'); neb.className='ow-amb neb';
+    var hh=hues[n%hues.length]; var sz=(220+Math.random()*240)|0;
+    neb.style.width=sz+'px'; neb.style.height=sz+'px';
+    neb.style.background='radial-gradient(circle,rgba('+hh+',.08),transparent 70%)';
+    neb.style.left=(Math.random()*88)+'%'; neb.style.top=(Math.random()*94)+'%'; amb.appendChild(neb); }
+  for(var gi=0;gi<5;gi++){ var gh=document.createElement('div'); gh.className='ow-amb ghost';
+    var gs=(50+Math.random()*80)|0; gh.style.width=gs+'px'; gh.style.height=gs+'px';
+    gh.style.transform='rotate('+(Math.random()*60-30).toFixed(0)+'deg)';
+    gh.style.left=(Math.random()*88)+'%'; gh.style.top=(Math.random()*94)+'%'; amb.appendChild(gh); }
+  /* resize / orientation recompute (debounced) — constellations stay attached (canon §18) */
+  var t; function recompute(){ shelves.forEach(function(s){ if(s._owDraw) s._owDraw(); }); }
+  addEventListener('resize', function(){ clearTimeout(t); t=setTimeout(recompute,120); }, {passive:true});
+  addEventListener('orientationchange', function(){ setTimeout(recompute,260); });
+})();
+</script>
+
+
+
+</body>
+</html>
