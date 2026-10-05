@@ -8483,7 +8483,80 @@ function iconTab(id, label, render, n) {
      bot or a webhook. The server names each field and says how to get it; this
      draws them INLINE under the row (S2: never a box over the page), sends
      them once, and says what happened. Nothing typed is kept on this device. */
+  /* ── WHAT CONNECTING LETS ONEWAY DO, AGREED FIRST (founder, chat 2026-10-04: "make a
+     disclaimer to each permission before they authorize it and why they use it and have them
+     agree to it on our end first, then they are able to connect") ──────────────────────────
+     Before a platform is asked for anything, every permission ONEWAY will ask it for is shown
+     in words with WHY, and each needs its own agreement. Drawn inline under the row (S2: no
+     box over the page). The server holds the same gate (distribution/permissions.py): a
+     connect without this agreement is refused 409, so this step cannot be skipped by a
+     different screen. Resolves true when the person has agreed (or already had), false when
+     they cancel or it could not be read. */
+  function permBtn(label) {                 /* the Connect button's own look (po-act ow-reach__go, in the platform's hue) */
+    var b = mk('button', 'po-act ow-reach__go', esc(label));
+    b.type = 'button';
+    b.style.setProperty('--h', 'var(--ow-h1)'); b.style.setProperty('--h2', 'var(--ow-h2)');
+    return b;
+  }
+  function reachAgree(t, host2, note) {
+    function say(m) { if (note) note.textContent = m || ''; }
+    var path = '/api/oneway/distribution/permissions/' + encodeURIComponent(t.key) + '?center_id=' + encodeURIComponent(t.center);
+    return data.get(path, { fresh: true }).then(function (r) {
+      var d = (r && r.ok && r.data) || null;
+      if (!d) { say('That could not be read just now. Nothing was connected.'); return false; }
+      if (d.agreed || !(d.items || []).length) return true;
+      return new Promise(function (resolve) {
+        var old = host2.querySelector('.ow-perm');
+        if (old) old.parentNode.removeChild(old);
+        var box = mk('div', 'ow-perm');
+        box.setAttribute('role', 'group');
+        box.setAttribute('aria-label', 'What connecting ' + t.label + ' lets ONEWAY do');
+        var ticked = {}, go = permBtn('Agree and connect');
+        go.disabled = true;
+        function sync() {
+          var all = d.items.every(function (i) { return ticked[i.key]; });
+          go.disabled = !all;
+        }
+        d.items.forEach(function (i) {
+          /* the same switch as Settings: the words lead, the control follows, the whole row is the target */
+          var row = mk('button', 'ow-switch');
+          row.type = 'button'; row.setAttribute('aria-pressed', 'false');
+          row.innerHTML = '<span class="ow-switch__b"><b>' + esc(i.what) + '</b><span>' + esc(i.why)
+            + '</span></span><span class="ow-switch__k" aria-hidden="true"></span>';
+          row.addEventListener('click', function () {
+            ticked[i.key] = !ticked[i.key];
+            row.setAttribute('aria-pressed', String(!!ticked[i.key]));
+            sync();
+          });
+          box.appendChild(row);
+        });
+        var act = mk('div', 'ow-reach__formrow');
+        var cancel = mk('button', 'po-act po-act--ghost', 'Cancel'); cancel.type = 'button';
+        cancel.style.setProperty('--h', 'var(--ow-h1)'); cancel.style.setProperty('--h2', 'var(--ow-h2)');
+        act.appendChild(go); act.appendChild(cancel); box.appendChild(act);
+        cancel.addEventListener('click', function () { box.parentNode && box.parentNode.removeChild(box); say(''); resolve(false); });
+        go.addEventListener('click', function () {
+          go.disabled = true;
+          data.post('/api/oneway/distribution/permissions/' + encodeURIComponent(t.key) + '/agree',
+                    { center_id: t.center, agreed: d.items.filter(function (i) { return ticked[i.key]; }).map(function (i) { return i.key; }) })
+            .then(function (a) {
+              if (!a || !a.ok) { go.disabled = false; say((a && a.error) || 'That did not save. Nothing was connected.'); return; }
+              box.parentNode && box.parentNode.removeChild(box);
+              resolve(true);
+            }, function () { go.disabled = false; say('That did not reach the server. Nothing was connected.'); });
+        });
+        host2.appendChild(box);
+        say('');
+        try { box.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {}
+      });
+    }, function () { say('That could not be read just now. Nothing was connected.'); return false; });
+  }
   function reachForm(t, host2, done) {
+    var open = host2.querySelector('.ow-reach__form, .ow-perm');
+    if (open) { open.parentNode.removeChild(open); return; }
+    return reachAgree(t, host2).then(function (ok) { if (ok) reachFormBuild(t, host2, done); });
+  }
+  function reachFormBuild(t, host2, done) {
     var old = host2.querySelector('.ow-reach__form');
     if (old) { old.parentNode.removeChild(old); return; }
     var form = mk('form', 'ow-reach__form');
@@ -8553,7 +8626,20 @@ function iconTab(id, label, render, n) {
       note.textContent = t.connectWhyNot || (t.label + ' cannot be connected on this server yet.');
       return Promise.resolve();
     }
-    note.textContent = 'Opening ' + t.label + '…';
+    var row = note.closest ? note.closest('.ow-reach__row') : null, slot = null;
+    if (row) {
+      slot = row.nextSibling && row.nextSibling.classList && row.nextSibling.classList.contains('ow-reach__slot') ? row.nextSibling : null;
+      if (!slot) { slot = mk('div', 'ow-reach__slot'); row.parentNode.insertBefore(slot, row.nextSibling); }
+      var open = slot.querySelector('.ow-perm');
+      if (open) { open.parentNode.removeChild(open); note.textContent = ''; return Promise.resolve(); }
+    }
+    return reachAgree(t, slot || note.parentNode, note).then(function (ok) {
+      if (!ok) return;
+      note.textContent = 'Opening ' + t.label + '…';
+      return reachGo(t, note);
+    });
+  }
+  function reachGo(t, note) {
     return data.post('/api/oneway/distribution/connect',
                      { platform: t.key, center_id: t.center, return: REACH_RETURN }).then(function (r) {
       if (r && r.ok && r.data && r.data.url) { global.location.href = r.data.url; return; }
@@ -9636,13 +9722,8 @@ function iconTab(id, label, render, n) {
           }
           var on = ts.filter(function (t) { return t.connected; }).length;
           body.appendChild(mk('p', 'ow-set__lede', on
-            ? on + ' connected. When you post, choose which of them it also goes to.'
-            : 'Connect an account and anything you post here can go to it too. '
-              + 'Nothing is sent anywhere unless you choose it on the post.'));
-          /* what connecting means for being recognised (identity/links.py
-             recognisable): said where the connecting happens */
-          body.appendChild(mk('p', 'ow-set__lede', 'Places recognise you by these accounts only if you turn on '
-            + 'Include accounts you connect, in Privacy.'));
+            ? on + ' connected.'
+            : 'Nothing is sent unless you pick it on a post.'));
           ts.forEach(function (t) {
             var row = mk('div', 'ow-reach__row');
             row.appendChild(OW.reach.mark(t.key));

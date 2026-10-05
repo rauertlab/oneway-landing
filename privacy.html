@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy — ONEWAY</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23000'/><text y='23' x='3' font-size='13' font-family='-apple-system,Arial Black,sans-serif' font-weight='900' font-style='italic' fill='%23fff' letter-spacing='-0.5'>OW</text></svg>" />
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100vh;
+      background: #0a0000;
+      color: #fff;
+      font-family: 'ONEWAY Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;   /* founder/530 */
+    }
+
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 64px;
+      border-bottom: 1px solid rgba(200,0,0,0.3);
+      background: #000;
+    }
+    .logo img { height: 28px; display: block; }
+    /* ── THE ONEWAY HEADER ────────────────────────────────────────────────
+       ★ FOUNDER/493: *"lock in the privacy policy and terms of service pages
+         as our final informational pages design and add the oneway header to
+         them."*
+       The page's own design is kept exactly — he locked it. What it lacked was
+       a way back INTO the product: one wordmark and a "Back to site" link is a
+       dead end, and every other page carries the same three doors. They are
+       drawn in this page's idiom (its red, its uppercase, its letter-spacing)
+       rather than the landing's, because the two designs are both his and
+       neither should start wearing the other's clothes. */
+    .top-nav { display:flex; align-items:center; gap:26px; }
+    .top-nav a {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,.62); text-decoration: none; transition: color 0.15s;
+    }
+    .top-nav a:hover { color: #fff; }
+    .top-nav a.signin { color: #cc0000; }
+    .top-nav a.signin:hover { color: #ff2b2b; }
+    @media (max-width: 720px) {
+      .top-bar { padding: 0 20px; }
+      .top-nav { gap: 16px; }
+      .top-nav a.wide { display: none; }
+    }
+    .back-link {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: #660000; text-decoration: none; transition: color 0.15s;
+    }
+    .back-link:hover { color: #cc0000; }
+
+    .hero {
+      background: #cc0000; padding: 72px 40px 80px; text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(0deg,rgba(0,0,0,0.06) 0px,rgba(0,0,0,0.06) 1px,transparent 1px,transparent 4px);
+      pointer-events: none;
+    }
+    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
+    .hero h1 { font-size: clamp(48px, 10vw, 96px); font-weight: 900; letter-spacing: -0.04em; line-height: 0.95; color: #fff; text-transform: uppercase; margin-bottom: 28px; }
+    .hero-sub { font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.75); max-width: 520px; margin: 0 auto; line-height: 1.6; }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 72px 40px 120px; }
+
+    .block-label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #cc0000; margin: 48px 0 14px; }
+    .block-label:first-child { margin-top: 0; }
+
+    h2 { font-size: 18px; font-weight: 900; letter-spacing: -0.02em; color: #fff; margin: 48px 0 14px; }
+    h2:first-child { margin-top: 0; }
+    h3 { font-size: 15px; font-weight: 700; color: #ddd; margin: 28px 0 10px; }
+    p { font-size: 15px; color: #888; line-height: 1.8; margin-bottom: 14px; }
+    ul, ol { margin: 10px 0 14px 0; padding: 0; list-style: none; }
+    li { font-size: 15px; color: #888; line-height: 1.7; padding: 6px 0 6px 20px; position: relative; border-bottom: 1px solid rgba(255,255,255,0.03); }
+    li:last-child { border-bottom: none; }
+    li::before { content: '—'; position: absolute; left: 0; color: #cc0000; font-weight: 700; }
+    a { color: #fff; } a:hover { color: #cc0000; }
+    strong { color: #ddd; font-weight: 700; }
+
+    .divider { border: none; border-top: 1px solid rgba(200,0,0,0.2); margin: 48px 0; }
+
+    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
+    .data-table th { text-align: left; padding: 10px 14px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #660000; border-bottom: 1px solid rgba(200,0,0,0.2); }
+    .data-table td { padding: 12px 14px; color: #888; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; line-height: 1.6; }
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .contact-block { background: #0d0000; border: 1px solid rgba(200,0,0,0.25); border-radius: 8px; padding: 32px 36px; margin-top: 64px; }
+    .contact-block h3 { margin-top: 0; color: #fff; font-size: 16px; margin-bottom: 10px; }
+    .contact-block p { margin-bottom: 0; }
+
+    footer { border-top: 1px solid rgba(200,0,0,0.15); padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #333; flex-wrap: wrap; gap: 16px; }
+    footer a { color: #333; text-decoration: none; }
+    footer a:hover { color: #cc0000; }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="/" class="logo"><img src="/logo-white.png" alt="ONEWAY" /></a>
+  <nav class="top-nav"><a href="/">Home</a></nav>
+</div>
+
+<div class="hero">
+  <div class="hero-eyebrow">Legal</div>
+  <h1>Privacy<br>Policy</h1>
+  <p class="hero-sub">What we collect, why, and how to have it removed.</p>
+</div>
+
+<div class="wrap">
+  <p style="margin-top:0;">This page covers oneway.center, run by Oneway Technologies LLC. Last updated October 4, 2026.</p>
+
+  <hr class="divider" />
+
+  <h2>What we collect</h2>
+  <p>Nothing. This site does not ask for or keep any personal information, sets no cookies and has no advertising or analytics trackers.</p>
+
+  <h2>Who handles it</h2>
+  <table class="data-table">
+    <thead><tr><th>Service</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td>GitHub</td><td>Hosts this website and may log visits</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Your choices</h2>
+  <p>You can ask us to show you, correct or delete what we hold about you. Email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a>.</p>
+
+  <h2>The App and the OS</h2>
+  <p>The ONEWAY App and OS have their own privacy policy. It will be published on this page, and shown before sign-up, when they open.</p>
+
+  <h2>Children</h2>
+  <p>This site is not directed to children under 13, and we do not knowingly collect their information.</p>
+
+  <h2>Changes</h2>
+  <p>When this page changes, the date at the top changes with it.</p>
+
+  <div class="contact-block">
+    <h3>Contact</h3>
+    <p><a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a></p>
+  </div>
+</div>
+
+<footer>
+  <div>2027, Oneway Technologies LLC</div>
+  <div style="display:flex;gap:24px;">
+    <a href="privacy.html">Privacy</a>
+    <a href="/">← Back to site</a>
+  </div>
+</footer>
+
+</body>
+</html>

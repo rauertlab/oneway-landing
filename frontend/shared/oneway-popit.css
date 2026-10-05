@@ -11299,6 +11299,15 @@ html[data-theme="dark"][data-ow-marks="color"] .ow-reach__mk[data-platform="thre
 .ow-reach__formrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ow-reach__said{font-size:13px;color:var(--ow-ink-2);line-height:1.4}
 .ow-reach__said:empty{display:none}
+/* what connecting lets ONEWAY do, agreed one permission at a time, before the platform is asked:
+   the Settings switch (.ow-switch) for each permission, the Connect button's own look for the acts */
+.ow-perm{display:flex;flex-direction:column;gap:8px;margin:2px 0 16px 47px}
+.ow-reach__slot .ow-perm{margin-left:0}
+.ow-perm .ow-switch + .ow-switch{margin-top:0}
+.ow-perm__lede{margin:0 0 2px}
+.ow-perm__note{margin:2px 2px 0;font-size:12.5px;color:var(--ow-ink-3);line-height:1.45}
+.ow-perm .ow-reach__formrow{margin-top:4px}
+.ow-perm .po-act[disabled]{opacity:.38;cursor:not-allowed}
 
 /* ══ THE UPLOAD SCREEN (founder/493) — TikTok's Post screen ═════════════════
    The words beside the cover, then where it goes, then one Post across the

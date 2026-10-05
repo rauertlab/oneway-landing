@@ -49,14 +49,14 @@
        The App's own Popit material is loaded here — the same stylesheet and the
        same constructors (OW.glance, OW.card) the App renders with — so a
        Center or an event on this page IS the App's row for it, not a copy. -->
-  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=d7eb798c">
+  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=865d0130">
   <script src="/frontend/shared/oneway-hue.js?v=a5042fdf"></script>
   <script src="/frontend/shared/oneway-popit.js?v=f6d663cb"></script>
   <script src="/frontend/shared/oneway-links.js?v=c3df779e"></script>
   <!-- ★ FOUNDER/401: a Center opens RIGHT OVER this page — the App's own
        surface for it, projected, not a trip to the App. These are the App's
        surfaces and the one projection verb; a page anywhere can carry them. -->
-  <script src="/frontend/app/popit-live.js?v=288ab8cd"></script>
+  <script src="/frontend/app/popit-live.js?v=40c0e37e"></script>
   <!-- A CENTER'S SITE, PROJECTED (B, founder/437): the pages Lightbulb wrote, natively in
        the site's own fonts and colours, and the company's own site exactly, as the
        Center's categories. After popit-live.js, whose Center surface asks OW.site for them. -->
@@ -816,7 +816,6 @@
     </div>
   </div>
   <div class="nav-right">
-    <a href="/login.html" class="nav-signin">Sign in</a>
     <!-- ★ FOUNDER/493: *"Remove the random oneway app and os buttons."*
          Two pills in the top-right that went to the same two pages the nav
          beside them already links to — the same door twice, in two shapes,
@@ -1521,7 +1520,7 @@
     <h2 class="lp-h2 ty ty-slide">A modern ecosystem for people to easily and conveniently connect with cities, communities, and&nbsp;businesses.</h2>
   </div>
   <div class="eco-run" id="ecoRun" hidden><div class="eco-track" id="ecoStrip"></div></div>
-  <div class="lp-wrap"><div class="lp-acts"><a class="pill" href="/ecosystem.html">Explore the ecosystem</a></div></div>
+  
 </section>
 
 <!-- ═══ 4 · ACCOUNT — the person, and every place they belong to ═══════ -->
@@ -1531,7 +1530,7 @@
       <div class="lk"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>Account</span></div>
       <h2 class="lp-h2" style="max-width:12ch">Your digital passport.</h2>
       <p class="lp-p">You get one @name across ONEWAY, with your picture, your colour and your links. One sign-in covers the App and the OS, and you can change any of it.</p>
-      <div class="lp-acts"><a class="pill pill--solid" href="/signup.html">Create your account</a><a class="pill" href="/accounts.html">ONEWAY Accounts</a></div>
+      
     </div>
     <div class="deck-wrap rv d3">
       <div class="deck" id="deck" aria-label="People on ONEWAY, right now"></div>
@@ -1542,7 +1541,7 @@
     <div class="rv d2">
       <h3 class="lp-h3" style="max-width:14ch">And every place you belong&nbsp;to.</h3>
       <p class="lp-p">Cities, communities, venues and businesses each have a Center, free on the App. The people who run a Center manage it from ONEWAY OS.</p>
-      <div class="lp-acts"><a class="pill" href="/ecosystem.html#centers">What a Center is</a></div>
+      
     </div>
     <div class="cn-wrap rv d3"><div id="cnCard"></div><div class="po-list" id="cnRows"></div></div>
   </div>
@@ -1555,7 +1554,7 @@
       <div class="lk"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>App</span></div>
       <h2 class="lp-h2" style="max-width:11ch">Experience ONEWAY.</h2>
       <p class="lp-p">See what your friends and the places you love are posting, and what is coming up at each of them.</p>
-      <div class="lp-acts"><a class="pill pill--solid" href="/oneway-app.html">Open the App</a><a class="pill" href="/app.html">The ONEWAY App</a></div>
+      
     </div>
     <div class="phones rv d3">
       <div class="ph-real">
@@ -1600,7 +1599,7 @@
       <div class="aio-foot"></div>
     </div>
     <p class="os-connect rv d3">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</p>
-    <div class="lp-acts lp-acts--c rv d4"><a class="pill pill--solid" href="/oneway-os.html">Open ONEWAY OS</a><a class="pill" href="/os.html">ONEWAY OS</a></div>
+    
   </div>
 </section>
 
@@ -1724,19 +1723,9 @@
 
   var CONTROLLER='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 7h9a5 5 0 0 1 4.9 6l-.6 3.2a2.4 2.4 0 0 1-4.2 1L15 15.5H9L7.4 17.2a2.4 2.4 0 0 1-4.2-1L2.6 13A5 5 0 0 1 7.5 7z"/><path d="M7.5 10v3M6 11.5h3"/><circle cx="15.5" cy="11" r=".6" fill="currentColor"/><circle cx="17.5" cy="12.8" r=".6" fill="currentColor"/></svg>';
   /* the demo statuses — "playing x on x" (534). started = seconds ago. */
-  var DEMO=[
-    { email:'loop.ada@ow.test',  verb:'Playing',      what:'Minecraft',        on:'Xbox',    mark:{svg:CONTROLLER, bg:'#107C10'}, started:4324, tail:'elapsed' },
-    { email:'ada.ops@ow.test',   verb:'Listening to', what:'Clair de Lune',    on:'Spotify', mark:{platform:'spotify'}, started:134, tail:'elapsed' },
-    { email:'walk.1484@ow.test', verb:'At',           what:'Four Queens Hotel & Casino', on:'', mark:{center:'bfe9764db5f4'}, started:1080, tail:'here' },
-    { email:'mira.seam@ow.test', verb:'Watching',     what:'Rocket League',    on:'Twitch',  mark:{platform:'twitch'}, started:1560, tail:'elapsed' }
-  ];
+  var DEMO=[];
   /* the last read of each person, 2026-09-25 — used only when the platform cannot be reached */
-  var SNAPSHOT={
-    'loop.ada@ow.test':{person:{email:'loop.ada@ow.test',name:'loop.ada',handle:'loop.ada',picture:'/assets/post-media/fixture-boardwalk-1.jpg',shape:'rounded',hue:180,links:[{url:'https://instagram.com/loop.ada'},{url:'https://tiktok.com/@loop.ada'},{url:'https://youtube.com/@loop.ada'}]},counts:{followers:4,following:4},posts:12},
-    'ada.ops@ow.test':{person:{email:'ada.ops@ow.test',name:'ada.ops',handle:'ada.ops',picture:'/assets/profile-avatars/mara.svg',shape:'round',bio:'Front desk at the Boardwalk. Organist on Sundays.',website:'https://adaops.example',links:[{url:'https://instagram.com/ada.ops'},{url:'https://open.spotify.com/user/adaops'},{url:'https://x.com/adaops'}]},counts:{followers:1,following:2},posts:12},
-    'walk.1484@ow.test':{person:{email:'walk.1484@ow.test',name:'Noor Walk',handle:'walk.1484',shape:'round',bio:'New to the boardwalk. Early mornings, long walks, strong coffee.'},counts:{followers:0,following:2},posts:1},
-    'mira.seam@ow.test':{person:{email:'mira.seam@ow.test',name:'Mira Seam',handle:'mira.seam',shape:'rounded',hue:210},counts:{followers:1,following:5},posts:8}
-  };
+  var SNAPSHOT={};
   var people=Promise.all(DEMO.map(function(d){ return J('/api/oneway/people/'+encodeURIComponent(d.email)+'/profile').then(function(x){ return (x&&x.person&&x.person.email)?x:SNAPSHOT[d.email]; }); }));
   var discovery=J('/api/oneway/centers/discovery').then(function(j){
     var rows=((j&&j.buttons)||[]).filter(function(x){ return x&&x.name&&x.center_id; });
@@ -1910,6 +1899,7 @@
       <div class="footer-links">
         <a href="#app">ONEWAY App</a>
         <a href="#os">ONEWAY OS</a>
+        <a href="/privacy.html">Privacy</a>
       </div>
     </div>
     <!-- ★ FOUNDER/493: *"Put 2027, Oneway Technologies LLC"* -->
