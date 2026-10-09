@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
+  <title>Oneway OS: the operating layer for a Center</title>
+  <meta name="description" content="Oneway OS runs a Center: Business OS for running a business, with the Brain, Systems and Cross Projection, and Developer OS for building on Oneway.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://oneway.center/os">
+  <link rel="alternate" hreflang="en" href="https://oneway.center/os">
+  <link rel="alternate" hreflang="x-default" href="https://oneway.center/os">
+  <link rel="alternate" type="text/plain" title="Oneway, for assistants" href="/llms.txt">
+  <link rel="alternate" type="text/plain" title="Oneway, every page in words" href="/llms-full.txt">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Oneway">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://oneway.center/os">
+  <meta property="og:title" content="Oneway OS">
+  <meta property="og:description" content="From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.">
+  <meta property="og:image" content="https://oneway.center/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Oneway OS">
+  <meta name="twitter:description" content="From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.">
+  <meta name="twitter:image" content="https://oneway.center/og-card.jpg">
+  <meta name="twitter:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="theme-color" content="#05050b">
+  <meta name="application-name" content="Oneway">
+  <meta name="apple-mobile-web-app-title" content="Oneway">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
+  <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
+  <link rel="icon" href="/assets/icons/oneway-globe-512.png" sizes="512x512" type="image/png">
+  <link rel="icon" href="/app-icon-1024.png" sizes="1024x1024" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="author" href="/.well-known/security.txt" title="Security contact">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center. We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/os#webpage","url":"https://oneway.center/os","name":"Oneway OS","headline":"Oneway OS: the operating layer for a Center","description":"Oneway OS runs a Center: Business OS for running a business, with the Brain, Systems and Cross Projection, and Developer OS for building on Oneway.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-09","breadcrumb":{"@id":"https://oneway.center/os#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://oneway.center/os#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Oneway OS","item":"https://oneway.center/os"}]}]}</script>
+  <!-- /SEO -->
+  <!-- THE GALAXY, UNDER THE SHARED RULES: one safe-floor question (touch,
+       not width), one hue resolved from the ACCOUNT, one triad. -->
+  <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
+  <script src="/frontend/shared/oneway-hue.js?v=28eb408a"></script>
+  <script src="/frontend/shared/oneway-galaxy.js?v=224cb07e"></script>
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#000;--surface:#080808;--border:rgba(255,255,255,0.07);--border-hi:rgba(255,255,255,0.12);
+      --white:#fff;--off:#d4d4d4;--muted:rgba(255,255,255,0.46);--dim:rgba(255,255,255,0.22);
+      --font:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+      --mono:'Inter',ui-monospace,Menlo,monospace;--line:rgba(255,255,255,.16);--ease:cubic-bezier(.4,0,.2,1);
+    }
+    html{scroll-behavior:smooth;overflow-x:hidden;background:var(--bg)}
+    /* ★ FOUNDER/493 #14: "for the individual landing pages brighten them up …
+       no more dark galaxy across any landing pages." MEASURED 2026-09-25 at
+       1280px, the opening screen's average brightness: main landing 39, App
+       landing 22, OS landing 10 (a pure #000 ground). The same ground and the
+       same soft haze of the triad the main page's galaxy gives, so the three
+       open at its level rather than darker than it. `html:root` so the App's
+       shared stylesheet (loaded after this block on some pages, with
+       `html{background:var(--ow-ground)}`) cannot repaint the ground: it did on
+       /ecosystem.html, which opened pale lavender with white words on it for
+       anyone whose phone is in light mode. */
+    html:root{background:
+      radial-gradient(60% 50% at 18% 22%, rgba(139,92,255,.16), transparent 72%),
+      radial-gradient(55% 45% at 82% 68%, rgba(92,255,255,.10), transparent 72%),
+      radial-gradient(45% 40% at 62% 8%, rgba(255,168,58,.07), transparent 70%),
+      #0e0d1a fixed}
+
+    body{font-family:var(--font);background:transparent;color:var(--white);-webkit-font-smoothing:antialiased;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:#1c1c1c}
+    #hero-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+
+    .nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;padding:0 36px;transition:background .35s var(--ease),border-color .35s var(--ease);border-bottom:1px solid transparent}
+    .nav.scrolled{background:rgba(0,0,0,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom-color:var(--border)}
+    .nav-logo img{height:15px;display:block;opacity:.9}
+    .nav-center{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:2px}
+    .nav-link{font-size:13px;font-weight:500;color:var(--muted);padding:6px 14px;border-radius:999px;white-space:nowrap;transition:color .2s,background .2s}
+    .nav-link:hover{color:var(--white);background:rgba(255,255,255,.05)}
+    .nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+    .nav-signin{font-size:13px;color:var(--muted);padding:7px 14px;font-weight:500}
+    .nav-signin:hover{color:var(--white)}
+    .nav-os{display:inline-flex;align-items:center;gap:8px;background:var(--white);color:#000;padding:6px 16px 6px 14px;border-radius:999px;transition:opacity .2s,transform .2s}
+    .nav-os:hover{opacity:.85;transform:translateY(-1px)}
+    .nav-os img{height:13px;display:block}
+    .nav-os .os{font-size:13px;font-weight:900;font-style:italic;letter-spacing:-.01em;padding-left:0;line-height:1}
+    @media(max-width:900px){ .nav-center{display:none} }
+
+    /* HERO — subpage of ONEWAY, OS identity */
+    .hero{position:relative;min-height:84vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:124px 24px 60px;overflow:hidden}
+    .hero-inner{position:relative;z-index:2;max-width:760px;display:flex;flex-direction:column;align-items:center}
+    .page-crumb{display:inline-flex;align-items:center;gap:11px;margin-bottom:24px;opacity:0;animation:fadeUp .8s .1s var(--ease) forwards}
+    .page-crumb img{height:13px;display:block;opacity:.7}
+    .page-crumb .sl{color:var(--dim);font:500 14px 'ONEWAY Sans',sans-serif}
+    .page-crumb .crumb-here{font:900 12px var(--font);font-style:italic;letter-spacing:.04em;color:var(--off)}
+    /* Hero wordmark is the REAL ONEWAY logo asset + an 'OS' mark — never font text. */
+    .os-lock{display:inline-flex;align-items:center;gap:clamp(12px,1.8vw,22px);margin-bottom:14px;opacity:0;animation:fadeUp .9s .2s var(--ease) forwards}
+    .os-lock img{height:clamp(40px,7.4vw,92px);display:block;filter:drop-shadow(0 8px 40px rgba(255,255,255,.08))}
+    .os-lock .mk{font-family:var(--font);font-style:italic;font-weight:900;font-size:clamp(40px,7.4vw,92px);line-height:.8;letter-spacing:-.03em;color:#fff;padding-left:0}
+    .hero-sub{font-size:clamp(18px,2.2vw,26px);font-weight:700;letter-spacing:-.02em;color:#fff;opacity:0;animation:fadeUp .9s .3s var(--ease) forwards}
+    .hero-line{font-family:'ONEWAY Sans',sans-serif;font-size:clamp(14px,1.5vw,16px);color:var(--muted);max-width:56ch;margin:16px auto 28px;line-height:1.7;opacity:0;animation:fadeUp .9s .42s var(--ease) forwards}
+    .hero-cta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .9s .54s var(--ease) forwards}
+    .btn-primary{font:700 14px 'ONEWAY Sans',sans-serif;color:#000;background:var(--white);padding:13px 26px;border-radius:999px;transition:opacity .2s,transform .2s}
+    .btn-primary:hover{opacity:.88;transform:translateY(-2px)}
+    .btn-ghost{font:600 14px 'ONEWAY Sans',sans-serif;color:var(--off);border:1px solid var(--border-hi);padding:13px 24px;border-radius:999px;transition:border-color .2s,transform .2s}
+    .btn-ghost:hover{border-color:rgba(255,255,255,.4);transform:translateY(-2px)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+    /* sections */
+    .sec{position:relative;padding:100px 0;border-top:1px solid var(--border)}
+    .wrap{max-width:1080px;margin:0 auto;padding:0 40px;position:relative;z-index:2}
+    .sec-eyebrow{font:600 11px/1 'ONEWAY Sans',sans-serif;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);margin-bottom:14px}
+    .sec-h2{font-size:clamp(26px,3.4vw,42px);font-weight:800;letter-spacing:-.035em;line-height:1.05;margin-bottom:14px}
+    .sec-sub{font-family:'ONEWAY Sans',sans-serif;font-size:clamp(14px,1.4vw,16px);color:var(--muted);max-width:60ch;line-height:1.75}
+    .sec-head{margin-bottom:44px}
+
+    /* How it works — flow, with the Center Brain map blended into the background */
+    /* THE HIGHLIGHT — the Center's map gets its own stage instead of bleeding
+       behind the copy. Nothing renders on top of the text; the map is the thing
+       you look at. Edges fade into the page so it reads as a lit object, not a
+       boxed screenshot. */
+    /* Breaks out of the text column: the map needs room. brainmap places a
+       System's modules at ~0.57×W from centre, so the outer ring always sits
+       past the frame — that is the map continuing beyond view, not a crop, so
+       the edges DISSOLVE (soft radial mask) instead of cutting. */
+    /* The mask lives on the FRAME, not the canvas: the frame is what crops, so
+       the frame is what must dissolve. The map then reads as continuing beyond
+       view instead of being chopped at a hard edge. */
+    .hiw-stage{position:relative;width:min(1240px,96vw);margin-left:50%;transform:translateX(-50%);
+      height:clamp(380px,54vh,520px);margin-bottom:48px;overflow:hidden;
+      background:radial-gradient(130% 105% at 50% 50%,rgba(255,255,255,.05),transparent 68%);
+      -webkit-mask-image:radial-gradient(64% 78% at 50% 50%,#000 40%,transparent 96%);
+      mask-image:radial-gradient(64% 78% at 50% 50%,#000 40%,transparent 96%)}
+    /* brainmap holds a minimum ring radius (~168px) and puts a System's modules
+       at ~1.74x it — it needs ≈620px to draw its own geometry. Give the canvas
+       that width even when the frame is narrower, and centre it. */
+    .hiw-stage canvas{position:absolute;top:0;left:50%;transform:translateX(-50%);
+      width:max(100%,620px);height:100%;pointer-events:none}
+    @media(max-width:760px){ .hiw-stage{height:340px;margin-bottom:34px} }
+    .flow{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap}
+    .fnode{border:1px solid var(--border-hi);background:rgba(8,9,12,.66);backdrop-filter:blur(6px);border-radius:13px;padding:14px 18px;font:700 14px var(--font);letter-spacing:-.01em}
+    .fnode.brain{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.05)}
+    .farrow{color:var(--dim);font:700 16px 'ONEWAY Sans',sans-serif;padding:0 14px}
+    @media(max-width:760px){ .flow{flex-direction:column} .farrow{transform:rotate(90deg);padding:8px 0} }
+
+    /* card grids */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+    .card{border:1px solid var(--border);border-radius:14px;padding:20px;background:rgba(8,9,12,.5);transition:border-color .2s,transform .2s}
+    .card:hover{border-color:var(--border-hi);transform:translateY(-2px)}
+    .card .ch{display:flex;align-items:center;gap:9px;font:700 15px var(--font);letter-spacing:-.01em}
+    .card .ch .cd{width:7px;height:7px;border-radius:50%;background:#7c9cff;flex:none}
+    .card.os .ch .cd{background:#5fd0c8}
+    .card p{font-family:'ONEWAY Sans',sans-serif;font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:9px}
+
+    /* System Store */
+    .sys{display:flex;align-items:flex-start;gap:14px;border:1px solid var(--border);border-radius:14px;padding:16px 18px;background:rgba(8,9,12,.5);transition:border-color .2s,transform .2s}
+    .sys:hover{border-color:var(--border-hi);transform:translateY(-2px)}
+    .sys .si{width:34px;height:34px;border-radius:10px;flex:none;display:grid;place-items:center;border:1px solid var(--border-hi);background:rgba(255,255,255,.03)}
+    .sys .si svg{width:17px;height:17px;stroke:#9fb6e6;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .sys .snm{font:700 14.5px var(--font);letter-spacing:-.01em}
+    .sys .sdesc{font-family:'ONEWAY Sans',sans-serif;font-size:12px;color:var(--muted);line-height:1.5;margin-top:3px}
+    .sys .stag{display:inline-block;margin-top:9px;font:600 10px 'ONEWAY Sans',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);border:1px solid var(--border);border-radius:6px;padding:3px 8px}
+    .sys .stag.inc{color:#9ce8b6;border-color:rgba(74,222,128,.28)}
+    .store-note{font-family:'ONEWAY Sans',sans-serif;font-size:13.5px;color:var(--off);margin-top:22px;text-align:center}
+
+    /* pricing model */
+    .price{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:720px){ .price{grid-template-columns:1fr} }
+    .pcard{border:1px solid var(--border);border-radius:18px;padding:26px 24px;background:rgba(8,9,12,.55)}
+    .pcard.os{border-color:rgba(95,208,200,.22)}
+    .pcard .pk{font:700 11px 'ONEWAY Sans',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+    .pcard h3{font:800 22px var(--font);letter-spacing:-.02em;margin-bottom:14px}
+    .pcard ul{list-style:none;display:grid;gap:10px}
+    .pcard li{display:flex;gap:10px;align-items:flex-start;font-family:'ONEWAY Sans',sans-serif;font-size:13.5px;color:var(--off)}
+    .pcard li svg{flex:none;width:16px;height:16px;margin-top:1px;stroke:#5fd0c8;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+    .price-line{font-family:'ONEWAY Sans',sans-serif;font-size:14px;color:var(--off);text-align:center;margin-top:24px}
+
+    /* access tiers */
+    .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    @media(max-width:760px){ .tiers{grid-template-columns:1fr} }
+    .tier{border:1px solid var(--border);border-radius:16px;padding:22px;background:rgba(8,9,12,.5)}
+    .tier .tn{font:800 16px var(--font);font-style:italic;letter-spacing:-.01em;margin-bottom:8px}
+    .tier p{font-family:'ONEWAY Sans',sans-serif;font-size:13px;color:var(--muted);line-height:1.6}
+    .tier.hl{border-color:rgba(95,208,200,.26)}
+    .tiers-note{font-family:'ONEWAY Sans',sans-serif;font-size:12.5px;color:var(--dim);text-align:center;margin-top:18px}
+
+    /* lifecycle */
+    .life{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    @media(max-width:760px){ .life{grid-template-columns:1fr 1fr} }
+    .ls{border:1px solid var(--border);border-radius:14px;padding:18px;background:rgba(8,9,12,.5)}
+    .ls .lsn{font:700 10px 'ONEWAY Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+    .ls .lst{font:800 17px var(--font);letter-spacing:-.01em;margin-bottom:5px}
+    .ls p{font-family:'ONEWAY Sans',sans-serif;font-size:12.5px;color:var(--muted);line-height:1.5}
+
+    /* final cta */
+    .cta-band{text-align:center;padding:96px 24px}
+    .cta-band h2{font-size:clamp(28px,3.6vw,46px);font-weight:800;letter-spacing:-.035em;margin-bottom:22px}
+    .foot{border-top:1px solid var(--border);padding:46px 40px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;max-width:1080px;margin:0 auto;font-family:'ONEWAY Sans',sans-serif}
+    .foot img{height:14px;opacity:.8}.foot .sp{flex:1}
+    .foot a{font-size:13px;color:var(--muted)}.foot a:hover{color:#fff}
+  </style>
+<style>
+  .rot-word{display:inline-block;white-space:nowrap;background:linear-gradient(120deg,#f5c76a,#ff9a4a 60%,#ffd27a);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+</style>
+</head>
+<body>
+  <canvas id="hero-canvas"></canvas>
+
+  <nav class="nav" id="nav">
+    <a href="/" class="nav-logo" aria-label="Oneway"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/></a>
+    <div class="nav-center">
+      <a href="#how" class="nav-link">How it works</a>
+      <a href="#systems" class="nav-link">System Store</a>
+      <a href="#access" class="nav-link">Access</a>
+      <a href="/app" class="nav-link">Oneway App</a>
+    </div>
+    <div class="nav-right">
+      <a href="#cta" class="nav-os" title="Request access to Oneway OS"><img src="logo-black.png" alt="Oneway"/><span class="os">OS</span></a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-inner">
+      <h1 class="os-lock"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span class="mk">OS</span></h1>
+      <!-- ★ FOUNDER/383: "connect your x in one place for os". ★ FOUNDER/388:
+           the OS is opened from here, not only requested. -->
+      <div class="hero-sub">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</div>
+      <p class="hero-line">A casino, a hotel, a stadium, a city, a restaurant, a club — give it a Center, and give the people who care about it somewhere to gather.</p>
+      <div class="hero-cta">
+        <a href="#systems" class="btn-ghost">View Systems</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HOW IT WORKS — the Center's map is the HIGHLIGHT, not a wash behind the
+       copy. It gets its own stage; the text sits clear of it. -->
+  <section class="sec" id="how">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow">How it works</div>
+        <h2 class="sec-h2">One Center. Then everything connects.</h2>
+        <p class="sec-sub">Oneway OS gives every team, business, community, or project a Center. Brain sits underneath it, the System Store adds capabilities, and every installed System routes back through Brain — so the whole operation moves as one.</p>
+      </div>
+      <div class="hiw-stage">
+        <canvas id="os-brain" aria-hidden="true"></canvas>
+      </div>
+      <div class="flow">
+        <span class="fnode">Center</span><span class="farrow">→</span>
+        <span class="fnode brain">Brain</span><span class="farrow">→</span>
+        <span class="fnode">System Store</span><span class="farrow">→</span>
+        <span class="fnode">Installed Systems</span><span class="farrow">→</span>
+        <span class="fnode">Team · website · operations</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT'S INCLUDED -->
+  <section class="sec" id="included">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow">In Oneway OS</div>
+        <h2 class="sec-h2">The base layer, included.</h2>
+        <p class="sec-sub">Every Center starts with the essentials — the environment, the intelligence, and the front door. Everything else is included on top.</p>
+      </div>
+      <div class="grid">
+        <div class="card os"><div class="ch"><span class="cd"></span>Your whole operation, one view</div><p>Members, activity and the day-to-day in a single connected home.</p></div>
+        <div class="card os"><div class="ch"><span class="cd"></span>AI that remembers</div><p>Your organization remembers its members, conversations and how the work gets done.</p></div>
+        <div class="card os"><div class="ch"><span class="cd"></span>Capabilities, included</div><p>Install whatever your Center needs — each one connects back through Brain.</p></div>
+        <div class="card os"><div class="ch"><span class="cd"></span>Your team in one place</div><p>Departments, roles and the daily work, together.</p></div>
+        <div class="card os"><div class="ch"><span class="cd"></span>Set up in one guided run</div><p>Identity, Brain, Systems and team — ready from day one.</p></div>
+        <div class="card os"><div class="ch"><span class="cd"></span>One inbox for the public</div><p>Every message, request and signup arrives in one place.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SYSTEM STORE -->
+  <section class="sec" id="systems">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow">System Store</div>
+        <h2 class="sec-h2">Everything your Center needs.</h2>
+        <p class="sec-sub">Systems are installable capabilities — every one is included with your Center. Install whatever you need, unlimited; each connects back into Brain so the whole operation moves as one.</p>
+      </div>
+      <!-- BUILD-YOUR-STACK (Batch 2A) — Center popit at the core, System popits orbiting it.
+           Hover lights the connection line; click flies the System into the Center, pulses the
+           core, locks the line, and increments the active-systems count. Systems = real installable
+           capabilities (§22). One archetype: Architecture / Capability. -->
+      <div class="bys">
+        <div class="bys-stage" id="bysStage">
+          <svg class="bys-lines" id="bysLines" aria-hidden="true"></svg>
+          <div class="bys-center"><span class="bys-core"></span><span class="bys-cname">Your Center</span><span class="bys-count"><b id="bysN">0</b> / 8 systems active</span></div>
+          <button class="bys-sys" type="button" data-sys="Hotel Operations"><span class="bys-ic"><svg viewBox="0 0 24 24"><path d="M3 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16"/><path d="M13 9h6a1 1 0 0 1 1 1v11"/><path d="M3 21h18"/></svg></span><span class="bys-nm">Hotel Ops</span></button>
+          <button class="bys-sys" type="button" data-sys="Marketing"><span class="bys-ic"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></span><span class="bys-nm">Marketing</span></button>
+          <button class="bys-sys" type="button" data-sys="Website & Intake"><span class="bys-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span><span class="bys-nm">Website</span></button>
+          <button class="bys-sys" type="button" data-sys="Newsroom"><span class="bys-ic"><svg viewBox="0 0 24 24"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 8h3v9a2 2 0 0 1-2 2"/><path d="M7 9h7M7 12h7"/></svg></span><span class="bys-nm">Newsroom</span></button>
+          <button class="bys-sys" type="button" data-sys="Video Ads"><span class="bys-ic"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="14" height="14" rx="3"/><path d="M16 9l6-3v12l-6-3z"/></svg></span><span class="bys-nm">Video Ads</span></button>
+          <button class="bys-sys" type="button" data-sys="Social Autopilot"><span class="bys-ic"><svg viewBox="0 0 24 24"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></span><span class="bys-nm">Social</span></button>
+          <button class="bys-sys" type="button" data-sys="Team Operations"><span class="bys-ic"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg></span><span class="bys-nm">Team Ops</span></button>
+          <button class="bys-sys" type="button" data-sys="More Systems"><span class="bys-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="5" rx="1"/><rect x="13" y="10" width="8" height="11" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/></svg></span><span class="bys-nm">More</span></button>
+        </div>
+        <p class="bys-label">Every Center includes every System. <b>Install only what you need.</b></p>
+      </div>
+<style>
+  .bys{position:relative;max-width:760px;margin:0 auto}
+  .bys-stage{position:relative;width:100%;height:clamp(380px,52vw,560px)}
+  .bys-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+  .bys-lines line{stroke:rgba(var(--ow-h1),.18);stroke-width:1.5;transition:stroke .25s}
+  .bys-lines line.lit{stroke:rgba(236,168,58,.6);stroke-width:2}
+  .bys-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:clamp(126px,17vw,166px);height:clamp(126px,17vw,166px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;text-align:center;z-index:2;pointer-events:none;border-radius:46px 38px 44px 40px / 42px 46px 38px 44px;
+    background:radial-gradient(58% 42% at 42% 16%,rgba(255,255,255,.55),transparent 62%),radial-gradient(120% 84% at 50% 122%,rgba(255,138,66,.5),transparent 62%),linear-gradient(160deg,rgba(236,168,58,.95),rgba(255,138,66,.7));
+    box-shadow:inset 0 5px 5px rgba(255,255,255,.7),inset 0 -26px 40px rgba(120,60,0,.3),inset 0 0 28px rgba(236,168,58,.6),0 0 0 3px rgba(236,168,58,.5),0 22px 50px -14px rgba(0,0,0,.6),0 0 90px -10px rgba(236,168,58,.5)}
+  .bys-center::before{content:"";position:absolute;inset:8px;border-radius:inherit;border:1.5px dashed rgba(255,255,255,.4);filter:url(#poSeam);pointer-events:none;z-index:1}
+  .bys-center::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:0 0 0 0 rgba(236,168,58,.5)}
+  .bys-center.pulse::after{animation:bysRing .6s ease}
+  @keyframes bysRing{0%{box-shadow:0 0 0 0 rgba(236,168,58,.55)}100%{box-shadow:0 0 0 34px rgba(236,168,58,0)}}
+  .bys-center>*{position:relative;z-index:2}
+  .bys-core{width:32px;height:32px;border-radius:50%;background:radial-gradient(circle,#fff,rgba(255,236,200,.6) 60%,transparent 72%);box-shadow:0 0 18px 4px rgba(255,236,200,.8);animation:bysCore 3s ease-in-out infinite}
+  @keyframes bysCore{0%,100%{transform:scale(1);opacity:.85}50%{transform:scale(1.18);opacity:1}}
+  .bys-cname{font:800 14px var(--font);color:#3a2410;letter-spacing:-.01em}
+  .bys-count{font-family:var(--font-atmos);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(58,36,16,.82)}
+  .bys-count b{color:#3a2410}
+  .bys-sys{position:absolute;left:50%;top:50%;width:clamp(74px,9.5vw,92px);height:clamp(74px,9.5vw,92px);transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;border:0;color:#fff;z-index:1;border-radius:30px 24px 28px 25px / 26px 30px 24px 28px;
+    background:radial-gradient(40% 26% at 40% 14%,rgba(255,255,255,.7),transparent 70%),radial-gradient(120% 84% at 50% 122%,rgba(var(--ow-h2),.8),transparent 62%),linear-gradient(160deg,rgba(var(--ow-h1),.9),rgba(var(--ow-h2),.5));
+    box-shadow:inset 0 4px 4px rgba(255,255,255,.7),inset 0 -16px 26px rgba(0,0,0,.18),inset 0 0 18px rgba(var(--ow-h1),.55),0 0 0 2px rgba(var(--ow-h1),.5),0 12px 26px -8px rgba(0,0,0,.5),0 0 40px -8px rgba(var(--ow-h1),.45);
+    transition:transform .3s cubic-bezier(.34,1.5,.5,1),box-shadow .3s,filter .3s}
+  .bys-sys::before{content:"";position:absolute;inset:6px;border-radius:inherit;border:1.4px dashed rgba(255,255,255,.4);filter:url(#poSeam);pointer-events:none}
+  .bys-sys .bys-ic svg{width:25px;height:25px;stroke:#fff;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .bys-nm{font:700 10.5px var(--font);letter-spacing:.01em;text-align:center;line-height:1.05}
+  .bys-sys:hover{filter:brightness(1.12)}
+  .bys-sys.installed{background:radial-gradient(40% 26% at 40% 14%,rgba(255,255,255,.7),transparent 70%),radial-gradient(120% 84% at 50% 122%,rgba(255,138,66,.6),transparent 62%),linear-gradient(160deg,rgba(236,168,58,.92),rgba(255,138,66,.55));box-shadow:inset 0 4px 4px rgba(255,255,255,.7),inset 0 0 20px rgba(236,168,58,.55),0 0 0 2px rgba(236,168,58,.7),0 0 44px -6px rgba(236,168,58,.7)}
+  .bys-sys.installed .bys-ic svg{stroke:#3a2410}
+  .bys-sys.installed .bys-nm{color:#3a2410}
+  .bys-sys.installed::after{content:"\2713";position:absolute;top:-6px;right:-6px;width:21px;height:21px;border-radius:50%;display:grid;place-items:center;font:800 11px var(--font);color:#3a2410;background:linear-gradient(150deg,#fff,#f4c06a);box-shadow:0 2px 8px rgba(0,0,0,.45)}
+  .bys-sys.flying{transition:transform .5s cubic-bezier(.4,0,.2,1)}
+  .bys-label{text-align:center;font-family:var(--font);font-size:14.5px;color:rgba(255,255,255,.72);margin-top:24px}
+  .bys-label b{color:#fff;font-weight:700}
+  @media (prefers-reduced-motion:reduce){ .bys-core,.bys-sys,.bys-center.pulse::after{animation:none!important} .bys-sys.flying{transition:none} }
+  @media(max-width:640px){
+    .bys-stage{height:auto;display:flex;flex-wrap:wrap;justify-content:center;gap:11px}
+    .bys-lines{display:none}
+    .bys-center{position:relative;left:auto;top:auto;transform:none;flex:0 0 100%;width:148px;height:148px;margin:0 auto 4px}
+    .bys-sys{position:relative!important;left:auto!important;top:auto!important;transform:none!important;width:84px;height:84px}
+  }
+</style>
+<script>
+(function(){
+  var stage=document.getElementById('bysStage'); if(!stage) return;
+  var svg=document.getElementById('bysLines'), center=stage.querySelector('.bys-center'),
+      systems=Array.prototype.slice.call(stage.querySelectorAll('.bys-sys')), nEl=document.getElementById('bysN'),
+      ns='http://www.w3.org/2000/svg', installed=0;
+  function layout(){
+    var w=stage.clientWidth, h=stage.clientHeight;
+    while(svg.firstChild) svg.removeChild(svg.firstChild);
+    if(w<640){ systems.forEach(function(s){ s.style.left=''; s.style.top=''; }); return; }
+    var cx=w/2, cy=h/2, rx=w*0.40, ry=h*0.40;
+    systems.forEach(function(s,i){
+      var a=(-90 + i*(360/systems.length))*Math.PI/180, x=cx+Math.cos(a)*rx, y=cy+Math.sin(a)*ry;
+      s.style.left=x+'px'; s.style.top=y+'px';
+      var ln=document.createElementNS(ns,'line'); ln.setAttribute('x1',cx);ln.setAttribute('y1',cy);ln.setAttribute('x2',x);ln.setAttribute('y2',y);
+      if(s.classList.contains('installed')) ln.setAttribute('class','lit'); s._line=ln; svg.appendChild(ln);
+    });
+  }
+  function install(s){
+    if(s.classList.contains('installed')) return;
+    s.classList.add('installed'); if(s._line) s._line.setAttribute('class','lit');
+    installed++; if(nEl) nEl.textContent=installed;
+    center.classList.remove('pulse'); void center.offsetWidth; center.classList.add('pulse');
+    if(!matchMedia('(prefers-reduced-motion: reduce)').matches && stage.clientWidth>=640){
+      var sr=stage.getBoundingClientRect(), r=s.getBoundingClientRect(),
+          dx=(sr.width/2-((r.left-sr.left)+r.width/2))*.4, dy=(sr.height/2-((r.top-sr.top)+r.height/2))*.4;
+      s.classList.add('flying'); s.style.transform='translate(calc(-50% + '+dx+'px), calc(-50% + '+dy+'px)) scale(.84)';
+      setTimeout(function(){ s.style.transform=''; setTimeout(function(){ s.classList.remove('flying'); },480); }, 300);
+    }
+  }
+  systems.forEach(function(s){
+    s.addEventListener('click', function(){ install(s); });
+    s.addEventListener('mouseenter', function(){ if(s._line && !s.classList.contains('installed')) s._line.style.stroke='rgba(255,255,255,.4)'; });
+    s.addEventListener('mouseleave', function(){ if(s._line && !s.classList.contains('installed')) s._line.style.stroke=''; });
+  });
+  layout();
+  var t; addEventListener('resize', function(){ clearTimeout(t); t=setTimeout(layout,140); }, {passive:true});
+})();
+</script>
+    </div>
+  </section>
+
+  <!-- PRICING MODEL -->
+  <!-- ★ FOUNDER, 2026-10-08: ONEWAY OS (free) · Business OS (the former OS+ and OS Max: Brain, Systems,
+       Agents, Cross Projection, operational intelligence) · Developer OS. "these terms are leaving".
+       ★ FOUNDER/493 #7: "OS+ and Max leave the main page." They live here, on
+       the OS's own page, as the ladder 411 drew — ONEWAY OS, then OS+, then OS
+       Max — and, per 412, WITHOUT prices yet ("put pricing … inside os and app
+       … but not yet"). This section used to show $399 and $189 a month: prices
+       the Economics document retired (Free · OS+ · OS Max), shown before the
+       founder said to show any. -->
+  <section class="sec" id="tiers">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow">Room to grow</div>
+        <h2 class="sec-h2">Oneway OS, Business OS and Developer&nbsp;OS.</h2>
+      </div>
+      <div class="tiers">
+        <div class="tier"><div class="tn">Oneway OS</div><p>A free operating environment with the basic capabilities of a Center: its public side, its community, and the tools to run it.</p></div>
+        <div class="tier hl"><div class="tn">Oneway Business OS</div><p>The full business operating system: the Brain, Systems, Agents, Cross Projection and operational intelligence.</p></div>
+        <div class="tier os hl"><div class="tn">Oneway Developer OS</div><p>The developer platform for building applications, systems, integrations, agents and custom experiences on Oneway.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCESS / BRAIN DISTINCTION -->
+  <section class="sec" id="access">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow">Brain access</div>
+        <h2 class="sec-h2">Brain access by plan.</h2>
+      </div>
+      <div class="tiers">
+        <div class="tier"><div class="tn">Free</div><p>Memory that makes Oneway more useful over time — it remembers the people, places and events you interact with.</p></div>
+        <div class="tier hl"><div class="tn">Oneway+</div><p>Your private Personal Brain — your own map, deeper recommendations and more control over what it remembers.</p></div>
+        <div class="tier os hl"><div class="tn">Oneway Business OS</div><p>Operational AI for your whole organization — the Center Brain runs across your team, members, messaging, marketing and operations.</p></div>
+      </div>
+      <p class="tiers-note">When a user joins a Center, the Center Brain learns only permitted facts needed to operate it — membership, role, and activity inside that Center. Private personal context does not automatically leak into Centers.</p>
+    </div>
+  </section>
+
+  <!-- CENTER LIFECYCLE -->
+  <section class="sec" id="lifecycle">
+    <div class="wrap">
+      <div class="sec-head">
+        <div class="sec-eyebrow">How a Center grows</div>
+        <h2 class="sec-h2">Start as a community. Grow into an operation.</h2>
+      </div>
+      <div class="life">
+        <div class="ls"><div class="lsn">Stage 1</div><div class="lst">Community</div><p>Members, channels, events, and shared resources.</p></div>
+        <div class="ls"><div class="lsn">Stage 2</div><div class="lst">Connected</div><p>+ a public website, public intake, and Brain.</p></div>
+        <div class="ls"><div class="lsn">Stage 3</div><div class="lst">Operational</div><p>+ installed Systems, a Team Portal, and staff.</p></div>
+        <div class="ls"><div class="lsn">Stage 4</div><div class="lst">Enterprise</div><p>+ multiple Systems, departments, and advanced Brain.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="cta-band" id="cta">
+    <h2>Build your Center on Oneway OS.</h2>
+    <div class="hero-cta" style="justify-content:center">
+    </div>
+    <p style="font-family:'ONEWAY Sans',sans-serif;font-size:12px;letter-spacing:.04em;color:var(--dim);margin-top:26px">Built for communities, organizations, businesses, and places.</p>
+  </section>
+
+  <footer class="foot">
+    <a href="/"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/></a>
+    <span class="sp"></span>
+    <a href="/">Oneway</a>
+    <a href="/app">Oneway App</a>
+    <a href="/">Privacy</a>
+  </footer>
+
+  <script>
+  /* FULL-PAGE 3D PARTICLE FIELD — shared geometric backdrop */
+  (function () {
+    const canvas = document.getElementById('hero-canvas'); if(!canvas) return;
+    const ctx = canvas.getContext('2d'); let W,H,CX,CY;
+    const DEPTH=1600,FOV=900,isMob=(window.owSafeFloor?window.owSafeFloor():(window.matchMedia&&matchMedia('(pointer:coarse)').matches)),PCOUNT=isMob?90:200,SCOUNT=isMob?8:16;
+    function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight;CX=W/2;CY=H/2;}
+    addEventListener('resize',resize,{passive:true});resize();
+    const WHITE=[255,255,255],CYAN=[6,182,212],PURPLE=[167,139,250],AMBER=[245,158,11];
+    /* ONE TRIAD, SHARED BY ALL FIVE GALAXIES — see oneway-galaxy.js.
+       Re-tints these arrays in place from the person's hue, which now comes
+       from the ACCOUNT rather than this browser. White is never tinted: it is
+       the light, not an accent. */
+    if (window.OW && window.OW.galaxy) { window.OW.galaxy.follow({ CYAN, PURPLE, AMBER }); }
+    function rndCol(){const r=Math.random();if(r<0.06)return CYAN;if(r<0.11)return PURPLE;if(r<0.15)return AMBER;return WHITE;}
+    function project(x,y,z){if(z<=-FOV+1)return null;const s=FOV/(FOV+z);return{sx:CX+x*s,sy:CY+y*s,s};}
+    function rot3(vx,vy,vz,rx,ry,rz){let y1=vy*Math.cos(rx)-vz*Math.sin(rx),z1=vy*Math.sin(rx)+vz*Math.cos(rx);
+      let x2=vx*Math.cos(ry)+z1*Math.sin(ry),z2=-vx*Math.sin(ry)+z1*Math.cos(ry);
+      let x3=x2*Math.cos(rz)-y1*Math.sin(rz),y3=x2*Math.sin(rz)+y1*Math.cos(rz);return[x3,y3,z2];}
+    function mkP(init){const col=rndCol(),acc=col!==WHITE;return{x:(Math.random()-.5)*W*3.5,y:(Math.random()-.5)*H*3.5,
+      z:init?Math.random()*DEPTH:DEPTH,vz:-(0.25+Math.random()*0.55),col,
+      alpha:acc?(0.45+Math.random()*0.45):(0.12+Math.random()*0.55),r:acc?(0.8+Math.random()*2.2):(0.35+Math.random()*1.4)};}
+    const particles=Array.from({length:PCOUNT},()=>mkP(true));
+    function mkS(){const cols=[CYAN,PURPLE,AMBER],col=cols[Math.floor(Math.random()*3)],sides=Math.random()>.45?3:4,size=28+Math.random()*88,verts=[];
+      for(let i=0;i<sides;i++){const a=(i/sides)*Math.PI*2;verts.push([Math.cos(a)*size,Math.sin(a)*size,(Math.random()-.5)*size*.6]);}
+      return{x:(Math.random()-.5)*W*3,y:(Math.random()-.5)*H*2.5,z:120+Math.random()*1400,vz:-(0.06+Math.random()*0.16),
+        rx:Math.random()*6.28,drx:(Math.random()-.5)*.006,ry:Math.random()*6.28,dry:(Math.random()-.5)*.007,
+        rz:Math.random()*6.28,drz:(Math.random()-.5)*.005,verts,col,alpha:0.18+Math.random()*0.28};}
+    const shapes=Array.from({length:SCOUNT},mkS);
+    let mx=.5,my=.5;addEventListener('mousemove',e=>{mx=e.clientX/W;my=e.clientY/H;},{passive:true});
+    function frame(){ctx.clearRect(0,0,W,H);const pmx=(mx-.5)*90,pmy=(my-.5)*55;
+      for(let i=0;i<shapes.length;i++){const sh=shapes[i];sh.rx+=sh.drx;sh.ry+=sh.dry;sh.rz+=sh.drz;sh.z+=sh.vz;
+        if(sh.z<-FOV+50){Object.assign(sh,mkS());sh.z=DEPTH;continue;}
+        const pts=sh.verts.map(v=>{const[rx,ry,rz]=rot3(v[0],v[1],v[2],sh.rx,sh.ry,sh.rz);return project(sh.x+rx+pmx*.6,sh.y+ry+pmy*.6,sh.z+rz);});
+        if(pts.some(p=>!p))continue;const s0=pts[0].s,alpha=sh.alpha*Math.min(1,s0*1.4);if(alpha<.015)continue;
+        const[r,g2,bl]=sh.col;ctx.beginPath();ctx.moveTo(pts[0].sx,pts[0].sy);
+        for(let j=1;j<pts.length;j++)ctx.lineTo(pts[j].sx,pts[j].sy);ctx.closePath();
+        ctx.strokeStyle=`rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;ctx.lineWidth=Math.max(.25,s0*1.1);ctx.stroke();}
+      for(let i=0;i<particles.length;i++){const p=particles[i];p.z+=p.vz;
+        if(p.z<-FOV+50){Object.assign(particles[i],mkP(false));continue;}
+        const proj=project(p.x+pmx,p.y+pmy,p.z);if(!proj)continue;const{sx,sy,s}=proj;
+        if(sx<-60||sx>W+60||sy<-60||sy>H+60)continue;const size=p.r*s*2.2,alpha=p.alpha*Math.min(1,s*2);
+        if(alpha<.01||size<.15)continue;const[r,g2,bl]=p.col;ctx.beginPath();ctx.arc(sx,sy,Math.max(.2,size),0,6.28);
+        ctx.fillStyle=`rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;ctx.fill();}
+      requestAnimationFrame(frame);}
+    requestAnimationFrame(frame);
+  }());
+  (function(){const n=document.getElementById('nav');const s=()=>n.classList.toggle('scrolled',scrollY>20);addEventListener('scroll',s,{passive:true});s();}());
+  </script>
+  <script src="/frontend/shared/brainmap.js?v=fbe668b4"></script>
+  <script>
+    (function(){
+      try{ var c=document.getElementById('os-brain');
+        if(c && window.OW_BRAINMAP){
+          var ctl=window.OW_BRAINMAP.mount(c, { tree: window.OW_BRAINMAP.presetOS('Seaside Center') });
+          // the stage has a definite size now (it is no longer the whole section):
+          // re-read it once laid out, and keep the map honest across resizes.
+          if(ctl && ctl.resize){
+            requestAnimationFrame(function(){ ctl.resize(); });
+            addEventListener('resize', function(){ ctl.resize(); }, {passive:true});
+          }
+        }
+      }catch(_){}
+    })();
+  </script>
+
+<!-- shared world atmosphere — same faint nebula/ghost field as the main landing (index.html),
+     fixed behind everything, pointer-events:none, clipped. Brings app/os into the one world. -->
+<style>
+  .ow-amb-layer{position:fixed;inset:0;pointer-events:none;z-index:-1;overflow:hidden}
+  .ow-amb{position:absolute;pointer-events:none}
+  .ow-amb.neb{border-radius:50%;filter:blur(50px)}
+  .ow-amb.ghost{border:1px solid rgba(170,180,255,.05);border-radius:7px}
+</style>
+<script>
+(function(){
+  var amb=document.createElement('div'); amb.className='ow-amb-layer'; document.body.appendChild(amb);
+  var hues=['139,92,255','93,226,255','236,168,58','139,92,255','93,226,255','139,92,255'];
+  for(var n=0;n<6;n++){ var neb=document.createElement('div'); neb.className='ow-amb neb';
+    var hh=hues[n%hues.length]; var sz=(220+Math.random()*240)|0;
+    neb.style.width=sz+'px'; neb.style.height=sz+'px';
+    neb.style.background='radial-gradient(circle,rgba('+hh+',.08),transparent 70%)';
+    neb.style.left=(Math.random()*88)+'%'; neb.style.top=(Math.random()*94)+'%'; amb.appendChild(neb); }
+  for(var gi=0;gi<5;gi++){ var gh=document.createElement('div'); gh.className='ow-amb ghost';
+    var gs=(50+Math.random()*80)|0; gh.style.width=gs+'px'; gh.style.height=gs+'px';
+    gh.style.transform='rotate('+(Math.random()*60-30).toFixed(0)+'deg)';
+    gh.style.left=(Math.random()*88)+'%'; gh.style.top=(Math.random()*94)+'%'; amb.appendChild(gh); }
+})();
+</script>
+
+<!-- CANONICAL WORLD LANGUAGE (Batch 1 convergence) — converge os.html onto index.html: violet/cyan
+     world base + GOLD as the OS identity accent, small tracked labels in the platform family, gummy Popit material on
+     flat-glass panels (stitched #poSeam, hand-cut radius, hue glow). No new sections; convergence only. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="poSeam" x="-20%" y="-20%" width="140%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.012 0.018" numOctaves="2" seed="7" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter></svg>
+<style>
+  :root{ --ow-h1:139,92,255; --ow-h2:93,226,255; --ow-gold:236,168,58;
+    --font-atmos:'ONEWAY Sans',-apple-system,system-ui,sans-serif;
+    --muted:rgba(255,255,255,0.66); }
+  .sec-eyebrow,.page-crumb .crumb-here{font-family:var(--font-atmos)!important;letter-spacing:.22em}
+  .sec-h2,.hero-sub,.cta-band h2{letter-spacing:-.03em;font-weight:900}
+  .hero-line{color:rgba(255,255,255,.8)!important}
+  /* gummy Popit material on every flat-glass panel */
+  .card,.fnode,.sys,.pcard,.tier,.ls{
+    position:relative;border:0!important;border-radius:20px 15px 18px 16px!important;
+    background:radial-gradient(120% 70% at 28% -12%,rgba(var(--ow-h1),.2),transparent 60%),linear-gradient(180deg,rgba(34,33,58,.86),rgba(13,13,26,.93))!important;
+    box-shadow:inset 0 2px 1px rgba(255,255,255,.16),inset 0 -18px 36px rgba(0,0,0,.34),0 0 0 1.5px rgba(var(--ow-h1),.3),0 18px 40px -26px rgba(0,0,0,.6),0 0 50px -34px rgba(var(--ow-h1),.5)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(150%);backdrop-filter:blur(12px) saturate(150%)}
+  .card::before,.fnode::before,.sys::before,.pcard::before,.tier::before,.ls::before{content:"";position:absolute;inset:7px;border-radius:inherit;pointer-events:none;z-index:0;border:1.4px dashed rgba(255,255,255,.16);filter:url(#poSeam);mix-blend-mode:screen;opacity:.5}
+  .card>*,.sys>*,.pcard>*,.tier>*,.ls>*,.fnode{position:relative;z-index:1}
+  .card:hover,.sys:hover,.fnode:hover{transform:translateY(-3px)}
+  /* OS GOLD identity accents over the violet/cyan world base */
+  .fnode.brain,.pcard.os{box-shadow:inset 0 2px 1px rgba(255,255,255,.18),0 0 0 1.5px rgba(var(--ow-gold),.55),0 0 26px -6px rgba(var(--ow-gold),.7)!important}
+  .card.os .cd{background:rgb(var(--ow-gold))!important;box-shadow:0 0 8px rgb(var(--ow-gold))}
+  .sys .si{border:0!important;background:radial-gradient(70% 55% at 38% 20%,rgba(255,255,255,.36),transparent 70%),linear-gradient(150deg,rgb(var(--ow-h1)),rgb(var(--ow-h2)))!important}
+  .sys .si svg{stroke:#fff!important}
+  .sys .stag{border:0!important;color:#fff!important;border-radius:9px 6px 8px 7px!important;
+    background:radial-gradient(80% 62% at 38% 14%,rgba(255,255,255,.28),transparent 70%),linear-gradient(160deg,rgba(var(--ow-gold),.55),rgba(var(--ow-gold),.32))!important}
+  .pcard li svg{stroke:rgb(var(--ow-h2))!important}
+  /* ★ FOUNDER/493 #8: "no more grey popits around the platform or dotted
+     ones." The dashed inner seam is gone from every card on this page, as it
+     went from the main landing page on 09-23; the lit rim is the card. */
+  .bys-center::before,.bys-sys::before,.card::before,.fnode::before,.sys::before,.pcard::before,.tier::before,.ls::before{display:none}
+
+  /* ★ FOUNDER/493 #1: "Make selective server beta … and remove weirdly colored
+     text like that text." The beta line was tinted (violet here, teal on the OS
+     page, indigo on the main page), in tracked capitals — a colour and a voice
+     no other sentence on the page uses. It reads as a plain line now: the
+     page's quiet ink, sentence case (467), at a size that can be read. */
+  .soon,.hero-beta{color:rgba(255,255,255,.62)!important;text-transform:none!important;
+    letter-spacing:0!important;font-size:13px!important;font-weight:500!important}
+</style>
+<script>
+(function(){
+  var el=document.getElementById('rotWord'); if(!el) return;
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var words=['casino','hotel','city','school','church','club','restaurant','stadium','museum','convention center','neighborhood','business','brand','organization','family'];
+  var i=0; el.style.transition='opacity .22s';
+  setInterval(function(){ i=(i+1)%words.length; el.style.opacity='0'; setTimeout(function(){ el.textContent=words[i]; el.style.opacity='1'; },220); }, 2200);
+})();
+</script>
+</body>
+</html>
