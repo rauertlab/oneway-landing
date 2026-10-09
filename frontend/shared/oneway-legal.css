@@ -1,0 +1,122 @@
+/* ONEWAY — THE LEGAL PAGES (frontend/shared/oneway-legal.css)
+   privacy.html, terms.html, data-deletion.html.
+
+   ★ The founder, chat 2026-10-05: "update this page to our font and clean modern layout corresponding
+     to users light/dark mode setting". This replaces the red-hero design that founder/493 locked on
+     2026-09: the face is ONEWAY Sans (oneway-fonts.css, linked first), the ground follows the person's
+     theme, and nothing here is a filled grey button (S20): a hairline, or plain type.
+
+   THEME, the way the App does it (oneway-popit.css): dark is the default; the person's system setting
+   decides when nothing is chosen; an explicit data-theme="light" or "dark" on <html> wins over both. The
+   small script in each page reads the App's own choice (ow_theme) and sets that attribute. It only reads. */
+
+:root{
+  --lg-bg:#000; --lg-ink:#fff; --lg-ink2:rgba(255,255,255,.74); --lg-ink3:rgba(255,255,255,.54);
+  --lg-rim:rgba(255,255,255,.13); --lg-card:rgba(255,255,255,.035); --lg-bar:rgba(0,0,0,.72);
+  --lg-accent:#ff5a5f; --lg-face:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:light){
+  html:not([data-theme="dark"]):not([data-theme="light"]){
+    --lg-bg:#f5f4fa; --lg-ink:#14131f; --lg-ink2:rgba(20,19,31,.84); --lg-ink3:rgba(20,19,31,.62);
+    --lg-rim:rgba(20,19,31,.13); --lg-card:rgba(255,255,255,.72); --lg-bar:rgba(245,244,250,.82);
+    --lg-accent:#c4202a; color-scheme:light;
+  }
+}
+html[data-theme="light"]{
+  --lg-bg:#f5f4fa; --lg-ink:#14131f; --lg-ink2:rgba(20,19,31,.84); --lg-ink3:rgba(20,19,31,.62);
+  --lg-rim:rgba(20,19,31,.13); --lg-card:rgba(255,255,255,.72); --lg-bar:rgba(245,244,250,.82);
+  --lg-accent:#c4202a; color-scheme:light;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html,body{min-height:100vh;background:var(--lg-bg);color:var(--lg-ink);font-family:var(--lg-face);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+/* ── the bar ───────────────────────────────────────────────────────────── */
+.top-bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
+  height:60px;padding:0 max(20px,calc((100% - 1040px)/2));background:#000}
+.logo{display:inline-flex;align-items:center}
+.logo .slot{height:20px;width:auto;display:block;opacity:0}   /* the dock: #flyLogo comes to rest here */
+.top-nav{display:flex;align-items:center;gap:22px}
+.top-nav a{font-size:14px;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none;transition:color .15s}
+.top-nav a:hover{color:#fff}
+.top-nav a.signin{color:#fff;padding:7px 15px;border-radius:999px;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
+.top-nav a.signin:hover{box-shadow:0 0 0 1px rgba(255,255,255,.7)}
+@media (max-width:720px){.top-nav{gap:14px}.top-nav a.wide{display:none}}
+
+.back-link{font-size:14px;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none}
+.back-link:hover{color:#fff}
+
+/* ── the title: the red hero stays, as the founder locked it (founder/493) and kept it on 2026-10-05:
+   "keep the red header though dont completely redo it". Red in both themes; only the face is new. ── */
+.hero{background:#cc0000;padding:72px 24px 80px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 4px)}
+.hero-mark{display:block;width:min(46vw,340px);height:auto;margin:0 auto 26px;visibility:hidden}   /* holds the start geometry */
+#flyLogo{filter:brightness(0) invert(1) drop-shadow(0 0 0 #fff) drop-shadow(0 0 0 #fff) drop-shadow(0 0 0 #fff);position:fixed;top:0;left:0;z-index:200;width:min(46vw,340px);height:auto;pointer-events:none;
+  transform-origin:center center;will-change:transform;opacity:0;animation:lg-fly .7s .1s ease forwards}
+@keyframes lg-fly{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){#flyLogo{animation:none;opacity:1}}
+.hero-eyebrow{position:relative;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:20px}
+.hero h1{position:relative;font-size:clamp(48px,10vw,96px);font-weight:900;letter-spacing:-.04em;line-height:.95;color:#fff;text-transform:uppercase;margin-bottom:28px}
+.hero-sub{position:relative;font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.78);max-width:520px;margin:0 auto;line-height:1.6}
+
+/* ── the page: the Settings menu's grammar (oneway-popit.css, SETTINGS AND PRIVACY, founder/501): one flat
+   list, small grey section headings, a label and its words on each row. No cards, no boxes, no lines.
+   The founder, 2026-10-05: "layout like our settings menu no ai lines or boxes or cards". ── */
+.wrap{max-width:640px;margin:0 auto;padding:44px 24px 120px}
+.scope{font-size:17px;line-height:1.6;color:var(--lg-ink2);margin:0}
+.scope strong{color:var(--lg-ink);font-weight:600}
+h2{font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--lg-ink3);margin:40px 0 6px;scroll-margin-top:80px}
+h2:first-child{margin-top:0}
+h3{font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--lg-ink3);margin:28px 0 4px}
+p{font-size:15px;color:var(--lg-ink2);line-height:1.6;margin:8px 0}
+ul,ol{margin:4px 0 8px;padding:0;list-style:none}
+li{font-size:15px;color:var(--lg-ink2);line-height:1.55;padding:7px 0}
+a{color:var(--lg-ink);text-decoration:underline;text-decoration-color:var(--lg-ink3);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--lg-accent)}
+strong{color:var(--lg-ink);font-weight:600}
+.divider{display:none}
+
+/* the contents: one plain list, like a Settings section */
+.toc{display:block;margin:30px 0 0}
+.toc-h{display:block;font-size:12.5px;font-weight:600;color:var(--lg-ink3);margin-bottom:2px}
+.toc a{display:block;font-size:15px;color:var(--lg-ink2);text-decoration:none;padding:5px 0}
+.toc a:hover{color:var(--lg-ink)}
+
+/* a table is a list of rows: the label, then its words */
+.data-table{width:100%;border-collapse:collapse;margin:2px 0 8px}
+.data-table thead{display:none}
+.data-table tbody,.data-table tr{display:block}
+.data-table tr{display:grid;grid-template-columns:minmax(110px,30%) 1fr;column-gap:20px;padding:11px 2px}
+.data-table td{display:block;grid-column:2;padding:0;font-size:15px;line-height:1.55;color:var(--lg-ink2)}
+.data-table td:first-child{grid-column:1;grid-row:1 / span 4;font-weight:500;color:var(--lg-ink)}
+.data-table td:first-child:only-child{grid-column:1 / -1}
+.data-table td:nth-child(3){font-size:13.5px;color:var(--lg-ink3);margin-top:2px}
+@media (max-width:600px){
+  .data-table tr{grid-template-columns:1fr;padding:11px 2px}
+  .data-table td,.data-table td:first-child{grid-column:1;grid-row:auto}
+  .data-table td:first-child{margin-bottom:2px}
+}
+
+.contact-block{margin-top:44px}
+.contact-block h3,.contact-block .block-label{margin:0 0 4px;font-size:12.5px;font-weight:600;color:var(--lg-ink3)}
+.contact-block p{margin:4px 0 0}
+.contact-meta{font-size:13px;color:var(--lg-ink3);margin-top:8px!important}
+
+/* data deletion: sections, steps, a note */
+.block{margin-bottom:36px}
+.block-label{font-size:12.5px;font-weight:600;color:var(--lg-ink3);margin:0 0 2px}
+.block h2{font-size:19px;font-weight:700;letter-spacing:-.01em;color:var(--lg-ink);margin:0 0 8px}
+.steps{counter-reset:s;margin:8px 0 12px}
+.steps li{padding:9px 0 9px 30px;position:relative}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:2px;top:9px;font-size:14px;font-weight:600;color:var(--lg-ink3)}
+.warn-box{margin:14px 0}
+.warn-box p{margin:0;font-size:14px;color:var(--lg-ink2)}
+
+footer{padding:28px max(24px,calc((100% - 1040px)/2));display:flex;align-items:center;
+  justify-content:space-between;font-size:13px;color:var(--lg-ink3);flex-wrap:wrap;gap:14px}
+footer a{color:var(--lg-ink3);text-decoration:none}
+footer a:hover{color:var(--lg-ink)}

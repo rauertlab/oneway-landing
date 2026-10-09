@@ -2596,9 +2596,11 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
 .po-act{font:inherit;font-family:var(--ow-font);font-weight:560;font-size:12.5px;
   color:var(--ow-ink);cursor:pointer;border:0;padding:8px 14px;
   border-radius:var(--ow-btn-r,12px 10px 13px 11px);
-  background:linear-gradient(180deg,rgba(var(--h,var(--ow-h1)),.14),
-                                    rgba(var(--h,var(--ow-h1)),.06));
-  box-shadow:inset 0 1px 0 var(--ow-lift), 0 0 0 1px rgba(var(--h,var(--ow-h1)),.34);
+  /* TRANSPARENT AND CLEAN (founder, 2026-10-04: "no more ugly grey buttons ever, transparent clean"):
+     an action is its words in a hairline, never a tinted slab. A person's colour shows on hover and
+     on the held state (data-act="on"), not as a fill that reads as grey on a dark ground. */
+  background:transparent;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 30%,transparent);
   transition:transform .16s var(--ow-spring), box-shadow .16s var(--ow-ease),
              background .16s var(--ow-ease), opacity .16s}
 .po-act--wide{width:100%;text-align:left;display:flex;flex-direction:column;gap:1px}
@@ -2631,8 +2633,7 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
 .po-sheet__body .po-act--wide em{font-size:9px}
 @media (hover:hover) and (pointer:fine){
   .po-act:hover:not(:disabled){transform:translate3d(0,-1px,0);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.26), 0 0 0 1px rgba(var(--h),.7),
-      0 0 20px -6px rgba(var(--h),.8)}
+    box-shadow:0 0 0 1px rgba(var(--h,var(--ow-h1)),.75), 0 0 20px -8px rgba(var(--h,var(--ow-h1)),.7)}
 }
 .po-act:focus-visible{outline:2px solid rgba(var(--h),.95);outline-offset:2px}
 /* ON — the relationship exists. It reads as held, not as a call to action. */
@@ -6884,11 +6885,10 @@ html[data-motion="reduced"] .ow-globe__halo *{opacity:.24 !important}
    component that inherits its material from an ancestor needs that ancestor
    declared, not assumed; the door declares it. */
 .po-act--primary{padding:11px 20px;font-size:13.5px;
-  background:linear-gradient(180deg,rgba(var(--h),.34),rgba(var(--h),.17));
-  box-shadow:inset 0 1px 0 var(--ow-lift), 0 0 0 1px rgba(var(--h),.62),
-             0 6px 22px -10px rgba(var(--h),.7)}
+  background:transparent;
+  box-shadow:0 0 0 1.5px rgba(var(--h,var(--ow-h1)),.8), 0 6px 22px -12px rgba(var(--h,var(--ow-h1)),.6)}
 .po-act--ghost{background:none;color:var(--ow-ink-2);
-  box-shadow:0 0 0 1px rgba(var(--h),.2)}
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 16%,transparent)}
 .ow-door__acts .po-act{padding:11px 20px;font-size:13.5px}
 .ow-door__logo{height:26px;width:auto;opacity:.92;
   filter:drop-shadow(0 2px 18px rgba(var(--ow-h1),.28))}
@@ -11299,13 +11299,26 @@ html[data-theme="dark"][data-ow-marks="color"] .ow-reach__mk[data-platform="thre
 .ow-reach__formrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ow-reach__said{font-size:13px;color:var(--ow-ink-2);line-height:1.4}
 .ow-reach__said:empty{display:none}
-/* what connecting lets ONEWAY do, agreed one permission at a time, before the platform is asked:
-   the Settings switch (.ow-switch) for each permission, the Connect button's own look for the acts */
+/* what connecting lets ONEWAY do, agreed one permission at a time, before the platform is asked.
+   A yes is a DOT, not a switch (founder, 2026-10-04): a ring that fills when you agree. A switch is
+   for a setting you turn on and off; this is a promise you make once. */
 .ow-perm{display:flex;flex-direction:column;gap:8px;margin:2px 0 16px 47px}
 .ow-reach__slot .ow-perm{margin-left:0}
-.ow-perm .ow-switch + .ow-switch{margin-top:0}
-.ow-perm__lede{margin:0 0 2px}
-.ow-perm__note{margin:2px 2px 0;font-size:12.5px;color:var(--ow-ink-3);line-height:1.45}
+.ow-agree{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;cursor:pointer;
+  font:inherit;color:var(--ow-ink);padding:12px 14px;border-radius:16px 13px 17px 14px;background:transparent;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 14%,transparent);-webkit-tap-highlight-color:transparent;
+  transition:box-shadow .16s var(--ow-ease)}
+.ow-agree__b{min-width:0;flex:1 1 auto}
+.ow-agree__b b{display:block;font-family:var(--ow-font-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em}
+.ow-agree__b span{display:block;font-size:12.5px;line-height:1.45;color:var(--ow-ink-3);margin-top:3px}
+.ow-agree__k{flex:none;position:relative;width:22px;height:22px;border-radius:50%;
+  box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ow-ink) 45%,transparent);transition:box-shadow .16s var(--ow-ease)}
+.ow-agree__k::after{content:"";position:absolute;inset:5px;border-radius:50%;background:rgb(var(--ow-h1));
+  transform:scale(0);transition:transform .18s var(--ow-spring)}
+.ow-agree[aria-pressed="true"]{box-shadow:0 0 0 1px rgba(var(--ow-h1),.55)}
+.ow-agree[aria-pressed="true"] .ow-agree__k{box-shadow:inset 0 0 0 1.5px rgb(var(--ow-h1))}
+.ow-agree[aria-pressed="true"] .ow-agree__k::after{transform:scale(1)}
+.ow-agree:focus-visible{outline:2px solid rgba(var(--ow-h1),.9);outline-offset:2px}
 .ow-perm .ow-reach__formrow{margin-top:4px}
 .ow-perm .po-act[disabled]{opacity:.38;cursor:not-allowed}
 

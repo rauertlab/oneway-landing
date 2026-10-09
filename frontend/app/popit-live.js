@@ -79,24 +79,26 @@
      2 · Then at most once a day (`ow_session_at`): POST /api/auth/refresh with no body. The cookie
          is the session, and the answer gives a fresh one, so a session lives its 30 days
          (10bf9333) without signing out anyone who comes back.
-     The renewed token is written back to storage only where one was kept, for the pages that still
-     read it (the site's auth.js, the sign-in page) until they read the cookie; the App itself never
-     sends it. A 30-second lock keeps two tabs from renewing at once. A 401 goes to sign-in unless
+     Nothing is written back to storage (lane B, 2026-10-09): a token left there goes once the
+     cookie exists. A 30-second lock keeps two tabs from renewing at once. A 401 goes to sign-in unless
      another tab has just renewed; a network failure changes nothing. */
   var REFRESH_EVERY_MS = 864e5, REFRESH_LOCK_MS = 30000;
   function keepForPages(d) {
-    if (!(d && d.access_token)) return;
+    /* NOTHING IS KEPT ANY MORE (lane B, 2026-10-09: the secure-cookie completion). The sign-in,
+       sign-up and "Sign in with ONEWAY" pages, the OS, the realtime stream and the hue all go by the
+       HttpOnly cookie now, so a token left in storage is only a copy an injected script could carry
+       away. Whatever an older sign-in left there is removed the first time this browser holds the
+       cookie. */
     var ls = global.localStorage;
+    try { ls.removeItem('ow_session_token'); ls.removeItem('ow_tokens'); } catch (_) {}
+    /* and the copy inside `ow_session`: the exchange ENDED that token, and a page that still sent it
+       (doc-editor.js reads it) would be signed out, because a header outranks the cookie (measured
+       in the browser, 2026-10-09: that token answered 401, the cookie alone 200) */
     try {
-      if (!ls.getItem('ow_session_token') && !ls.getItem('ow_tokens')) return;   /* none kept: keep none */
-      ls.setItem('ow_session_token', d.access_token);
-      var o = {};
-      try { o = JSON.parse(ls.getItem('ow_tokens') || '{}') || {}; } catch (_) { o = {}; }
-      o.access = o.access_token = d.access_token;
-      o.refresh = o.refresh_token = d.refresh_token || d.access_token;
-      ls.setItem('ow_tokens', JSON.stringify(o));
+      var s = JSON.parse(ls.getItem('ow_session') || 'null');
+      if (s && s.token) { delete s.token; ls.setItem('ow_session', JSON.stringify(s)); }
     } catch (_) {}
-    TOKEN = d.access_token;
+    TOKEN = null;
   }
   function refreshDaily() {
     var ls = global.localStorage, t = token(), cookie = cookieSession(), at = 0, lock = 0;
@@ -114,12 +116,14 @@
     function unlock() { try { ls.removeItem('ow_refreshing'); } catch (_) {} }
     return global.fetch(BASE + '/api/auth/refresh', {
       method: 'POST', credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      /* on this origin the answer is the cookie alone: no token in the body (identity/routes._signed_in) */
+      headers: BASE ? { 'Content-Type': 'application/json', 'Accept': 'application/json' }
+                    : { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-ONEWAY-Session': 'cookie' },
       body: JSON.stringify(exchange ? { refresh_token: t } : {})
     }).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
         unlock();
-        if (r.ok && j && j.access_token) {
+        if (r.ok && j && (j.access_token || j.session === 'cookie')) {
           try {
             if (!BASE) ls.setItem('ow_session_cookie', '1');
             ls.setItem('ow_session_at', String(Date.now()));
@@ -8518,11 +8522,11 @@ function iconTab(id, label, render, n) {
           go.disabled = !all;
         }
         d.items.forEach(function (i) {
-          /* the same switch as Settings: the words lead, the control follows, the whole row is the target */
-          var row = mk('button', 'ow-switch');
+          /* a yes is a dot: the words lead, a ring fills when you agree, the whole row is the target */
+          var row = mk('button', 'ow-agree');
           row.type = 'button'; row.setAttribute('aria-pressed', 'false');
-          row.innerHTML = '<span class="ow-switch__b"><b>' + esc(i.what) + '</b><span>' + esc(i.why)
-            + '</span></span><span class="ow-switch__k" aria-hidden="true"></span>';
+          row.innerHTML = '<span class="ow-agree__b"><b>' + esc(i.what) + '</b><span>' + esc(i.why)
+            + '</span></span><span class="ow-agree__k" aria-hidden="true"></span>';
           row.addEventListener('click', function () {
             ticked[i.key] = !ticked[i.key];
             row.setAttribute('aria-pressed', String(!!ticked[i.key]));
@@ -9111,12 +9115,18 @@ function iconTab(id, label, render, n) {
           return;
         }
         global.clearTimeout(outArmed);
-        data.post('/api/auth/signout', {}).then(function () {
+        /* THE COOKIE'S MARK GOES TOO (lane B, 2026-10-09). The session is the HttpOnly cookie the
+           sign-out ends; left behind, `ow_session_cookie` told the App, the stream and the hue that this
+           browser still held one, and they kept calling with a session that no longer existed. And the
+           page leaves whatever the network did: a sign-out that could not be sent still signs out here. */
+        function gone() {
           try {
-            ['ow_session_token', 'ow_tokens', 'ow_session'].forEach(function (k) { global.localStorage.removeItem(k); });
+            ['ow_session_token', 'ow_tokens', 'ow_session', 'ow_session_cookie', 'ow_session_at', 'ow_token_at']
+              .forEach(function (k) { global.localStorage.removeItem(k); });
           } catch (_) {}
           global.location.href = '/login.html';
-        });
+        }
+        data.post('/api/auth/signout', {}).then(gone, gone);
       });
       outSec.appendChild(outBtn);
       list.appendChild(outSec);

@@ -124,6 +124,12 @@
           || '';
     } catch(_){ return ''; }
   }
+  /* SIGNED IN BY THE COOKIE (lane B, 2026-10-09): no token is kept any more; the HttpOnly cookie is the
+     session, and `ow_session_cookie` says this browser holds one. */
+  function signedIn(){
+    if (tok()) return true;
+    try { return localStorage.getItem('ow_session_cookie') === '1'; } catch(_){ return false; }
+  }
   function cache(h){
     try {
       if (h === null || h === '' || h === undefined) localStorage.removeItem('ow_user_hue');
@@ -147,9 +153,9 @@
      gone, nothing else changes hands. */
   function sync(){
     var t = tok();
-    if (!t || typeof fetch !== 'function') return Promise.resolve(null);
+    if (!signedIn() || typeof fetch !== 'function') return Promise.resolve(null);
     var base = (window._OW_API || '');
-    return fetch(base + '/api/auth/me', { headers: { 'X-Session-Token': t } })
+    return fetch(base + '/api/auth/me', { headers: t ? { 'X-Session-Token': t } : {}, credentials: 'same-origin' })
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(j){
         if (!j) return null;                 /* unreachable: keep the cache */
@@ -173,7 +179,7 @@
     apply(clearing ? null : hue);
     cache(clearing ? null : hue);
     var t = tok();
-    if (!t || typeof fetch !== 'function') {
+    if (!signedIn() || typeof fetch !== 'function') {
       /* NOT SAVED, AND SAY SO TO WHOEVER ASKED. Signed out, this device is the
          only place it can live; that is a real limit, not a silent success. */
       return Promise.resolve({ ok: false, reason: 'signed_out', local: true });
@@ -184,7 +190,8 @@
        still means "no chosen colour". The legacy /api/profile is not called. */
     return fetch(base + '/api/oneway/people/me/appearance', {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'X-Session-Token': t },
+      headers: t ? { 'Content-Type': 'application/json', 'X-Session-Token': t } : { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
       body: JSON.stringify({ hue: clearing ? -1 : Math.max(0, Math.min(360, parseInt(hue, 10) || 0)) })
     }).then(function(r){
       return r.ok ? { ok: true } : { ok: false, status: r.status };

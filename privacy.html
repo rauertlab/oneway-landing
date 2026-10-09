@@ -3,154 +3,258 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="dark light" />
   <title>Privacy — ONEWAY</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%23000'/><text y='23' x='3' font-size='13' font-family='-apple-system,Arial Black,sans-serif' font-weight='900' font-style='italic' fill='%23fff' letter-spacing='-0.5'>OW</text></svg>" />
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html, body {
-      min-height: 100vh;
-      background: #0a0000;
-      color: #fff;
-      font-family: 'ONEWAY Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;   /* founder/530 */
-    }
-
-    .top-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 40px; height: 64px;
-      border-bottom: 1px solid rgba(200,0,0,0.3);
-      background: #000;
-    }
-    .logo img { height: 28px; display: block; }
-    /* ── THE ONEWAY HEADER ────────────────────────────────────────────────
-       ★ FOUNDER/493: *"lock in the privacy policy and terms of service pages
-         as our final informational pages design and add the oneway header to
-         them."*
-       The page's own design is kept exactly — he locked it. What it lacked was
-       a way back INTO the product: one wordmark and a "Back to site" link is a
-       dead end, and every other page carries the same three doors. They are
-       drawn in this page's idiom (its red, its uppercase, its letter-spacing)
-       rather than the landing's, because the two designs are both his and
-       neither should start wearing the other's clothes. */
-    .top-nav { display:flex; align-items:center; gap:26px; }
-    .top-nav a {
-      font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-      color: rgba(255,255,255,.62); text-decoration: none; transition: color 0.15s;
-    }
-    .top-nav a:hover { color: #fff; }
-    .top-nav a.signin { color: #cc0000; }
-    .top-nav a.signin:hover { color: #ff2b2b; }
-    @media (max-width: 720px) {
-      .top-bar { padding: 0 20px; }
-      .top-nav { gap: 16px; }
-      .top-nav a.wide { display: none; }
-    }
-    .back-link {
-      font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-      color: #660000; text-decoration: none; transition: color 0.15s;
-    }
-    .back-link:hover { color: #cc0000; }
-
-    .hero {
-      background: #cc0000; padding: 72px 40px 80px; text-align: center;
-      position: relative; overflow: hidden;
-    }
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background: repeating-linear-gradient(0deg,rgba(0,0,0,0.06) 0px,rgba(0,0,0,0.06) 1px,transparent 1px,transparent 4px);
-      pointer-events: none;
-    }
-    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 20px; }
-    .hero h1 { font-size: clamp(48px, 10vw, 96px); font-weight: 900; letter-spacing: -0.04em; line-height: 0.95; color: #fff; text-transform: uppercase; margin-bottom: 28px; }
-    .hero-sub { font-size: clamp(15px, 2vw, 18px); color: rgba(255,255,255,0.75); max-width: 520px; margin: 0 auto; line-height: 1.6; }
-
-    .wrap { max-width: 760px; margin: 0 auto; padding: 72px 40px 120px; }
-
-    .block-label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: #cc0000; margin: 48px 0 14px; }
-    .block-label:first-child { margin-top: 0; }
-
-    h2 { font-size: 18px; font-weight: 900; letter-spacing: -0.02em; color: #fff; margin: 48px 0 14px; }
-    h2:first-child { margin-top: 0; }
-    h3 { font-size: 15px; font-weight: 700; color: #ddd; margin: 28px 0 10px; }
-    p { font-size: 15px; color: #888; line-height: 1.8; margin-bottom: 14px; }
-    ul, ol { margin: 10px 0 14px 0; padding: 0; list-style: none; }
-    li { font-size: 15px; color: #888; line-height: 1.7; padding: 6px 0 6px 20px; position: relative; border-bottom: 1px solid rgba(255,255,255,0.03); }
-    li:last-child { border-bottom: none; }
-    li::before { content: '—'; position: absolute; left: 0; color: #cc0000; font-weight: 700; }
-    a { color: #fff; } a:hover { color: #cc0000; }
-    strong { color: #ddd; font-weight: 700; }
-
-    .divider { border: none; border-top: 1px solid rgba(200,0,0,0.2); margin: 48px 0; }
-
-    .data-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
-    .data-table th { text-align: left; padding: 10px 14px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #660000; border-bottom: 1px solid rgba(200,0,0,0.2); }
-    .data-table td { padding: 12px 14px; color: #888; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; line-height: 1.6; }
-    .data-table tr:last-child td { border-bottom: none; }
-
-    .contact-block { background: #0d0000; border: 1px solid rgba(200,0,0,0.25); border-radius: 8px; padding: 32px 36px; margin-top: 64px; }
-    .contact-block h3 { margin-top: 0; color: #fff; font-size: 16px; margin-bottom: 10px; }
-    .contact-block p { margin-bottom: 0; }
-
-    footer { border-top: 1px solid rgba(200,0,0,0.15); padding: 32px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #333; flex-wrap: wrap; gap: 16px; }
-    footer a { color: #333; text-decoration: none; }
-    footer a:hover { color: #cc0000; }
-  </style>
+  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=8374c036">
+  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only) */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+  <noscript><style>.logo .slot{opacity:1}#flyLogo,.hero-mark{display:none}</style></noscript>
 </head>
 <body>
 
 <div class="top-bar">
-  <a href="/" class="logo"><img src="/logo-white.png" alt="ONEWAY" /></a>
+  <a href="/" class="logo" aria-label="ONEWAY"><img class="slot" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" /></a>
   <nav class="top-nav"><a href="/">Home</a></nav>
 </div>
 
 <div class="hero">
+  <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" />
   <div class="hero-eyebrow">Legal</div>
   <h1>Privacy<br>Policy</h1>
-  <p class="hero-sub">What we collect, why, and how to have it removed.</p>
+  <p class="hero-sub">What we collect, why, who sees it, and how to have it removed.</p>
 </div>
 
 <div class="wrap">
-  <p style="margin-top:0;">This page covers oneway.center, run by Oneway Technologies LLC. Last updated October 4, 2026.</p>
+  <p class="scope"><strong>This is the Privacy Policy for the ONEWAY ecosystem:</strong> the ONEWAY App, the ONEWAY OS, Sign in with ONEWAY on any site, oneway.center, and any other or future ONEWAY service. It is published by Oneway Technologies LLC, a New York limited liability company. ONEWAY is in closed beta. Last updated October 5, 2026.</p>
 
-  <hr class="divider" />
+  <nav class="toc" aria-label="Contents"><span class="toc-h">Contents</span><a href="#who-decides">Who decides what happens to your information</a><a href="#what-we-collect">What we collect</a><a href="#how-we-use-it">How we use it</a><a href="#who-can-see-what">Who can see what</a><a href="#recognition-by-places">Recognition by places</a><a href="#connected-accounts">Connected accounts</a><a href="#businesses-and-their-records">Businesses and their records</a><a href="#sensitive-information">Sensitive information</a><a href="#who-we-share-it-with">Who we share it with</a><a href="#how-long-we-keep-it">How long we keep it</a><a href="#security">Security</a><a href="#your-choices">Your choices</a><a href="#children">Children</a><a href="#where-it-is-handled">Where it is handled</a><a href="#changes">Changes</a></nav>
 
-  <h2>What we collect</h2>
-  <p>Nothing. This site does not ask for or keep any personal information, sets no cookies and has no advertising or analytics trackers.</p>
+  <h2 id="who-decides">Who decides what happens to your information</h2>
+  <ul>
+    <li><strong>Your own account.</strong> ONEWAY decides, and this policy says how.</li>
+    <li><strong>A business's records about its customers</strong>, such as guest lists, bookings, rewards, and a casino's cage and compliance records. The business decides. ONEWAY stores and handles them for it.</li>
+  </ul>
 
-  <h2>Who handles it</h2>
+  <h2 id="what-we-collect">What we collect</h2>
   <table class="data-table">
-    <thead><tr><th>Service</th><th>What it does</th></tr></thead>
+    <thead><tr><th>What</th><th>Details</th><th>Why</th></tr></thead>
     <tbody>
-      <tr><td>GitHub</td><td>Hosts this website and may log visits</td></tr>
+      <tr><td>Account</td><td>Your email and password. The password is kept only as a one-way hash. If you turn on two-step sign-in, its secret is kept encrypted and its recovery codes as hashes.</td><td>To sign you in and keep the account yours</td></tr>
+      <tr><td>Profile</td><td>Name, @handle, pronouns, bio, a location you type, website, links, picture, banner, and a birthday that stays private</td><td>To show you as you choose</td></tr>
+      <tr><td>What you post</td><td>Posts, photos, videos, comments, reactions, saves, reposts, drafts and the feeds you build</td><td>To publish what you make</td></tr>
+      <tr><td>Messages</td><td>Messages, files and reactions in chats, and the groups you are in</td><td>To deliver them</td></tr>
+      <tr><td>Places and plans</td><td>Centers you join, follow, save or visit. Events you answer. Bookings: your name, email, party size, dates and notes. An application to a Center's job or class listing opens a conversation with that Center. If you contact or book a Center without an account, we keep the name and email you give.</td><td>To run your plans</td></tr>
+      <tr><td>Location</td><td>Only if you turn sharing on. Never read from your device otherwise.</td><td>To show where you are, to the people you choose</td></tr>
+      <tr><td>Connected accounts</td><td>The access another platform gives us, and the account's name and ID</td><td>To post for you and show what is connected</td></tr>
+      <tr><td>Notes and ratings</td><td>Notes you add to other people's content, and your ratings of notes. An AI assessment of a note is stored next to the community's, never instead of it.</td><td>To give content context</td></tr>
+      <tr><td>Reports</td><td>Reports and appeals you send us</td><td>To review them</td></tr>
     </tbody>
   </table>
 
-  <h2>Your choices</h2>
-  <p>You can ask us to show you, correct or delete what we hold about you. Email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a>.</p>
+  <h3>What we record as you use it</h3>
+  <table class="data-table">
+    <thead><tr><th>What</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td>Sessions</td><td>When a session started and was last used, and the network address or browser it came from. You can see them and end them.</td></tr>
+      <tr><td>Security log</td><td>Sign-ins, refused sign-ins to your account, and password and two-step changes, with the network address</td></tr>
+      <tr><td>What reached your screen</td><td>Which posts you were shown, how many times and when last, so Home does not repeat itself</td></tr>
+      <tr><td>How you watch</td><td>Whether you watched a video to the end, watched it again, how long you stayed, or skipped it. It shapes the next posts in Home and fades within minutes to hours. We do not label posts by topic or guess your interests from your words.</td></tr>
+      <tr><td>Photos</td><td>Hidden data inside a photo, such as GPS position, is removed before it is stored. Videos and GIFs are stored as uploaded, with whatever their phone wrote into them.</td></tr>
+    </tbody>
+  </table>
+  <p>We use a sign-in cookie and your browser's storage for settings such as theme. We use no advertising or analytics cookies and no analytics trackers, and we do not track you across other sites or apps, so there is no tracking to opt out of. Some pages in the App and OS load fonts and map code from Google Fonts and unpkg, which can see your network address.</p>
 
-  <h2>The App and the OS</h2>
-  <p>The ONEWAY App and OS have their own privacy policy. It will be published on this page, and shown before sign-up, when they open.</p>
+  <h2 id="how-we-use-it">How we use it</h2>
+  <ul>
+    <li>To run ONEWAY: sign you in, show your profile, deliver posts and messages, make bookings, and send the notifications you asked for.</li>
+    <li>To keep accounts safe: limit sign-in attempts, require two-step sign-in in casino, guest, rewards and credential areas, and keep the security log.</li>
+    <li>To rank Home from who and what you follow, the places you belong to, your reactions, what you have already seen and what you are watching now.</li>
+    <li>To show friends what you share through StreetPass: Centers you both belong to and events you are both going to.</li>
+    <li>To let places recognise you, if you allow it.</li>
+    <li>To moderate. People decide reports. An automated check can move a report up or down the queue but cannot act on it.</li>
+    <li>To write or suggest text and images when you use an AI feature. What you give that feature is sent to an AI provider to produce the answer. ONEWAY does not train AI models on your posts or messages, and each provider's own terms govern what it does with what it receives.</li>
+    <li>To meet legal duties.</li>
+  </ul>
+  <p>We do not read your messages to rank posts or show ads. Moderators cannot open conversations. No decision about you is made by automated means alone: recognition only suggests and a person at a business confirms, and an automated check on a report can only change its place in the queue.</p>
 
-  <h2>Children</h2>
-  <p>This site is not directed to children under 13, and we do not knowingly collect their information.</p>
+  <h2 id="who-can-see-what">Who can see what</h2>
+  <table class="data-table">
+    <thead><tr><th>What</th><th>Who</th></tr></thead>
+    <tbody>
+      <tr><td>Profile, posts, followers, who you follow</td><td>Everyone, unless you turn on Private profile. Also yours to set: Show who follows you, Show who you follow, Anyone can comment, Anyone can tag you.</td></tr>
+      <tr><td>Messages</td><td>Only the people in the conversation. A message to a business goes to whoever it set up to receive it: its AI assistant, a person, several people or a team. The conversation says which.</td></tr>
+      <tr><td>Activity and typing</td><td>Others, until you turn Show when you are active and Show when you are typing off</td></tr>
+      <tr><td>Events</td><td>The number going is public. The list is the organiser's. A friend going to the same event sees that you are going too.</td></tr>
+      <tr><td>Location</td><td>Off until you turn it on. You choose who: nobody, up to 25 named people, followers, friends, people in your Centers, or everyone, including people not signed in. You choose how exact: exact or about 1 km. You choose how long: 1 to 24 hours, or only while you use the app. We keep only your latest position, and turning sharing off deletes it.</td></tr>
+      <tr><td>Center pages</td><td>A Center's public pages are published to search engines, maps and AI assistants. This never includes a person's private information.</td></tr>
+      <tr><td>Search and suggestions</td><td>People can find you by name and you can be suggested to people you may know, until you turn those off</td></tr>
+    </tbody>
+  </table>
 
-  <h2>Changes</h2>
-  <p>When this page changes, the date at the top changes with it.</p>
+  <h2 id="recognition-by-places">Recognition by places</h2>
+  <p>A business keeps a guest list: the hotel you stayed at, the restaurant you booked. Recognition lets it see that a record is you.</p>
+  <ul>
+    <li><strong>A match</strong> is shown only when the record shares something you have proven: the email you sign in with, or a phone number or account you verified. A name alone never makes a match.</li>
+    <li><strong>A suggestion</strong> can appear when a record looks like your name, picture, bio and the words in your newest public posts. Posts for followers or friends only, deleted posts and a private profile's posts are never read. The picture check compares photographs. It notices the same photo used twice. It does not analyse your face.</li>
+    <li><strong>Which businesses:</strong> only ones you already have a tie to: their staff, their guests from the past year or with a stay coming up, people who posted there, and their followers.</li>
+    <li><strong>A person confirms.</strong> Someone at the business must confirm or reject a suggestion. A rejected one is remembered and not offered again.</li>
+    <li><strong>Once linked,</strong> the business sees whether you follow it, your role there, your bookings and posts there, and at a casino, that day's cash activity at the cage.</li>
+    <li>We do not guess health, religion, ethnicity, sexuality, politics or finances from what you share.</li>
+  </ul>
+  <table class="data-table">
+    <thead><tr><th>Setting</th><th>Default</th><th>What it says</th></tr></thead>
+    <tbody>
+      <tr><td>Let places recognise you</td><td>On</td><td>A place can match its guest list to you by your name, photo, bio and what you post publicly here, and someone there confirms it. Off means no place is shown that a record is you.</td></tr>
+      <tr><td>Include accounts you connect</td><td>Off</td><td>Your X, Bluesky or Mastodon account can match you too. Off until you turn it on.</td></tr>
+    </tbody>
+  </table>
+  <p>Both are in Settings, under Privacy. Turn the first off and no business is shown a match or suggestion about you. We never tell a business that you exist and said no.</p>
+
+  <h2 id="connected-accounts">Connected accounts</h2>
+  <table class="data-table">
+    <thead><tr><th>Platform</th><th>How it connects</th></tr></thead>
+    <tbody>
+      <tr><td>Instagram, Facebook, X, Threads, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Google Business Profile</td><td>Through the platform's own sign-in screen</td></tr>
+      <tr><td>Mastodon</td><td>You approve it on your server</td></tr>
+      <tr><td>Bluesky</td><td>Your handle and an app password, never your main password</td></tr>
+      <tr><td>Telegram, Discord</td><td>A bot token and channel, or a webhook address</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li>Before the platform's screen, ONEWAY lists each permission it asks for and why. You agree to each one. Connecting does not start until you have.</li>
+    <li>What we keep is the access the platform gives us, and the account's name and ID. The access is encrypted with AES-256-GCM, with a separate key for each owner. It is never shown back to anyone.</li>
+    <li>We post only what you pick to post. If you start an import, we read your posts on that platform and copy them onto ONEWAY as your posts, dated when you first posted them.</li>
+    <li>Connecting your own account on your own profile marks it verified, so a place can match you by it only if you turned on Include accounts you connect. Connecting an account for a business proves nothing about you.</li>
+    <li>Disconnect in Settings, under Connected accounts. We delete the stored access straight away, and the verified mark goes with it. You can also remove ONEWAY in the platform's own settings.</li>
+    <li>Each platform's own policy covers what you post there.</li>
+  </ul>
+
+  <h2 id="businesses-and-their-records">Businesses and their records</h2>
+  <ul>
+    <li>A business on ONEWAY, called a Center, can keep records about its customers: name, email, phone, its own customer number, a rewards number, a picture, notes, and the customer's names on other platforms. It types them in or imports them from its own systems.</li>
+    <li>The business is responsible for those records. To see, correct or delete one, ask the business. We help it answer. You do not need a ONEWAY account for a business to hold information about you.</li>
+    <li>When a Center is created, ONEWAY gathers public information about the organization to propose a starting profile. Nothing is published until its operator confirms it. To correct or remove information about your organization, email us.</li>
+    <li>A Center's Brain keeps a record of how people relate to the Center, built from what happened: follows, bookings, attendance, and posts there. It recommends, and a person at the Center decides. We do not infer health, religion, ethnicity, sexuality, politics or finances.</li>
+    <li>A Center may also keep staff records, such as schedules and hours worked.</li>
+    <li>A Center may also have its own website and its own privacy practices. This policy covers ONEWAY, not a Center's own site.</li>
+    <li>Hotels and casinos may also keep stays, bills and deposits, rewards balances, cage transactions, limits you set on yourself, exclusion lists, and records the law requires.</li>
+    <li>Your rewards standing moves between businesses only if you turn that on. The business receiving it sees your tier and which business it came from, never your balance, member number or play.</li>
+    <li>When you book, message, join or follow a business, it sees that.</li>
+  </ul>
+  <table class="data-table">
+    <thead><tr><th>Casino record</th><th>Details</th></tr></thead>
+    <tbody>
+      <tr><td>Identification</td><td>For reports the law requires, a casino collects name, address, date of birth, ID type, number and issuer, and taxpayer number where one exists. ID and taxpayer numbers are sealed, shown masked, and every opening is logged.</td></tr>
+      <tr><td>Reports and cases</td><td>Currency transaction reports and suspicious-activity cases. A suspicious-activity case is never disclosed to the person it concerns, so we cannot tell anyone whether one exists.</td></tr>
+      <tr><td>Exclusions and limits</td><td>Exclusion lists, and limits a person sets on themselves, which that person sees in the App</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="sensitive-information">Sensitive information</h2>
+  <ul>
+    <li><strong>Exact location</strong> is collected only if you turn sharing on and choose exact. Otherwise it is about 1 km, or not shared at all.</li>
+    <li><strong>Government ID and taxpayer numbers</strong> are collected by a casino for reports the law requires. They are sealed, shown masked, and every opening is logged.</li>
+    <li><strong>Messages</strong> are visible only to the people in the conversation.</li>
+    <li>We do not infer health, religion, ethnicity, sexuality, politics or finances from what you share, and we do not use any of them to rank, recognise or target you.</li>
+  </ul>
+
+  <h2 id="who-we-share-it-with">Who we share it with</h2>
+  <table class="data-table">
+    <thead><tr><th>With</th><th>What</th></tr></thead>
+    <tbody>
+      <tr><td>People you choose, and businesses you deal with</td><td>As the sections above say</td></tr>
+      <tr><td>Sites you sign in to with ONEWAY</td><td>An ID that is different on every site and your public profile. Your email only if you tick Share my email. You can revoke a site in Settings.</td></tr>
+      <tr><td>Platforms you connect</td><td>What you post there and what you ask us to import</td></tr>
+      <tr><td>Apps and integrations built by others</td><td>Only what a Center has granted. A grant is per Center and can be revoked.</td></tr>
+      <tr><td>AI providers</td><td>What you give an AI feature, when you use one. The code can use xAI, Groq, OpenAI, Anthropic and fal (images).</td></tr>
+      <tr><td>Resend</td><td>Your email address and the message, to send account email</td></tr>
+      <tr><td>Stripe, Twilio</td><td>Only if a business turns on payments or texting</td></tr>
+      <tr><td>OpenStreetMap Nominatim</td><td>The words you search for and the map area, not who you are</td></tr>
+      <tr><td>GitHub</td><td>Hosts oneway.center and may log visits. Where the App itself is hosted will be named here before it opens to the public.</td></tr>
+      <tr><td>Authorities</td><td>When the law, a court order or a regulator requires it, or to protect someone's safety</td></tr>
+    </tbody>
+  </table>
+  <p>We do not sell your information and we do not share it for advertising, so there is nothing for a Global Privacy Control signal to opt you out of. If ONEWAY is merged or sold, we will tell you first.</p>
+
+  <h2 id="how-long-we-keep-it">How long we keep it</h2>
+  <table class="data-table">
+    <thead><tr><th>What</th><th>How long</th></tr></thead>
+    <tbody>
+      <tr><td>Account</td><td>Until you delete it. After that we keep your email address, the date you joined and the date you left, so no one else can register the address and inherit your history.</td></tr>
+      <tr><td>Posts</td><td>Deleting a post removes it from view. The record stays in our database.</td></tr>
+      <tr><td>Messages</td><td>A new conversation starts with messages that disappear after 2 days. The room's settings decide who can change that. When a message expires it is hidden, and its words, attachments and reactions are erased from our database the next time the conversation is opened. Attached files are not yet removed by this. Older conversations keep their messages until a timer is turned on. A business may be required to keep its conversations longer, and the conversation says so.</td></tr>
+      <tr><td>Location</td><td>Your latest shared position, until it expires or you turn sharing off</td></tr>
+      <tr><td>What reached your screen</td><td>Kept until you delete your account, which removes it. We have not set an end date before then. We will set one and publish it here before the App opens to the public.</td></tr>
+      <tr><td>The security log</td><td>Kept after you delete your account too. We have not set an end date. We will set one and publish it here before the App opens to the public.</td></tr>
+      <tr><td>Casino compliance records</td><td>At least five years, as the law requires. They cannot be deleted on request.</td></tr>
+      <tr><td>Backups</td><td>We will state the backup period here before the App opens to the public.</td></tr>
+      <tr><td>Legal holds</td><td>We may keep records longer when the law, a regulator or a legal claim requires it, and only for as long as it does.</td></tr>
+    </tbody>
+  </table>
+
+  <h2 id="security">Security</h2>
+  <ul>
+    <li>Passwords are kept as bcrypt hashes and session tokens as SHA-256 hashes. The sign-in cookie cannot be read by scripts on a page and is sent only to our own site.</li>
+    <li>These are encrypted with AES-256-GCM, with a separate key for each business and a master key kept outside the database: connected-account access, two-step secrets, and casino ID and taxpayer numbers.</li>
+    <li>Sign-ins and changes to who can get in are written to a log built so that any later change to it can be detected.</li>
+    <li>Other records, such as posts, profiles and bookings, are ordinary database records. We will state the hosting and disk encryption here before the App opens to the public.</li>
+    <li>No system is perfectly secure. If a breach affects your private information, we will tell you and the authorities as New York and other state laws require. Report a security problem to <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a>.</li>
+  </ul>
+
+  <h2 id="your-choices">Your choices</h2>
+  <table class="data-table">
+    <thead><tr><th>You can</th><th>How</th></tr></thead>
+    <tbody>
+      <tr><td>See what ONEWAY knows about you</td><td>Settings, Understanding. For a full copy, email us. A copy covers your posts, comments, follows, memberships, profile, event answers and places. It does not yet include messages, bookings, location, connected accounts, what reached your screen, linked identities or the security log.</td></tr>
+      <tr><td>Correct it</td><td>Edit your profile any time. Remove linked identities in Settings.</td></tr>
+      <tr><td>Delete your account</td><td>Settings, Delete your account, with your password and your code if two-step is on. If you own a Center, hand it over first.</td></tr>
+      <tr><td>Turn things off</td><td>Recognition, matching by connected accounts, location sharing, being found by name, suggestions, each kind of notification, the weekly email, and your rewards standing moving between businesses</td></tr>
+      <tr><td>Choose who can message you</td><td>Friends, people from your Centers, people you have crossed paths with, or anyone. New people can wait in requests.</td></tr>
+    </tbody>
+  </table>
+  <h3>What deleting your account does</h3>
+  <table class="data-table">
+    <thead><tr><th>Removed</th><th>Stays</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>Every session. Your profile, picture and search listings. Your posts from view, and your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with ONEWAY. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected, with the access we held for them. Your linked identities. Your shared location. What reached your screen, and what the feed learned from it. Your list of bookings. Your notifications.</td>
+        <td>Comments and messages you left in other people's conversations, shown as Deleted account. The minimal record described above. Records a business keeps about you, including its bookings. The security log. Records the law requires.</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Deleting your account removes the access we held for each connected account. It does not remove ONEWAY from each platform's own list of connected apps. Remove it there too, in the platform's settings.</p>
+  <h3>Your rights</h3>
+  <p>Depending on where you live, such as California, Colorado, Connecticut, Texas, Virginia, New Jersey and other states, you may have the right to know what we hold about you, to get a copy, to correct it, to delete it, to opt out of sale, sharing for advertising and profiling, and to appeal if we say no. We do not sell your information or share it for advertising, and you can turn recognition off at any time.</p>
+  <p>To use a right, email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a>. We answer within 30 days, and may need to confirm it is you. You may ask someone to act for you; we will ask for proof they can. Using your rights will not change how we treat you. If we refuse, reply with the word Appeal and someone who did not make the first decision will review it and tell you the result in writing within 45 days. For Facebook and Instagram data, see <a href="data-deletion.html">Data Deletion</a>.</p>
+
+  <h2 id="children">Children</h2>
+  <p>ONEWAY is for people 18 and older, and we do not knowingly collect information from anyone younger. If you think a child has an account, email us and we will delete it.</p>
+
+  <h2 id="where-it-is-handled">Where it is handled</h2>
+  <p>ONEWAY is run from New York, United States. If you use it from another country, your information is handled in the United States and in the countries of the services named above.</p>
+
+  <h2 id="changes">Changes</h2>
+  <p>When this policy changes, the date at the top changes with it. A material change is shown in the App before it takes effect, and we ask again where the law or a platform requires it.</p>
 
   <div class="contact-block">
     <h3>Contact</h3>
-    <p><a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a></p>
+    <p>Oneway Technologies LLC, a New York limited liability company<br><a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a></p>
   </div>
 </div>
 
 <footer>
   <div>2027, Oneway Technologies LLC</div>
   <div style="display:flex;gap:24px;">
-    <a href="privacy.html">Privacy</a>
+    <a href="/about.html">About</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/terms.html">Terms</a>
+    <a href="/data-deletion.html">Data Deletion</a>
     <a href="/">← Back to site</a>
   </div>
 </footer>
 
+<img id="flyLogo" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="ONEWAY" />
+<script src="/frontend/shared/oneway-legal.js?v=f865b48c"></script>
 </body>
 </html>
