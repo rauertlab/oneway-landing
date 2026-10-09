@@ -456,7 +456,7 @@
 
   function presetOneway(){
     return { label: 'ONEWAY', systems: [
-      { label: 'Profile Center' }, { label: 'Communities' }, { label: 'Centers' },
+      { label: 'Profiles' }, { label: 'Communities' }, { label: 'Centers' },
       { label: 'Messages' }, { label: 'Events' }, { label: 'Websites' }, { label: 'Identity' }
     ] };
   }

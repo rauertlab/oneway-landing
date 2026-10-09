@@ -1,28 +1,32 @@
-# ONEWAY
+# Oneway
 
-> ONEWAY, at oneway.center, gives every person one profile and every community or business a Center. It is a
-> unified, fully customizable social network (the ONEWAY App) and the operating system behind it (ONEWAY OS).
-> It is made by Oneway Technologies LLC, a New York limited liability company, and is in closed beta. ONEWAY is
+> Oneway, at oneway.center, gives every person one profile and every community or business a Center. It is a
+> fully customizable social network (the Oneway App) and the operating system behind it (Oneway OS).
+> It is made by Oneway Technologies LLC, a New York limited liability company, and is in closed beta. Oneway is
 > not affiliated with other services that use the name Oneway.
 
-We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether
-hosting a simple photo gallery or a business's entire website.
+We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.
 
-## What ONEWAY is
+## What Oneway is
 
-- [About ONEWAY](https://oneway.center/about.html): the ecosystem, the App, ONEWAY OS and its three tiers
-- The ONEWAY App: your unified and fully customizable social network. You see what your friends and the places you
+- [About Oneway](https://oneway.center/about.html): the ecosystem, the App, Oneway OS and its three tiers
+- The Oneway App: your fully customizable social network. You see what your friends and the places you
   love are posting, and what is coming up at each of them.
-- ONEWAY OS: from managing online communities, developing custom tools, to running full businesses and zooming in on
-  the operations of specific locations with the click of a button, within seconds.
-  - ONEWAY OS: a free operating environment with the basic capabilities of a Center
-  - ONEWAY Business OS: the full business operating system, with the Brain, Systems, Agents, Cross Projection and
+- Oneway OS: from managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
+  - Oneway OS: a free operating environment with the basic capabilities of a Center
+  - Oneway Business OS: the full business operating system, with the Brain, Systems, Agents, Cross Projection and
     operational intelligence
-  - ONEWAY Developer OS: the developer platform for building applications, systems, integrations, agents and custom
-    experiences on ONEWAY
+  - Oneway Developer OS: the developer platform for building applications, systems, integrations, agents and custom
+    experiences on Oneway
 
 ## Policies
 
 - [Privacy Policy](https://oneway.center/privacy.html)
 - [Terms of Service](https://oneway.center/terms.html)
 - [Data Deletion](https://oneway.center/data-deletion.html)
+
+## Optional
+
+- [Every page, in words](https://oneway.center/llms-full.txt)
+
+Read from oneway.center's own pages on 2026-10-09 (tools/site_seo.py).

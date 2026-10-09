@@ -3434,13 +3434,14 @@
         '<span class="po-card__av" data-kind="' + esc(/^(user|profile|)$/.test(String(who.kind || '')) ? 'person' : who.kind) + '"' +
           /* the author's own cut, when they chose one (founder/409) */
           (/^(round|rounded|square)$/.test(String(who.shape || '')) ? ' data-shape="' + esc(who.shape) + '"' : '') +
-          (avHue ? ' style="' + avHue + '"' : '') + '>' +
+          (avHue ? ' style="' + avHue + '"' : '') +
+          ' data-ini="' + esc(OW.initials(who.name)) + '">' +
           /* ★ FOUNDER/495: a person with no picture is an OUTLINE OF A
              PERSON, not their initials. A Center keeps a monogram — it is an
              organisation and "FC" is a mark somebody could actually have —
              but a person is a person. One drawing, `OW.faceMark`. */
           (OW.imageUrl(who.image)
-             ? '<img src="' + esc(OW.imageUrl(who.image)) + '" alt="">'
+             ? '<img src="' + esc(OW.imageUrl(who.image)) + '" alt="" onerror="OW.faceFail(this)">'
              /* the feed names a person's kind `user` (and older reads
                 `profile`); all three are a person — only a Center or a
                 community keeps its monogram (2026-09-26 sweep: every person
@@ -3827,6 +3828,21 @@
       + '<circle cx="12" cy="8.4" r="3.6"/>'
       + '<path d="M5.4 20.2a6.6 6.6 0 0 1 13.2 0"/>'
       + '</svg>';
+  };
+
+  /* A FACE THAT DOES NOT LOAD IS THE FACE THAT HAS NONE (2026-10-09). Measured at 390 on Home: a
+     demo avatar that answers 404 drew the browser's broken-image glyph on every one of that person's
+     posts. An `<img>` in a face box calls this on error: a person becomes their outline, a Center or
+     a community its monogram (`data-ini` on the box), exactly what a face with no picture draws. */
+  OW.faceFail = function (img) {
+    var box = img && img.parentNode;
+    if (!box) return;
+    var kind = String(box.getAttribute('data-kind') || 'person');
+    if (/^(person|user|profile)$/.test(kind) && OW.faceMark) { box.innerHTML = OW.faceMark(); return; }
+    var i = doc.createElement('i');
+    i.textContent = box.getAttribute('data-ini') || '';
+    box.innerHTML = '';
+    box.appendChild(i);
   };
 
   /* ── THE NOTE ──────────────────────────────────────────────────────────

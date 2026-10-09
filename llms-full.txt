@@ -1,0 +1,768 @@
+# Oneway, every page in words
+
+> The words of every page on oneway.center, read on 2026-10-09 from the pages themselves (tools/site_seo.py).
+
+---
+
+## Oneway
+
+Source: https://oneway.center/ (last changed 2026-10-09)
+
+>
+
+Ecosystem
+Oneway App
+Oneway OS
+
+Sign in
+
+Oneway. We build & elevate experiences people want to return to.
+
+Download App
+Explore Oneway OS
+
+Selective server beta — open when accessible
+
+Making entertainment, connection, and the Internet better for all sides.
+
+A modern ecosystem for people to easily and conveniently connect with cities, communities, and businesses.
+
+Explore the ecosystem
+
+Ecosystem
+
+We give every person one profile and every community or business a Center.
+
+Create your account Oneway Ecosystem
+
+We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.
+
+What a Center is
+
+App
+
+Introducing
+Your fully customizable social network.
+
+See what your friends and the places you love are posting, and what is coming up at each of them.
+
+Open the App The Oneway App
+
+OS
+
+See how deep it goes.
+
+From managing online communities, developing custom tools,
+
+to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
+
+OS Brain
+
+Connect your casino in one place.
+
+Open Oneway OS Oneway OS
+
+Reserve your name.
+
+Individual @you
+Organization .yourplace
+
+@
+
+Reserve your @name
+
+Reserved
+@you
+
+Held for · —
+
+Reserve another name
+
+Go anywhere. Connect everywhere.
+
+Oneway App ›
+Oneway OS ›
+Business OS ›
+Developer OS
+
+Oneway App
+Oneway OS
+About
+Privacy
+Terms
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+iMac is a trademark of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
+
+---
+
+## About Oneway
+
+Source: https://oneway.center/about.html (last changed 2026-10-09)
+
+>
+
+Ecosystem
+App
+OS
+Sign in
+
+About
+
+About
+Oneway
+
+Making entertainment, connection, and the Internet better for all sides.
+
+Oneway is at oneway.center. It is made by Oneway Technologies LLC, a New York limited liability company, and it is in closed beta. Oneway is not affiliated with other services that use the name Oneway.
+
+The ecosystem
+
+We give every person one profile and every community or business a Center.
+
+We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.
+
+The Oneway App
+
+Introducing your fully customizable social network.
+
+See what your friends and the places you love are posting, and what is coming up at each of them.
+
+Oneway OS
+
+See how deep it goes. From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
+
+Oneway OS. A free operating environment with the basic capabilities of a Center.
+
+Oneway Business OS. The full business operating system: the Brain, Systems, Agents, Cross Projection and operational intelligence.
+
+Oneway Developer OS. The developer platform for building applications, systems, integrations, agents and custom experiences on Oneway.
+
+Contact
+
+Oneway Technologies LLC, a New York limited liability company
+williamrau78@gmail.com
+
+2027, Oneway Technologies LLC
+
+About
+Privacy
+Terms
+Corporate Charter
+Data Deletion
+← Back to site
+
+---
+
+## Privacy Policy
+
+Source: https://oneway.center/privacy.html (last changed 2026-10-09)
+
+>
+
+Ecosystem
+App
+OS
+Sign in
+
+Legal
+
+Privacy
+Policy
+
+What we collect, why, who sees it, and how to have it removed.
+
+This is the Privacy Policy for the Oneway ecosystem: the Oneway App, the Oneway OS, Sign in with Oneway on any site, oneway.center, and any other or future Oneway service. It is published by Oneway Technologies LLC, a New York limited liability company. Oneway is in closed beta. Last updated October 5, 2026.
+
+Contents Who decides what happens to your information What we collect How we use it Who can see what Recognition by places Connected accounts Businesses and their records Sensitive information Who we share it with How long we keep it Security Your choices Children Where it is handled Changes
+
+Who decides what happens to your information
+
+Your own account. Oneway decides, and this policy says how.
+
+A business's records about its customers , such as guest lists, bookings, rewards, and a casino's cage and compliance records. The business decides. Oneway stores and handles them for it.
+
+What we collect
+
+What Details Why
+
+Account Your email and password. The password is kept only as a one-way hash. If you turn on two-step sign-in, its secret is kept encrypted and its recovery codes as hashes. To sign you in and keep the account yours
+
+Profile Name, @handle, pronouns, bio, a location you type, website, links, picture, banner, and a birthday that stays private To show you as you choose
+
+What you post Posts, photos, videos, comments, reactions, saves, reposts, drafts and the feeds you build To publish what you make
+
+Messages Messages, files and reactions in chats, and the groups you are in To deliver them
+
+Places and plans Centers you join, follow, save or visit. Events you answer. Bookings: your name, email, party size, dates and notes. An application to a Center's job or class listing opens a conversation with that Center. If you contact or book a Center without an account, we keep the name and email you give. To run your plans
+
+Location Only if you turn sharing on. Never read from your device otherwise. To show where you are, to the people you choose
+
+Connected accounts The access another platform gives us, and the account's name and ID To post for you and show what is connected
+
+Notes and ratings Notes you add to other people's content, and your ratings of notes. An AI assessment of a note is stored next to the community's, never instead of it. To give content context
+
+Reports Reports and appeals you send us To review them
+
+What we record as you use it
+
+What Details
+
+Sessions When a session started and was last used, and the network address or browser it came from. You can see them and end them.
+
+Security log Sign-ins, refused sign-ins to your account, and password and two-step changes, with the network address
+
+What reached your screen Which posts you were shown, how many times and when last, so Home does not repeat itself
+
+How you watch Whether you watched a video to the end, watched it again, how long you stayed, or skipped it. It shapes the next posts in Home and fades within minutes to hours. We do not label posts by topic or guess your interests from your words.
+
+Photos Hidden data inside a photo, such as GPS position, is removed before it is stored. Videos and GIFs are stored as uploaded, with whatever their phone wrote into them.
+
+We use a sign-in cookie and your browser's storage for settings such as theme. We use no advertising or analytics cookies and no analytics trackers, and we do not track you across other sites or apps, so there is no tracking to opt out of. Some pages in the App and OS load fonts and map code from Google Fonts and unpkg, which can see your network address.
+
+How we use it
+
+To run Oneway: sign you in, show your profile, deliver posts and messages, make bookings, and send the notifications you asked for.
+
+To keep accounts safe: limit sign-in attempts, require two-step sign-in in casino, guest, rewards and credential areas, and keep the security log.
+
+To rank Home from who and what you follow, the places you belong to, your reactions, what you have already seen and what you are watching now.
+
+To show friends what you share through StreetPass: Centers you both belong to and events you are both going to.
+
+To let places recognise you, if you allow it.
+
+To moderate. People decide reports. An automated check can move a report up or down the queue but cannot act on it.
+
+To write or suggest text and images when you use an AI feature. What you give that feature is sent to an AI provider to produce the answer. Oneway does not train AI models on your posts or messages, and each provider's own terms govern what it does with what it receives.
+
+To meet legal duties.
+
+We do not read your messages to rank posts or show ads. Moderators cannot open conversations. No decision about you is made by automated means alone: recognition only suggests and a person at a business confirms, and an automated check on a report can only change its place in the queue.
+
+Who can see what
+
+What Who
+
+Profile, posts, followers, who you follow Everyone, unless you turn on Private profile. Also yours to set: Show who follows you, Show who you follow, Anyone can comment, Anyone can tag you.
+
+Messages Only the people in the conversation. A message to a business goes to whoever it set up to receive it: its AI assistant, a person, several people or a team. The conversation says which.
+
+Activity and typing Others, until you turn Show when you are active and Show when you are typing off
+
+Events The number going is public. The list is the organiser's. A friend going to the same event sees that you are going too.
+
+Location Off until you turn it on. You choose who: nobody, up to 25 named people, followers, friends, people in your Centers, or everyone, including people not signed in. You choose how exact: exact or about 1 km. You choose how long: 1 to 24 hours, or only while you use the app. We keep only your latest position, and turning sharing off deletes it.
+
+Center pages A Center's public pages are published to search engines, maps and AI assistants. This never includes a person's private information.
+
+Search and suggestions People can find you by name and you can be suggested to people you may know, until you turn those off
+
+Recognition by places
+
+A business keeps a guest list: the hotel you stayed at, the restaurant you booked. Recognition lets it see that a record is you.
+
+A match is shown only when the record shares something you have proven: the email you sign in with, or a phone number or account you verified. A name alone never makes a match.
+
+A suggestion can appear when a record looks like your name, picture, bio and the words in your newest public posts. Posts for followers or friends only, deleted posts and a private profile's posts are never read. The picture check compares photographs. It notices the same photo used twice. It does not analyse your face.
+
+Which businesses: only ones you already have a tie to: their staff, their guests from the past year or with a stay coming up, people who posted there, and their followers.
+
+A person confirms. Someone at the business must confirm or reject a suggestion. A rejected one is remembered and not offered again.
+
+Once linked, the business sees whether you follow it, your role there, your bookings and posts there, and at a casino, that day's cash activity at the cage.
+
+We do not guess health, religion, ethnicity, sexuality, politics or finances from what you share.
+
+Setting Default What it says
+
+Let places recognise you On A place can match its guest list to you by your name, photo, bio and what you post publicly here, and someone there confirms it. Off means no place is shown that a record is you.
+
+Include accounts you connect Off Your X, Bluesky or Mastodon account can match you too. Off until you turn it on.
+
+Both are in Settings, under Privacy. Turn the first off and no business is shown a match or suggestion about you. We never tell a business that you exist and said no.
+
+Connected accounts
+
+Platform How it connects
+
+Instagram, Facebook, X, Threads, LinkedIn, TikTok, YouTube, Pinterest, Reddit, Google Business Profile Through the platform's own sign-in screen
+
+Mastodon You approve it on your server
+
+Bluesky Your handle and an app password, never your main password
+
+Telegram, Discord A bot token and channel, or a webhook address
+
+Before the platform's screen, Oneway lists each permission it asks for and why. You agree to each one. Connecting does not start until you have.
+
+What we keep is the access the platform gives us, and the account's name and ID. The access is encrypted with AES-256-GCM, with a separate key for each owner. It is never shown back to anyone.
+
+We post only what you pick to post. If you start an import, we read your posts on that platform and copy them onto Oneway as your posts, dated when you first posted them.
+
+Connecting your own account on your own profile marks it verified, so a place can match you by it only if you turned on Include accounts you connect. Connecting an account for a business proves nothing about you.
+
+Disconnect in Settings, under Connected accounts. We delete the stored access straight away, and the verified mark goes with it. You can also remove Oneway in the platform's own settings.
+
+Each platform's own policy covers what you post there.
+
+Businesses and their records
+
+A business on Oneway, called a Center, can keep records about its customers: name, email, phone, its own customer number, a rewards number, a picture, notes, and the customer's names on other platforms. It types them in or imports them from its own systems.
+
+The business is responsible for those records. To see, correct or delete one, ask the business. We help it answer. You do not need a Oneway account for a business to hold information about you.
+
+When a Center is created, Oneway gathers public information about the organization to propose a starting profile. Nothing is published until its operator confirms it. To correct or remove information about your organization, email us.
+
+A Center's Brain keeps a record of how people relate to the Center, built from what happened: follows, bookings, attendance, and posts there. It recommends, and a person at the Center decides. We do not infer health, religion, ethnicity, sexuality, politics or finances.
+
+A Center may also keep staff records, such as schedules and hours worked.
+
+A Center may also have its own website and its own privacy practices. This policy covers Oneway, not a Center's own site.
+
+Hotels and casinos may also keep stays, bills and deposits, rewards balances, cage transactions, limits you set on yourself, exclusion lists, and records the law requires.
+
+Your rewards standing moves between businesses only if you turn that on. The business receiving it sees your tier and which business it came from, never your balance, member number or play.
+
+When you book, message, join or follow a business, it sees that.
+
+Casino record Details
+
+Identification For reports the law requires, a casino collects name, address, date of birth, ID type, number and issuer, and taxpayer number where one exists. ID and taxpayer numbers are sealed, shown masked, and every opening is logged.
+
+Reports and cases Currency transaction reports and suspicious-activity cases. A suspicious-activity case is never disclosed to the person it concerns, so we cannot tell anyone whether one exists.
+
+Exclusions and limits Exclusion lists, and limits a person sets on themselves, which that person sees in the App
+
+Sensitive information
+
+Exact location is collected only if you turn sharing on and choose exact. Otherwise it is about 1 km, or not shared at all.
+
+Government ID and taxpayer numbers are collected by a casino for reports the law requires. They are sealed, shown masked, and every opening is logged.
+
+Messages are visible only to the people in the conversation.
+
+We do not infer health, religion, ethnicity, sexuality, politics or finances from what you share, and we do not use any of them to rank, recognise or target you.
+
+Who we share it with
+
+With What
+
+People you choose, and businesses you deal with As the sections above say
+
+Sites you sign in to with Oneway An ID that is different on every site and your public profile. Your email only if you tick Share my email. You can revoke a site in Settings.
+
+Platforms you connect What you post there and what you ask us to import
+
+Apps and integrations built by others Only what a Center has granted. A grant is per Center and can be revoked.
+
+AI providers What you give an AI feature, when you use one. The code can use xAI, Groq, OpenAI, Anthropic and fal (images).
+
+Resend Your email address and the message, to send account email
+
+Stripe, Twilio Only if a business turns on payments or texting
+
+OpenStreetMap Nominatim The words you search for and the map area, not who you are
+
+GitHub Hosts oneway.center and may log visits. Where the App itself is hosted will be named here before it opens to the public.
+
+Authorities When the law, a court order or a regulator requires it, or to protect someone's safety
+
+We do not sell your information and we do not share it for advertising, so there is nothing for a Global Privacy Control signal to opt you out of. If Oneway is merged or sold, we will tell you first.
+
+How long we keep it
+
+What How long
+
+Account Until you delete it. After that we keep your email address, the date you joined and the date you left, so no one else can register the address and inherit your history.
+
+Posts Deleting a post removes it from view. The record stays in our database.
+
+Messages A new conversation starts with messages that disappear after 2 days. The room's settings decide who can change that. When a message expires it is hidden, and its words, attachments and reactions are erased from our database the next time the conversation is opened. Attached files are not yet removed by this. Older conversations keep their messages until a timer is turned on. A business may be required to keep its conversations longer, and the conversation says so.
+
+Location Your latest shared position, until it expires or you turn sharing off
+
+What reached your screen Kept until you delete your account, which removes it. We have not set an end date before then. We will set one and publish it here before the App opens to the public.
+
+The security log Kept after you delete your account too. We have not set an end date. We will set one and publish it here before the App opens to the public.
+
+Casino compliance records At least five years, as the law requires. They cannot be deleted on request.
+
+Backups We will state the backup period here before the App opens to the public.
+
+Legal holds We may keep records longer when the law, a regulator or a legal claim requires it, and only for as long as it does.
+
+Security
+
+Passwords are kept as bcrypt hashes and session tokens as SHA-256 hashes. The sign-in cookie cannot be read by scripts on a page and is sent only to our own site.
+
+These are encrypted with AES-256-GCM, with a separate key for each business and a master key kept outside the database: connected-account access, two-step secrets, and casino ID and taxpayer numbers.
+
+Sign-ins and changes to who can get in are written to a log built so that any later change to it can be detected.
+
+Other records, such as posts, profiles and bookings, are ordinary database records. We will state the hosting and disk encryption here before the App opens to the public.
+
+No system is perfectly secure. If a breach affects your private information, we will tell you and the authorities as New York and other state laws require. Report a security problem to williamrau78@gmail.com .
+
+Your choices
+
+You can How
+
+See what Oneway knows about you Settings, Understanding. For a full copy, email us. A copy covers your posts, comments, follows, memberships, profile, event answers and places. It does not yet include messages, bookings, location, connected accounts, what reached your screen, linked identities or the security log.
+
+Correct it Edit your profile any time. Remove linked identities in Settings.
+
+Delete your account Settings, Delete your account, with your password and your code if two-step is on. If you own a Center, hand it over first.
+
+Turn things off Recognition, matching by connected accounts, location sharing, being found by name, suggestions, each kind of notification, the weekly email, and your rewards standing moving between businesses
+
+Choose who can message you Friends, people from your Centers, people you have crossed paths with, or anyone. New people can wait in requests.
+
+What deleting your account does
+
+Removed Stays
+
+Every session. Your profile, picture and search listings. Your posts from view, and your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected, with the access we held for them. Your linked identities. Your shared location. What reached your screen, and what the feed learned from it. Your list of bookings. Your notifications.
+Comments and messages you left in other people's conversations, shown as Deleted account. The minimal record described above. Records a business keeps about you, including its bookings. The security log. Records the law requires.
+
+Deleting your account removes the access we held for each connected account. It does not remove Oneway from each platform's own list of connected apps. Remove it there too, in the platform's settings.
+
+Your rights
+
+Depending on where you live, such as California, Colorado, Connecticut, Texas, Virginia, New Jersey and other states, you may have the right to know what we hold about you, to get a copy, to correct it, to delete it, to opt out of sale, sharing for advertising and profiling, and to appeal if we say no. We do not sell your information or share it for advertising, and you can turn recognition off at any time.
+
+To use a right, email williamrau78@gmail.com . We answer within 30 days, and may need to confirm it is you. You may ask someone to act for you; we will ask for proof they can. Using your rights will not change how we treat you. If we refuse, reply with the word Appeal and someone who did not make the first decision will review it and tell you the result in writing within 45 days. For Facebook and Instagram data, see Data Deletion .
+
+Children
+
+Oneway is for people 18 and older, and we do not knowingly collect information from anyone younger. If you think a child has an account, email us and we will delete it.
+
+Where it is handled
+
+Oneway is run from New York, United States. If you use it from another country, your information is handled in the United States and in the countries of the services named above.
+
+Changes
+
+When this policy changes, the date at the top changes with it. A material change is shown in the App before it takes effect, and we ask again where the law or a platform requires it.
+
+Contact
+
+Oneway Technologies LLC, a New York limited liability company
+williamrau78@gmail.com
+
+2027, Oneway Technologies LLC
+
+Privacy
+Terms
+Corporate Charter
+Data Deletion
+Delete Account
+← Back to site
+
+---
+
+## Terms of Service
+
+Source: https://oneway.center/terms.html (last changed 2026-10-09)
+
+>
+
+Ecosystem
+App
+OS
+Sign in
+
+Legal
+
+Terms of
+Service
+
+The rules for using Oneway.
+
+This is the Terms of Service for the Oneway ecosystem: the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in closed beta. Last updated October 5, 2026.
+
+Contents Closed beta Who can use it Your account What you post Rules Reports and appeals Copyright Messages Connected accounts Centers and the OS Data processing for Centers Sign in with Oneway AI features Privacy Our rights Third-party services Plans and billing No warranty Limit of liability Your responsibility Ending Governing law and disputes Notices Changes The rest
+
+1. Closed beta
+
+The Service is in closed beta, by invitation. It can change, break or be withdrawn. We may remove features and, where we have to, reset beta data, and we will tell you first where we can. Tell us what is wrong: any feedback you send may be used by us freely and without payment.
+
+2. Who can use it
+
+You must be 18 or older and able to enter a binding agreement. Some features, such as casino features, carry a higher legal age in some places, and you must meet it. You may not use the Service if you are barred from receiving it under United States law, including export and sanctions law. If you act for a Center, you confirm you have the authority to.
+
+3. Your account
+
+Give accurate information. Keep your password and your two-step codes to yourself and tell us at once if someone else has them. You are responsible for what happens under your account. You may hold one personal account.
+
+4. What you post
+
+What you post is yours. You give Oneway a worldwide licence, free of charge, to host, store, copy, format and show it, to the people your settings allow, so that we can run the Service. The licence ends when you delete the content or your account, except for copies we are required to keep, backups until they are replaced, and content other people have already received, reposted or quoted.
+
+Posts, profiles and followers are public unless you change your settings. You choose your audience.
+
+You promise that you have the right to post what you post, and that it does not break the law or anyone's rights.
+
+Deleting a post removes it from view. The Privacy Policy says what we keep.
+
+5. Rules
+
+Do not use Oneway to:
+
+break the law, or help anyone else break it;
+
+harass, threaten, stalk or target a person, or share someone's private information or location without their consent;
+
+post sexual content involving minors, or anything that exploits or endangers a child;
+
+post content that promotes violence or terrorism, or threatens to hurt someone;
+
+impersonate a person, a business or an organization, or pretend to be Oneway;
+
+send spam, run scams, or post fake reviews or manufactured engagement;
+
+upload malware, or attack the Service or get around its limits, security or sign-in;
+
+scrape the Service, or copy data from it, without our written permission;
+
+use recognition, the guest list, location or StreetPass to identify, follow or pursue someone against their wishes;
+
+resell the Service, or build a competing product from it.
+
+If you find a security problem, tell us at the address below, give us a reasonable time to fix it, and do not read, change or keep other people's data to prove it. We will not take action against good-faith research that follows this.
+
+We may remove content, limit features, or suspend or end accounts that break these rules or put people at risk. Where we can, we say why.
+
+6. Reports and appeals
+
+Anyone can report a post, comment, person or Center, including hateful conduct, from the App or the website. People review reports. Automated checks can raise or lower a report's priority but cannot act on it. We tell the person who reported what we decided. If we act on your content or account, you can appeal at the address below, and someone who did not make the first decision will look again.
+
+7. Copyright
+
+If you believe something on Oneway infringes your copyright, email us the work, where it is on Oneway, your contact details, a statement that you believe in good faith the use is not allowed, and a statement, under penalty of perjury, that the notice is accurate and that you own or act for the owner. We remove infringing content and may end the accounts of people who repeatedly infringe. If we remove yours and you think we were wrong, you can send a counter-notice to the same address.
+
+8. Messages
+
+Messages are between the people in the conversation. New conversations start with messages that disappear after 2 days, and the room's settings decide who can change that. A message to a business goes to whoever it set up to receive it, and the conversation says whether that is an AI assistant, a person or a team. Do not rely on a disappearing message to stay private: anyone who receives one can copy it.
+
+9. Connected accounts
+
+You can connect accounts on other platforms. Before each connection, Oneway lists each permission it asks for and why, and you agree to each one. The platform's own terms and its own consent screen also apply.
+
+Oneway posts to a platform only what you pick to post.
+
+You are responsible for following each platform's rules for what you post there. A platform can end or limit a connection, and we are not responsible when it does.
+
+Disconnect any time in Settings.
+
+10. Centers and the OS
+
+Every organization, business and city can have a Center. The people who run a Center manage it from the OS. The Center is its operators' responsibility: its content, its staff, its customers, its records and its compliance with the law.
+
+A Center keeps its own records about its customers. Oneway stores and handles them for the Center. The Center decides how they are used, must have a lawful basis to hold them, tell its customers about them, and answer their requests.
+
+Oneway is software. It is not a gaming operator, does not hold a gaming licence, and does not give legal, tax or compliance advice. A Center is responsible for the reports it files, the records it keeps and the rules that apply to it, including gaming, anti-money-laundering and privacy law.
+
+A Center must not use Oneway to contact, recognise, reward or admit a person it is required to exclude, such as someone on a self-exclusion list.
+
+A Center must treat a recognition suggestion as unconfirmed until a person at the Center has checked it, and must not use one to harass, discriminate against or pursue someone.
+
+If a Center sends email or text messages through Oneway, it is the sender. It must have the recipients' consent where the law requires it, honor opt-outs at once, and follow the CAN-SPAM Act and the Telephone Consumer Protection Act.
+
+Oneway does not provide facial recognition. A Center must not use Oneway to run face recognition on people, and must follow the law, including posting any notice it requires, for anything it does with its own tools.
+
+Two-step sign-in is required in casino, guest, rewards and credential areas. Do not share access.
+
+If you own a Center, hand it over before you delete your account.
+
+11. Data processing for Centers
+
+For the records a Center keeps about its customers, staff and guests, the Center decides why and how they are used, and Oneway is its processor. As the processor, Oneway will:
+
+use those records only to provide the Service to the Center and on its instructions, which are the Center's settings and its use of the Service, and for no purpose of our own;
+
+keep them confidential, and let only people who need them to run the Service see them;
+
+protect them with reasonable administrative, technical and physical safeguards;
+
+use the service providers named in the Privacy Policy, hold each to the same duties, and name any new one in the Privacy Policy;
+
+help the Center answer a customer's or staff member's request to see, correct or delete a record;
+
+tell the Center without undue delay, and within 72 hours, if we learn of a breach that affects its records, so it can notify the people and the authorities the law requires;
+
+delete or return the records when the Center ends its use of the Service, within 30 days of its request, except where the law requires us to keep them; and
+
+give the Center, on request, the information it needs to show that we meet these duties.
+
+The Center must give its customers and staff the notices the law requires, and must not give us records it has no right to hold.
+
+12. Sign in with Oneway
+
+This section applies to anyone who builds a site, app or integration on Oneway, including every Sign in with Oneway gateway and any app a Center installs.
+
+Ask only for what you need, and use only what the person or Center agreed to share. A grant is per person or per Center, and it can be revoked at any time. Stop using the data, and delete what you hold, when it is revoked.
+
+Do not sell the data, use it for advertising, use it to train AI models, or combine it with other data to identify people elsewhere.
+
+Publish a privacy policy that says what you collect from Oneway and why, and keep the data secure.
+
+Do not scrape, and do not reach Oneway data except through the access you were given.
+
+Tell us promptly if the data you received from Oneway is exposed.
+
+We may limit or disable an app that breaks these rules or puts people at risk.
+
+13. AI features
+
+Some features use AI to write or suggest text and images. It can be wrong or unsuitable. Nothing is published for you without your choice. You are responsible for what you choose to post or send, for the accuracy of what you publish, and for following each platform's rules for it. Where an AI answers a message for a Center, the conversation says so. If you use AI to make an advertisement with an AI-generated person in it, you must disclose that as New York law requires. As between you and Oneway, you own what an AI feature produces for you, subject to these Terms and to the rights of anyone whose content it may resemble. Your Brain page is counted from your own activity and does not call an AI model.
+
+14. Privacy
+
+The Privacy Policy says what we collect, how we use it and what you control. It is part of these Terms.
+
+15. Our rights
+
+Oneway owns the Service: its software, design, name and marks. You may use it as these Terms allow and for no other purpose. You may not copy or reverse-engineer it except where the law lets you.
+
+16. Third-party services
+
+The Service connects to services we do not run, such as the platforms you connect, maps, email and AI providers. Their terms govern your use of them. We do not control them and are not responsible for them.
+
+17. Plans and billing
+
+Oneway Free is for people and small communities.
+
+Oneway OS+ is $60 per month. Oneway OS Max is $330 per month. Enterprise is priced by agreement. Plans carry limits, such as AI generations, automations and storage, and the limits are shown on the plan.
+
+Nothing is charged today. When billing opens, the price, the billing period, the renewal date and how to cancel are shown to you before you agree, and nothing is charged without your agreement.
+
+Paid plans renew each month until you cancel. You can cancel online at any time, and it takes effect at the end of the period you have paid for. We will tell you before the renewal if a plan renews for a year or longer.
+
+We give 30 days' notice before a price changes. Prices do not include taxes. Fees are not refunded, except where the law requires it.
+
+18. No warranty
+
+THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. WE DO NOT PROMISE THAT IT WILL BE UNINTERRUPTED, ERROR-FREE OR SECURE, OR THAT CONTENT WILL NOT BE LOST. THIS IS A CLOSED BETA.
+
+19. Limit of liability
+
+TO THE EXTENT THE LAW ALLOWS, Oneway'S TOTAL LIABILITY TO YOU FOR ANY CLAIM ABOUT THE SERVICE OR THESE TERMS IS LIMITED TO THE GREATER OF WHAT YOU PAID US IN THE 12 MONTHS BEFORE THE CLAIM AND $100. WE ARE NOT LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS OR DATA. NOTHING HERE LIMITS LIABILITY THAT THE LAW DOES NOT ALLOW US TO LIMIT.
+
+20. Your responsibility
+
+You will defend and reimburse Oneway against claims, losses and reasonable legal costs that come from your content, your breach of these Terms or your breach of the law. If you use the Service for a Center, this also covers your Center's records and its operators' acts.
+
+21. Ending
+
+You can stop using Oneway and delete your account at any time, in Settings. We may suspend or end your access if you break these Terms, if the law requires it, or if we close the Service. Sections that by their nature should continue, such as what you post, our rights, no warranty, the limit of liability, your responsibility and disputes, continue after that.
+
+22. Governing law and disputes
+
+Law. New York law governs these Terms and any dispute about the Service, without regard to its conflict-of-laws rules, and the Federal Arbitration Act governs the arbitration clause below.
+
+Talk first. Write to us at the address below and give us 30 days to put it right before you start a claim.
+
+Arbitration. If we cannot resolve it, any claim between you and Oneway goes to binding arbitration run by the American Arbitration Association under its rules for consumers or for businesses, whichever applies. It is decided by one arbitrator, on an individual basis, and the arbitrator can give the same relief a court could. We pay the fees beyond what a court filing would cost you.
+
+Not covered. Either of us may bring a claim in small claims court, and either may go to court to stop misuse of intellectual property or of the Service.
+
+No class actions. Claims are brought only on your own behalf, not as a plaintiff or class member in a class or representative action.
+
+Your choice. You can opt out of arbitration and the class waiver by emailing us within 30 days of first accepting these Terms, saying that you opt out. Then the courts of the State of New York, and the federal courts located there, hear the dispute, and you and we consent to them.
+
+23. Notices
+
+We may notify you in the App, by email to the address on your account, or on this page. You may notify us at the address below. You agree to receive notices electronically.
+
+24. Changes
+
+We may change these Terms. We will show a material change in the App at least 14 days before it takes effect, and ask again where the law or a platform requires it. If you keep using the Service after that date, you accept the change. If you do not accept it, delete your account.
+
+25. The rest
+
+These Terms and the Privacy Policy are the whole agreement between you and Oneway about the Service. If a part cannot be enforced, the rest still applies. If we do not enforce a part right away, we have not given it up. Neither of us is responsible for a delay caused by something beyond its control. No one else has rights under these Terms. You may not transfer your account or these Terms. We may transfer ours if Oneway is merged or sold.
+
+Contact
+
+Oneway Technologies LLC, a New York limited liability company
+williamrau78@gmail.com
+
+2027, Oneway Technologies LLC
+
+Privacy
+Terms
+Corporate Charter
+Data Deletion
+Delete Account
+← Back to site
+
+---
+
+## Data Deletion
+
+Source: https://oneway.center/data-deletion.html (last changed 2026-10-09)
+
+>
+
+← Privacy Policy
+
+Data & Privacy
+
+Data
+Deletion
+
+What we hold when you connect an account, and how to remove it.
+
+What We Hold
+
+When you connect an account
+
+The access the platform gave us, kept encrypted and never shown back
+
+The account's name and ID, and its picture, shown in Connected accounts
+
+For Facebook and Instagram, the Pages you chose and their names
+
+If you started an import, the posts we copied onto Oneway. They are your posts.
+
+We do not hold your password for any platform. For Bluesky, we hold an app password you can revoke.
+
+Option 1 — From Oneway
+
+Disconnect an account
+
+Sign in at oneway.center
+
+Go to Settings → Connected accounts
+
+Press Disconnect next to the account
+
+The stored access is deleted straight away, and so is the verified mark it gave your profile.
+
+Option 2 — From the platform
+
+Remove Oneway from your Facebook account
+
+Open Facebook Settings & Privacy → Settings
+
+Open Security and Login → Apps and Websites
+
+Find Oneway Services and press Remove
+
+Facebook tells us, and we remove the Facebook and Instagram connection.
+
+Other platforms have the same screen in their own settings.
+
+Disconnecting does not delete your Oneway account, or the posts you made on Oneway. To delete the account, use Settings → Delete your account . The Privacy Policy says what that removes and what stays.
+
+Contact
+
+To have anything else removed, email us. We answer within 30 days.
+
+williamrau78@gmail.com
+
+Oneway Technologies LLC
+

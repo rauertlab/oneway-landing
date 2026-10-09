@@ -2344,18 +2344,28 @@ function iconTab(id, label, render, n) {
        as itself, and only genuine absence falls back to initials. */
     var rawLogo = String(o.logo == null ? '' : o.logo).trim();
     var logoSrc = imageUrl(rawLogo);
+    function noPicture() {
+      if (o.kind === 'person' && OW.faceMark) {
+        /* ★ FOUNDER/495: a person with no picture is the outline of a person.
+           This header is shared with Centers, which keep their monogram; the
+           2026-09-26 sweep found every person's page (and a new account's own)
+           still drawing initials here. */
+        av.innerHTML = OW.faceMark();
+      } else {
+        av.textContent = OW.initials ? OW.initials(o.name || '') : (o.name || '?').charAt(0);
+      }
+    }
     if (logoSrc) {
-      var lg = doc.createElement('img'); lg.src = logoSrc; lg.alt = ''; av.appendChild(lg);
+      var lg = doc.createElement('img'); lg.src = logoSrc; lg.alt = '';
+      /* a picture that does not load is the face that has none: measured at 390
+         (2026-10-09), a Center whose picture answers 404 drew the browser's
+         broken-image glyph in its own header */
+      lg.onerror = function () { av.innerHTML = ''; noPicture(); };
+      av.appendChild(lg);
     } else if (rawLogo && rawLogo.length <= 8 && !/[\/:.]/.test(rawLogo)) {
       av.textContent = rawLogo;                       /* their mark, as given */
-    } else if (o.kind === 'person' && OW.faceMark) {
-      /* ★ FOUNDER/495: a person with no picture is the outline of a person.
-         This header is shared with Centers, which keep their monogram; the
-         2026-09-26 sweep found every person's page (and a new account's own)
-         still drawing initials here. */
-      av.innerHTML = OW.faceMark();
     } else {
-      av.textContent = OW.initials ? OW.initials(o.name || '') : (o.name || '?').charAt(0);
+      noPicture();
     }
     id.appendChild(av);
     /* THE NOTE SITS ON THE FACE (founder, 2026-08-17: *"a note is like a thing
@@ -3774,6 +3784,10 @@ function iconTab(id, label, render, n) {
             if (OW.toast) OW.toast('What your profile shows did not change. ' + ((r && r.error) || 'Try again.'));
             return;
           }
+          /* WHAT THE SERVER DID NOT KEEP IS SAID, in its own words (founder/660): a 25th
+             widget was dropped while the screen showed it chosen */
+          var notKept = ((r.data && r.data.refused) || []).map(function (x) { return x && x.words; }).filter(Boolean);
+          if (notKept.length && OW.toast) OW.toast(notKept.join(' · '));
           data.invalidate('/api/oneway/people/');
           style.profile_widgets = clear ? undefined : chose.slice();
           host.innerHTML = '';
@@ -7039,11 +7053,11 @@ function iconTab(id, label, render, n) {
 
       /* WHICH SUBSCRIPTION IS YOURS, named so it cannot be mistaken for the
          other one (founder, 2026-08-02). ONEWAY+ is a PERSON's subscription;
-         ONEWAY OS+ and OS Max are a CENTER's operating tiers, bought per
-         Center and shown in the OS. The names are one character apart, so
-         this says which is which rather than assuming anyone can tell.
-         Status only — it reports what the runtime knows and promises
-         nothing the runtime does not enforce. */
+         Oneway Business OS is a CENTER's operating tier, bought per Center and
+         shown in the OS. Its name is the server's (`center_tier_label`, from
+         capabilities/tiers), never spelled here; without it the sentence is
+         left out rather than guessed. Status only — it reports what the
+         runtime knows and promises nothing the runtime does not enforce. */
       if (pl.ok && pl.data) {
         var plus = mk('div', 'ow-cust__row');
         plus.appendChild(mk('span', 'ow-cust__lbl', 'Your subscription'));
@@ -7055,8 +7069,9 @@ function iconTab(id, label, render, n) {
           + (pl.data.plus ? 'ONEWAY+' : 'ONEWAY+ — not subscribed') + '</b>'
           + '<span>' + (pl.data.plus
               ? feats.join(' · ')
-              : 'A subscription for a person — it deepens your own Space. '
-                + 'Different from ONEWAY OS+, which a Center buys to operate.')
+              : 'A subscription for a person — it deepens your own Space.'
+                + (pl.data.center_tier_label ? ' Different from '
+                  + esc(pl.data.center_tier_label) + ', which a Center buys to operate.' : ''))
           + '</span></span>';
         plus.appendChild(card);
         box.appendChild(plus);
@@ -7543,6 +7558,10 @@ function iconTab(id, label, render, n) {
           if (r.ok && r.data && r.data.style) {
             Object.keys(r.data.style).forEach(function (k) { style[k] = r.data.style[k]; });
           }
+          /* and what it refused is said, in the server's own words — it reported them and
+             nothing read them, so a 13th banner vanished in silence (founder/660) */
+          var notKept = ((r.ok && r.data && r.data.refused) || []).map(function (x) { return x && x.words; }).filter(Boolean);
+          if (notKept.length && OW.toast) OW.toast(notKept.join(' · '));
           /* every caller of this ignores its answer, so it says a refusal
              itself — a banner or a shape that did not save is on this
              device only (founder/502 sweep) */

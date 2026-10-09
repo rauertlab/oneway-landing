@@ -1777,17 +1777,19 @@
       if (!r.ok) {
         /* THE REFUSAL IS A DICT, NOT A STRING, AND IT RENDERED AS
            "[object Object]". The tier gate answers
-           `{"detail":{"error":"plan_required","message":"Presentation is a
-           ONEWAY OS+ capability…"}}`, and `data.post` hands `detail` straight
-           through — so the one refusal a person is MOST likely to meet was the
-           one this could not say. Read the message out of it, and fall back to
-           a plain sentence rather than a stringified object. */
-        var err = r.error;
-        if (err && typeof err === 'object') {
-          err = err.message || err.error || '';
-        }
+           `{"detail":{"error":"plan_required","message":"Flyer is part of
+           Oneway Business OS…","required_label":…}}`, and `data.post` hands
+           `detail` straight through — so the one refusal a person is MOST likely
+           to meet was the one this could not say. Read the message out of it,
+           and fall back to a plain sentence rather than a stringified object.
+           A tier is named only by the server's label (capabilities/tiers), never
+           spelled here, and the code `plan_required` is never shown. */
+        var body = (r.error && typeof r.error === 'object') ? r.error : null;
+        var err = body ? (body.message || body.error || '') : r.error;
         var said = r.status === 403 ? 'you cannot create here'
-                  : r.status === 402 ? (err || 'that needs ONEWAY OS+')
+                  : r.status === 402 ? ((body ? body.message : err)
+                      || (body && body.required_label ? 'that needs ' + body.required_label
+                          : 'this Center’s plan does not include that'))
                   : (err || 'could not begin');
         OW.say(btn, said);
         /* the press may have come from a sheet that has already folded away —

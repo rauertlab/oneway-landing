@@ -1,0 +1,5 @@
+Contact: mailto:williamrau78@gmail.com
+Expires: 2027-09-04T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://oneway.center/.well-known/security.txt
+Policy: https://oneway.center/privacy.html

@@ -2971,24 +2971,34 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
    note above says an identical halo reads as a coloured fringe rather than as
    light in a room. Not stripped on the safe floor, for the reason recorded
    there: a box-shadow is painted once and re-samples nothing. */
-.ow-cv-t{box-shadow:0 0 54px -5px rgba(var(--ow-h1),.62)}
+.ow-cv-t,.ow-upcoming{box-shadow:0 0 54px -5px rgba(var(--ow-h1),.62)}
 @media (hover:hover) and (pointer:fine){
   .ow-cv-t:hover{box-shadow:0 0 68px -2px rgba(var(--ow-h1),.82)}
 }
-html[data-theme="light"][data-theme="light"] .ow-cv-t{
+html[data-theme="light"][data-theme="light"] .ow-cv-t,
+html[data-theme="light"][data-theme="light"] .ow-upcoming{
   box-shadow:0 0 26px -18px rgba(var(--ow-h1),.30)}
 @media (hover:hover) and (pointer:fine){
   html[data-theme="light"][data-theme="light"] .ow-cv-t:hover{
     box-shadow:0 0 30px -16px rgba(var(--ow-h1),.42)}
 }
 @media (prefers-color-scheme:light){
-  html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-t{
+  html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-t,
+  html:not([data-theme="dark"]):not([data-theme="light"]) .ow-upcoming{
     box-shadow:0 0 26px -18px rgba(var(--ow-h1),.30)}
   @media (hover:hover) and (pointer:fine){
     html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-t:hover{
       box-shadow:0 0 30px -16px rgba(var(--ow-h1),.42)}
   }
 }
+/* ── THE LATEST TILE IS A FRAME AROUND A POST, AND THE POST IS THE POPIT ──
+   ★ FOUNDER, 2026-10-09 (the grey boxes go in favour of the popits). The frame's own face is already
+   transparent (`.ow-cv-face--posts`, below), so the spill above outlined an EMPTY box around the Post's
+   own light: measured at 390, a dark slab in dark mode and a pale frame in light. The Post inside throws
+   its author's light; the frame throws none. `html:root` and the doubled face class give the weight the
+   theme-guarded rules above carry, without spelling a theme (the note on `.ow-cv-face--posts`). */
+html:root .ow-cv-t:has(.ow-cv-face.ow-cv-face--posts),
+html:root .ow-cv-t:has(.ow-cv-face.ow-cv-face--posts):hover{box-shadow:none}
 /* ── THE GLOW WAS SWITCHED OFF ON EVERY PHONE ─────────────────────────────
    ★ FOUNDER, 2026-09-08: *"THE GLOW GETS STRONGER THESE ARE NOT THE POPITS AT
      THEIR BEST BUT DONT OVERTWEAK ThEY ARE CLOSE."*
@@ -6183,11 +6193,15 @@ html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over){display:none}
 .ow-feedhead__s{margin:0;font-size:14px;line-height:1.45;color:var(--ow-ink-2)}
 .ow-feedhead__acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 
-/* ── UPCOMING — the person's bookings, on Home (founder, chat 2026-10-03) ── */
-.ow-upcoming{display:flex;flex-direction:column;gap:6px;margin:0 0 14px;padding:12px 14px;
-  border-radius:20px 17px 21px 18px;
-  background:linear-gradient(158deg, rgba(var(--ow-h1),.12), rgba(var(--ow-h3,var(--ow-h2)),.08) 52%, var(--ow-tile-base));
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+/* ── UPCOMING — the person's bookings, on Home (founder, chat 2026-10-03) ──
+   ★ FOUNDER, 2026-10-09: "the grey boxes on app and os home pages need to go in favor of the popits i was
+     talking about on the home app". Measured at 390 beside the river's Posts and the canvas Popits, which
+     are one material with the same light: this was the one box on Home with a recipe of its own, a linear
+     band with no light, no glow and no grain. It now wears that material: the same `.ow-cv-face` layer
+     behind its rows (home.js), and the canvas Popit's own spill (`.ow-cv-t`, below). */
+.ow-upcoming{position:relative;isolation:isolate;display:flex;flex-direction:column;gap:6px;margin:0 0 14px;
+  padding:12px 14px;border-radius:20px 17px 21px 18px}
+.ow-upcoming > .ow-upcoming__ground{position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none}
 .ow-upcoming__h{font-size:12.5px;font-weight:650;letter-spacing:.02em;color:var(--ow-ink-3)}
 .ow-upcoming__row{appearance:none;-webkit-appearance:none;border:0;background:none;cursor:pointer;text-align:left;
   display:flex;align-items:center;gap:12px;padding:6px 0;font-family:var(--ow-font);color:var(--ow-ink)}

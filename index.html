@@ -4,6 +4,44 @@
   <meta charset="UTF-8"/>
   <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
+  <title>Oneway: your fully customizable social network and OS</title>
+  <meta name="description" content="Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://oneway.center/">
+  <link rel="alternate" hreflang="en" href="https://oneway.center/">
+  <link rel="alternate" hreflang="x-default" href="https://oneway.center/">
+  <link rel="alternate" type="text/plain" title="Oneway, for assistants" href="/llms.txt">
+  <link rel="alternate" type="text/plain" title="Oneway, every page in words" href="/llms-full.txt">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Oneway">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://oneway.center/">
+  <meta property="og:title" content="Oneway">
+  <meta property="og:description" content="We give every person one profile and every community or business a Center.">
+  <meta property="og:image" content="https://oneway.center/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Oneway">
+  <meta name="twitter:description" content="We give every person one profile and every community or business a Center.">
+  <meta name="twitter:image" content="https://oneway.center/og-card.jpg">
+  <meta name="twitter:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="theme-color" content="#05050b">
+  <meta name="application-name" content="Oneway">
+  <meta name="apple-mobile-web-app-title" content="Oneway">
+  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
+  <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
+  <link rel="icon" href="/assets/icons/oneway-globe-512.png" sizes="512x512" type="image/png">
+  <link rel="icon" href="/app-icon-1024.png" sizes="1024x1024" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="author" href="/.well-known/security.txt" title="Security contact">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center. We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway: your fully customizable social network and OS","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-09"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#os"}]}</script>
+  <!-- /SEO -->
   <!-- ═══ MOBILE RENDER SAFE-FLOOR + ON-DEVICE BISECTION (Priority Zero: the
        iPhone Safari renderer crash) ═══════════════════════════════════════
        Set BEFORE first paint so nothing heavy ever composites on a phone.
@@ -25,7 +63,7 @@
        capability"* — and this page never got that ruling. Now no surface owns
        its own copy of the question. Loaded before first paint so nothing heavy
        ever composites on a real phone. -->
-  <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
+  <script defer src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
   <style>
     /* Safe floor — strip every heavy compositor feature on mobile. */
     html[data-fx="safe"] *, html[data-fx="safe"] *::before, html[data-fx="safe"] *::after{
@@ -49,75 +87,666 @@
        The App's own Popit material is loaded here — the same stylesheet and the
        same constructors (OW.glance, OW.card) the App renders with — so a
        Center or an event on this page IS the App's row for it, not a copy. -->
-  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=5f3b78b5">
-  <script src="/frontend/shared/oneway-hue.js?v=28eb408a"></script>
-  <script src="/frontend/shared/oneway-popit.js?v=f6d663cb"></script>
-  <script src="/frontend/shared/oneway-links.js?v=c3df779e"></script>
+  <style id="ow-first-screen">html[data-fx="safe"] *, html[data-fx="safe"] ::before, html[data-fx="safe"] ::after { backdrop-filter: none !important; filter: none !important; mix-blend-mode: normal !important; will-change: auto !important; }
+*, ::before, ::after { box-sizing: border-box; }
+:root { --ow-ground: #000; --ow-ink: #fff; --ow-ink-2: rgba(255,255,255,.68); --ow-ink-3: rgba(255,255,255,.52); --ow-tile-base: rgba(48,50,92,.50); --ow-tile-mid: rgba(40,42,78,.44); --ow-plate: #1c2042; --ow-panel-1: rgba(40,39,70,.95); --ow-panel-2: rgba(24,25,48,.96); --ow-sheet-1: rgba(34,33,58,.9); --ow-sheet-2: rgba(14,14,28,.93); --ow-rim: rgba(255,255,255,.09); --ow-lift: rgba(255,255,255,.2); --ow-seam: rgba(255,255,255,.24); --ow-seam-bead: rgba(255,255,255,.46); --ow-weight: rgba(0,0,0,.4); --ow-drop: rgba(0,0,0,.66); --ow-chrome: rgba(4,5,12,.92); --ow-chrome-rgb: 4,5,12; --ow-scrim: rgba(4,5,14,.5); --ow-field: rgba(0,0,0,.26); --ow-field-edge: rgba(255,255,255,.08); --ow-grain: .14; --ow-stars: 1; }
+html[data-theme="light"][data-theme="light"] { --ow-tile-base: rgba(255,255,255,.62); --ow-ground: #eceaf3; --ow-ink: #14131f; --ow-ink-2: rgba(20,19,31,.86); --ow-ink-3: rgba(20,19,31,.64); --ow-panel-1: rgba(255,255,255,.9); --ow-panel-2: rgba(243,241,249,.94); --ow-sheet-1: rgba(255,255,255,.88); --ow-sheet-2: rgba(240,238,248,.93); --ow-rim: rgba(20,19,31,.09); --ow-lift: rgba(255,255,255,.9); --ow-seam: rgba(20,19,31,.2); --ow-seam-bead: rgba(255,255,255,.72); --ow-weight: rgba(60,52,96,.1); --ow-drop: rgba(48,40,80,.2); --ow-chrome: rgba(252,251,255,.9); --ow-chrome-rgb: 252,251,255; --ow-scrim: rgba(230,228,240,.6); --ow-field: rgba(20,19,31,.045); --ow-field-edge: rgba(20,19,31,.13); --ow-grain: .06; --ow-stars: 0; }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) { --ow-tile-base: rgba(255,255,255,.62); --ow-ground: #eceaf3; --ow-ink: #14131f; --ow-ink-2: rgba(20,19,31,.86); --ow-ink-3: rgba(20,19,31,.64); --ow-panel-1: rgba(255,255,255,.9); --ow-panel-2: rgba(243,241,249,.94); --ow-sheet-1: rgba(255,255,255,.88); --ow-sheet-2: rgba(240,238,248,.93); --ow-rim: rgba(20,19,31,.09); --ow-lift: rgba(255,255,255,.9); --ow-seam: rgba(20,19,31,.2); --ow-seam-bead: rgba(255,255,255,.72); --ow-weight: rgba(60,52,96,.1); --ow-drop: rgba(48,40,80,.2); --ow-chrome: rgba(252,251,255,.9); --ow-chrome-rgb: 252,251,255; --ow-scrim: rgba(230,228,240,.6); --ow-field: rgba(20,19,31,.045); --ow-field-edge: rgba(20,19,31,.13); --ow-grain: .06; --ow-stars: 0; }}
+:root { --ow-h1: 124,45,255; --ow-h2: 93,226,255; --ow-h1-ink: rgb(var(--ow-h1)); --ow-h2-ink: rgb(var(--ow-h2)); }
+html[data-theme="light"][data-theme="light"] { --ow-h1-ink: color-mix(in srgb,rgb(var(--ow-h1)) 34%,#14131f); --ow-h2-ink: color-mix(in srgb,rgb(var(--ow-h2)) 34%,#14131f); }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) { --ow-h1-ink: color-mix(in srgb,rgb(var(--ow-h1)) 34%,#14131f); --ow-h2-ink: color-mix(in srgb,rgb(var(--ow-h2)) 34%,#14131f); }}
+@supports (color:oklch(from red min(l,.5) c h)){html[data-theme="light"][data-theme="light"] { --ow-h1-ink: oklch(from rgb(var(--ow-h1)) min(l,.44) c h); --ow-h2-ink: oklch(from rgb(var(--ow-h2)) min(l,.44) c h); }}
+@supports (color:oklch(from red min(l,.5) c h)){@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) { --ow-h1-ink: oklch(from rgb(var(--ow-h1)) min(l,.44) c h); --ow-h2-ink: oklch(from rgb(var(--ow-h2)) min(l,.44) c h); }}}
+@supports (color:oklch(from red min(l,.5) c h)){html[data-theme="dark"][data-theme="dark"] { --ow-h1-ink: oklch(from rgb(var(--ow-h1)) max(l,.72) c h); --ow-h2-ink: oklch(from rgb(var(--ow-h2)) max(l,.72) c h); }}
+@supports (color:oklch(from red min(l,.5) c h)){@media (prefers-color-scheme: dark){html:not([data-theme="light"]):not([data-theme="light"]) { --ow-h1-ink: oklch(from rgb(var(--ow-h1)) max(l,.72) c h); --ow-h2-ink: oklch(from rgb(var(--ow-h2)) max(l,.72) c h); }}}
+:root { --ow-like: #ff0f2d; --ow-like-rgb: 255,15,45; --ow-font-display: 'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --ow-font: 'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --ow-font-atmos: 'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --ow-ease: cubic-bezier(.4,0,.2,1); --ow-spring: cubic-bezier(.34,1.56,.64,1); --ow-settle: cubic-bezier(.16,.84,.28,1); --ow-gut: max(16px,env(safe-area-inset-left)); }
+:root { --ow-btn-r: 14px; }
+html[data-simple="1"] { --ow-btn-r: 999px; }
+html[data-simple="1"] .po-act { background: rgba(var(--h,var(--ow-h1)),.16); box-shadow: none; border: 0px; }
+html[data-simple="1"] .po-act[data-act="on"] { background: rgb(var(--h,var(--ow-h1))); color: rgb(7, 7, 12); box-shadow: none; }
+@media (hover: hover) and (pointer: fine){html[data-simple="1"] .po-act:hover:not(:disabled) { transform: none; background: rgba(var(--h,var(--ow-h1)),.24); box-shadow: none; }}
+html[data-world="plain"] .ow-world { display: none; }
+html[data-world="plain"] body { background: var(--ow-ground); }
+html[data-world="plain"] .ow-cv-face, html[data-world="plain"] .po-card[data-blended] .po-card__face { background-color: color-mix(in srgb, var(--ow-ground) 78%, transparent); }
+@keyframes ow-neb { 
+  0% { transform: translate3d(0px, 0px, 0px) scale(1); }
+  100% { transform: translate3d(-2.5%, 1.8%, 0px) scale(1.06); }
+}
+@keyframes ow-star-far { 
+  100% { transform: translate3d(-980px, -980px, 0px); }
+}
+@keyframes ow-star-near { 
+  100% { transform: translate3d(-1490px, 1490px, 0px); }
+}
+@keyframes po-socket { 
+  0%, 100% { box-shadow: 0 0 0 2px rgba(var(--h),.85), 0 0 0 6px rgba(var(--h),.22),
+                     0 0 30px -6px rgba(var(--h),.9); }
+  50% { box-shadow: 0 0 0 2px rgba(var(--h),.6),  0 0 0 9px rgba(var(--h),.12),
+                     0 0 40px -6px rgba(var(--h),.7); }
+}
+@keyframes ow-bob { 
+  0% { transform: translate3d(0,0,0) rotate(var(--r1,0deg)) scale(var(--sc)); }
+  50% { transform: translate3d(var(--bobX,1px), calc(var(--bobY,3px)*-1),0)
+                rotate(var(--r2,.2deg)) scale(var(--sc)); }
+  100% { transform: translate3d(0,0,0) rotate(var(--r1,0deg)) scale(var(--sc)); }
+}
+html[data-theme="light"][data-theme="light"] .po-glance__day { color: rgb(255, 255, 255); }
+html:not([data-fx="safe"]) .po-locked .ow-app { filter: blur(7px) saturate(0.72); }
+html[data-fx="safe"] .po-locked .ow-world { filter: none; }
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){html:not([data-fx="safe"]) .po-scrim { backdrop-filter: blur(4px); }}
+html[data-fx="safe"] .po-beam { display: none; }
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){@media (min-width: 641px){html:not([data-fx="safe"]) .po-sheet { backdrop-filter: blur(16px) saturate(170%); }}}
+html[data-fx="safe"] .po-sheet__seam::after { display: none; }
+@keyframes po-interfere { 
+  0% { transform: translate3d(0px, 0px, 0px); }
+  100% { transform: translate3d(0px, 10px, 0px); }
+}
+@keyframes po-skel { 
+  0% { background-position: 120% 0px; }
+  100% { background-position: -20% 0px; }
+}
+@keyframes po-say { 
+  0% { opacity: 0; transform: translateY(-3px); }
+  100% { opacity: 1; transform: none; }
+}
+html[data-theme="light"][data-theme="light"] .ow-cv-t, html[data-theme="light"][data-theme="light"] .ow-upcoming { box-shadow: 0 0 26px -18px rgba(var(--ow-h1),.30); }
+@media (hover: hover) and (pointer: fine){html[data-theme="light"][data-theme="light"] .ow-cv-t:hover { box-shadow: 0 0 30px -16px rgba(var(--ow-h1),.42); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-t, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-upcoming { box-shadow: 0 0 26px -18px rgba(var(--ow-h1),.30); }}
+@media (prefers-color-scheme: light){@media (hover: hover) and (pointer: fine){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-t:hover { box-shadow: 0 0 30px -16px rgba(var(--ow-h1),.42); }}}
+html:root .ow-cv-t:has(.ow-cv-face.ow-cv-face--posts), html:root .ow-cv-t:has(.ow-cv-face.ow-cv-face--posts):hover { box-shadow: none; }
+html[data-theme="dark"] .ow-thread + .ow-thread::before { background: rgba(255, 255, 255, 0.09); }
+@media (prefers-color-scheme: dark){html:not([data-theme="light"]) .ow-thread + .ow-thread::before { background: rgba(255, 255, 255, 0.09); }}
+@keyframes ow-msg-flash { 
+  0% { box-shadow: 0 0 0 2px rgba(var(--ow-h1),.85); }
+  100% { box-shadow: 0 0 0 2px rgba(var(--ow-h1),0); }
+}
+html[data-theme="light"][data-theme="light"] .ow-cpage__row[data-open="1"] .ow-cpage__v { color: rgb(15, 138, 77); }
+@keyframes owRec { 
+  50% { opacity: 0.55; }
+}
+@keyframes ow-tally { 
+  0% { transform: translateY(-0.42em); opacity: 0; }
+  55% { transform: translateY(0.06em); opacity: 1; }
+  100% { transform: none; opacity: 1; }
+}
+@keyframes ow-ring { 
+  0% { opacity: 0.9; box-shadow: 0 0 0 0 rgba(var(--h,var(--ow-h1)),.55); }
+  70% { opacity: 0.35; box-shadow: 0 0 0 17px rgba(var(--h,var(--ow-h1)),0); }
+  100% { opacity: 0; box-shadow: 0 0 0 20px rgba(var(--h,var(--ow-h1)),0); }
+}
+@keyframes ow-liked { 
+  0% { transform: scale(1) rotate(0deg); }
+  30% { transform: scale(1.42) rotate(-7deg); }
+  55% { transform: scale(0.9) rotate(4deg); }
+  78% { transform: scale(1.1) rotate(-2deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes ow-disliked { 
+  0% { transform: translateY(0px) scale(1); }
+  35% { transform: translateY(3px) scale(1.16); }
+  65% { transform: translateY(1px) scale(0.95); }
+  100% { transform: translateY(0px) scale(1); }
+}
+@keyframes ow-reposted { 
+  0% { transform: rotate(0deg) scale(1); }
+  45% { transform: rotate(200deg) scale(1.18); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+@keyframes ow-saved { 
+  0% { transform: translateY(0px) scale(1); }
+  30% { transform: translateY(-6px) scale(1.14); }
+  60% { transform: translateY(1px) scale(0.96); }
+  100% { transform: translateY(0px) scale(1); }
+}
+@keyframes ow-bloom { 
+  0% { opacity: 0; transform: scale(0.3) rotate(-14deg); }
+  22% { opacity: 1; transform: scale(1.16) rotate(6deg); }
+  45% { opacity: 1; transform: scale(0.98) rotate(-2deg); }
+  100% { opacity: 0; transform: scale(1.5) rotate(0deg) translateY(-26px); }
+}
+@keyframes ow-arrive { 
+  0% { opacity: 0; transform: translateY(-6px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes ow-typedot { 
+  0%, 60%, 100% { transform: translateY(0px); opacity: 0.35; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+html[data-ow-motion="reduce"] .po-act > b[data-live], html[data-ow-motion="reduce"] .po-act[data-act="on"] > svg, html[data-ow-motion="reduce"] .po-act[data-po-respond="like"][data-act="on"]::before, html[data-ow-motion="reduce"] .ow-cmt[data-arrived], html[data-ow-motion="reduce"] .ow-typing__dots i { animation: auto ease 0s 1 normal none running none; }
+html[data-ow-motion="reduce"] .ow-bloom { display: none; }
+html[data-ow-motion="reduce"] .ow-cmt--opening { transition: none; }
+html[data-ow-view="immersive"] { background: rgb(0, 0, 0); }
+html[data-theme="light"][data-theme="light"][data-ow-view="immersive"] { background: var(--ow-bg,#eceaf3); }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"])[data-ow-view="immersive"] { background: var(--ow-bg,#eceaf3); }}
+html[data-ow-view="immersive"] body { overflow: hidden; background: transparent; }
+html[data-ow-view="immersive"] body::before { content: ""; position: fixed; inset: 0px; z-index: -4; pointer-events: none; background: radial-gradient(90% 60% at 18% 8%,  rgba(var(--ow-h1),.13), transparent 62%),
+    radial-gradient(80% 55% at 86% 26%, rgba(var(--ow-h2),.10), transparent 60%),
+    radial-gradient(120% 80% at 50% 108%,rgba(var(--ow-h1),.09), transparent 66%),
+    radial-gradient(60% 40% at 70% 62%, rgba(255,255,255,.035), transparent 70%); }
+html[data-ow-view="immersive"] .ow-top { display: none; }
+html[data-ow-view="immersive"] .ow-nav { z-index: 130; }
+html[data-ow-view="immersive"] { --ow-dock: calc(60px + env(safe-area-inset-bottom)); }
+@media (max-width: 899px){html[data-ow-view="immersive"] .ow-nav { position: fixed; left: 50%; right: auto; transform: translateX(-50%); bottom: max(10px,calc(env(safe-area-inset-bottom) + 6px)); }}
+@media (min-width: 900px){html[data-ow-view="immersive"] { --ow-dock: 0px; }}
+html[data-ow-view="immersive"] .po-acts--rail { bottom: calc(11px + var(--ow-dock)); }
+html[data-ow-view="immersive"] .ow-fpos[data-kind="media"] .po-card__foot { padding-bottom: calc(env(safe-area-inset-bottom) + 20px + var(--ow-dock) - env(safe-area-inset-bottom)); }
+html[data-ow-view="immersive"] .ow-fpos[data-kind="group"], html[data-ow-view="immersive"] .ow-fpos[data-kind="end"] { padding-bottom: var(--ow-dock); }
+html[data-ow-view="immersive"] .ow-hello, html[data-ow-view="immersive"] .ow-home-canvas, html[data-ow-view="immersive"] .ow-around { display: none; }
+html[data-ow-view="immersive"] .ow-river__ahead { display: none; }
+html[data-ow-view="immersive"] .ow-feedswitch { display: flex; position: fixed; z-index: 132; top: calc(env(safe-area-inset-top) + 10px); left: 50%; transform: translateX(-50%); margin: 0px; background: rgba(10, 12, 20, 0.44); box-shadow: rgba(255, 255, 255, 0.18) 0px 0px 0px 1px inset; backdrop-filter: blur(10px); }
+html[data-ow-view="immersive"] .ow-feedswitch button { color: rgba(255, 255, 255, 0.72); }
+html[data-ow-view="immersive"] .ow-feedswitch button[aria-pressed="true"] { color: rgb(255, 255, 255); }
+html[data-theme="light"][data-theme="light"][data-ow-view="immersive"] .ow-feedswitch { background: rgba(255, 255, 255, 0.72); box-shadow: rgba(20, 20, 40, 0.14) 0px 0px 0px 1px inset, rgba(20, 20, 40, 0.4) 0px 6px 18px -10px; }
+html[data-theme="light"][data-theme="light"][data-ow-view="immersive"] .ow-feedswitch button { color: var(--ow-ink-3); }
+html[data-theme="light"][data-theme="light"][data-ow-view="immersive"] .ow-feedswitch button[aria-pressed="true"] { color: rgb(255, 255, 255); }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"])[data-ow-view="immersive"] .ow-feedswitch { background: rgba(255, 255, 255, 0.72); box-shadow: rgba(20, 20, 40, 0.14) 0px 0px 0px 1px inset, rgba(20, 20, 40, 0.4) 0px 6px 18px -10px; }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"])[data-ow-view="immersive"] .ow-feedswitch button { color: var(--ow-ink-3); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"])[data-ow-view="immersive"] .ow-feedswitch button[aria-pressed="true"] { color: rgb(255, 255, 255); }}
+html[data-ow-view="immersive"] .ow-fgroup { top: calc(env(safe-area-inset-top) + 58px); }
+html[data-ow-view="immersive"] .ow-fgroup[data-n="1"] { justify-content: center; bottom: calc(env(safe-area-inset-bottom) + 30px + var(--ow-dock,0px)); }
+@keyframes ow-popit-in { 
+  0% { opacity: 0; transform: translateY(14px) scale(0.97); }
+  60% { opacity: 1; transform: translateY(-2px) scale(1.004); }
+  100% { opacity: 1; transform: none; }
+}
+html[data-ow-motion="reduce"] .ow-fpos[data-kind="group"] .ow-fgroup > .po-card { animation: auto ease 0s 1 normal none running none; }
+html[data-theme="light"][data-theme="light"] .ow-fpos .po-card > .po-card__face { background: radial-gradient(125% 95% at 20% -12%, rgba(var(--h),.16), transparent 62%),
+    radial-gradient(105% 85% at 90% 110%, rgba(var(--h2),.11), transparent 66%),
+    linear-gradient(168deg, rgba(255,255,255,.94), rgba(255,255,255,.86)); box-shadow: inset 0 0 0 1px rgba(var(--h),.30),
+             0 10px 30px -14px rgba(20,20,40,.28); }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-fpos .po-card > .po-card__face { background: radial-gradient(125% 95% at 20% -12%, rgba(var(--h),.16), transparent 62%),
+    radial-gradient(105% 85% at 90% 110%, rgba(var(--h2),.11), transparent 66%),
+    linear-gradient(168deg, rgba(255,255,255,.94), rgba(255,255,255,.86)); box-shadow: inset 0 0 0 1px rgba(var(--h),.30),
+             0 10px 30px -14px rgba(20,20,40,.28); }}
+html[data-theme="dark"][data-theme="dark"] .ow-fpos .po-card > .po-card__face { background: radial-gradient(125% 95% at 20% -12%, rgba(var(--h),.30), transparent 62%),
+    radial-gradient(105% 85% at 90% 110%, rgba(var(--h2),.19), transparent 66%),
+    linear-gradient(168deg, rgba(255,255,255,.058), rgba(255,255,255,.016)); box-shadow: inset 0 0 0 1px rgba(var(--h),.34),
+             inset 0 1px 0 rgba(255,255,255,.11); }
+@media (prefers-color-scheme: dark){html:not([data-theme="light"]):not([data-theme="light"]) .ow-fpos .po-card > .po-card__face { background: radial-gradient(125% 95% at 20% -12%, rgba(var(--h),.30), transparent 62%),
+      radial-gradient(105% 85% at 90% 110%, rgba(var(--h2),.19), transparent 66%),
+      linear-gradient(168deg, rgba(255,255,255,.058), rgba(255,255,255,.016)); box-shadow: inset 0 0 0 1px rgba(var(--h),.34),
+               inset 0 1px 0 rgba(255,255,255,.11); }}
+html[data-theme="light"][data-theme="light"] .ow-fexit { color: var(--ow-ink); background: rgba(255, 255, 255, 0.72); box-shadow: rgba(20, 20, 40, 0.14) 0px 0px 0px 1px inset, rgba(20, 20, 40, 0.4) 0px 6px 18px -10px; }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-fexit { color: var(--ow-ink); background: rgba(255, 255, 255, 0.72); box-shadow: rgba(20, 20, 40, 0.14) 0px 0px 0px 1px inset, rgba(20, 20, 40, 0.4) 0px 6px 18px -10px; }}
+html[data-theme="dark"][data-theme="dark"] .ow-fexit { color: rgb(255, 255, 255); background: rgba(255, 255, 255, 0.1); box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset; }
+@media (prefers-color-scheme: dark){html:not([data-theme="light"]):not([data-theme="light"]) .ow-fexit { color: rgb(255, 255, 255); background: rgba(255, 255, 255, 0.1); box-shadow: rgba(255, 255, 255, 0.2) 0px 0px 0px 1px inset; }}
+html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over) { display: none; }
+@keyframes ow-fover-in { 
+  0% { opacity: 0; transform: translateY(14px); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes ow-now-in { 
+  0% { opacity: 0; transform: translateY(-10px); }
+  100% { opacity: 1; transform: none; }
+}
+html[data-ow-view="immersive"] .ow-worlds { display: none; }
+html[data-motion="reduced"] * { animation: auto ease 0s 1 normal none running none !important; transition: none !important; }
+html[data-motion="reduced"] .ow-world__neb, html[data-motion="reduced"] .ow-world__stars { animation: auto ease 0s 1 normal none running none !important; }
+@keyframes ow-turn { 
+  0% { opacity: 0.44; }
+  4% { opacity: 1; }
+  9% { opacity: 0.9; }
+  17% { opacity: 0.66; }
+  26% { opacity: 0.44; }
+  100% { opacity: 0.44; }
+}
+@keyframes ow-turn-halo { 
+  0% { opacity: 0.1; }
+  4% { opacity: 0.7; }
+  9% { opacity: 0.48; }
+  17% { opacity: 0.24; }
+  26% { opacity: 0.1; }
+  100% { opacity: 0.1; }
+}
+@keyframes ow-sign-beat { 
+  0%, 72% { opacity: 0.86; }
+  74% { opacity: 1; }
+  76% { opacity: 0.42; }
+  78% { opacity: 1; }
+  81% { opacity: 0.6; }
+  83% { opacity: 1; }
+  100% { opacity: 0.86; }
+}
+@keyframes ow-breathe { 
+  0%, 100% { opacity: 0.32; }
+  50% { opacity: 0.44; }
+}
+@keyframes ow-breathe-eq { 
+  0%, 100% { opacity: 0.46; }
+  50% { opacity: 0.58; }
+}
+@keyframes ow-hot { 
+  0% { opacity: 0; }
+  3% { opacity: 0.85; }
+  8% { opacity: 0.18; }
+  14% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@keyframes ow-sign-arrive { 
+  0% { opacity: 0.44; animation-timing-function: steps(1); }
+  2% { opacity: 0; animation-timing-function: steps(1); }
+  9% { opacity: 0; animation-timing-function: steps(1); }
+  11% { opacity: 0.85; animation-timing-function: steps(1); }
+  13% { opacity: 0.02; animation-timing-function: steps(1); }
+  20% { opacity: 0.02; animation-timing-function: steps(1); }
+  22% { opacity: 0.95; animation-timing-function: steps(1); }
+  25% { opacity: 0.03; animation-timing-function: steps(1); }
+  30% { opacity: 0.03; animation-timing-function: steps(1); }
+  33% { opacity: 1; animation-timing-function: steps(1); }
+  36% { opacity: 0.05; animation-timing-function: steps(1); }
+  40% { opacity: 1; animation-timing-function: steps(1); }
+  43% { opacity: 0.06; animation-timing-function: steps(1); }
+  47% { opacity: 1; animation-timing-function: steps(1); }
+  50% { opacity: 0.07; animation-timing-function: steps(1); }
+  53% { opacity: 1; animation-timing-function: steps(1); }
+  56% { opacity: 0.08; animation-timing-function: steps(1); }
+  59% { opacity: 1; animation-timing-function: steps(1); }
+  61% { opacity: 0.1; animation-timing-function: steps(1); }
+  64% { opacity: 1; animation-timing-function: steps(1); }
+  66% { opacity: 0.12; animation-timing-function: steps(1); }
+  68% { opacity: 1; animation-timing-function: steps(1); }
+  70% { opacity: 0.14; animation-timing-function: steps(1); }
+  72% { opacity: 1; animation-timing-function: cubic-bezier(0.16, 0.9, 0.24, 1); }
+  100% { opacity: 0.94; }
+}
+@keyframes ow-sign-arrive-halo { 
+  0% { opacity: 0.1; animation-timing-function: steps(1); }
+  2% { opacity: 0; animation-timing-function: steps(1); }
+  9% { opacity: 0; animation-timing-function: steps(1); }
+  11% { opacity: 0.5; animation-timing-function: steps(1); }
+  13% { opacity: 0.01; animation-timing-function: steps(1); }
+  20% { opacity: 0.01; animation-timing-function: steps(1); }
+  22% { opacity: 0.6; animation-timing-function: steps(1); }
+  25% { opacity: 0.01; animation-timing-function: steps(1); }
+  30% { opacity: 0.01; animation-timing-function: steps(1); }
+  33% { opacity: 0.66; animation-timing-function: steps(1); }
+  36% { opacity: 0.02; animation-timing-function: steps(1); }
+  40% { opacity: 0.7; animation-timing-function: steps(1); }
+  43% { opacity: 0.02; animation-timing-function: steps(1); }
+  47% { opacity: 0.74; animation-timing-function: steps(1); }
+  50% { opacity: 0.02; animation-timing-function: steps(1); }
+  53% { opacity: 0.78; animation-timing-function: steps(1); }
+  56% { opacity: 0.03; animation-timing-function: steps(1); }
+  59% { opacity: 0.82; animation-timing-function: steps(1); }
+  61% { opacity: 0.03; animation-timing-function: steps(1); }
+  64% { opacity: 0.85; animation-timing-function: steps(1); }
+  66% { opacity: 0.04; animation-timing-function: steps(1); }
+  68% { opacity: 0.88; animation-timing-function: steps(1); }
+  70% { opacity: 0.04; animation-timing-function: steps(1); }
+  72% { opacity: 0.88; animation-timing-function: cubic-bezier(0.16, 0.9, 0.24, 1); }
+  100% { opacity: 0.32; }
+}
+@keyframes ow-arrive-hot { 
+  0% { opacity: 0; animation-timing-function: steps(1); }
+  9% { opacity: 0; animation-timing-function: steps(1); }
+  11% { opacity: 0.34; animation-timing-function: steps(1); }
+  13% { opacity: 0; animation-timing-function: steps(1); }
+  22% { opacity: 0.46; animation-timing-function: steps(1); }
+  25% { opacity: 0; animation-timing-function: steps(1); }
+  33% { opacity: 0.58; animation-timing-function: steps(1); }
+  36% { opacity: 0; animation-timing-function: steps(1); }
+  40% { opacity: 0.64; animation-timing-function: steps(1); }
+  43% { opacity: 0; animation-timing-function: steps(1); }
+  47% { opacity: 0.7; animation-timing-function: steps(1); }
+  50% { opacity: 0; animation-timing-function: steps(1); }
+  53% { opacity: 0.76; animation-timing-function: steps(1); }
+  56% { opacity: 0; animation-timing-function: steps(1); }
+  59% { opacity: 0.82; animation-timing-function: steps(1); }
+  61% { opacity: 0; animation-timing-function: steps(1); }
+  64% { opacity: 0.88; animation-timing-function: steps(1); }
+  66% { opacity: 0; animation-timing-function: steps(1); }
+  68% { opacity: 0.94; animation-timing-function: steps(1); }
+  70% { opacity: 0; animation-timing-function: steps(1); }
+  72% { opacity: 1; animation-timing-function: cubic-bezier(0.3, 0.1, 0.5, 1); }
+  100% { opacity: 0; }
+}
+@keyframes ow-lap { 
+  0% { opacity: 0; stroke-dashoffset: 276; }
+  10% { opacity: 1; }
+  100% { opacity: 0; stroke-dashoffset: 0; }
+}
+@keyframes ow-burst { 
+  0% { opacity: 0; transform: scale(0.94); }
+  9% { opacity: 0.85; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.46); }
+}
+html[data-motion="reduced"] .ow-globe * { animation: auto ease 0s 1 normal none running none !important; }
+html[data-motion="reduced"] .ow-globe__core * { opacity: 0.8 !important; }
+html[data-motion="reduced"] .ow-globe__halo * { opacity: 0.24 !important; }
+html[data-theme="light"][data-theme="light"] .ow-door__logo { filter: drop-shadow(0 2px 18px rgba(var(--ow-h1),.2)); }
+html[data-fx="safe"] .ow-world__far { opacity: 0.6; }
+html[data-fx="safe"] .ow-world__deep { display: none; }
+html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after, .ow-net + .ow-worldwash ~ .ow-sky::after { opacity: 0.2; }
+@supports ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){html:not([data-fx="safe"]) .ow-card { backdrop-filter: blur(22px) saturate(155%); }}
+html[data-fx="safe"] .ow-hero__logo { filter: none; }
+html { background: var(--ow-ground); }
+body { background: transparent; }
+html body > :not(.ow-sky):not(.ow-net):not(.ow-worldwash) { transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1); }
+html[data-fx="safe"] .ow-map__search input { background: rgba(10, 12, 24, 0.86); }
+html.ow-proj-locked .ow-map__sheet { visibility: hidden; }
+html[data-fx="safe"] .ow-map__sheet { background: rgba(7, 8, 18, 0.95); }
+html body:has(.ow-surface--map) .ow-nav, html[data-fx="safe"] body:has(.ow-surface--map) .ow-nav { background: linear-gradient(0deg, rgba(4, 5, 12, 0.86), rgba(4, 5, 12, 0.34) 62%, transparent); }
+html[data-fx="safe"] .ow-map__hit { background: rgba(10, 12, 24, 0.94); }
+html[data-fx="safe"] .ow-map__earth { background: rgba(10, 12, 24, 0.9); }
+html[data-fx="safe"] .ow-map__near { background: rgba(10, 12, 24, 0.9); }
+@keyframes ow-pinbreathe { 
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(255,255,255,.16),0 0 24px -2px var(--pin),0 0 52px -8px var(--pin); }
+  50% { transform: scale(1.14); box-shadow: 0 0 0 4px rgba(255,255,255,.22),0 0 34px -2px var(--pin),0 0 70px -6px var(--pin); }
+}
+@keyframes ow-orbit { 
+  0%, 100% { transform: translate(var(--x),var(--y)) scale(1); }
+  50% { transform: translate(calc(var(--x) * 1.16),calc(var(--y) * 1.16)) scale(.94); }
+}
+@keyframes ow-arrive { 
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  70% { opacity: 0.7; }
+  100% { opacity: 0; }
+}
+html body:has(.ow-map[data-hour="day"]) .ow-nav, html[data-fx="safe"] body:has(.ow-map[data-hour="day"]) .ow-nav { background: linear-gradient(0deg, rgba(246, 247, 253, 0.94), rgba(246, 247, 253, 0.44) 62%, transparent); }
+html body:has(.ow-map[data-hour="day"]) .ow-nav__b { color: rgba(20, 24, 40, 0.62); }
+html body:has(.ow-map[data-hour="day"]) .ow-nav__b[aria-current="page"] { color: rgb(20, 24, 40); }
+html[data-fx="safe"] .ow-map__route { background: rgba(7, 8, 18, 0.95); backdrop-filter: none; }
+html[data-theme="light"][data-theme="light"] .ow-cv-face, html[data-theme="light"][data-theme="light"] .ow-cv-pick__row, html[data-theme="light"][data-theme="light"] .ow-reqs, html[data-theme="light"][data-theme="light"] .ow-msg:not([data-mine]), html[data-theme="light"][data-theme="light"] .po-sheet, html[data-theme="light"][data-theme="light"] .ow-cpage__ev, html[data-theme="light"][data-theme="light"] .ow-claims__row, html[data-theme="light"][data-theme="light"] .ow-map__tile, html[data-theme="light"][data-theme="light"] .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
+    radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.13), transparent 64%),
+    linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97)); box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -26px 46px rgba(76,66,120,.055),
+    inset 0 0 0 1px rgba(20,19,31,.06),
+    0 0 0 1px rgba(var(--h),.30),
+    0 10px 26px -14px rgba(48,40,80,.28); }
+html[data-theme="light"][data-theme="light"] .po-card__face::before { border-color: rgba(var(--h),.34); }
+html[data-theme="light"][data-theme="light"] .po-card__face::after, html[data-theme="light"][data-theme="light"] html[data-theme="light"][data-theme="light"] .po-sheet.is-open::after { opacity: 0.04; }
+html[data-theme="light"][data-theme="light"] .po-card { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }
+@media (hover: hover) and (pointer: fine){html[data-theme="light"][data-theme="light"] .po-card:hover { box-shadow: 0 0 30px -16px rgba(var(--h),.42); }}
+html[data-theme="light"][data-theme="light"] .po-card__cover[data-empty] { border-color: rgba(var(--h),.34); background: linear-gradient(180deg,rgba(var(--h),.05),rgba(var(--h2),.04)); }
+html[data-theme="light"][data-theme="light"] .po-w:not(.po--1x1) > .po-face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.22), transparent 60%),
+    radial-gradient(92% 68% at 50% 116%,  rgba(var(--h2),.15), transparent 64%),
+    radial-gradient(70% 46% at 84% 30%,   rgba(var(--h2),.08), transparent 72%),
+    linear-gradient(178deg, rgba(251,250,255,.97), rgba(235,233,246,.98)); box-shadow: inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -28px 48px rgba(76,66,120,.06),
+    inset 0 0 0 1px rgba(20,19,31,.07),
+    0 0 0 1px rgba(var(--h),.34),
+    0 10px 24px -14px rgba(48,40,80,.3); }
+html[data-theme="light"][data-theme="light"] .po-w:not(.po--1x1) > .po-face::before { border-color: rgba(var(--h),.34); }
+html[data-theme="light"][data-theme="light"] .po-w:not(.po--1x1) > .po-face::after { opacity: 0.05; }
+html[data-theme="light"][data-theme="light"] .po-w:not(.po--1x1) .po-w__eyebrow { color: rgba(var(--h),.95); }
+html[data-theme="light"][data-theme="light"] .po-w:not(.po--1x1) .po-w__label { color: var(--ow-ink); }
+html[data-theme="light"][data-theme="light"] .po-w:not(.po--1x1)::before { opacity: 0.18; }
+html[data-theme="light"][data-theme="light"] .po-sheet { box-shadow: inset 0 1px 0 rgba(255,255,255,.95),
+    inset 0 -30px 54px rgba(76,66,120,.07),
+    inset 0 0 0 1px rgba(20,19,31,.07),
+    0 0 0 1.5px rgba(var(--h),.55), 0 0 0 5px rgba(var(--h),.10),
+    0 40px 90px -34px rgba(48,40,80,.42),
+    0 0 90px -34px rgba(var(--h),.5); }
+html[data-theme="light"][data-theme="light"] .po-sheet__seam { border-color: rgba(var(--h),.30); }
+html[data-theme="light"][data-theme="light"] .ow-sub { background: rgba(var(--ow-h1),.075); }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-sub { background: rgba(var(--ow-h1),.075); }}
+@keyframes po-note-in { 
+  0% { opacity: 0; transform: translate3d(0px, 4px, 0px) scale(0.94); }
+  100% { opacity: 1; transform: none; }
+}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-face, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-pick__row, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-reqs, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-msg:not([data-mine]), html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet, html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
+      radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.13), transparent 64%),
+      linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97)); box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
+      inset 0 -26px 46px rgba(76,66,120,.055),
+      inset 0 0 0 1px rgba(20,19,31,.06),
+      0 0 0 1px rgba(var(--h),.30),
+      0 10px 26px -14px rgba(48,40,80,.28); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face::before { border-color: rgba(var(--h),.34); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face::after, html:not([data-theme="dark"]):not([data-theme="light"]) html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet.is-open::after { opacity: 0.04; }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }}
+@media (prefers-color-scheme: light){@media (hover: hover) and (pointer: fine){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card:hover { box-shadow: 0 0 30px -16px rgba(var(--h),.42); }}}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__cover[data-empty] { border-color: rgba(var(--h),.34); background: linear-gradient(180deg,rgba(var(--h),.05),rgba(var(--h2),.04)); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-w:not(.po--1x1) > .po-face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.22), transparent 60%),
+      radial-gradient(92% 68% at 50% 116%,  rgba(var(--h2),.15), transparent 64%),
+      radial-gradient(70% 46% at 84% 30%,   rgba(var(--h2),.08), transparent 72%),
+      linear-gradient(178deg, rgba(251,250,255,.97), rgba(235,233,246,.98)); box-shadow: inset 0 1px 0 rgba(255,255,255,.95),
+      inset 0 -28px 48px rgba(76,66,120,.06),
+      inset 0 0 0 1px rgba(20,19,31,.07),
+      0 0 0 1px rgba(var(--h),.34),
+      0 10px 24px -14px rgba(48,40,80,.3); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-w:not(.po--1x1) > .po-face::before { border-color: rgba(var(--h),.34); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-w:not(.po--1x1) > .po-face::after { opacity: 0.05; }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-w:not(.po--1x1) .po-w__eyebrow { color: rgba(var(--h),.95); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-w:not(.po--1x1) .po-w__label { color: var(--ow-ink); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-w:not(.po--1x1)::before { opacity: 0.18; }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet { background: radial-gradient(120% 60% at 50% -8%,  rgba(var(--h),.24),  transparent 58%),
+      radial-gradient(100% 70% at 50% 120%, rgba(var(--h2),.16), transparent 62%),
+      linear-gradient(180deg, rgba(251,250,255,.97), rgba(233,231,245,.98)); box-shadow: inset 0 1px 0 rgba(255,255,255,.95),
+      inset 0 -30px 54px rgba(76,66,120,.07),
+      inset 0 0 0 1px rgba(20,19,31,.07),
+      0 0 0 1.5px rgba(var(--h),.55), 0 0 0 5px rgba(var(--h),.10),
+      0 40px 90px -34px rgba(48,40,80,.42),
+      0 0 90px -34px rgba(var(--h),.5); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet__seam { border-color: rgba(var(--h),.30); }}
+html[data-motion="reduced"] .ow-dd { transition: none; }
+@keyframes ow-cvw-in { 
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+html[data-viewer="open"] { overflow: hidden; }
+html[data-motion="reduced"] .ow-openflip { display: none; }
+html[data-simple="1"] .po-river { gap: 0px; }
+html[data-simple="1"] .po-river > .po-card, html[data-simple="1"] .ow-fpos > .po-card { border-radius: 0px; box-shadow: none; background: none; border-bottom: 1px solid var(--ow-rim); padding: 14px 0px 10px; margin: 0px; }
+html[data-simple="1"] .po-river > .po-card:last-child { border-bottom: 0px; }
+html[data-simple="1"] .po-river > .po-card::before, html[data-simple="1"] .po-river > .po-card::after, html[data-simple="1"] .ow-fpos > .po-card::before, html[data-simple="1"] .ow-fpos > .po-card::after, html[data-simple="1"] .po-river > .po-card > .po-card__face, html[data-simple="1"] .ow-fpos > .po-card > .po-card__face { display: none; }
+html[data-simple="1"] .po-card__cover { border-radius: 0px; width: calc(100% + 32px); margin-left: -16px; margin-right: -16px; }
+html[data-simple="1"] .po-shots { border-radius: 0px; }
+@media (hover: hover) and (pointer: fine){html[data-simple="1"] .po-river > .po-card:hover, html[data-simple="1"] .ow-fpos > .po-card:hover { transform: none; box-shadow: none; }}
+html[data-simple="1"] .po-river > .po-card .po-card__body { background: none; }
+html[data-simple="1"] .ow-cv-posts { padding: 0px; gap: 0px; }
+html[data-simple="1"] .ow-cv-posts__k { padding: 8px 12px 6px; }
+html[data-simple="1"] .ow-cv-posts__list { gap: 0px; }
+html[data-simple="1"] .ow-cv-posts .po-card { border-radius: 0px; box-shadow: none; padding: 14px 0px 10px; border-top: 1px solid var(--ow-hair,rgba(255,255,255,.10)); }
+html[data-simple="1"] .ow-cv-posts .po-card:first-child { border-top: 0px; }
+html[data-simple="1"] .ow-cv-posts .po-card__face { display: none; }
+html[data-simple="1"] .ow-cv-posts .po-card__media, html[data-simple="1"] .ow-cv-posts .po-card__cover { border-radius: 0px; margin-left: 0px; margin-right: 0px; width: 100%; }
+html[data-theme="light"] .ow-map__pin i[data-face="picture"] { background: rgb(227, 224, 236); }
+html.ow-viewer-open { overflow: hidden; }
+html[data-ow-thread] .ow-composer { position: fixed; left: 0px; right: 0px; bottom: 0px; z-index: 120; padding: 10px max(14px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom)); background: linear-gradient(0deg,var(--ow-chrome) 78%,transparent); }
+html[data-ow-thread] .ow-composer > * { max-width: 640px; }
+html[data-ow-thread] .ow-composer { justify-content: center; }
+html[data-ow-thread] .ow-nav { display: none; }
+html[data-ow-thread] .ow-main { padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+@keyframes ow-msg-in { 
+  0% { opacity: 0; transform: translateY(10px) scale(0.985); }
+  100% { opacity: 1; transform: none; }
+}
+html[data-ow-lens] .ow-compose__stage { position: fixed; inset: 0px; z-index: 150; margin: 0px; padding: 0px; border-radius: 0px; background: rgb(0, 0, 0); display: block; }
+html[data-ow-lens] .ow-compose__lens { position: absolute; inset: 0px; border-radius: 0px; margin: 0px; width: 100%; height: 100%; overflow: hidden; }
+html[data-ow-lens] .ow-compose__lens video { position: absolute; inset: 0px; width: 100%; height: 100%; object-fit: cover; display: block; }
+html[data-ow-lens] .ow-nav { position: fixed; left: 0px; right: 0px; z-index: 160; margin: 0px auto; }
+@media (min-width: 900px){html[data-ow-lens] .ow-nav { right: auto; margin: 0px; }}
+@media (min-width: 900px){html[data-ow-lens] .ow-compose__stage { left: 96px; }}
+html[data-ow-lens], html[data-ow-lens] body { overflow: hidden; }
+html[data-ow-lens] .ow-compose__bar { position: absolute; left: 0px; right: 0px; bottom: calc(env(safe-area-inset-bottom) + 112px); display: flex; align-items: center; justify-content: center; gap: 34px; padding: 0px 22px; background: none; z-index: 2; }
+html[data-ow-lens] .ow-compose__lenstop { position: absolute; left: 0px; right: 0px; top: calc(env(safe-area-inset-top) + 14px); display: flex; align-items: center; justify-content: space-between; padding: 0px 16px; z-index: 2; }
+html[data-ow-lens] .ow-compose__lens { background: radial-gradient(120% 70% at 50% -8%,rgba(var(--h),.55),transparent 62%),
+             radial-gradient(90% 55% at 50% 112%,rgba(var(--h2,var(--h)),.42),transparent 64%),
+             #07060c; box-shadow: none; }
+html[data-ow-lens] .ow-compose__lens video[data-mirror] { transform: scaleX(-1); }
+html[data-ow-lens] .ow-compose__shutter { flex: 0 0 auto; width: 70px; height: 70px; border-width: 4px; }
+@media (max-width: 360px){html[data-ow-lens] .ow-compose__bar { gap: 18px; padding: 0px 12px; }}
+@media (min-width: 900px){html[data-ow-lens] .ow-compose__bar { bottom: calc(env(safe-area-inset-bottom) + 62px); }}
+html[data-ow-lens] .ow-compose__write { display: flex; align-items: center; justify-content: center; background: radial-gradient(110% 80% at 30% 0%,rgba(var(--h),.95),transparent 70%),
+             radial-gradient(100% 70% at 80% 100%,rgba(var(--h2,var(--h)),.9),transparent 70%),
+             rgb(var(--h)); }
+html[data-ow-marks="color"] .ow-linkbar__i[data-platform], html[data-ow-marks="color"] .po-card__from__i[data-platform] { color: var(--mk, currentColor); }
+html[data-ow-marks="mono"] .ow-mk__site img, html[data-ow-marks="mono"] .po-card__from__i img { filter: grayscale(1) contrast(1.05); }
+html[data-ow-marks="color"] .ow-lnked__i[data-platform] { color: var(--mk, currentColor); }
+html[data-ow-marks="mono"] .ow-lnked__i img { filter: grayscale(1) contrast(1.05); }
+html[data-theme="dark"] .ow-set__row + .ow-set__row::before { background: rgba(255, 255, 255, 0.08); }
+@keyframes ow-set-in { 
+  0% { opacity: 0; transform: translateX(18px); }
+  100% { opacity: 1; transform: none; }
+}
+html[data-ow-marks="color"] .ow-reach__mk[data-platform] { color: var(--mk, currentColor); }
+html[data-theme="dark"][data-ow-marks="color"] .ow-reach__mk[data-platform="x"], html[data-theme="dark"][data-ow-marks="color"] .ow-reach__mk[data-platform="threads"] { color: var(--ow-ink); }
+@keyframes ow-imp-pulse { 
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+html[data-ow-make] .ow-compose__stage { position: fixed; inset: 0px; z-index: 150; margin: 0px; border-radius: 0px; overflow-y: auto; overscroll-behavior: contain; background: var(--ow-ground,#eceaf3); padding: calc(env(safe-area-inset-top) + 12px) max(16px,env(safe-area-inset-right))
+          calc(env(safe-area-inset-bottom) + 28px) max(16px,env(safe-area-inset-left)); }
+html[data-ow-make] .ow-nav { display: none; }
+html[data-ow-make], html[data-ow-make] body { overflow: hidden; }
+html[data-ow-make] .ow-compose__stage > * { max-width: 640px; margin-left: auto; margin-right: auto; }
+html[data-ow-make] .ow-compose__wherelbl { font-family: var(--ow-font); letter-spacing: 0px; font-size: 12.5px; color: var(--ow-ink-3); }
+html[data-ow-make] .ow-compose__picks { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0px -16px; padding: 0px 16px 2px; }
+html[data-ow-make] .ow-compose__picks::-webkit-scrollbar { display: none; }
+html[data-ow-make] .ow-compose__pick { flex: 0 0 84%; aspect-ratio: auto; height: min(60vh, 560px); scroll-snap-align: center; border-radius: 16px 13px 17px 14px; background: rgb(11, 10, 20); }
+html[data-ow-make] .ow-compose__picks[data-n="1"] .ow-compose__pick { flex-basis: 100%; }
+html[data-ow-make] .ow-compose__pick img, html[data-ow-make] .ow-compose__pick video { object-fit: contain; }
+html[data-ow-make] .ow-compose__stage > .po-act { margin-top: 10px; }
+html[data-ow-make] .ow-compose__send { position: sticky; bottom: 0px; z-index: 2; margin-top: 14px; padding: 12px 0 calc(env(safe-area-inset-bottom) + 6px); background: linear-gradient(to bottom, transparent, var(--ow-ground,#eceaf3) 28%); }
+html[data-ow-make] .ow-compose__stage { display: flex; flex-direction: column; }
+html[data-ow-make] .ow-compose__stage > * { width: 100%; flex: 0 0 auto; }
+html[data-ow-make] .ow-compose__send, html[data-ow-make] .ow-upload__bar { margin-top: auto; }
+html[data-ow-make] .ow-upload__rows { margin-bottom: 18px; }
+html[data-ow-make] .ow-compose__stage > .po-act, html[data-ow-make] .ow-compose__stage > .ow-depth__add { width: auto; align-self: flex-start; }
+html[data-ow-make] .ow-compose__stage .ow-compose__picks[data-n="1"] > .ow-compose__pick { flex: 0 0 100%; }
+html[data-ow-make] .ow-compose__stage > .ow-compose__picks { width: calc(100% + 32px); max-width: none; margin-left: -16px; margin-right: -16px; align-items: flex-start; }
+html[data-ow-make] .ow-compose__pick { height: auto; max-height: 60vh; display: flex; align-items: center; justify-content: center; }
+html[data-ow-make] .ow-compose__pick img, html[data-ow-make] .ow-compose__pick video { height: auto; max-height: 60vh; width: 100%; }
+html[data-ow-make] .ow-compose__stage > .po-act, html[data-ow-make] .ow-compose__stage > .ow-depth__add { margin-left: 0px; margin-right: auto; }
+@media (max-width: 899px){html:not([data-ow-thread]) .ow-composer { bottom: calc(66px + env(safe-area-inset-bottom)); background: none; }}
+@media (max-width: 899px){html:not([data-ow-thread]) .ow-composer { background: linear-gradient(0deg,var(--ow-chrome) 58%,transparent); padding-top: 18px; margin: 0px -18px; padding-left: 18px; padding-right: 18px; }}
+html[data-theme="light"] .po-card__foot .po-acts .po-act[aria-pressed="true"], html[data-theme="light"] .po-acts--rail .po-act[aria-pressed="true"], html[data-theme="light"] .ow-cmt__creator { color: color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f); }
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]) .po-card__foot .po-acts .po-act[aria-pressed="true"], html:not([data-theme="dark"]) .po-acts--rail .po-act[aria-pressed="true"], html:not([data-theme="dark"]) .ow-cmt__creator { color: color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f); }}
+@supports (color: rgb(from red r g b)){html[data-theme="light"] .po-act[data-act="on"] { color: rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
+      clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+      clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)); }}
+@supports (color: rgb(from red r g b)){@media (prefers-color-scheme: light){html:not([data-theme="dark"]) .po-act[data-act="on"] { color: rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
+        clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+        clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+        clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)); }}}
+html[data-theme="dark"][data-ow-marks="color"] :is(.ow-linkbar__i, .po-card__from__i, .ow-lnked__i, .ow-reach__mk):is([data-platform="x"], [data-platform="threads"], [data-platform="github"]) { color: rgb(242, 242, 246); }
+@media (prefers-color-scheme: dark){html:not([data-theme="light"])[data-ow-marks="color"] :is(.ow-linkbar__i, .po-card__from__i, .ow-lnked__i, .ow-reach__mk):is([data-platform="x"], [data-platform="threads"], [data-platform="github"]) { color: rgb(242, 242, 246); }}
+html[data-ow-thread] .ow-top { display: none; }
+html[data-ow-thread] .ow-thread-head { position: sticky; top: 0px; z-index: 110; display: flex; align-items: center; gap: 10px; margin: 0 calc(-1 * var(--ow-gutter,18px)) 4px; padding: calc(env(safe-area-inset-top) + 8px) 8px 9px 6px; background: rgba(var(--ow-chrome-rgb),.74); backdrop-filter: blur(20px) saturate(1.25); box-shadow: rgba(255, 255, 255, 0.07) 0px 1px 0px; }
+html[data-fx="safe"][data-ow-thread] .ow-thread-head { background: rgba(var(--ow-chrome-rgb),.94); }
+html[data-ow-thread] .ow-thread-head__face { width: 38px; height: 38px; font-size: 13px; }
+html[data-ow-thread] .ow-thread-head__face svg { width: 24px; height: 24px; }
+html[data-ow-thread] .ow-thread-head__b { gap: 0px; min-width: 0px; }
+html[data-ow-thread] .ow-thread-head__nm { font-size: 16.5px; line-height: 1.2; font-weight: 650; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+html[data-ow-thread] .ow-thread-head__pr { margin-top: 1px; font-size: 12px; }
+html[data-ow-thread] .ow-thread-head__facts { gap: 0px; margin-top: 1px; }
+html[data-ow-thread] .ow-thread-head__facts:empty { display: none; }
+html[data-ow-thread] .ow-thread-head .ow-fact { font-family: var(--ow-font); font-weight: 500; font-size: 12px; letter-spacing: 0px; text-transform: none; padding: 0px; background: none; box-shadow: none; border-radius: 0px; color: var(--ow-ink-3); white-space: nowrap; }
+html[data-ow-thread] .ow-thread-head .ow-fact + .ow-fact::before { content: "·"; margin: 0px 6px; }
+html[data-ow-thread] .ow-thread-head__more { width: 40px; height: 40px; margin-left: auto; flex: 0 0 auto; }
+html[data-ow-thread] .ow-msgs { gap: 0px; padding: 6px 0px 10px; justify-content: flex-end; min-height: calc(100dvh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+html[data-ow-thread] .ow-msgs > * { margin-top: 3px; }
+html[data-ow-thread] .ow-msgs > [data-gap] { margin-top: 12px; }
+html[data-ow-thread] .ow-msgs > .ow-msg-day { margin: 18px 0px 6px; }
+html[data-ow-thread] .ow-msg-day { font-family: var(--ow-font); font-weight: 600; font-size: 11.5px; letter-spacing: 0px; color: var(--ow-ink-3); padding: 4px 11px; border-radius: 999px; background: rgba(var(--ow-chrome-rgb),.45); }
+html[data-ow-thread] .ow-msg { position: relative; padding: 8px 13px; border-radius: 20px; font-size: 15.5px; line-height: 1.36; max-width: min(78%, 520px); outline: none; -webkit-tap-highlight-color: transparent; cursor: default; }
+html[data-ow-thread] .ow-msg-line { max-width: 86%; gap: 7px; }
+html[data-ow-thread] .ow-msg-line .ow-msg { max-width: 100%; }
+html[data-ow-thread] .ow-msg-line:not(:has(.ow-msg-face)) { padding-left: 35px; }
+html[data-ow-thread] .ow-msg:not([data-mine])[data-last] { border-bottom-left-radius: 6px; }
+html[data-ow-thread] .ow-msg[data-mine][data-last] { border-bottom-right-radius: 6px; }
+html[data-ow-thread] .ow-msg-face { width: 28px; height: 28px; }
+html[data-ow-thread] .ow-msg__who { margin: 0px 0px 3px; font-size: 12px; font-weight: 600; color: rgb(var(--h,var(--ow-h1))); opacity: 0.95; }
+html[data-ow-thread] .ow-msg__t { display: flex; justify-content: flex-end; gap: 6px; margin: 3px -2px -1px 10px; font-size: 11px; line-height: 1.2; opacity: 0.62; }
+html[data-ow-thread] .ow-msg:not([data-mine]) .ow-msg__t { justify-content: flex-start; margin-left: -2px; }
+html[data-ow-thread] .ow-msg:not([data-last]):not([data-open]) .ow-msg__tt { display: none; }
+html[data-ow-thread] .ow-msg:not([data-last]):not([data-open]) .ow-msg__t:not(:has(.ow-msg__ed)) { display: none; }
+html[data-ow-thread] .ow-msg__ed { margin-left: 0px; }
+html[data-ow-thread] .ow-msgs > .ow-msg__st { align-self: flex-end; margin: 4px 6px 0px; font-family: var(--ow-font); font-weight: 500; font-size: 11.5px; letter-spacing: 0px; color: var(--ow-ink-3); opacity: 1; text-align: right; }
+html[data-ow-thread] .ow-msgs > .ow-msg__st[data-st="read"] { color: var(--ow-ink-2); }
+html[data-ow-thread] .ow-msg__q { margin: 1px -5px 6px; padding: 6px 10px; border-radius: 13px; border-left: 3px solid rgba(255, 255, 255, 0.55); }
+html[data-ow-thread] .ow-msg:not([data-mine]) .ow-msg__q { border-left-color: rgba(var(--h,var(--ow-h1)),.8); background: rgba(var(--h,var(--ow-h1)),.10); }
+html[data-ow-thread] .ow-msg__q-who { font-size: 12px; font-weight: 650; }
+html[data-ow-thread] .ow-msg__q-b { font-size: 13px; line-height: 1.3; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media) { padding: 4px 4px 7px; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media) > .ow-msg__x, html[data-ow-thread] .ow-msg:has(.ow-msg__media) > .ow-msg__who, html[data-ow-thread] .ow-msg:has(.ow-msg__media) > .ow-msg__q { margin-left: 9px; margin-right: 9px; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media) > .ow-msg__x { display: block; padding-top: 5px; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media) > .ow-msg__t { margin-right: 8px; margin-left: 10px; }
+html[data-ow-thread] .ow-msg__media { margin: 0px 0px 2px; border-radius: 16px; overflow: hidden; width: 100%; }
+html[data-ow-thread] .ow-msg__media img, html[data-ow-thread] .ow-msg__media video { max-height: 320px; border-radius: 16px; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__x) .ow-msg__media { margin-top: 6px; }
+html[data-ow-thread] .ow-rx { margin-top: 5px; }
+html[data-ow-thread] .ow-msg__acts { display: none; position: absolute; bottom: calc(100% + 6px); left: -4px; z-index: 30; margin: 0px; padding: 4px; gap: 2px; flex-wrap: nowrap; opacity: 1; white-space: nowrap; border-radius: 999px; background: rgba(var(--ow-chrome-rgb),.92); backdrop-filter: blur(16px); box-shadow: rgba(0, 0, 0, 0.65) 0px 10px 30px -10px, rgba(255, 255, 255, 0.08) 0px 0px 0px 1px inset; }
+html[data-ow-thread] .ow-msg[data-mine] .ow-msg__acts { left: auto; right: -4px; }
+html[data-ow-thread] .ow-msg__acts:empty { display: none !important; }
+html[data-ow-thread] .ow-msg__acts::after { content: ""; position: absolute; left: 0px; right: 0px; top: 100%; height: 8px; }
+html[data-ow-thread] .ow-msg[data-open] .ow-msg__acts { display: flex; }
+@media (hover: hover) and (pointer: fine){html[data-ow-thread] .ow-msg:hover .ow-msg__acts { display: flex; }}
+html[data-ow-thread] .ow-msg__act { min-height: 36px; padding: 0px 13px; border-radius: 999px; font-family: var(--ow-font); font-weight: 600; font-size: 13px; letter-spacing: 0px; color: var(--ow-ink); }
+html[data-ow-thread] .ow-msg__act:hover, html[data-ow-thread] .ow-msg[data-mine] .ow-msg__act:hover { background: rgba(var(--ow-h1),.18); }
+html[data-ow-thread] .ow-msg[data-open] { outline: 2px solid rgba(var(--h,var(--ow-h1)),.75); outline-offset: 2px; }
+html[data-ow-thread] .ow-msg:focus-visible { outline: 2px solid rgba(var(--ow-h1),.9); outline-offset: 2px; }
+html[data-ow-thread] .ow-rx__pick { margin-left: 2px; }
+html[data-ow-thread] .ow-msg__act[data-armed] { color: rgb(255, 255, 255); background: rgba(230, 70, 90, 0.9); }
+html[data-ow-thread] .ow-composer { gap: 8px; align-items: flex-end; padding: 8px max(10px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-bottom)); background: rgba(var(--ow-chrome-rgb),.78); backdrop-filter: blur(20px) saturate(1.25); box-shadow: rgba(255, 255, 255, 0.07) 0px -1px 0px; }
+html[data-fx="safe"][data-ow-thread] .ow-composer { background: rgba(var(--ow-chrome-rgb),.95); }
+html[data-ow-thread] .ow-composer textarea { min-height: 44px; padding: 11px 16px; border-radius: 22px; font-size: 15.5px; line-height: 1.4; }
+html[data-ow-thread] .ow-attach { width: 44px; height: 44px; }
+html[data-ow-thread] .ow-send { width: 44px; height: 44px; border-radius: 50%; }
+html[data-ow-thread] .ow-send:disabled { opacity: 0.35; }
+html[data-ow-thread] .ow-send svg { width: 20px; height: 20px; transform: translateX(1px); }
+html[data-ow-thread] .ow-reply-aim { border-radius: 14px; }
+html[data-ow-thread] .ow-msg { padding: 7px 12px; font-size: 15px; line-height: 1.34; }
+html[data-ow-thread] .ow-msgs > [data-gap] { margin-top: 10px; }
+html[data-ow-thread] .ow-msgs > * { margin-top: 2px; }
+html[data-ow-thread] .ow-msgs.ow-msgs .ow-msg.ow-msg.ow-msg:not([data-mine]) { box-shadow: inset 0 2px 1px var(--ow-lift),
+    inset 0 0 0 1px rgba(var(--h),.24),
+    0 0 12px -9px rgba(var(--h),.4),
+    0 4px 12px -10px var(--ow-drop); }
+html[data-ow-thread] .ow-msg.ow-msg[data-mine] { box-shadow: inset 0 1px 0 rgba(255,255,255,.34),0 3px 10px -6px rgba(var(--ow-h1),.55); }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media) { padding: 3px 3px 6px; max-width: min(72%, 420px); }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media) > .ow-msg__media:first-child { margin: 0px; }
+html[data-ow-thread] .ow-msg__media, html[data-ow-thread] .ow-msg__media img, html[data-ow-thread] .ow-msg__media video { border-radius: 17px; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__x) .ow-msg__media { margin-top: 0px; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media) > .ow-msg__x { padding-top: 6px; margin: 0px 9px; }
+html[data-ow-thread] .ow-msg:has(.ow-msg__media):not(:has(.ow-msg__x)) > .ow-msg__t { margin-top: 5px; }
+html[data-ow-thread] .ow-thread-head { padding-top: calc(env(safe-area-inset-top) + 6px); padding-bottom: 7px; }
+html[data-ow-thread] .ow-thread-head__face { width: 32px; height: 32px; font-size: 11.5px; box-shadow: rgba(255, 255, 255, 0.35) 0px 1px 0px inset; }
+html[data-ow-thread] .ow-thread-head__face svg { width: 20px; height: 20px; }
+html[data-ow-thread] .ow-thread-head__nm { font-size: 16px; }
+html[data-ow-thread] .ow-thread-head__pr { font-size: 11.5px; color: var(--ow-ink-3); }
+html[data-ow-thread] .ow-thread-head__pr[data-on="1"] { color: var(--ow-ink-3); gap: 5px; }
+html[data-ow-thread] .ow-thread-head__pr[data-on="1"]::before { width: 6px; height: 6px; box-shadow: none; }
+html[data-ow-thread] .ow-thread-head__b.is-door, html[data-ow-thread] .ow-thread-head__face[role="button"] { cursor: pointer; outline: none; }
+html[data-ow-thread] .ow-thread-head__b.is-door .ow-thread-head__nm::after { content: ""; display: inline-block; width: 6px; height: 6px; margin: 0px 0px 2px 7px; border-right: 1.8px solid; border-bottom: 1.8px solid; transform: rotate(-45deg); opacity: 0.45; vertical-align: middle; }
+html[data-ow-thread] .ow-thread-head__b.is-door:focus-visible .ow-thread-head__nm { text-decoration: underline; }
+html[data-ow-thread] .ow-composer { padding-top: 6px; padding-bottom: max(6px,env(safe-area-inset-bottom)); gap: 7px; }
+html[data-ow-thread] .ow-composer textarea { min-height: 40px; padding: 9px 15px; border-radius: 20px; font-size: 15px; }
+html[data-ow-thread] .ow-attach, html[data-ow-thread] .ow-send { width: 40px; height: 40px; }
+html[data-ow-thread] .ow-send svg { width: 18px; height: 18px; }
+html[data-ow-thread] .ow-msgs { min-height: calc(100dvh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom)); }
+html[data-ow-thread] .ow-msgs > .ow-msg-sys { margin: 12px 0px 6px; }
+html[data-contrast="high"] { --ow-ink-2: rgba(255,255,255,.9); --ow-ink-3: rgba(255,255,255,.78); }
+html[data-contrast="high"][data-theme="light"] { --ow-ink-2: rgba(20,19,31,.96); --ow-ink-3: rgba(20,19,31,.84); }
+html[data-contrast="high"] .ow-thread + .ow-thread::before { background: rgba(255, 255, 255, 0.2); }
+html[data-contrast="high"] .ow-set__row + .ow-set__row { border-color: rgba(255, 255, 255, 0.2); }
+html[data-contrast="high"] .ow-msg-sys, html[data-contrast="high"] .ow-msg__t { opacity: 1; }
+html[data-text="large"] .ow-main { zoom: 1.12; }
+html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; right: 0px; z-index: 119; bottom: calc(64px + env(safe-area-inset-bottom)); padding: 0px 10px; margin: 0px auto; max-width: 640px; }</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=81af36b3" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=81af36b3"></noscript>
+  <script defer src="/frontend/shared/oneway-hue.js?v=28eb408a"></script>
+  <script defer src="/frontend/shared/oneway-popit.js?v=020db7c4"></script>
+  <script defer src="/frontend/shared/oneway-links.js?v=c3df779e"></script>
   <!-- ★ FOUNDER/401: a Center opens RIGHT OVER this page — the App's own
        surface for it, projected, not a trip to the App. These are the App's
        surfaces and the one projection verb; a page anywhere can carry them. -->
-  <script src="/frontend/app/popit-live.js?v=72371d01"></script>
+  <script defer src="/frontend/app/popit-live.js?v=5fd5f70d"></script>
   <!-- A CENTER'S SITE, PROJECTED (B, founder/437): the pages Lightbulb wrote, natively in
        the site's own fonts and colours, and the company's own site exactly, as the
        Center's categories. After popit-live.js, whose Center surface asks OW.site for them. -->
-  <script src="/frontend/shared/oneway-site.js?v=a700d81d"></script>
-  <script src="/frontend/shared/oneway-feed.js?v=c4ea1b02"></script>
-  <script src="/frontend/shared/ow-time.js?v=b4d77e6d"></script>
-  <script src="/frontend/app/posts/posts.js?v=db830747"></script>
-  <script src="/frontend/app/events/events.js?v=e036f0d2"></script>
-  <script src="/frontend/app/messaging/messaging.js?v=85b7e02b"></script>
-  <script src="/frontend/shared/canvas.js?v=a92dd187"></script>
-  <script src="/frontend/shared/oneway-projection.js?v=7d765e5f"></script>
-  <script>
-  /* OPEN OVER THIS PAGE. The App's surface for the thing unfolds from the row
-     that was pressed and the page steps back behind it (founder/401). Only if
-     that surface is not loaded here does the press go to the App. */
-  function project(kind, id, from, fallbackHref){
-    if(window.OW && OW.project){
-      OW.project.open(kind, id, from).then(function(ok){ if(!ok && fallbackHref) location.href=fallbackHref; });
-    } else if(fallbackHref){ location.href=fallbackHref; }
-  }
-  </script>
-  <script src="/frontend/shared/oneway-galaxy.js?v=224cb07e"></script>
-  <title>ONEWAY: one profile for every person, a Center for every community and business</title>
-  <meta name="description" content="ONEWAY, at oneway.center, gives every person one profile and every community or business a Center: your unified, fully customizable social network, and ONEWAY OS to run it."/>
-  <!-- Social / link unfurl metadata. Required for share previews on
-       Slack, Discord, Messages, X, LinkedIn, Facebook, iMessage. -->
-  <link rel="canonical" href="https://oneway.center/"/>
-  <!-- WHO ONEWAY IS, FOR SEARCH ENGINES AND ASSISTANTS (the founder, 2026-10-08: an assistant should know what ONEWAY
-       is without being told "oneway.center", and tell it apart from a similarly named product). One entity, its one
-       site, its legal name; `sameAs` waits for the official profiles to be confirmed, never guessed. -->
-  <script type="application/ld+json">
-  {"@context": "https://schema.org",
-   "@graph": [
-    {"@type": "Organization", "@id": "https://oneway.center/#organization",
-     "name": "ONEWAY", "alternateName": ["Oneway", "ONEWAY App", "ONEWAY OS"],
-     "legalName": "Oneway Technologies LLC", "url": "https://oneway.center/",
-     "logo": "https://oneway.center/app-icon-1024.png",
-     "description": "ONEWAY gives every person one profile and every community or business a Center: a unified, fully customizable social network, and ONEWAY OS, the operating system behind it.",
-     "email": "williamrau78@gmail.com",
-     "address": {"@type": "PostalAddress", "addressRegion": "NY", "addressCountry": "US"}},
-    {"@type": "WebSite", "@id": "https://oneway.center/#website", "url": "https://oneway.center/",
-     "name": "ONEWAY", "inLanguage": "en", "publisher": {"@id": "https://oneway.center/#organization"}}
-   ]}
-  </script>
-  <meta property="og:type"        content="website"/>
-  <meta property="og:site_name"   content="ONEWAY"/>
-  <meta property="og:title"       content="ONEWAY: one profile for every person, a Center for every community and business"/>
-  <meta property="og:description" content="ONEWAY, at oneway.center, gives every person one profile and every community or business a Center: your unified, fully customizable social network, and ONEWAY OS to run it."/>
-  <meta property="og:image"       content="https://oneway.center/app-icon-1024.png"/>
-  <meta property="og:image:alt"   content="ONEWAY"/>
-  <meta property="og:url"         content="https://oneway.center/"/>
-  <meta name="twitter:card"        content="summary_large_image"/>
-  <meta name="twitter:title"       content="ONEWAY: one profile for every person, a Center for every community and business"/>
-  <meta name="twitter:description" content="ONEWAY, at oneway.center, gives every person one profile and every community or business a Center: your unified, fully customizable social network, and ONEWAY OS to run it."/>
-  <meta name="twitter:image"       content="https://oneway.center/app-icon-1024.png"/>
-  <!-- ONEWAY's icon is the loading globe, vibrant blue (founder/471 §12) -->
-  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
-  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
-  <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
+  <script defer src="/frontend/shared/oneway-site.js?v=a700d81d"></script>
+  <script defer src="/frontend/shared/oneway-feed.js?v=c4ea1b02"></script>
+  <script defer src="/frontend/shared/ow-time.js?v=b4d77e6d"></script>
+  <script defer src="/frontend/app/posts/posts.js?v=2b3a444c"></script>
+  <script defer src="/frontend/app/events/events.js?v=e036f0d2"></script>
+  <script defer src="/frontend/app/messaging/messaging.js?v=85b7e02b"></script>
+  <script defer src="/frontend/shared/canvas.js?v=a92dd187"></script>
+  <script defer src="/frontend/shared/oneway-projection.js?v=7d765e5f"></script>
+  <script defer src="/frontend/landing/static/inline-01-b7399efeeb.js"></script>
+  <script defer src="/frontend/shared/oneway-galaxy.js?v=224cb07e"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=2d54bb4b"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=5dbba8cc"/>
   <link rel="stylesheet" href="/frontend/landing/reserve.css?v=5131d5f3"/>
   <!-- founder/530: "WE MOVED TO A ONEWAY FONT." The landing page draws in ONEWAY
        Sans alone, from /assets/fonts (S16). It still fetched Space Grotesk,
@@ -823,13 +1452,13 @@
 <!-- NAV -->
 <nav class="nav" id="mainNav">
   <div class="nav-brand">
-    <a href="/" class="nav-logo" aria-label="ONEWAY">
-      <img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/>
+    <a href="/" class="nav-logo" aria-label="Oneway">
+      <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/>
     </a>
     <div class="nav-center">
       <a href="#account" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span>Ecosystem</a>
-      <a href="#app" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 17c.8-2.2 2.5-3.2 4.5-3.2s3.7 1 4.5 3.2"/></svg></span>ONEWAY App</a>
-      <a href="#os" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>ONEWAY OS</a>
+      <a href="#app" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 17c.8-2.2 2.5-3.2 4.5-3.2s3.7 1 4.5 3.2"/></svg></span>Oneway App</a>
+      <a href="#os" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>Oneway OS</a>
     </div>
   </div>
   <div class="nav-right">
@@ -902,7 +1531,7 @@
   .ow-cd-hub text{fill:#fff;font-family:var(--font-display);font-weight:900;letter-spacing:-.01em}
   @media(max-width:560px){ .ow-centerdiagram{margin-top:34px} .ow-cd-node text{font-size:15px} }
 </style>
-<img id="flyLogo" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY" aria-hidden="true"/>
+<img style="aspect-ratio:400/86" id="flyLogo" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" aria-hidden="true"/>
 <style>
   /* 2026-07 hero — the first impression: three answers in ten seconds; organization leads */
   #hero{position:relative}
@@ -919,13 +1548,14 @@
     text-shadow:0 2px 40px rgba(0,0,0,.5)}
   .hero-h1{word-spacing:-.04em}   /* founder/532: the display word space, as landing.css */
   .hero-h1 span{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
+  .vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
   .hero-h1 span > i{display:block;font-style:inherit}
   @media(prefers-reduced-motion:no-preference){
     .hero-h1 span > i{transform:translateY(112%);opacity:0;
       animation:heroLine 1.05s cubic-bezier(.16,.84,.28,1) forwards}
-    .hero-h1 span:nth-child(1) > i{animation-delay:.08s}
-    .hero-h1 span:nth-child(2) > i{animation-delay:.26s}
-    .hero-h1 span:nth-child(3) > i{animation-delay:.44s}
+    .hero-h1 span:nth-of-type(1) > i{animation-delay:.08s}
+    .hero-h1 span:nth-of-type(2) > i{animation-delay:.26s}
+    .hero-h1 span:nth-of-type(3) > i{animation-delay:.44s}
   }
   @keyframes heroLine{to{transform:none;opacity:1}}
   .hero-sub{font-family:var(--font);font-size:clamp(15px,1.7vw,18.5px);font-weight:500;
@@ -937,59 +1567,26 @@
 <header class="hero" id="hero">
   <canvas id="heroGlobe" aria-hidden="true"></canvas>
   <div class="hero-inner">
-    <img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY" class="hero-mark"/>
+    <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" class="hero-mark"/>
     <!-- ★ FOUNDER/383 (2026-09-14): the person arriving is being INTRODUCED TO
          THE BRAND; "Your gateway…" *"goes further down for app"* and "Connect
          your x in one place" is *"for os"*. So the hero carries the brand's own
          belief — his sentence, from the belief section below — and each
          product's line sits on that product. Spacious by law: type and air. -->
     <!-- ★ FOUNDER/411 §1 OPENING: *"We build experiences people want to return to." Minimal. Large typography. Strong visual. No explanation.* -->
-    <h1 class="hero-h1"><span><i>We build &amp; elevate experiences</i></span><span><i>people want to return&nbsp;to.</i></span></h1>
+    <!-- THE BRAND IN THE H1 (lane B, 2026-10-09, SEO): the wordmark on screen is an image (#flyLogo), so the heading
+         carries its word for search engines and screen readers. It is the word the reader already sees just above, not
+         hidden copy. -->
+    <h1 class="hero-h1"><b class="vh">Oneway. </b><span><i>We build &amp; elevate experiences</i></span><span><i>people want to return&nbsp;to.</i></span></h1>
     <div class="hero-btns">
-      <a href="#app" class="h-btn-app" aria-label="Download the ONEWAY app"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>Download App</span></a>
-      <a href="#os" class="h-btn-os" aria-label="Explore ONEWAY OS"><img src="logo-black.png" alt="ONEWAY"/><span class="os">Explore ONEWAY OS</span></a>
+      <a href="#app" class="h-btn-app" aria-label="Download the Oneway app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Download App</span></a>
+      <a href="#os" class="h-btn-os" aria-label="Explore Oneway OS"><img style="aspect-ratio:800/173" src="logo-black.png" alt="Oneway"/><span class="os">Explore Oneway OS</span></a>
     </div>
     <!-- ★ FOUNDER/412: no "early access", no gemstone — the words are the line -->
     <div class="hero-beta">Selective server beta — open when accessible</div>
   </div>
 </header>
-<script>
-/* Ambient hero globe — slow, elegant, non-interactive (interaction belongs to the demo section). */
-(function(){
-  var cv=document.getElementById('heroGlobe'); if(!cv) return;
-  /* iOS crash hardening: skip the second canvas entirely on phones (it renders at
-     opacity .26 there anyway), and cap DPR — Safari kills tabs over GPU memory. */
-  if(Math.min(screen.width,innerWidth)<=640){ cv.remove(); return; }
-  var ctx=cv.getContext('2d'), DPR=Math.min(devicePixelRatio||1,1.5), W,H,R;
-  function size(){ var r=cv.getBoundingClientRect(); W=cv.width=r.width*DPR; H=cv.height=r.height*DPR; R=Math.min(W,H)*0.36; }
-  size(); addEventListener('resize',size);
-  var N=620, pts=[], GA=Math.PI*(3-Math.sqrt(5));
-  for(var i=0;i<N;i++){ var y=1-(i/(N-1))*2, rad=Math.sqrt(1-y*y), th=GA*i;
-    pts.push({x:Math.cos(th)*rad, y:y, z:Math.sin(th)*rad, city:(i%47===0)}); }
-  var tilt=-0.42, ct=Math.cos(tilt), st=Math.sin(tilt), rot=0;
-  var reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  function frame(){
-    ctx.clearRect(0,0,W,H); rot+=0.00105;
-    var cr=Math.cos(rot), sr=Math.sin(rot), cx=W/2, cy=H/2, t=performance.now()/1000;
-    for(var i=0;i<N;i++){ var p=pts[i];
-      var x=p.x*cr+p.z*sr, z=-p.x*sr+p.z*cr, y=p.y*ct-z*st; z=p.y*st+z*ct;
-      if(z<-0.15) continue;
-      var depth=(z+1)/2, px=cx+x*R, py=cy+y*R;
-      if(p.city){ var tw=0.65+0.35*Math.sin(t*1.6+i);
-        ctx.fillStyle='rgba(207,211,255,'+(0.5*depth*tw+0.12)+')';
-        ctx.beginPath(); ctx.arc(px,py,(1.9+depth)*DPR*0.9,0,7); ctx.fill();
-      } else {
-        ctx.fillStyle='rgba(169,176,255,'+(0.34*depth+0.045)+')';
-        ctx.beginPath(); ctx.arc(px,py,(0.7+depth*0.8)*DPR*0.8,0,7); ctx.fill();
-      }
-    }
-    ctx.strokeStyle='rgba(169,176,255,.14)'; ctx.lineWidth=1.2*DPR;
-    ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.stroke();
-    if(!reduced) requestAnimationFrame(frame);
-  }
-  frame();
-})();
-</script>
+<script defer src="/frontend/landing/static/inline-02-4713a01560.js"></script>
 
 
 
@@ -1459,8 +2056,7 @@
 
   /* THE FOUNDER'S LINES, 2026-10-08 (context/requirements-660/19-founder-note-to-B.md): the App's
      "Introducing" sits above its line, and the sovereignty sentence is the second block's whole text */
-  .lp-kicker{font:650 clamp(14px,1.4vw,16px)/1.2 var(--font);letter-spacing:.01em;color:rgba(255,255,255,.62);margin:0 0 10px}
-  .lp-lead{font-size:clamp(19px,2.1vw,24px);line-height:1.45;color:#fff;max-width:36ch;margin:0}
+  .lp-lead{font-size:clamp(19px,2.1vw,24px);line-height:1.4;font-weight:700;letter-spacing:-.01em;color:#fff;max-width:36ch;margin:0}
 
   /* the Centers, inside Account (534) */
   .cn-wrap{min-width:0;width:100%;max-width:460px;margin:0 auto;text-align:left}
@@ -1478,21 +2074,30 @@
   @media(prefers-reduced-motion:reduce){.phones .ph-real{animation:none}}
 
   /* ── 6 · THE OS — an all-in-one desktop, the Brain on its screen ────── */
-  .aio{position:relative;width:min(820px,100%);margin:44px auto 0}
-  .aio-body{position:relative;border-radius:22px;padding:12px 12px 0;
-    background:linear-gradient(180deg,#1b1c24,#0c0c11);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.06),0 50px 90px -40px rgba(0,0,0,.95),0 0 120px -50px rgba(139,92,255,.55)}
-  .aio-screen{position:relative;aspect-ratio:16/10;border-radius:12px;overflow:hidden;background:#000;box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
+  /* HIS SENTENCE, LEFT AND RIGHT OF EACH OTHER ABOVE THE SCREEN (the founder, 2026-10-09: "to the left and right of
+     each other above the screen ... should start with to running. find a way to make it flow"). Two columns that read
+     as one line of thought: the left half ends right-aligned against the centre, and the right half starts one line
+     ABOVE where it would otherwise begin, so its first line shares the row with the left half's last ("custom tools,"
+     -> "to running ..."). The eye goes straight across and then down. */
+  .os-flow{--lh:1.34;display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);grid-template-rows:auto auto;
+    column-gap:clamp(12px,2.2vw,28px);max-width:860px;margin:26px auto 0;text-align:left;
+    font-size:clamp(17px,2.15vw,26px);line-height:var(--lh);font-weight:650;color:#fff;letter-spacing:-.012em}
+  .os-flow p{margin:0;text-wrap:balance}
+  /* a phone: the left half a little wider, so it reads in three full lines rather than five short ones */
+  @media (max-width:640px){ .os-flow{grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);font-size:16px} }
+  .os-flow__a{grid-column:1;grid-row:1;text-align:right}
+  .os-flow__b{grid-column:2;grid-row:2;margin-top:calc(-1em * var(--lh))!important}
+  .footer-tm{max-width:1080px;margin:18px auto 0;padding:0 clamp(20px,5vw,48px);font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.5)}
+  /* A REAL iMac (the founder, 2026-10-09: "have the computer reflect the real mold of an apple imac, not a random ai
+     generated computer model"). The Silver iMac (M4, 2024), photographed by AzureSaturn and released CC0 on Wikimedia
+     Commons, straightened from its screen's four corners to face front and cut out of the store. Apple's own bezels
+     are licensed only for apps that run solely on Apple's systems, so they are not used here. The live OS sits in
+     the photo's measured 16:9 screen: 3.501% / 4.104% / 92.969% x 61.204% of the image. */
+  .aio{position:relative;width:min(820px,100%);margin:44px auto 0;filter:drop-shadow(0 40px 60px rgba(0,0,0,.55))}
+  .aio-photo{display:block;width:100%;height:auto}
+  .aio-screen{position:absolute;left:3.501%;top:4.104%;width:92.969%;height:61.204%;overflow:hidden;background:#000}
   .aio-screen::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:5;
     background:linear-gradient(118deg,rgba(255,255,255,.07),transparent 34%,transparent 70%,rgba(255,255,255,.025))}
-  .aio-chin{height:clamp(34px,6vw,58px);display:grid;place-items:center;border-radius:0 0 22px 22px;margin:0 -12px;
-    background:linear-gradient(180deg,#d9dbe3,#b9bcc7 60%,#a7aab6);box-shadow:inset 0 1px 0 rgba(255,255,255,.7)}
-  .aio-chin img{height:clamp(9px,1.3vw,13px);opacity:.55}
-  .aio-neck{width:22%;height:clamp(44px,8vw,86px);margin:0 auto;
-    background:linear-gradient(90deg,#8e919c,#d4d6de 45%,#e6e8ee 55%,#9a9da8);
-    clip-path:polygon(9% 0,91% 0,100% 100%,0 100%)}
-  .aio-foot{width:36%;height:10px;margin:0 auto;border-radius:3px 3px 10px 10px;
-    background:linear-gradient(180deg,#e2e4ea,#9fa2ad);box-shadow:0 18px 30px -8px rgba(0,0,0,.8)}
   /* the OS inside it: the rail, the bar, and the Brain in black */
   .aio-ui{position:absolute;inset:0;display:grid;grid-template-columns:clamp(34px,6%,54px) minmax(0,1fr);grid-template-rows:clamp(24px,7%,40px) minmax(0,1fr)}
   .aio-bar{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(10,10,18,.9)}
@@ -1550,12 +2155,12 @@
 <section class="lp" id="account">
   <div class="lp-wrap lp-two">
     <div class="rv d2">
-      <div class="lk"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>Ecosystem</span></div>
-      <h2 class="lp-h2" style="max-width:17ch">ONEWAY gives every person one profile and every community or business a&nbsp;Center.</h2>
+      <div class="lk"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Ecosystem</span></div>
+      <h2 class="lp-h2" style="max-width:17ch">We give every person one profile and every community or business a&nbsp;Center.</h2>
       
     </div>
     <div class="deck-wrap rv d3">
-      <div class="deck" id="deck" aria-label="People on ONEWAY, right now"></div>
+      <div class="deck" id="deck" aria-label="People on Oneway, right now"></div>
       <div class="deck-faces" id="deckFaces" role="group" aria-label="Choose a person"></div>
     </div>
   </div>
@@ -1572,20 +2177,19 @@
 <section class="lp" id="app">
   <div class="lp-wrap lp-two">
     <div class="rv d2">
-      <div class="lk"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>App</span></div>
-      <p class="lp-kicker">Introducing</p>
-      <h2 class="lp-h2" style="max-width:14ch">Your unified and fully customizable social&nbsp;network.</h2>
+      <div class="lk"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>App</span></div>
+      <h2 class="lp-h2" style="max-width:14ch">Introducing <br>Your fully customizable social&nbsp;network.</h2>
       <p class="lp-p">See what your friends and the places you love are posting, and what is coming up at each of them.</p>
       
     </div>
     <div class="phones rv d3">
       <div class="ph-real">
-        <div class="shot"><img src="/frontend/site/app-screen-home.webp" alt="The ONEWAY App — Home" loading="lazy" decoding="async"/></div>
-        <img class="frame" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
+        <div class="shot"><img style="aspect-ratio:1179/2556" src="/frontend/site/app-screen-home.webp" alt="The Oneway App — Home" loading="lazy" decoding="async"/></div>
+        <img style="aspect-ratio:1350/2760" class="frame" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
       </div>
       <div class="ph-real">
-        <div class="shot"><img src="/frontend/site/app-screen-center.webp" alt="The ONEWAY App — a Center" loading="lazy" decoding="async"/></div>
-        <img class="frame" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
+        <div class="shot"><img style="aspect-ratio:1179/2556" src="/frontend/site/app-screen-center.webp" alt="The Oneway App — a Center" loading="lazy" decoding="async"/></div>
+        <img style="aspect-ratio:1350/2760" class="frame" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
       </div>
     </div>
   </div>
@@ -1594,14 +2198,19 @@
 <!-- ═══ 6 · ONEWAY OS — the all-in-one desktop ══════════════════════════ -->
 <section class="lp" id="os">
   <div class="lp-wrap" style="text-align:center">
-    <div class="lk rv d2"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY"/><span>OS</span></div>
+    <div class="lk rv d2"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>OS</span></div>
     <h2 class="lp-h2 rv d2" style="margin:0 auto;max-width:17ch">See how deep it&nbsp;goes.</h2>
-    <p class="lp-p rv d2" style="margin:18px auto 0;max-width:46ch">From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within&nbsp;seconds.</p>
-    <div class="aio rv d3" role="img" aria-label="ONEWAY OS on an all-in-one desktop, its Brain open">
-      <div class="aio-body">
+    <!-- HIS SENTENCE, LEFT AND RIGHT ABOVE THE SCREEN, AND IT FLOWS: the right half starts on the line where the left
+         half ends, so "custom tools," runs straight across into "to running ..." -->
+    <div class="os-flow rv d2">
+      <p class="os-flow__a">From managing online communities, developing custom&nbsp;tools,</p>
+      <p class="os-flow__b">to running full businesses and zooming in on the operations of specific locations with the click of a button, within&nbsp;seconds.</p>
+    </div>
+    <div class="aio rv d3" role="img" aria-label="Oneway OS on an iMac, its Brain open">
+      <img class="aio-photo" src="/frontend/site/imac-m4-silver-1720.webp" srcset="/frontend/site/imac-m4-silver-1100.webp 1100w, /frontend/site/imac-m4-silver-1720.webp 1720w" sizes="(max-width: 860px) 100vw, 820px" width="1720" height="1470" alt="" loading="lazy" decoding="async"/>
         <div class="aio-screen">
           <div class="aio-ui">
-            <div class="aio-bar"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt=""/><b>OS</b><em>Brain</em></div>
+            <div class="aio-bar"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt=""/><b>OS</b><em>Brain</em></div>
             <div class="aio-rail" aria-hidden="true">
               <i><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></i>
               <i><svg viewBox="0 0 24 24"><path d="M4 21V8l8-5 8 5v13"/><path d="M9 21v-6h6v6"/></svg></i>
@@ -1611,15 +2220,11 @@
               <i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></i>
             </div>
             <div class="aio-brain" id="aioBrain">
-              <img class="still" src="/frontend/site/os-brain.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
+              <img style="aspect-ratio:1496/924" class="still" src="/frontend/site/os-brain.webp" alt="" aria-hidden="true" loading="lazy" decoding="async"/>
               <canvas id="ow-map" aria-hidden="true"></canvas>
             </div>
           </div>
         </div>
-        <div class="aio-chin"><img src="logo-black.png" alt=""/></div>
-      </div>
-      <div class="aio-neck"></div>
-      <div class="aio-foot"></div>
     </div>
     <p class="os-connect rv d3">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</p>
     
@@ -1631,7 +2236,7 @@
   <div class="lp-wrap">
     <div class="rsv rv d2" id="rsv" style="--ow-h1:139,92,255;--ow-h2:93,226,255">
       <h2 class="rsv-t">Reserved usernames received.</h2>
-      <div class="rsv-received" style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:16px"><span class="rsv-done-chip"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.6l3.1 3.1L13 4.9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>ONEWAY is opening soon</span><p class="rsv-note" style="text-align:left;margin:0">Applications for the closed beta open soon.</p></div>
+      <div class="rsv-received" style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:16px"><span class="rsv-done-chip"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.6l3.1 3.1L13 4.9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Oneway is opening soon</span><p class="rsv-note" style="text-align:left;margin:0">Applications for the closed beta open soon.</p></div>
       <div class="rsv-done" id="rsv-done" hidden>
         <span class="rsv-done-chip">Reserved</span>
         <div class="rsv-done-handle" id="rsv-done-handle">@you</div>
@@ -1648,287 +2253,31 @@
      ★ FOUNDER/534: the App → OS → OS+ → OS Max ladder "could be at the
      bottom and buttons should appear more rounded smaller and sleaker but
      these are good link buttons." -->
-<section class="end" id="return" aria-label="ONEWAY">
+<section class="end" id="return" aria-label="Oneway">
   <div class="lp-wrap">
     <h2 class="lp-h2">Go anywhere. Connect everywhere.</h2>
-    <nav class="ladder2" aria-label="ONEWAY, from the App to Developer OS">
-      <a href="#app" style="--h:139,92,255">ONEWAY App</a><i>›</i>
-      <a href="#os" style="--h:38,150,222">ONEWAY OS</a><i>›</i>
+    <nav class="ladder2" aria-label="Oneway, from the App to Developer OS">
+      <a href="#app" style="--h:139,92,255">Oneway App</a><i>›</i>
+      <a href="#os" style="--h:38,150,222">Oneway OS</a><i>›</i>
       <a href="#os" style="--h:93,226,255">Business OS</a><i>›</i>
       <a href="#os" style="--h:255,168,58">Developer OS</a>
     </nav>
   </div>
 </section>
 
-<script src="/frontend/shared/brainmap.js?v=d994a7b0"></script>
-<script>
-/* THE BRAIN ON THE DESKTOP'S SCREEN — the OS's own canvas, live where a
-   pointer can afford it; a still of the same map everywhere else (the safe
-   floor: no always-on canvas on a phone, ever). */
-(function(){
-  try{
-    var c=document.getElementById('ow-map'); if(!c) return;
-    var phone=(window.owIsNarrow ? window.owIsNarrow(641) : Math.min(screen.width, innerWidth) <= 640) || matchMedia('(pointer:coarse)').matches;
-    if(phone || !window.OW_BRAINMAP){ c.remove(); return; }
-    var ctl=window.OW_BRAINMAP.mount(c, { tree: window.OW_BRAINMAP.presetOneway() });
-    var still=document.querySelector('#aioBrain .still'); if(still) still.remove();
-    if(ctl && ctl.resize){
-      requestAnimationFrame(function(){ ctl.resize(); });
-      addEventListener('resize', function(){ ctl.resize(); }, {passive:true});
-    }
-  }catch(_){}
-})();
-</script>
-<script>
-/* THE TWO LINES TYPE THEMSELVES IN (founder/493 #2, 534). Each word is kept
-   whole (a word never breaks across lines), each letter is laid out from the
-   start and only its ink appears, so the line never reflows while it types;
-   the caret has no width. Words are split on ordinary spaces only, so a
-   non-breaking space still binds its pair. */
-(function(){
-  var els=[].slice.call(document.querySelectorAll('.ty'));
-  if(!els.length) return;
-  var still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  els.forEach(function(el){
-    var text=el.textContent; el.setAttribute('aria-label', text.replace(/ /g,' '));
-    if(still){ el.classList.add('in'); return; }
-    var inner=document.createElement('span'); inner.setAttribute('aria-hidden','true');
-    var chars=[];
-    text.split(' ').forEach(function(word, wi, all){
-      var w=document.createElement('span'); w.className='ty-w';
-      for(var k=0;k<word.length;k++){ var c=document.createElement('span'); c.className='ty-c'; c.textContent=word[k]; w.appendChild(c); chars.push(c); }
-      inner.appendChild(w);
-      if(wi<all.length-1){ var sp=document.createElement('span'); sp.className='ty-c'; sp.textContent=' '; inner.appendChild(sp); chars.push(sp); }
-    });
-    el.textContent=''; el.appendChild(inner); el._ty=chars; el.classList.add('ty-armed');
-  });
-  if(still) return;
-  function play(el){
-    if(el._played) return; el._played=true; el.classList.add('in');
-    var chars=el._ty||[], n=0, per=Math.max(16, Math.min(38, 1500/Math.max(1,chars.length)));
-    var caret=document.createElement('span'); caret.className='ty-caret';
-    (function step(){
-      if(n<chars.length){ chars[n].classList.add('on'); chars[n].parentNode.insertBefore(caret, chars[n].nextSibling); n++; setTimeout(step, per); }
-      else setTimeout(function(){ if(caret.parentNode) caret.parentNode.removeChild(caret); }, 1400);
-    })();
-  }
-  if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ play(e.target); io.unobserve(e.target); } }); },{threshold:.35});
-    els.forEach(function(el){ io.observe(el); });
-  }
-  /* fail-open: a line already on screen, or one the observer missed, plays anyway */
-  function sweep(){ els.forEach(function(el){ if(el._played) return; var r=el.getBoundingClientRect(); if(r.top<innerHeight*.9 && r.bottom>0) play(el); }); }
-  addEventListener('scroll', sweep, {passive:true}); setTimeout(sweep, 900); setTimeout(sweep, 2500);
-})();
-</script>
-<script>
-/* ═══ THE LIVE PARTS — every face, name and count is a read ══════════════
-   ★ FOUNDER/534: "the card needs to be redesigned to show demo real users
-     with actual stats and a demo online status. playing x on x going back to
-     the live status we talked about" — the live activity status of
-     recovered/1973 (*"people could see their friends' live activity status
-     and what they're doing on other platforms … like how Discord could sync
-     with Xbox"*). The PEOPLE are real accounts and their name, face, bio,
-     links and counts are read from the platform every time the page opens.
-     The STATUS is the demo he asked for — ONEWAY does not receive activity
-     from Xbox, Spotify or Twitch yet — and it lives here, in DEMO, and
-     nowhere in any account. If a person cannot be read, the last read of
-     them (SNAPSHOT, 2026-09-25) stands in, so the card never reads as an
-     error on a page served without the API. */
-(function(){
-  if(!window.OW) return;
-  var NOT={cancelled:1,draft:1,ended:1};
-  function pair(h){ var p=(OW.hue&&OW.hue.fromAngle)?OW.hue.fromAngle(h):null; return p?{h1:p[0],h2:p[1]||p[0]}:null; }
-  function inZone(iso, zone, opts){ var d=new Date(iso); if(isNaN(d)) return ''; try{ return new Intl.DateTimeFormat(undefined, zone?Object.assign({timeZone:zone},opts):opts).format(d); }catch(e){ return new Intl.DateTimeFormat(undefined,opts).format(d); } }
-  function J(u,h){ return fetch(u,{headers:Object.assign({accept:'application/json'},h||{})}).then(function(r){ return r.ok?r.json():null; }).catch(function(){ return null; }); }
-  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
-  function initials(n){ return OW.initials?OW.initials(n):String(n||'').slice(0,2).toUpperCase(); }
-  function faceInner(pic, name){ var src=pic?(OW.imageUrl?OW.imageUrl(pic):pic):''; return src?'<img src="'+esc(src)+'" alt="" loading="lazy" decoding="async" onerror="this.replaceWith(Object.assign(document.createElement(\'i\'),{textContent:'+esc(JSON.stringify(initials(name)))+'}))">':'<i>'+esc(initials(name))+'</i>'; }
-  /* A PERSON IS NAMED BY @handle (people/refs.py, 2026-10-02), and a visitor is not answered about anybody by
-     address (S5, 2026-10-09): every read and link here goes by the handle. */
-  function personHref(ref){ return '/oneway-app.html#center/@'+encodeURIComponent(String(ref||'').replace(/^@/,'')); }
-  function pid(p){ return (p&&(p.ref||(p.handle?'@'+p.handle:'')))||''; }
-
-  var CONTROLLER='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 7h9a5 5 0 0 1 4.9 6l-.6 3.2a2.4 2.4 0 0 1-4.2 1L15 15.5H9L7.4 17.2a2.4 2.4 0 0 1-4.2-1L2.6 13A5 5 0 0 1 7.5 7z"/><path d="M7.5 10v3M6 11.5h3"/><circle cx="15.5" cy="11" r=".6" fill="currentColor"/><circle cx="17.5" cy="12.8" r=".6" fill="currentColor"/></svg>';
-  /* the demo statuses — "playing x on x" (534). started = seconds ago. */
-  var DEMO=[];
-  /* the last read of each person, 2026-09-25 — used only when the platform cannot be reached */
-  var SNAPSHOT={};
-  var people=Promise.all(DEMO.map(function(d){ var h='@'+d.email.split('@')[0]; return J('/api/oneway/people/'+encodeURIComponent(h)+'/profile').then(function(x){ return (x&&x.person&&x.person.ref)?x:SNAPSHOT[d.email]; }); }));
-  var discovery=J('/api/oneway/centers/discovery').then(function(j){
-    var rows=((j&&j.buttons)||[]).filter(function(x){ return x&&x.name&&x.center_id; });
-    var lead=rows.filter(function(x){ return x.reserve; }); if(!lead.length) lead=rows;
-    return lead.slice(0,8);
-  });
-
-  /* ── 3 · THE ECOSYSTEM — Centers and people, interleaved, drifting ── */
-  var run=document.getElementById('ecoRun'), strip=document.getElementById('ecoStrip');
-  Promise.all([discovery, people]).then(function(r){
-    if(!strip) return;
-    var cs=r[0].map(function(x){ return {kind:'center', id:x.center_id, name:x.name, pic:x.picture||'', hue:x.hue}; });
-    var ps=r[1].filter(Boolean).map(function(d){ var p=d.person; return {kind:'person', id:pid(p), name:p.name||p.handle||pid(p), pic:p.picture||'', hue:p.hue}; });
-    if(cs.length+ps.length<4) return;              /* nothing to show is shown as nothing (402) */
-    var mixed=[]; while(cs.length||ps.length){ if(cs.length) mixed.push(cs.shift()); if(cs.length) mixed.push(cs.shift()); if(ps.length) mixed.push(ps.shift()); }
-    function make(it, dup){
-      var b=document.createElement('button'); b.type='button'; b.className='eco-it'; b.setAttribute('data-kind',it.kind);
-      if(dup){ b.tabIndex=-1; b.setAttribute('aria-hidden','true'); } else b.setAttribute('aria-label','Open '+it.name);
-      var hp=(typeof it.hue==='number')?pair(it.hue):null;
-      b.innerHTML='<span class="f">'+faceInner(it.pic, it.name)+'</span><b>'+esc(it.name)+'</b>';
-      if(hp){ var f=b.firstChild; f.style.setProperty('--h',hp.h1); f.style.setProperty('--h2',hp.h2); }
-      b.addEventListener('click',function(){ if(it.kind==='center') project('center', it.id, b, '/oneway-app.html#/c/'+encodeURIComponent(it.id)); else project('person', it.id, b, personHref(it.id)); });
-      return b;
-    }
-    /* the track is the row twice, so the drift loops without a seam */
-    mixed.forEach(function(it){ strip.appendChild(make(it,false)); });
-    mixed.forEach(function(it){ strip.appendChild(make(it,true)); });
-    run.hidden=false;
-  });
-
-  /* ── 4 · THE DECK — each person as they are, what they are doing now ── */
-  var deck=document.getElementById('deck'), faces=document.getElementById('deckFaces');
-  var centerFace=J('/api/oneway/centers/bfe9764db5f4/app').then(function(a){ var id=(a&&a.identity)||{}; return {pic:id.picture||'', name:id.name||'Four Queens'}; });
-  function clock(s){ s=Math.max(0,Math.floor(s)); var h=Math.floor(s/3600), m=Math.floor(s%3600/60), x=s%60; return (h?h+':'+String(m).padStart(2,'0'):String(m))+':'+String(x).padStart(2,'0'); }
-  function ago(s){ var m=Math.max(1,Math.round(s/60)); return m<60?m+' min':Math.floor(m/60)+'h '+(m%60)+'m'; }
-  Promise.all([people, centerFace]).then(function(r){
-    if(!deck) return;
-    var list=r[0], cf=r[1], born=Date.now()/1000, cards=[], buttons=[];
-    list.forEach(function(d, i){
-      if(!d||!d.person) return;
-      var p=d.person, s=DEMO[i], c=d.counts||{}, posts=(c.posts!=null)?c.posts:(Array.isArray(d.posts)?d.posts.length:(d.posts||0));
-      var hp=(typeof p.hue==='number')?pair(p.hue):null;
-      var el=document.createElement('article'); el.className='pcard'; el.tabIndex=0; el.setAttribute('aria-label',(p.name||p.handle)+', online');
-      if(hp){ el.style.setProperty('--h',hp.h1); el.style.setProperty('--h2',hp.h2); }
-      var mark=s.mark.svg?'<span class="pc-mark" style="background:'+s.mark.bg+'">'+s.mark.svg+'</span>'
-        : s.mark.platform?'<span class="pc-mark" style="color:'+esc((OW.links&&OW.links.hueOf&&OW.links.hueOf(s.mark.platform))||'#fff')+'">'+((OW.links&&OW.links.icon)?OW.links.icon(s.mark.platform,''):'')+'</span>'
-        : '<span class="pc-mark">'+faceInner(cf.pic, cf.name)+'</span>';
-      var urls=(p.links||[]).map(function(l){ return l&&(l.url||l.href); }).filter(Boolean); if(p.website) urls.unshift(p.website);
-      var links=''; if(OW.links&&OW.links.platformOf){ urls.slice(0,5).forEach(function(u){ var pf=OW.links.platformOf(u); if(!pf) return;
-        var hue=OW.links.hueOf?OW.links.hueOf(pf.key):''; links+='<a href="'+esc(pf.href)+'" target="_blank" rel="noopener noreferrer" aria-label="'+esc(pf.name)+'" title="'+esc(pf.name)+'"'+(hue&&hue!=='#000000'?' style="color:'+esc(hue)+'"':'')+'>'+OW.links.icon(pf.key,pf.href)+'</a>'; }); }
-      el.innerHTML=
-        '<div class="pc-top"><span class="pc-face" data-shape="'+esc(p.shape||'round')+'"><span class="in">'+faceInner(p.picture||'', p.name||p.handle)+'</span></span>'+
-          '<div class="pc-id"><span class="pc-name">'+esc(p.name||p.handle)+'</span><span class="pc-handle">@'+esc(p.handle||pid(p).replace(/^@/,''))+'</span></div>'+
-          '<span class="pc-on">Online</span></div>'+
-        '<div class="pc-live">'+mark+'<div><div class="pc-live-t">'+esc(s.verb)+' <b>'+esc(s.what)+'</b>'+(s.on?' on <b>'+esc(s.on)+'</b>':'')+'</div><div class="pc-live-s" data-t></div></div></div>'+
-        (p.bio?'<p class="pc-bio">'+esc(p.bio)+'</p>':'')+
-        (links?'<div class="pc-links">'+links+'</div>':'')+
-        '<div class="pc-sp"></div><div class="pc-stats"><span><b>'+(posts||0)+'</b>posts</span><span><b>'+(c.followers||0)+'</b>followers</span><span><b>'+(c.following||0)+'</b>following</span></div>';
-      el.querySelectorAll('.pc-links a').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); }); });
-      el.addEventListener('click',function(){ if(el.getAttribute('data-at')==='0') project('person', pid(p), el, personHref(pid(p))); });
-      el._tick=function(now){ var t=el.querySelector('[data-t]'); if(!t) return; var secs=s.started+(now-born); t.textContent=s.tail==='here'?'Here for '+ago(secs):clock(secs)+' elapsed'; };
-      deck.appendChild(el); cards.push(el);
-      var b=document.createElement('button'); b.type='button'; b.setAttribute('aria-label',p.name||p.handle);
-      if(hp){ b.style.setProperty('--h',hp.h1); b.style.setProperty('--h2',hp.h2); }
-      b.innerHTML=faceInner(p.picture||'', p.name||p.handle); faces.appendChild(b); buttons.push(b);
-    });
-    if(!cards.length) return;
-    var front=0, timer=null, still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    function lay(){
-      cards.forEach(function(el,i){ var at=(i-front+cards.length)%cards.length; el.setAttribute('data-at', at>3?'out':String(at)); el.setAttribute('aria-hidden', at===0?'false':'true'); });
-      buttons.forEach(function(b,i){ b.classList.toggle('on', i===front); b.setAttribute('aria-pressed', String(i===front)); });
-      /* one height for every card, the tallest, so a card behind never shows below the one in front */
-      cards.forEach(function(el){ el.style.height='auto'; });
-      var h=0; cards.forEach(function(el){ h=Math.max(h, el.offsetHeight); });
-      if(h){ cards.forEach(function(el){ el.style.height=h+'px'; }); deck.style.setProperty('--deck-h', h+'px'); }
-    }
-    function go(i){ front=(i+cards.length)%cards.length; lay(); }
-    function auto(){ clearInterval(timer); if(!still) timer=setInterval(function(){ go(front+1); }, 5200); }
-    buttons.forEach(function(b,i){ b.addEventListener('click',function(){ go(i); auto(); }); });
-    deck.addEventListener('mouseenter',function(){ clearInterval(timer); }); deck.addEventListener('mouseleave',auto);
-    function tick(){ var now=Date.now()/1000; cards.forEach(function(el){ el._tick(now); }); }
-    tick(); setInterval(tick, 1000);
-    lay(); auto();
-    addEventListener('resize', function(){ lay(); }, {passive:true});
-    if(document.fonts && document.fonts.ready) document.fonts.ready.then(lay);
-  });
-
-  /* ── 4b · CENTERS — the first with something coming up as one card (410),
-     the rest as rows, each wearing its own picture */
-  var cardHost=document.getElementById('cnCard'), rowsHost=document.getElementById('cnRows');
-  discovery.then(function(lead){
-    lead=lead.slice(0,6);
-    if(!lead.length){ var w=cardHost&&cardHost.parentNode; if(w) w.hidden=true; return; }
-    return Promise.all(lead.map(function(x){ return J('/api/oneway/centers/'+encodeURIComponent(x.center_id)+'/app'); })).then(function(apps){
-      apps=apps.filter(function(a){ return a&&a.exists!==false&&!a.hidden; });
-      var withEv=apps.filter(function(a){ return ((a.events||{}).items||[]).some(function(e){ return e&&e.title&&!NOT[String(e.state||'').toLowerCase()]&&e.starts_at; }); });
-      var a=withEv[0]||apps[0];
-      if(a){
-        var CID=a.center_id||'', id=a.identity||{}, h=a.header||{}, zone=(a.where&&a.where.time&&a.where.time.timezone)||'';
-        var hue=(typeof id.hue==='number')?pair(id.hue):(typeof h.hue==='number'?pair(h.hue):null);
-        var card=document.createElement('div'); card.className='flag-card';
-        if(hue){ card.style.setProperty('--h',hue.h1); card.style.setProperty('--h2',hue.h2); }
-        var evs=((a.events||{}).items||[]).filter(function(e){ return e&&e.title&&!NOT[String(e.state||'').toLowerCase()]&&!(e.legacy&&!e.starts_at); })
-          .sort(function(x,y){ return String(x.starts_at||'~').localeCompare(String(y.starts_at||'~')); }).slice(0,3);
-        var where=[h.category||id.kind, h.location||(a.where&&a.where.label)].filter(Boolean).join(' · ');
-        card.innerHTML='<button type="button" class="flag-id" aria-label="Open '+esc(id.name||'this Center')+'"><span class="flag-face" data-shape="'+esc(id.shape||'rounded')+'">'+faceInner(id.picture||'', id.name||'')+'</span>'+
-          '<span><span class="flag-name">'+esc(id.name||h.name||'A Center')+'</span>'+(where?'<span class="flag-sig" style="display:block">'+esc(where)+'</span>':'')+'</span></button>'+
-          (id.description?'<p class="flag-bio">'+esc(id.description)+'</p>':'');
-        card.querySelector('.flag-id').addEventListener('click',function(){ project('center', CID, card, '/oneway-app.html#/c/'+encodeURIComponent(CID)); });
-        /* a face names its person by `ref` (@handle) since 2026-10-02, and filtering on `email` dropped every face
-           (measured 2026-10-09: 0 on every Center). A person with no username is shown by name and is not a link. */
-        var fcs=((a.people||{}).faces||[]).filter(function(f){ return f&&(f.ref||f.email||f.name); }).slice(0,4);
-        if(fcs.length){ var pl=document.createElement('div'); pl.className='flag-people';
-          fcs.forEach(function(f){ var to=f.ref||f.email||''; var b=document.createElement(to?'button':'span'); if(to) b.type='button';
-            b.innerHTML='<span class="fp" data-shape="'+esc(f.shape||'round')+'">'+faceInner(f.picture||'', f.name||f.ref||'')+'</span>'+esc(f.name||String(f.ref||f.email||'').replace(/^@/,'').split('@')[0]);
-            if(to) b.addEventListener('click',function(e){ e.stopPropagation(); project('person', to, b, personHref(to)); }); pl.appendChild(b); });
-          card.appendChild(pl); }
-        if(evs.length){
-          var sub=document.createElement('div'); sub.className='flag-sub'; sub.innerHTML='<b>Events</b><span>'+evs.length+'</span>'; card.appendChild(sub);
-          var list=document.createElement('div'); list.className='flag-evs'; card.appendChild(list);
-          evs.forEach(function(e){
-            var iso=e.starts_at||''; var mk=iso?{mon:inZone(iso,zone,{month:'short'}), day:+inZone(iso,zone,{day:'numeric'})}:null;
-            var hour=iso?inZone(iso,zone,{hour:'numeric',minute:'2-digit'}):''; var venue=(e.mode==='digital'||e.mode==='online')?'Online':(e.place||'');
-            var n=OW.glance({ id:'cn-ev-'+e.id, label:e.title, when:mk, icon:'event', hue:hue, signal:[hour, venue].filter(Boolean).join(' · ') },{open:false});
-            n.addEventListener('click',function(ev){ ev.stopPropagation(); project('event', e.id, n, '/oneway-app.html#event/'+encodeURIComponent(e.id)); });
-            list.appendChild(n);
-          });
-        }
-        cardHost.appendChild(card);
-      }
-      lead.filter(function(x){ return !a || x.center_id!==a.center_id; }).slice(0,3).forEach(function(x){
-        var n=OW.glance({ id:'cn-'+x.center_id, label:x.name, face:{ image:x.picture||'', name:x.name, shape:x.shape||'rounded' },
-          signal:[x.kind].filter(Boolean).join(' · '), hue:(typeof x.hue==='number')?pair(x.hue):null },{open:false});
-        n.addEventListener('click',function(){ project('center', x.center_id, n, '/oneway-app.html#/c/'+encodeURIComponent(x.center_id)); });
-        rowsHost.appendChild(n);
-      });
-    });
-  });
-})();
-</script>
-<script>
-/* THE ROTATING NOUN — "Connect your ___ in one place." ★ FOUNDER/412: as
-   smooth as when it was the main wordmark. Runs after the sentence exists;
-   the first width is measured once the display face has loaded. */
-(function(){
-  var el=document.getElementById('rotWord'); if(!el) return;
-  var words=['communities','people','hotel','casino','city','convention center',
-             'stadium','restaurant','museum','school','church','club','neighborhood',
-             'business','brand','organization'];
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var m=document.createElement('span'); m.className='rot-measure'; el.parentNode.appendChild(m);
-  function sync(){ var cs=getComputedStyle(el); m.style.font=cs.font; m.style.letterSpacing=cs.letterSpacing; }
-  function widthOf(w){ m.textContent=w; return m.getBoundingClientRect().width; }
-  function fit(){ sync(); el.style.width=widthOf(el.textContent)+'px'; }
-  fit();
-  if(document.fonts && document.fonts.ready) document.fonts.ready.then(fit);
-  addEventListener('resize', fit, {passive:true});
-  var i=0;
-  setInterval(function(){
-    var next=words[(i+1)%words.length];
-    sync();
-    el.style.width=widthOf(next)+'px';
-    el.classList.add('sw');
-    setTimeout(function(){ i=(i+1)%words.length; el.textContent=next; el.classList.remove('sw'); },220);
-  },1900);
-})();
-</script>
+<script defer src="/frontend/shared/brainmap.js?v=fbe668b4"></script>
+<script defer src="/frontend/landing/static/inline-03-da8892856b.js"></script>
+<script defer src="/frontend/landing/static/inline-04-b8bd236ef4.js"></script>
+<script defer src="/frontend/landing/static/inline-05-c7bf297b15.js"></script>
+<script defer src="/frontend/landing/static/inline-06-ced288bedf.js"></script>
 
 <footer>
   <div class="footer-inner">
     <div class="footer-left">
-      <img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="ONEWAY" class="footer-logo"/>
+      <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" class="footer-logo"/>
       <div class="footer-links">
-        <a href="#app">ONEWAY App</a>
-        <a href="#os">ONEWAY OS</a>
+        <a href="#app">Oneway App</a>
+        <a href="#os">Oneway OS</a>
         <a href="/about.html">About</a>
         <a href="/privacy.html">Privacy</a>
         <a href="/terms.html">Terms</a>
@@ -1937,542 +2286,11 @@
     <!-- ★ FOUNDER/493: *"Put 2027, Oneway Technologies LLC"* -->
     <div class="footer-right">2027, Oneway Technologies LLC</div>
   </div>
+  <!-- the trademark credit for the iMac the OS is shown on (Apple's guidelines ask for it once per site); no
+       association with Apple is claimed or suggested -->
+  <p class="footer-tm">iMac is a trademark of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.</p>
 </footer>
-<script>
-/* ── NAV SCROLL ─────────────────────────────────────────── */
-const nav = document.getElementById('mainNav');
-// SINGLE-ELEMENT logo transition. One fixed wordmark (#flyLogo) is the ONLY visible logo.
-// It starts exactly over the (hidden) hero mark and physically shrinks + rises into the
-// (hidden) navbar slot as you scroll, then stays there as the navbar logo. The same
-// object the whole way — no second logo, no crossfade, no teleport.
-const fly = document.getElementById('flyLogo');
-const heroMark = document.querySelector('.hero-mark');
-const navLogoImg = document.querySelector('.nav-logo img');
-let _geo = null;
-function measureLogo(){
-  if(!fly || !heroMark || !navLogoImg) return;
-  const hr = heroMark.getBoundingClientRect(), nr = navLogoImg.getBoundingClientRect();
-  const prevT = fly.style.transform; fly.style.transform = 'none';
-  const fr = fly.getBoundingClientRect();
-  fly.style.transform = prevT;
-  if(hr.width > 0 && nr.width > 0 && fr.width > 0){
-    _geo = {
-      fw: fr.width, fh: fr.height,
-      hcx: hr.left + hr.width/2, hcy: hr.top + hr.height/2 + window.scrollY,  // hero centre, PAGE-relative (valid even if measured while scrolled — e.g. mobile rotate/resize)
-      ncx: nr.left + nr.width/2, ncy: nr.top + nr.height/2,   // navbar centre (fixed in viewport)
-      s1: nr.width / fr.width                                 // final scale (matches navbar logo)
-    };
-  }
-}
-function onScroll(){
-  // Popit open: body is position:fixed, so scrollY collapses to 0 — freezing here keeps
-  // the nav + flying wordmark exactly where they were instead of teleporting to the hero.
-  if(document.body.classList.contains('po-locked')) return;
-  if(fly && _geo){
-    const span = Math.max(1, innerHeight * 0.62);
-    const p = Math.min(1, Math.max(0, scrollY / span));
-    const e = 1 - Math.pow(1 - p, 3);                         // easeOutCubic — decelerate into the dock
-    nav.classList.toggle('scrolled', p > 0.9 || scrollY > innerHeight * 0.7);
-    // Blend from "scrolling with the hero" toward "parked in the navbar". Monotonic, no
-    // overshoot: at p=0 the logo sits on the hero; at p=1 it sits exactly on the navbar slot.
-    const startCy = _geo.hcy - scrollY;
-    const cx = _geo.hcx + (_geo.ncx - _geo.hcx) * e;
-    const cy = startCy + (_geo.ncy - startCy) * e;
-    const s = 1 + (_geo.s1 - 1) * e;
-    fly.style.transform = 'translate(' + (cx - _geo.fw/2) + 'px,' + (cy - _geo.fh/2) + 'px) scale(' + s + ')';
-  } else {
-    nav.classList.toggle('scrolled', scrollY > 20);
-  }
-}
-window.addEventListener('scroll', onScroll, { passive: true });
-window.addEventListener('resize', () => { measureLogo(); onScroll(); }, { passive: true });
-window.addEventListener('load', () => { measureLogo(); onScroll(); });
-measureLogo(); onScroll();
-
-/* ── FULL-PAGE 3D PARTICLE FIELD ─────────────────────────── */
-(function () {
-  const canvas = document.getElementById('hero-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, CX, CY;
-
-  const DEPTH  = 1600;   // far clip
-  const FOV    = 900;    // perspective focal length
-  /* Touch devices (any orientation) never run the always-on canvas — innerWidth
-     alone misses an iPhone held sideways. */
-  /* CANON: touch, not width. A narrow desktop window keeps its full galaxy. */
-  const isMob  = window.owSafeFloor ? window.owSafeFloor()
-               : (window.matchMedia && matchMedia('(pointer:coarse)').matches);
-  const PCOUNT = isMob ? 70 : 120;     // flight particles — fewer than the App's field: the spiral is the sky here
-  const SCOUNT = isMob ? 5 : 9;        // wireframe shapes
-  let _mobSkip = false;
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) { canvas.remove(); return; }
-  /* PHONES: no always-on canvas at all. The signature Center-light constellation
-     (.wn buttons) and CSS gradients carry the hero; the ambient starfield is a
-     desktop luxury. This removes the single biggest GPU-memory consumer on
-     iOS Safari — the real cause of scroll crashes. */
-  if (isMob) { canvas.remove(); return; }
-
-  function resize() {
-    /* NEVER SIZE THE CANVAS TO ZERO. A 0×0 canvas draws nothing and stays that
-       way, which looks exactly like the starfield having died. Falls back the
-       same way the gate does, so a load with no viewport yet still paints. */
-    W = canvas.width  = (window.innerWidth  || document.documentElement.clientWidth  || 1280);
-    H = canvas.height = (window.innerHeight || document.documentElement.clientHeight || 800);
-    CX = W / 2; CY = H / 2;
-  }
-  window.addEventListener('resize', resize, { passive: true });
-  /* A TAB THAT LOADED HIDDEN HAS NO VIEWPORT, AND NO RESIZE EVENT ANNOUNCES
-     THAT IT GOT ONE. Open the landing page in a background tab — cmd-click, or
-     a restored session — and the browser reports width 0 and throttles the
-     animation frame. That is how the starfield was being lost: the old gate
-     read 0 as "phone" and removed the canvas outright, so switching to the tab
-     showed a page that had permanently given up its depth. The gate no longer
-     does that; this makes sure the canvas is re-measured the moment the tab is
-     actually looked at, instead of keeping the fallback size it guessed at
-     while nobody could see it. Measured 2026-08-24: hidden tab reports
-     innerWidth 0, clientWidth 0, visualViewport 0×0. */
-  document.addEventListener('visibilitychange', function () {
-    if (!document.hidden) { resize(); }
-  }, { passive: true });
-  resize();
-
-  /* ── colour palette ───────────────────────────────────────────────────
-     THREE ACCENTS THAT FOLLOW THE PERSON. These were fixed, so the starfield
-     stayed cyan/violet/amber no matter what colour someone had chosen for the
-     rest of the platform — the most visible surface ONEWAY has, and the only
-     one that did not know them.
-
-     The triad is kept as a RELATIONSHIP rather than three colours: the user's
-     hue, +71°, +211°. At the default of 187° those resolve to the exact
-     palette that has always been here, so nothing changes for somebody who has
-     never picked a hue — and the whole galaxy rotates coherently for somebody
-     who has, instead of one accent clashing with the other two.
-
-     MUTATED IN PLACE, ON PURPOSE. Every particle, shape and bokeh holds a
-     REFERENCE to one of these arrays, so rewriting their contents recolours
-     ~230 objects on the next frame with no rebuild and no dropped animation. */
-  const WHITE  = [255,255,255];
-  const CYAN   = [6,182,212];
-  const PURPLE = [167,139,250];
-  const AMBER  = [245,158,11];
-  /* One triad, shared by all five galaxies — see oneway-galaxy.js. */
-  if (window.OW && window.OW.galaxy) { window.OW.galaxy.follow({ CYAN, PURPLE, AMBER }); }
-  function rndCol() {
-    const r = Math.random();
-    if (r < 0.10) return CYAN;
-    if (r < 0.18) return PURPLE;
-    if (r < 0.24) return AMBER;
-    return WHITE;
-  }
-
-  /* ── perspective projection ── */
-  function project(x, y, z) {
-    if (z <= -FOV + 1) return null;
-    const s = FOV / (FOV + z);
-    return { sx: CX + x * s, sy: CY + y * s, s };
-  }
-
-  /* ── 3-axis rotation ── */
-  function rot3(vx, vy, vz, rx, ry, rz) {
-    // X
-    let y1 = vy * Math.cos(rx) - vz * Math.sin(rx);
-    let z1 = vy * Math.sin(rx) + vz * Math.cos(rx);
-    // Y
-    let x2 = vx * Math.cos(ry) + z1 * Math.sin(ry);
-    let z2 = -vx * Math.sin(ry) + z1 * Math.cos(ry);
-    // Z
-    let x3 = x2 * Math.cos(rz) - y1 * Math.sin(rz);
-    let y3 = x2 * Math.sin(rz) + y1 * Math.cos(rz);
-    return [x3, y3, z2];
-  }
-
-  /* ── particles ── */
-  function mkParticle(initial) {
-    const col = rndCol();
-    const isAccent = col !== WHITE;
-    return {
-      x:   (Math.random() - 0.5) * W  * 3.5,
-      y:   (Math.random() - 0.5) * H  * 3.5,
-      z:   initial ? Math.random() * DEPTH : DEPTH,
-      vz:  -(0.25 + Math.random() * 0.55),
-      col,
-      alpha: isAccent ? (0.45 + Math.random() * 0.45) : (0.12 + Math.random() * 0.55),
-      r:   isAccent ? (0.8 + Math.random() * 2.2) : (0.35 + Math.random() * 1.4),
-    };
-  }
-  const particles = Array.from({ length: PCOUNT }, (_, i) => mkParticle(true));
-
-  /* ── THE SPIRAL — the landing page's own galaxy ──────────────────────────
-     ★ FOUNDER/385–386 (2026-09-14): *"That galaxy background is a huge part
-       of one way and the one on the landing page should look distinct from
-       the one on the app and OS."*
-
-     Five surfaces ran one starfield — a random field flown through. The App
-     and the OS keep that: their sky is a place you are IN. The landing page
-     is where a person first SEES ONEWAY, so its sky is a galaxy you are
-     looking AT: two logarithmic arms wound around a bright core, tilted like
-     a disc, turning once every few minutes, with the flight particles and
-     wireframes kept underneath at a fraction of their old density so the
-     structure reads. Its stars sit on the arms (with the scatter a real arm
-     has), the core is a warm-white radial glow, and the arms take the same
-     triad the rest of the world takes — CYAN · PURPLE · AMBER — rotated with
-     the person's hue by oneway-galaxy.js like everything else.
-
-     Not a picture of a galaxy: it is drawn, every frame, from a few numbers,
-     so a different viewport is a different galaxy of the same family. */
-  /* ★ FOUNDER/388: *"make the galaxy only appear every 1 in x chances"* — the
-     spiral is a rare sky. One load in SPIRAL_ODDS carries it; the others keep
-     the field. `?galaxy=1` forces it (so it can be looked at on purpose),
-     `?galaxy=0` withholds it. Decided per load, remembered by nobody: a rare
-     thing that a person cannot make appear is what makes seeing it an event. */
-  const SPIRAL_ODDS = 4;
-  const SHOW_SPIRAL = /[?&]galaxy=1\b/.test(location.search) ? true
-                    : /[?&]galaxy=0\b/.test(location.search) ? false
-                    : (Math.random() < 1 / SPIRAL_ODDS);
-  const SPIRAL_N = 980;                       /* stars on the arms */
-  const SPIRAL = {
-    arms: 2, wind: 0.24,                      /* log-spiral tightness (b in r = a·e^(bθ)) */
-    turns: 2.6,                               /* how far each arm winds */
-    tilt: 0.42,                               /* the disc seen at an angle (y squash) */
-    lean: -0.26,                              /* the disc's rotation on screen (radians) */
-    speed: 0.000105,                          /* radians per ms — one revolution ≈ 10 min */
-    cx: 0.62, cy: 0.46,                       /* where it sits — right of the type, behind it */
-    scale: 0.62                               /* radius as a fraction of min(W,H) */
-  };
-  const spiralStars = Array.from({ length: SPIRAL_N }, (_, i) => {
-    const arm = i % SPIRAL.arms;
-    const t = Math.pow(Math.random(), 0.72) * SPIRAL.turns * Math.PI * 2;   /* denser toward the core */
-    const r = 0.055 + 0.08 * Math.exp(SPIRAL.wind * t);                     /* log spiral, normalised */
-    const scatter = (Math.random() - 0.5) * (0.05 + 0.09 * (r));            /* arms are bands, not lines */
-    const jitter = (Math.random() - 0.5) * 0.55;                             /* along the arm */
-    const col = Math.random() < 0.34 ? [CYAN, PURPLE, AMBER][arm % 3 === 0 ? (Math.random() < .5 ? 0 : 1) : 2] : WHITE;
-    return { arm, t: t + jitter, r: r + scatter, col,
-             a: 0.32 + Math.random() * 0.62,
-             s: 0.55 + Math.random() * (col === WHITE ? 1.5 : 2.2),
-             tw: Math.random() * Math.PI * 2 };
-  });
-  /* the arms' DUST — a few dozen large, faint discs along each arm, so the
-     arm reads as a band of light between the stars, the way a real one does */
-  const spiralDust = Array.from({ length: 84 }, (_, i) => {
-    const arm = i % SPIRAL.arms;
-    const t = (i / 84) * SPIRAL.turns * Math.PI * 2 * 0.92;
-    return { arm, t, r: 0.055 + 0.08 * Math.exp(SPIRAL.wind * t) + (Math.random() - .5) * .03,
-             col: [CYAN, PURPLE, AMBER][(arm + Math.floor(i / 28)) % 3],
-             s: 26 + Math.random() * 40, a: 0.05 + Math.random() * 0.05 };
-  });
-  let spiralTurn = 0, spiralLast = 0;
-  function drawSpiral(now) {
-    if (!spiralLast) spiralLast = now;
-    spiralTurn += (now - spiralLast) * SPIRAL.speed; spiralLast = now;
-    const R = Math.min(W, H) * SPIRAL.scale;
-    const ox = W * SPIRAL.cx + (mx - 0.5) * 24, oy = H * SPIRAL.cy + (my - 0.5) * 16;
-    const cl = Math.cos(SPIRAL.lean), sl = Math.sin(SPIRAL.lean);
-    /* the core: a warm-white glow with a violet edge — the one bright thing */
-    const g = ctx.createRadialGradient(ox, oy, 0, ox, oy, R * 0.4);
-    g.addColorStop(0,    'rgba(255,248,236,0.30)');
-    g.addColorStop(0.14, 'rgba(255,236,214,0.16)');
-    /* the core's edge is the PERSON'S hue: the CYAN slot is the one
-       oneway-galaxy.js rotates to whoever is signed in (founder/388: "make
-       users hue when signed in able to change hue of this galaxy") */
-    g.addColorStop(0.45, `rgba(${CYAN[0]},${CYAN[1]},${CYAN[2]},0.10)`);
-    g.addColorStop(1,    'rgba(0,0,0,0)');
-    ctx.fillStyle = g; ctx.fillRect(ox - R, oy - R, R * 2, R * 2);
-    /* the dust, under the stars */
-    for (let i = 0; i < spiralDust.length; i++) {
-      const d = spiralDust[i];
-      const th = d.t + spiralTurn + (d.arm * Math.PI * 2 / SPIRAL.arms);
-      let x = Math.cos(th) * d.r * R, y = Math.sin(th) * d.r * R * SPIRAL.tilt;
-      const rx = x * cl - y * sl, ry = x * sl + y * cl;
-      const fade = Math.max(0, 1 - d.r * 0.7);
-      const dg = ctx.createRadialGradient(ox + rx, oy + ry, 0, ox + rx, oy + ry, d.s);
-      dg.addColorStop(0, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},${(d.a * fade).toFixed(3)})`);
-      dg.addColorStop(1, `rgba(${d.col[0]},${d.col[1]},${d.col[2]},0)`);
-      ctx.fillStyle = dg; ctx.fillRect(ox + rx - d.s, oy + ry - d.s, d.s * 2, d.s * 2);
-    }
-    /* the arms: stars, tilted and leaned, twinkling on their own clock */
-    for (let i = 0; i < spiralStars.length; i++) {
-      const st = spiralStars[i];
-      const th = st.t + spiralTurn + (st.arm * Math.PI * 2 / SPIRAL.arms);
-      let x = Math.cos(th) * st.r * R, y = Math.sin(th) * st.r * R * SPIRAL.tilt;
-      const rx = x * cl - y * sl, ry = x * sl + y * cl;
-      const fade = Math.max(0, 1 - st.r * 0.75);                 /* the outer arm thins */
-      const tw = 0.72 + 0.28 * Math.sin(now * 0.0011 + st.tw);
-      const alpha = st.a * fade * tw;
-      if (alpha < 0.02) continue;
-      const [cr, cg, cb] = st.col;
-      ctx.fillStyle = `rgba(${cr},${cg},${cb},${alpha.toFixed(3)})`;
-      ctx.beginPath(); ctx.arc(ox + rx, oy + ry, st.s, 0, Math.PI * 2); ctx.fill();
-    }
-  }
-
-  /* ── shapes (wireframe triangles / quads) ── */
-  function mkShape() {
-    const cols = [CYAN, PURPLE, AMBER];
-    const col  = cols[Math.floor(Math.random() * cols.length)];
-    const sides = Math.random() > 0.45 ? 3 : 4;
-    const size  = 28 + Math.random() * 88;
-    const verts = [];
-    for (let i = 0; i < sides; i++) {
-      const a = (i / sides) * Math.PI * 2;
-      verts.push([Math.cos(a) * size, Math.sin(a) * size, (Math.random() - 0.5) * size * 0.6]);
-    }
-    return {
-      x: (Math.random() - 0.5) * W  * 3,
-      y: (Math.random() - 0.5) * H  * 2.5,
-      z: 120 + Math.random() * 1400,
-      vz: -(0.06 + Math.random() * 0.16),
-      rx: Math.random() * Math.PI * 2, drx: (Math.random() - 0.5) * 0.006,
-      ry: Math.random() * Math.PI * 2, dry: (Math.random() - 0.5) * 0.007,
-      rz: Math.random() * Math.PI * 2, drz: (Math.random() - 0.5) * 0.005,
-      verts, col,
-      alpha: 0.18 + Math.random() * 0.28,
-    };
-  }
-  const shapes = Array.from({ length: SCOUNT }, mkShape);
-
-  /* ── ambient nebula blobs ── */
-  const blobs = [
-    { x: 0.22, y: 0.28, vx:  0.00014, vy:  0.0001,  size: 0.55, col: CYAN   },
-    { x: 0.78, y: 0.68, vx: -0.00011, vy:  0.00013, size: 0.50, col: PURPLE },
-    { x: 0.50, y: 0.88, vx:  0.0001,  vy: -0.0001,  size: 0.46, col: AMBER  },
-  ];
-
-  /* ── distant world: slow anchor points, faint links + occasional travelling signals.
-     Suggests a whole network living beneath the surface. Everything very low opacity. ── */
-  const WP_N = (window.owIsNarrow ? window.owIsNarrow(768) : window.innerWidth < 768) ? 9 : 15;
-  const wpts = Array.from({ length: WP_N }, () => ({
-    x: Math.random(), y: Math.random(),
-    vx: (Math.random() - 0.5) * 0.00006, vy: (Math.random() - 0.5) * 0.00006,
-    par: 4 + Math.random() * 7,           // parallax depth
-    tw: Math.random() * Math.PI * 2,      // twinkle phase
-    col: rndCol(),
-  }));
-  const signals = [];
-  function spawnSignal() {
-    const a = Math.floor(Math.random() * wpts.length);
-    let best = -1, bd = 0.16;
-    for (let b = 0; b < wpts.length; b++) {
-      if (b === a) continue;
-      const d = Math.hypot(wpts[a].x - wpts[b].x, wpts[a].y - wpts[b].y);
-      if (d < bd) { best = b; bd = d; }
-    }
-    if (best >= 0) signals.push({ a, b: best, t: 0, sp: 0.004 + Math.random() * 0.004, col: wpts[a].col });
-  }
-
-  /* ── foreground bokeh: a few large, soft, close glows that drift with strong parallax,
-     giving the hero real depth in front of the starfield. ── */
-  const bokeh = Array.from({ length: (window.owIsNarrow ? window.owIsNarrow(768) : window.innerWidth < 768) ? 4 : 7 }, () => ({
-    x: Math.random(), y: Math.random(),
-    vx: (Math.random() - 0.5) * 0.00009, vy: (Math.random() - 0.5) * 0.00009,
-    r: 44 + Math.random() * 78, a: 0.06 + Math.random() * 0.08, col: rndCol(), par: 11 + Math.random() * 8,
-  }));
-
-  /* ── mouse ── */
-  let mx = 0.5, my = 0.5;
-  window.addEventListener('mousemove', e => {
-    mx = e.clientX / W; my = e.clientY / H;
-  }, { passive: true });
-
-  /* ── SCROLL CRASH GUARD ────────────────────────────────────────────────
-     The iOS half of this is handled ABOVE and absolutely: touch devices never
-     reach here — `if (isMob) { canvas.remove(); return; }` deletes the canvas
-     outright, which is the permanent mobile safe floor. So only desktop runs
-     the loop, and on desktop this canvas is NOT hero decoration: it is
-     position:fixed, inset:0 — it is the world's atmosphere for the WHOLE page.
-     Gating it on the hero's visibility therefore switched the atmosphere off
-     the moment you scrolled past the first viewport (measured: 72 frames/600ms
-     in the hero → 0 frames and a cleared canvas below it), which is exactly the
-     "background stunts as you scroll" everyone was seeing. The atmosphere now
-     lives for the whole page; `document.hidden` in frame() still parks it in a
-     background tab, and phones remain untouched. */
-  let heroVisible = true, rafId = 0;
-  /* diagnostic kill-switch: ?fx=off removes the canvas entirely (crash bisection) */
-  if (/[?&]fx=off\b/.test(location.search)) { canvas.remove(); return; }
-
-  /* ── frame ── */
-  function frame() {
-    if (!heroVisible) return;                                        /* stopped — resumed by the observer */
-    if (document.hidden) { rafId = requestAnimationFrame(frame); return; }   /* crash guard: no work in background */
-    if (isMob) { _mobSkip = !_mobSkip; if (_mobSkip) { rafId = requestAnimationFrame(frame); return; } }  /* 30fps on phones */
-    ctx.clearRect(0, 0, W, H);
-
-    const pmx = (mx - 0.5) * 90;
-    const pmy = (my - 0.5) * 55;
-
-    /* nebula blobs (subtle ambient glow) — three full-viewport radial
-       gradients per frame: fine on desktop GPUs, tab-killing on phones */
-    if (!isMob) blobs.forEach((b, i) => {
-      b.x += b.vx; b.y += b.vy;
-      if (b.x < 0 || b.x > 1) b.vx *= -1;
-      if (b.y < 0 || b.y > 1) b.vy *= -1;
-      const bx = (b.x + (mx - 0.5) * 0.04 * (i % 2 ? 1 : -1)) * W;
-      const by = (b.y + (my - 0.5) * 0.03 * (i % 2 ? -1 :  1)) * H;
-      const br = Math.max(W, H) * b.size;
-      const g  = ctx.createRadialGradient(bx, by, 0, bx, by, br);
-      const [r,g2,bl] = b.col;
-      g.addColorStop(0,    `rgba(${r},${g2},${bl},0.13)`);
-      g.addColorStop(0.38, `rgba(${r},${g2},${bl},0.055)`);
-      g.addColorStop(1,    `rgba(${r},${g2},${bl},0)`);
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
-    });
-
-    /* the spiral — the landing page's own galaxy, under the depth layers,
-       on the loads that carry it */
-    if (SHOW_SPIRAL) drawSpiral(performance.now());
-
-    /* foreground bokeh — close, soft, strong parallax → depth in front of the field */
-    for (let i = 0; i < bokeh.length; i++) {
-      const bk = bokeh[i];
-      bk.x += bk.vx; bk.y += bk.vy;
-      if (bk.x < -0.15 || bk.x > 1.15) bk.vx *= -1;
-      if (bk.y < -0.15 || bk.y > 1.15) bk.vy *= -1;
-      const bx = bk.x * W + pmx * bk.par, by = bk.y * H + pmy * bk.par;
-      const g = ctx.createRadialGradient(bx, by, 0, bx, by, bk.r);
-      const [r, g2, bl] = bk.col;
-      g.addColorStop(0, `rgba(${r},${g2},${bl},${bk.a})`);
-      g.addColorStop(1, `rgba(${r},${g2},${bl},0)`);
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(bx, by, bk.r, 0, Math.PI * 2); ctx.fill();
-    }
-
-    /* wireframe shapes */
-    for (let i = 0; i < shapes.length; i++) {
-      const sh = shapes[i];
-      sh.rx += sh.drx; sh.ry += sh.dry; sh.rz += sh.drz;
-      sh.z  += sh.vz;
-      if (sh.z < -FOV + 50) { Object.assign(sh, mkShape()); sh.z = DEPTH; continue; }
-
-      const pts = sh.verts.map(v => {
-        const [rx, ry, rz] = rot3(v[0], v[1], v[2], sh.rx, sh.ry, sh.rz);
-        return project(sh.x + rx + pmx * 0.6, sh.y + ry + pmy * 0.6, sh.z + rz);
-      });
-      if (pts.some(p => !p)) continue;
-
-      const s0    = pts[0].s;
-      const alpha = sh.alpha * Math.min(1, s0 * 1.4);
-      if (alpha < 0.015) continue;
-
-      const [r, g2, bl] = sh.col;
-      ctx.beginPath();
-      ctx.moveTo(pts[0].sx, pts[0].sy);
-      for (let j = 1; j < pts.length; j++) ctx.lineTo(pts[j].sx, pts[j].sy);
-      ctx.closePath();
-      ctx.strokeStyle = `rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;
-      ctx.lineWidth   = Math.max(0.25, s0 * 1.1);
-      ctx.stroke();
-    }
-
-    /* star particles */
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      p.z += p.vz;
-      if (p.z < -FOV + 50) { Object.assign(particles[i], mkParticle(false)); continue; }
-
-      const proj = project(p.x + pmx, p.y + pmy, p.z);
-      if (!proj) continue;
-      const { sx, sy, s } = proj;
-      if (sx < -60 || sx > W + 60 || sy < -60 || sy > H + 60) continue;
-
-      const size  = p.r * s * 2.2;
-      const alpha = p.alpha * Math.min(1, s * 2);
-      if (alpha < 0.01 || size < 0.15) continue;
-
-      const [r, g2, bl] = p.col;
-      ctx.beginPath();
-      ctx.arc(sx, sy, Math.max(0.2, size), 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;
-      ctx.fill();
-    }
-
-    /* distant world — faint constellation links between drifting anchor points */
-    for (let i = 0; i < wpts.length; i++) {
-      const p = wpts[i];
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > 1) p.vx *= -1;
-      if (p.y < 0 || p.y > 1) p.vy *= -1;
-    }
-    const LINK = 0.17;
-    for (let i = 0; i < wpts.length; i++) {
-      for (let j = i + 1; j < wpts.length; j++) {
-        const d = Math.hypot(wpts[i].x - wpts[j].x, wpts[i].y - wpts[j].y);
-        if (d > LINK) continue;
-        const a = (1 - d / LINK) * 0.05;   // barely there
-        const ix = wpts[i].x * W + pmx * wpts[i].par, iy = wpts[i].y * H + pmy * wpts[i].par;
-        const jx = wpts[j].x * W + pmx * wpts[j].par, jy = wpts[j].y * H + pmy * wpts[j].par;
-        ctx.strokeStyle = `rgba(150,170,255,${a.toFixed(3)})`;
-        ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(ix, iy); ctx.lineTo(jx, jy); ctx.stroke();
-      }
-    }
-    /* twinkle the anchor points */
-    for (let i = 0; i < wpts.length; i++) {
-      const p = wpts[i]; p.tw += 0.018;
-      const px = p.x * W + pmx * p.par, py = p.y * H + pmy * p.par;
-      const tw = 0.11 + Math.sin(p.tw) * 0.06;
-      const [r, g2, bl] = p.col;
-      ctx.fillStyle = `rgba(${r},${g2},${bl},${Math.max(0, tw).toFixed(3)})`;
-      ctx.beginPath(); ctx.arc(px, py, 1.3, 0, Math.PI * 2); ctx.fill();
-    }
-    /* occasional travelling signal between two nearby anchors */
-    if (Math.random() < 0.011 && signals.length < 3) spawnSignal();
-    for (let s = signals.length - 1; s >= 0; s--) {
-      const sg = signals[s]; sg.t += sg.sp;
-      if (sg.t >= 1) { signals.splice(s, 1); continue; }
-      const A = wpts[sg.a], B = wpts[sg.b];
-      const ax = A.x * W + pmx * A.par, ay = A.y * H + pmy * A.par;
-      const bx = B.x * W + pmx * B.par, by = B.y * H + pmy * B.par;
-      const x = ax + (bx - ax) * sg.t, y = ay + (by - ay) * sg.t;
-      const [r, g2, bl] = sg.col;
-      if (!isMob) {
-        const gr = ctx.createRadialGradient(x, y, 0, x, y, 7);
-        gr.addColorStop(0, `rgba(${r},${g2},${bl},0.45)`); gr.addColorStop(1, `rgba(${r},${g2},${bl},0)`);
-        ctx.fillStyle = gr; ctx.beginPath(); ctx.arc(x, y, 7, 0, Math.PI * 2); ctx.fill();
-      }
-      ctx.fillStyle = `rgba(${r},${g2},${bl},0.75)`; ctx.beginPath(); ctx.arc(x, y, 1.3, 0, Math.PI * 2); ctx.fill();
-    }
-
-    rafId = requestAnimationFrame(frame);
-  }
-
-  rafId = requestAnimationFrame(frame);
-}());
-
-/* ── HERO ATMOSPHERE — OFF. It surfaced faint Center names behind the hero
-   ("Harlem", "Williamsburg", "Coney Island" drifting through the sky).
-   ★ FOUNDER/391, 2026-09-14: *"start adding the centers in that spear in the
-     back. That looks horrible and tacky, and there's no point in doing it
-     whatsoever."* Removed rather than dimmed; the sky is the galaxy. ── */
-
-
-/* ── SCROLL REVEAL — fail-open. The observer gives the nice stagger, but content
-   must NEVER stay hidden if an observer stalls (one stall = a "blank page" report).
-   A deterministic rect sweep on scroll/resize/load guarantees visibility. ── */
-const obs = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); }
-  });
-}, { threshold: 0.1 });
-let rvPending = Array.from(document.querySelectorAll('.rv, .rv-r, .rv-l, .flow-div'));
-rvPending.forEach(el => obs.observe(el));
-let rvTick = false;
-function rvSweep(){
-  rvTick = false;
-  if (!rvPending.length) return;
-  /* prune as we go — the sweep gets cheaper with every reveal, and stops
-     costing anything once the page is fully revealed (mobile scroll perf) */
-  rvPending = rvPending.filter(el => {
-    if (el.classList.contains('in')) return false;
-    const r = el.getBoundingClientRect();
-    if (r.top < innerHeight * 0.94 && r.bottom > 0) { el.classList.add('in'); return false; }
-    return true;
-  });
-}
-function rvQueue(){ if (!rvTick && rvPending.length) { rvTick = true; requestAnimationFrame(rvSweep); } }
-addEventListener('scroll', rvQueue, { passive: true });
-addEventListener('resize', rvQueue, { passive: true });
-addEventListener('load', rvSweep);
-setTimeout(rvSweep, 300); setTimeout(rvSweep, 1200);
-</script>
+<script defer src="/frontend/landing/static/inline-07-52d0f7bae6.js"></script>
 
 
 
@@ -2514,63 +2332,7 @@ setTimeout(rvSweep, 300); setTimeout(rvSweep, 1200);
     letter-spacing:0!important;font-size:13px!important;font-weight:500!important}
 
 </style>
-<script>
-(function(){
-  var ns='http://www.w3.org/2000/svg';
-  var RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  /* A1 — constellation threads + orbiting motes behind the App/OS + Home/Discovery/Workspace clusters */
-  var shelves=Array.prototype.slice.call(document.querySelectorAll('#appos .po-shelf, #what .po-shelf'));
-  shelves.forEach(function(shelf){
-    var svg=document.createElementNS(ns,'svg'); svg.setAttribute('class','po-constellation');
-    shelf.insertBefore(svg,shelf.firstChild);
-    if(!RM){ for(var i=0;i<4;i++){ var p=document.createElement('i'); p.className='po-orbit';
-      p.style.setProperty('--ox',(Math.random()*22-11).toFixed(0)+'px');
-      p.style.setProperty('--oy',(Math.random()*22-13).toFixed(0)+'px');
-      p.style.setProperty('--od',(11+Math.random()*8).toFixed(1)+'s');
-      p.style.animationDelay='-'+(Math.random()*8).toFixed(1)+'s';
-      shelf.insertBefore(p,shelf.firstChild); } }
-    function draw(){
-      var beads=shelf.querySelectorAll('.po-rest'); if(beads.length<2) return;
-      var w=shelf.clientWidth,h=shelf.clientHeight; if(!w||!h) return;
-      svg.setAttribute('viewBox','0 0 '+w+' '+h); svg.setAttribute('width',w); svg.setAttribute('height',h);
-      var pts=[]; for(var b=0;b<beads.length;b++){ var el=beads[b]; pts.push([el.offsetLeft+el.offsetWidth/2, el.offsetTop+el.offsetHeight/2]); }
-      while(svg.firstChild) svg.removeChild(svg.firstChild);
-      for(var i=0;i<pts.length;i++){ for(var j=i+1;j<pts.length;j++){ var ln=document.createElementNS(ns,'line');
-        ln.setAttribute('x1',pts[i][0]);ln.setAttribute('y1',pts[i][1]);ln.setAttribute('x2',pts[j][0]);ln.setAttribute('y2',pts[j][1]); svg.appendChild(ln); } }
-      var cx=0,cy=0; pts.forEach(function(p){cx+=p[0];cy+=p[1];}); cx/=pts.length; cy/=pts.length;
-      var orbits=shelf.querySelectorAll('.po-orbit');
-      for(var k=0;k<orbits.length;k++){ var a=k/orbits.length*6.283; orbits[k].style.left=(cx+Math.cos(a)*w*0.34)+'px'; orbits[k].style.top=(cy+Math.sin(a)*h*0.34)+'px'; }
-    }
-    draw(); shelf._owDraw=draw;
-  });
-  /* A4 — inhabited panels: soft aura + drifting memory motes inside each .ow-glass */
-  Array.prototype.forEach.call(document.querySelectorAll('.ow-glass'),function(panel){
-    var aura=document.createElement('span'); aura.className='owc-aura'; panel.insertBefore(aura,panel.firstChild);
-    if(!RM){ for(var i=0;i<5;i++){ var m=document.createElement('i'); m.className='owc-mote';
-      m.style.left=(12+Math.random()*74)+'%'; m.style.top=(18+Math.random()*64)+'%';
-      m.style.setProperty('--mx',(Math.random()*16-8).toFixed(0)+'px');
-      m.style.setProperty('--my',(-(4+Math.random()*12)).toFixed(0)+'px');
-      m.style.setProperty('--md',(9+Math.random()*7).toFixed(1)+'s'); m.style.animationDelay='-'+(Math.random()*8).toFixed(1)+'s';
-      panel.insertBefore(m,panel.firstChild); } }
-  });
-  /* A5 — page-wide faint atmosphere (fixed, behind everything; reduces "black void + one object") */
-  var amb=document.createElement('div'); amb.className='ow-amb-layer'; document.body.appendChild(amb);
-  var hues=['139,92,255','93,226,255','176,80,255','139,92,255','93,226,255','139,92,255'];
-  for(var n=0;n<6;n++){ var neb=document.createElement('div'); neb.className='ow-amb neb';
-    var hh=hues[n%hues.length]; var sz=(220+Math.random()*240)|0;
-    neb.style.width=sz+'px'; neb.style.height=sz+'px';
-    neb.style.background='radial-gradient(circle,rgba('+hh+',.08),transparent 70%)';
-    neb.style.left=(Math.random()*88)+'%'; neb.style.top=(Math.random()*94)+'%'; amb.appendChild(neb); }
-  for(var gi=0;gi<5;gi++){ var gh=document.createElement('div'); gh.className='ow-amb ghost';
-    var gs=(50+Math.random()*80)|0; gh.style.width=gs+'px'; gh.style.height=gs+'px';
-    gh.style.transform='rotate('+(Math.random()*60-30).toFixed(0)+'deg)';
-    gh.style.left=(Math.random()*88)+'%'; gh.style.top=(Math.random()*94)+'%'; amb.appendChild(gh); }
-  /* resize / orientation recompute (debounced) — constellations stay attached (canon §18) */
-  var t; function recompute(){ shelves.forEach(function(s){ if(s._owDraw) s._owDraw(); }); }
-  addEventListener('resize', function(){ clearTimeout(t); t=setTimeout(recompute,120); }, {passive:true});
-  addEventListener('orientationchange', function(){ setTimeout(recompute,260); });
-})();
-</script>
+<script defer src="/frontend/landing/static/inline-08-298e53feb7.js"></script>
 
 
 
