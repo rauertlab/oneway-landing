@@ -720,7 +720,7 @@
   }
 
   /* ═══ 3 · THE WORLD ════════════════════════════════════════════════════ */
-  var worldNode = null, canvasStop = null;
+  var worldNode = null;
   OW.world = {
     tier: function () { return tier; },
     mount: function (opts) {
@@ -763,73 +763,20 @@
       var far = doc.createElement('canvas'); far.className = 'ow-world__far';
       worldNode.appendChild(far);
       try { OW.farField(far); } catch (e) {}
-      var cv = doc.createElement('canvas'); cv.className = 'ow-world__canvas';
-      worldNode.appendChild(cv);
+      /* NO DOTS FOLLOW THE CURSOR. ★ FOUNDER, 2026-10-09: *"there are these dots that move with the cursor that
+         feel like they are awfully to blown up and close to the screen. i still wanna keep the moving galaxy effect
+         but simply remove the pale white dots that follow the cursor"*. Tier 2 drew sixteen soft glows (20-90 px)
+         on a canvas over the stars, swung by the cursor; that canvas is gone. The galaxy still moves: the nebula
+         (92 s) and both star layers (300 s, 420 s) drift in CSS, over the two still fields. */
       doc.body.insertBefore(worldNode, doc.body.firstChild);
-      if (tier === 2) canvasStop = mountCanvas(cv);
       watchFrames();
       return worldNode;
     },
     unmount: function () {
-      if (canvasStop) { canvasStop(); canvasStop = null; }
       if (worldNode) { worldNode.remove(); worldNode = null; }
     }
   };
 
-  /* Tier-2 only: parallax bokeh over the CSS starfield. Deliberately small —
-     the CSS layers already carry the sky; this adds foreground depth. Parks
-     itself whenever the tab is hidden. */
-  function mountCanvas(cv) {
-    var ctx = cv.getContext('2d', { alpha: true }), raf = 0, W = 0, H = 0;
-    var dpr = Math.min(global.devicePixelRatio || 1, 2);
-    var mx = .5, my = .5, pts = [];
-    function size() {
-      W = cv.clientWidth; H = cv.clientHeight;
-      cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-    function seed() {
-      pts = []; var n = 16;
-      for (var i = 0; i < n; i++) pts.push({
-        x: Math.random(), y: Math.random(),
-        r: 20 + Math.random() * 70,
-        a: .012 + Math.random() * .03,
-        par: .3 + Math.random() * 1.5,
-        vx: (Math.random() - .5) * .00012, vy: (Math.random() - .5) * .0001
-      });
-    }
-    function frame() {
-      if (doc.hidden) { raf = requestAnimationFrame(frame); return; }
-      ctx.clearRect(0, 0, W, H);
-      var pmx = (mx - .5) * 80, pmy = (my - .5) * 50;
-      var cs = getComputedStyle(root);
-      var c1 = parseTriplet(cs.getPropertyValue('--ow-h1')) || [139, 92, 255];
-      var c2 = parseTriplet(cs.getPropertyValue('--ow-h2')) || [93, 226, 255];
-      for (var i = 0; i < pts.length; i++) {
-        var p = pts[i];
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < -.2 || p.x > 1.2) p.vx *= -1;
-        if (p.y < -.2 || p.y > 1.2) p.vy *= -1;
-        var bx = p.x * W + pmx * p.par, by = p.y * H + pmy * p.par;
-        var col = (i % 2) ? c2 : c1;
-        var g = ctx.createRadialGradient(bx, by, 0, bx, by, p.r);
-        g.addColorStop(0, 'rgba(' + col.join(',') + ',' + p.a + ')');
-        g.addColorStop(1, 'rgba(' + col.join(',') + ',0)');
-        ctx.fillStyle = g;
-        ctx.beginPath(); ctx.arc(bx, by, p.r, 0, 6.2832); ctx.fill();
-      }
-      raf = requestAnimationFrame(frame);
-    }
-    function onMove(e) { mx = e.clientX / (W || 1); my = e.clientY / (H || 1); }
-    size(); seed(); raf = requestAnimationFrame(frame);
-    var ro = global.ResizeObserver ? new ResizeObserver(size) : null;
-    if (ro) ro.observe(cv); else global.addEventListener('resize', size, { passive: true });
-    global.addEventListener('mousemove', onMove, { passive: true });
-    return function () {
-      cancelAnimationFrame(raf);
-      if (ro) ro.disconnect(); else global.removeEventListener('resize', size);
-      global.removeEventListener('mousemove', onMove);
-    };
-  }
 
   /* ═══ 4 · LIVE-WHILE-VISIBLE ═══════════════════════════════════════════
      The bob runs ONLY for beads in view. A feed of 200 objects animates the

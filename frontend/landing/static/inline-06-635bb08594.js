@@ -131,7 +131,7 @@
       if(a){
         var CID=a.center_id||'', id=a.identity||{}, h=a.header||{}, zone=(a.where&&a.where.time&&a.where.time.timezone)||'';
         var hue=(typeof id.hue==='number')?pair(id.hue):(typeof h.hue==='number'?pair(h.hue):null);
-        var card=document.createElement('div'); card.className='flag-card';
+        var card=document.createElement('div'); card.className='flag-card ow-popit';
         if(hue){ card.style.setProperty('--h',hue.h1); card.style.setProperty('--h2',hue.h2); }
         var evs=((a.events||{}).items||[]).filter(function(e){ return e&&e.title&&!NOT[String(e.state||'').toLowerCase()]&&!(e.legacy&&!e.starts_at); })
           .sort(function(x,y){ return String(x.starts_at||'~').localeCompare(String(y.starts_at||'~')); }).slice(0,3);
@@ -144,7 +144,7 @@
            (measured 2026-10-09: 0 on every Center). A person with no username is shown by name and is not a link. */
         var fcs=((a.people||{}).faces||[]).filter(function(f){ return f&&(f.ref||f.email||f.name); }).slice(0,4);
         if(fcs.length){ var pl=document.createElement('div'); pl.className='flag-people';
-          fcs.forEach(function(f){ var to=f.ref||f.email||''; var b=document.createElement(to?'button':'span'); if(to) b.type='button';
+          fcs.forEach(function(f){ var to=f.ref||f.email||''; var b=document.createElement(to?'button':'span'); if(to){ b.type='button'; b.className='ow-popit-btn'; }
             b.innerHTML='<span class="fp" data-shape="'+esc(f.shape||'round')+'">'+faceInner(f.picture||'', f.name||f.ref||'')+'</span>'+esc(f.name||String(f.ref||f.email||'').replace(/^@/,'').split('@')[0]);
             if(to) b.addEventListener('click',function(e){ e.stopPropagation(); project('person', to, b, personHref(to)); }); pl.appendChild(b); });
           card.appendChild(pl); }

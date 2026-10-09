@@ -303,7 +303,6 @@ measureLogo(); onScroll();
   const wpts = Array.from({ length: WP_N }, () => ({
     x: Math.random(), y: Math.random(),
     vx: (Math.random() - 0.5) * 0.00006, vy: (Math.random() - 0.5) * 0.00006,
-    par: 4 + Math.random() * 7,           // parallax depth
     tw: Math.random() * Math.PI * 2,      // twinkle phase
     col: rndCol(),
   }));
@@ -319,13 +318,14 @@ measureLogo(); onScroll();
     if (best >= 0) signals.push({ a, b: best, t: 0, sp: 0.004 + Math.random() * 0.004, col: wpts[a].col });
   }
 
-  /* ── foreground bokeh: a few large, soft, close glows that drift with strong parallax,
-     giving the hero real depth in front of the starfield. ── */
-  const bokeh = Array.from({ length: (window.owIsNarrow ? window.owIsNarrow(768) : window.innerWidth < 768) ? 4 : 7 }, () => ({
-    x: Math.random(), y: Math.random(),
-    vx: (Math.random() - 0.5) * 0.00009, vy: (Math.random() - 0.5) * 0.00009,
-    r: 44 + Math.random() * 78, a: 0.06 + Math.random() * 0.08, col: rndCol(), par: 11 + Math.random() * 8,
-  }));
+  /* ── NO DOT FOLLOWS THE CURSOR (the founder, 2026-10-09: "there are these dots that move with the cursor that feel
+     like they are awfully to blown up and close to the screen. i still wanna keep the moving galaxy effect but simply
+     remove the pale white dots that follow the cursor"). The foreground bokeh, seven large soft glows (three in four
+     of them white) swung up to ~800 px by the cursor, is gone; the flying stars and the network's anchors no longer
+     take the cursor, and a star fades out before it comes close. The galaxy still moves: the spiral turns, the stars
+     fly in, the nebula drifts, the network drifts and signals. Only the wireframes and the nebula keep a slight
+     parallax, and neither is a dot. ── */
+  const NEAR_S = 2.4, NEAR_FADE = 0.8, NEAR_Z = FOV / NEAR_S - FOV;   // a star is recycled before it passes 2.4x
 
   /* ── mouse ── */
   let mx = 0.5, my = 0.5;
@@ -381,20 +381,6 @@ measureLogo(); onScroll();
        on the loads that carry it */
     if (SHOW_SPIRAL) drawSpiral(performance.now());
 
-    /* foreground bokeh — close, soft, strong parallax → depth in front of the field */
-    for (let i = 0; i < bokeh.length; i++) {
-      const bk = bokeh[i];
-      bk.x += bk.vx; bk.y += bk.vy;
-      if (bk.x < -0.15 || bk.x > 1.15) bk.vx *= -1;
-      if (bk.y < -0.15 || bk.y > 1.15) bk.vy *= -1;
-      const bx = bk.x * W + pmx * bk.par, by = bk.y * H + pmy * bk.par;
-      const g = ctx.createRadialGradient(bx, by, 0, bx, by, bk.r);
-      const [r, g2, bl] = bk.col;
-      g.addColorStop(0, `rgba(${r},${g2},${bl},${bk.a})`);
-      g.addColorStop(1, `rgba(${r},${g2},${bl},0)`);
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(bx, by, bk.r, 0, Math.PI * 2); ctx.fill();
-    }
-
     /* wireframe shapes */
     for (let i = 0; i < shapes.length; i++) {
       const sh = shapes[i];
@@ -426,15 +412,15 @@ measureLogo(); onScroll();
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
       p.z += p.vz;
-      if (p.z < -FOV + 50) { Object.assign(particles[i], mkParticle(false)); continue; }
+      if (p.z < NEAR_Z) { Object.assign(particles[i], mkParticle(false)); continue; }
 
-      const proj = project(p.x + pmx, p.y + pmy, p.z);
+      const proj = project(p.x, p.y, p.z);
       if (!proj) continue;
       const { sx, sy, s } = proj;
       if (sx < -60 || sx > W + 60 || sy < -60 || sy > H + 60) continue;
 
       const size  = p.r * s * 2.2;
-      const alpha = p.alpha * Math.min(1, s * 2);
+      const alpha = p.alpha * Math.min(1, s * 2) * Math.min(1, (NEAR_S - s) / NEAR_FADE);
       if (alpha < 0.01 || size < 0.15) continue;
 
       const [r, g2, bl] = p.col;
@@ -457,8 +443,8 @@ measureLogo(); onScroll();
         const d = Math.hypot(wpts[i].x - wpts[j].x, wpts[i].y - wpts[j].y);
         if (d > LINK) continue;
         const a = (1 - d / LINK) * 0.05;   // barely there
-        const ix = wpts[i].x * W + pmx * wpts[i].par, iy = wpts[i].y * H + pmy * wpts[i].par;
-        const jx = wpts[j].x * W + pmx * wpts[j].par, jy = wpts[j].y * H + pmy * wpts[j].par;
+        const ix = wpts[i].x * W, iy = wpts[i].y * H;
+        const jx = wpts[j].x * W, jy = wpts[j].y * H;
         ctx.strokeStyle = `rgba(150,170,255,${a.toFixed(3)})`;
         ctx.lineWidth = 1;
         ctx.beginPath(); ctx.moveTo(ix, iy); ctx.lineTo(jx, jy); ctx.stroke();
@@ -467,7 +453,7 @@ measureLogo(); onScroll();
     /* twinkle the anchor points */
     for (let i = 0; i < wpts.length; i++) {
       const p = wpts[i]; p.tw += 0.018;
-      const px = p.x * W + pmx * p.par, py = p.y * H + pmy * p.par;
+      const px = p.x * W, py = p.y * H;
       const tw = 0.11 + Math.sin(p.tw) * 0.06;
       const [r, g2, bl] = p.col;
       ctx.fillStyle = `rgba(${r},${g2},${bl},${Math.max(0, tw).toFixed(3)})`;
@@ -479,8 +465,8 @@ measureLogo(); onScroll();
       const sg = signals[s]; sg.t += sg.sp;
       if (sg.t >= 1) { signals.splice(s, 1); continue; }
       const A = wpts[sg.a], B = wpts[sg.b];
-      const ax = A.x * W + pmx * A.par, ay = A.y * H + pmy * A.par;
-      const bx = B.x * W + pmx * B.par, by = B.y * H + pmy * B.par;
+      const ax = A.x * W, ay = A.y * H;
+      const bx = B.x * W, by = B.y * H;
       const x = ax + (bx - ax) * sg.t, y = ay + (by - ay) * sg.t;
       const [r, g2, bl] = sg.col;
       if (!isMob) {

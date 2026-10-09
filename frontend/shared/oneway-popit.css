@@ -466,7 +466,7 @@ html[data-simple="1"]{ --ow-btn-r:999px; }
 html[data-simple="1"] .po-act{
   background:rgba(var(--h,var(--ow-h1)),.16);
   box-shadow:none;border:0}
-html[data-simple="1"] .po-act[data-act="on"]{
+html[data-simple="1"] .po-act[data-act="on"],html[data-simple="1"] .ow-popit-btn--fill{
   background:rgb(var(--h,var(--ow-h1)));color:#07070c;box-shadow:none}
 @media (hover:hover) and (pointer:fine){
   html[data-simple="1"] .po-act:hover:not(:disabled){
@@ -572,8 +572,6 @@ html[data-world="plain"] .po-card[data-blended] .po-card__face{
 @keyframes ow-star-near{ to{transform:translate3d(-1490px,1490px,0)} }
 
 /* 2.5 — the canvas layer (tier 2 only; oneway-popit.js mounts it). */
-.ow-world__canvas{position:absolute;inset:0;width:100%;height:100%;display:none}
-[data-ow-tier="2"] .ow-world__canvas{display:block}
 
 /* tier 0 — the world goes still. Nothing is removed; motion stops. */
 [data-ow-tier="0"] .ow-world__neb,
@@ -2593,7 +2591,7 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
    rule that only works in the mode its author happened to be in. `--ow-h1` is
    the identity hue and is always defined, so the chain degrades to the person's
    own colour instead of to nothing. */
-.po-act{font:inherit;font-family:var(--ow-font);font-weight:560;font-size:12.5px;
+.po-act,.ow-popit-btn{font:inherit;font-family:var(--ow-font);font-weight:560;font-size:12.5px;
   color:var(--ow-ink);cursor:pointer;border:0;padding:8px 14px;
   border-radius:var(--ow-btn-r,12px 10px 13px 11px);
   /* TRANSPARENT AND CLEAN (founder, 2026-10-04: "no more ugly grey buttons ever, transparent clean"):
@@ -2632,16 +2630,16 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
 .po-sheet__body .po-act--wide b{font-size:13.5px}
 .po-sheet__body .po-act--wide em{font-size:9px}
 @media (hover:hover) and (pointer:fine){
-  .po-act:hover:not(:disabled){transform:translate3d(0,-1px,0);
+  .po-act:hover:not(:disabled),.ow-popit-btn:hover:not(:disabled){transform:translate3d(0,-1px,0);
     box-shadow:0 0 0 1px rgba(var(--h,var(--ow-h1)),.75), 0 0 20px -8px rgba(var(--h,var(--ow-h1)),.7)}
 }
-.po-act:focus-visible{outline:2px solid rgba(var(--h),.95);outline-offset:2px}
+.po-act:focus-visible,.ow-popit-btn:focus-visible{outline:2px solid rgba(var(--h,var(--ow-h1)),.95);outline-offset:2px}
 /* ON — the relationship exists. It reads as held, not as a call to action. */
 /* `--h` with a fallback, like the base rule above it. Outside a `.po` scope —
    the universal header's Follow, for one — `--h` is unset, the whole
    background was dropped as invalid, and "Following" was white text on the
    faint base: invisible on a light ground (measured 2026-09-20). */
-.po-act[data-act="on"]{color:#fff;
+.po-act[data-act="on"],.ow-popit-btn--fill{color:#fff;
   background:radial-gradient(120% 160% at 50% 0%,rgba(var(--h,var(--ow-h1)),.85),rgba(var(--h,var(--ow-h1)),.45) 80%);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.4), 0 0 0 1px rgba(var(--h,var(--ow-h1)),.85),
     0 0 22px -8px rgba(var(--h,var(--ow-h1)),.9)}
@@ -2887,6 +2885,7 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
 .ow-cv-pick__row::after,
 .ow-reqs::after,
 .po-sheet.is-open::after,
+.ow-popit::after,
 .ow-cv-face::after{content:"";position:absolute;inset:0;border-radius:inherit;
   pointer-events:none;
   background:
@@ -2927,12 +2926,12 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
    `contain:layout paint style`, and paint containment clips every DESCENDANT
    to the padding box — a glow on `::before` would be cut off at the edge,
    invisibly, only on this component. See the note above. */
-.po-card{box-shadow:0 0 54px -5px rgba(var(--h),.62);
+.po-card,.ow-popit{box-shadow:0 0 54px -5px rgba(var(--h),.62);
   transition:transform .18s var(--ow-spring), box-shadow .28s var(--ow-ease)}
 @media (hover:hover) and (pointer:fine){
   /* hover stays a STEP above rest, not a second design — the same proportion
      the old pair had, carried onto the new floor */
-  .po-card:hover{box-shadow:0 0 68px -2px rgba(var(--h),.82)}
+  .po-card:hover,a.ow-popit:hover,button.ow-popit:hover{box-shadow:0 0 68px -2px rgba(var(--h),.82)}
 }
 /* ── AND THE POPIT WAS THE THING THAT DID NOT LIGHT THE WORLD ─────────────
    ★ FOUNDER, 2026-09-12: *"Look at how posts glow on home and see how nothing
@@ -6193,6 +6192,30 @@ html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over){display:none}
 .ow-feedhead__s{margin:0;font-size:14px;line-height:1.45;color:var(--ow-ink-2)}
 .ow-feedhead__acts{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
 
+/* ── ONE SOURCE FOR THE POPIT AND ITS BUTTON ───────────────────────────────
+   ★ FOUNDER, 2026-10-09: "make all clickable center buttons and popits look exactly like this as one
+     unifed color pallete styling", and at 17:55Z: "unify the gradient popit and colorful button sources
+     on landing page and app". The landing defined 73 gradients of its own and the OS 33.
+   These are the NAMES the landing, the OS Home and the App use for the one look (agreed with B on the
+   lane, 2026-10-09 19:09Z). None carries declarations of its own beyond its shape: each JOINS the rule
+   that already draws the thing, so there is one recipe and no copy.
+     .ow-popit             the Post popit on any box. Its ground is the material Posts and canvas
+                           Popits share (`::before`, in the material rules, dark and light), its weave
+                           the same grain (`::after`), its light the Post's own spill (`.po-card`'s
+                           rules). It wears `--h`/`--h2` ("r,g,b"): the surface's own pair unless the
+                           box sets its own, as a Center or a Post does.
+     .ow-popit-btn         the colorful button, the same rule as `.po-act`: its words in a hairline at
+                           rest (founder, 2026-10-04: "no more ugly grey buttons ever, transparent
+                           clean"), its colour on hover.
+     .ow-popit-btn--fill   the held or primary button, the same rule as `.po-act[data-act="on"]`: the
+                           hue gradient. */
+.ow-popit{position:relative;isolation:isolate;border-radius:22px 19px 23px 20px;
+  --h:var(--ow-h1);--h2:var(--ow-h2)}
+.ow-popit::before{content:"";position:absolute;inset:0;z-index:-1;border-radius:inherit;pointer-events:none}
+.ow-popit::after{z-index:-1}
+a.ow-popit{display:block;text-decoration:none;color:inherit}
+a.ow-popit-btn{display:inline-block;text-decoration:none}   /* its ink is the button rule's, held or not */
+
 /* ── UPCOMING — the person's bookings, on Home (founder, chat 2026-10-03) ──
    ★ FOUNDER, 2026-10-09: "the grey boxes on app and os home pages need to go in favor of the popits i was
      talking about on the home app". Measured at 390 beside the river's Posts and the canvas Popits, which
@@ -7330,6 +7353,7 @@ html body > *:not(.ow-sky):not(.ow-net):not(.ow-worldwash){
    recipe, different light. */
 .po-card[data-blended] .po-card__face,
 .ow-cv-face,
+.ow-popit::before,
 .ow-cv-pick__row,
 .ow-reqs,
 .ow-msg:not([data-mine]){
@@ -8011,6 +8035,7 @@ html[data-fx="safe"] .ow-map__route{background:rgba(7,8,18,.95);
    is precisely the inconsistency the probe exists to stop me introducing.
    Dark pairs the tile with `.po-card[data-blended]`; light pairs it here. */
 html[data-theme="light"][data-theme="light"] .ow-cv-face,
+html[data-theme="light"][data-theme="light"] .ow-popit::before,
 html[data-theme="light"][data-theme="light"] .ow-cv-pick__row,
 html[data-theme="light"][data-theme="light"] .ow-reqs,
 html[data-theme="light"][data-theme="light"] .ow-msg:not([data-mine]),
@@ -8039,7 +8064,7 @@ html[data-theme="light"][data-theme="light"] html[data-theme="light"][data-theme
   opacity:.04}
 /* THE HALO GOES. On a dark ground a card spilling its hue reads as light in a
    room; on a bright one the identical shadow reads as a coloured fringe. */
-html[data-theme="light"][data-theme="light"] .po-card{
+html[data-theme="light"][data-theme="light"] .po-card,html[data-theme="light"][data-theme="light"] .ow-popit{
   box-shadow:0 0 26px -18px rgba(var(--h),.30)}
 @media (hover:hover) and (pointer:fine){
   html[data-theme="light"][data-theme="light"] .po-card:hover{
@@ -8888,6 +8913,7 @@ html[data-theme="light"][data-theme="light"] .ow-sub{
    they are not one rule. */
 @media (prefers-color-scheme:light){
   html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-face,
+  html:not([data-theme="dark"]):not([data-theme="light"]) .ow-popit::before,
   html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-pick__row,
   html:not([data-theme="dark"]):not([data-theme="light"]) .ow-reqs,
   html:not([data-theme="dark"]):not([data-theme="light"]) .ow-msg:not([data-mine]),
@@ -8909,7 +8935,8 @@ html[data-theme="light"][data-theme="light"] .ow-sub{
   html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face::after,
   html:not([data-theme="dark"]):not([data-theme="light"])   html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet.is-open::after{
     opacity:.04}
-  html:not([data-theme="dark"]):not([data-theme="light"]) .po-card{
+  html:not([data-theme="dark"]):not([data-theme="light"]) .po-card,
+  html:not([data-theme="dark"]):not([data-theme="light"]) .ow-popit{
     box-shadow:0 0 26px -18px rgba(var(--h),.30)}
   @media (hover:hover) and (pointer:fine){
   html:not([data-theme="dark"]):not([data-theme="light"]) .po-card:hover{
@@ -11542,7 +11569,7 @@ html[data-ow-make] .ow-compose__stage > .ow-depth__add{margin-left:0;margin-righ
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
-  .po-act[data-act="on"]{
+  .po-act[data-act="on"],.ow-popit-btn--fill{
     color:rgb(from rgb(var(--h, var(--ow-h1)))
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
@@ -11579,13 +11606,13 @@ html[data-theme="light"] .ow-cmt__creator{
    (248,142,248). The ink is derived from the fill as it lands: the hue mixed
    65% into the room's ground. */
 @supports (color: rgb(from red r g b)) {
-  html[data-theme="light"] .po-act[data-act="on"]{
+  html[data-theme="light"] .po-act[data-act="on"],html[data-theme="light"] .ow-popit-btn--fill{
     color:rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
   @media (prefers-color-scheme: light){
-    html:not([data-theme="dark"]) .po-act[data-act="on"]{
+    html:not([data-theme="dark"]) .po-act[data-act="on"],html:not([data-theme="dark"]) .ow-popit-btn--fill{
       color:rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
         clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
         clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)

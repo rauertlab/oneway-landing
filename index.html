@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
   <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
@@ -103,7 +103,7 @@ html[data-theme="light"][data-theme="light"] { --ow-h1-ink: color-mix(in srgb,rg
 :root { --ow-btn-r: 14px; }
 html[data-simple="1"] { --ow-btn-r: 999px; }
 html[data-simple="1"] .po-act { background: rgba(var(--h,var(--ow-h1)),.16); box-shadow: none; border: 0px; }
-html[data-simple="1"] .po-act[data-act="on"] { background: rgb(var(--h,var(--ow-h1))); color: rgb(7, 7, 12); box-shadow: none; }
+html[data-simple="1"] .po-act[data-act="on"], html[data-simple="1"] .ow-popit-btn--fill { background: rgb(var(--h,var(--ow-h1))); color: rgb(7, 7, 12); box-shadow: none; }
 @media (hover: hover) and (pointer: fine){html[data-simple="1"] .po-act:hover:not(:disabled) { transform: none; background: rgba(var(--h,var(--ow-h1)),.24); box-shadow: none; }}
 html[data-world="plain"] .ow-world { display: none; }
 html[data-world="plain"] body { background: var(--ow-ground); }
@@ -447,7 +447,7 @@ html body:has(.ow-map[data-hour="day"]) .ow-nav, html[data-fx="safe"] body:has(.
 html body:has(.ow-map[data-hour="day"]) .ow-nav__b { color: rgba(20, 24, 40, 0.62); }
 html body:has(.ow-map[data-hour="day"]) .ow-nav__b[aria-current="page"] { color: rgb(20, 24, 40); }
 html[data-fx="safe"] .ow-map__route { background: rgba(7, 8, 18, 0.95); backdrop-filter: none; }
-html[data-theme="light"][data-theme="light"] .ow-cv-face, html[data-theme="light"][data-theme="light"] .ow-cv-pick__row, html[data-theme="light"][data-theme="light"] .ow-reqs, html[data-theme="light"][data-theme="light"] .ow-msg:not([data-mine]), html[data-theme="light"][data-theme="light"] .po-sheet, html[data-theme="light"][data-theme="light"] .ow-cpage__ev, html[data-theme="light"][data-theme="light"] .ow-claims__row, html[data-theme="light"][data-theme="light"] .ow-map__tile, html[data-theme="light"][data-theme="light"] .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
+html[data-theme="light"][data-theme="light"] .ow-cv-face, html[data-theme="light"][data-theme="light"] .ow-popit::before, html[data-theme="light"][data-theme="light"] .ow-cv-pick__row, html[data-theme="light"][data-theme="light"] .ow-reqs, html[data-theme="light"][data-theme="light"] .ow-msg:not([data-mine]), html[data-theme="light"][data-theme="light"] .po-sheet, html[data-theme="light"][data-theme="light"] .ow-cpage__ev, html[data-theme="light"][data-theme="light"] .ow-claims__row, html[data-theme="light"][data-theme="light"] .ow-map__tile, html[data-theme="light"][data-theme="light"] .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
     radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.13), transparent 64%),
     linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97)); box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
     inset 0 -26px 46px rgba(76,66,120,.055),
@@ -456,7 +456,7 @@ html[data-theme="light"][data-theme="light"] .ow-cv-face, html[data-theme="light
     0 10px 26px -14px rgba(48,40,80,.28); }
 html[data-theme="light"][data-theme="light"] .po-card__face::before { border-color: rgba(var(--h),.34); }
 html[data-theme="light"][data-theme="light"] .po-card__face::after, html[data-theme="light"][data-theme="light"] html[data-theme="light"][data-theme="light"] .po-sheet.is-open::after { opacity: 0.04; }
-html[data-theme="light"][data-theme="light"] .po-card { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }
+html[data-theme="light"][data-theme="light"] .po-card, html[data-theme="light"][data-theme="light"] .ow-popit { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }
 @media (hover: hover) and (pointer: fine){html[data-theme="light"][data-theme="light"] .po-card:hover { box-shadow: 0 0 30px -16px rgba(var(--h),.42); }}
 html[data-theme="light"][data-theme="light"] .po-card__cover[data-empty] { border-color: rgba(var(--h),.34); background: linear-gradient(180deg,rgba(var(--h),.05),rgba(var(--h2),.04)); }
 html[data-theme="light"][data-theme="light"] .po-w:not(.po--1x1) > .po-face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.22), transparent 60%),
@@ -485,7 +485,7 @@ html[data-theme="light"][data-theme="light"] .ow-sub { background: rgba(var(--ow
   0% { opacity: 0; transform: translate3d(0px, 4px, 0px) scale(0.94); }
   100% { opacity: 1; transform: none; }
 }
-@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-face, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-pick__row, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-reqs, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-msg:not([data-mine]), html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet, html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-face, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-popit::before, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-pick__row, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-reqs, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-msg:not([data-mine]), html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet, html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
       radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.13), transparent 64%),
       linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97)); box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
       inset 0 -26px 46px rgba(76,66,120,.055),
@@ -494,7 +494,7 @@ html[data-theme="light"][data-theme="light"] .ow-sub { background: rgba(var(--ow
       0 10px 26px -14px rgba(48,40,80,.28); }}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face::before { border-color: rgba(var(--h),.34); }}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face::after, html:not([data-theme="dark"]):not([data-theme="light"]) html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet.is-open::after { opacity: 0.04; }}
-@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }}
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-popit { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }}
 @media (prefers-color-scheme: light){@media (hover: hover) and (pointer: fine){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card:hover { box-shadow: 0 0 30px -16px rgba(var(--h),.42); }}}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__cover[data-empty] { border-color: rgba(var(--h),.34); background: linear-gradient(180deg,rgba(var(--h),.05),rgba(var(--h2),.04)); }}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-w:not(.po--1x1) > .po-face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.22), transparent 60%),
@@ -613,11 +613,11 @@ html[data-ow-make] .ow-compose__stage > .po-act, html[data-ow-make] .ow-compose_
 @media (max-width: 899px){html:not([data-ow-thread]) .ow-composer { background: linear-gradient(0deg,var(--ow-chrome) 58%,transparent); padding-top: 18px; margin: 0px -18px; padding-left: 18px; padding-right: 18px; }}
 html[data-theme="light"] .po-card__foot .po-acts .po-act[aria-pressed="true"], html[data-theme="light"] .po-acts--rail .po-act[aria-pressed="true"], html[data-theme="light"] .ow-cmt__creator { color: color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f); }
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]) .po-card__foot .po-acts .po-act[aria-pressed="true"], html:not([data-theme="dark"]) .po-acts--rail .po-act[aria-pressed="true"], html:not([data-theme="dark"]) .ow-cmt__creator { color: color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f); }}
-@supports (color: rgb(from red r g b)){html[data-theme="light"] .po-act[data-act="on"] { color: rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
+@supports (color: rgb(from red r g b)){html[data-theme="light"] .po-act[data-act="on"], html[data-theme="light"] .ow-popit-btn--fill { color: rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)); }}
-@supports (color: rgb(from red r g b)){@media (prefers-color-scheme: light){html:not([data-theme="dark"]) .po-act[data-act="on"] { color: rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
+@supports (color: rgb(from red r g b)){@media (prefers-color-scheme: light){html:not([data-theme="dark"]) .po-act[data-act="on"], html:not([data-theme="dark"]) .ow-popit-btn--fill { color: rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
         clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
         clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
         clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)); }}}
@@ -724,9 +724,9 @@ html[data-contrast="high"] .ow-thread + .ow-thread::before { background: rgba(25
 html[data-contrast="high"] .ow-set__row + .ow-set__row { border-color: rgba(255, 255, 255, 0.2); }
 html[data-contrast="high"] .ow-msg-sys, html[data-contrast="high"] .ow-msg__t { opacity: 1; }
 html[data-text="large"] .ow-main { zoom: 1.12; }
-html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; right: 0px; z-index: 119; bottom: calc(64px + env(safe-area-inset-bottom)); padding: 0px 10px; margin: 0px auto; max-width: 640px; }</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=81af36b3" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=81af36b3"></noscript>
+html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; right: 0px; z-index: 119; bottom: calc(64px + env(safe-area-inset-bottom)); padding: 0px 10px; margin: 0px auto; max-width: 640px; }</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=d0adea78" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=d0adea78"></noscript>
   <script defer src="/frontend/shared/oneway-hue.js?v=28eb408a"></script>
-  <script defer src="/frontend/shared/oneway-popit.js?v=020db7c4"></script>
+  <script defer src="/frontend/shared/oneway-popit.js?v=109cbae4"></script>
   <script defer src="/frontend/shared/oneway-links.js?v=c3df779e"></script>
   <!-- ★ FOUNDER/401: a Center opens RIGHT OVER this page — the App's own
        surface for it, projected, not a trip to the App. These are the App's
@@ -746,8 +746,8 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
   <script defer src="/frontend/landing/static/inline-01-b7399efeeb.js"></script>
   <script defer src="/frontend/shared/oneway-galaxy.js?v=224cb07e"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=5dbba8cc"/>
-  <link rel="stylesheet" href="/frontend/landing/reserve.css?v=5131d5f3"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=c3d314d6"/>
+  <link rel="stylesheet" href="/frontend/landing/reserve.css?v=77707839"/>
   <!-- founder/530: "WE MOVED TO A ONEWAY FONT." The landing page draws in ONEWAY
        Sans alone, from /assets/fonts (S16). It still fetched Space Grotesk,
        Outfit and Inter from Google and Satoshi from Fontshare — four faces
@@ -1800,15 +1800,11 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
      where it is, its own sentence, the people who run it, and EVENTS as a
      subcategory inside it — only when it has any; a Center with none stays a
      row. Pressing anything on it opens the real thing over the galaxy. */
-  .flag-card{position:relative;padding:16px 16px 14px;border-radius:24px 19px 22px 20px;color:#fff;text-align:left;
-    --h:var(--ow-h1);--h2:var(--ow-h2);
-    background:
-      radial-gradient(130% 80% at 18% -6%, rgba(var(--h),.42), transparent 64%),
-      radial-gradient(120% 90% at 92% 108%, rgba(var(--h2),.28), transparent 60%),
-      linear-gradient(158deg, rgba(var(--h),.14), rgba(var(--h2),.09) 62%, rgba(14,16,30,.5)),
-      linear-gradient(0deg,#0b0d18,#0b0d18);
-    box-shadow:inset 0 2px 1px rgba(255,255,255,.26),inset 0 0 0 1.5px rgba(var(--h),.30),
-      0 0 54px -10px rgba(var(--h),.55),0 18px 40px -20px rgba(0,0,0,.7)}
+  /* ONE SOURCE (the founder, 2026-10-09: "make all clickable center buttons and popits look exactly like this as one
+     unifed color pallete styling"): the card is the App's Post popit, `.ow-popit` in oneway-popit.css (C-app,
+     b6ec8b5d), wearing the Center's own pair. It keeps only its room here; its ground, grain, light and shape are
+     the popit's. */
+  .flag-card{padding:16px 16px 14px;color:#fff;text-align:left}
   .flag-id{display:flex;align-items:center;gap:14px;cursor:pointer;border:0;background:none;color:#fff;padding:0;width:100%;text-align:left;font-family:var(--font)}
   .flag-face{flex:none;width:60px;height:60px;overflow:hidden;border-radius:18px 14px 17px 15px;
     background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.85),rgba(var(--h2),.55) 70%);
@@ -1820,10 +1816,11 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
   .flag-sig{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px}
   .flag-bio{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.82);margin:14px 2px 0}
   .flag-people{display:flex;align-items:center;gap:8px;margin:14px 2px 0;flex-wrap:wrap}
-  .flag-people button,.flag-people>span{display:inline-flex;align-items:center;gap:8px;border:0;background:rgba(255,255,255,.06);color:#fff;
-    padding:5px 11px 5px 5px;border-radius:999px;font:600 12.5px var(--font);cursor:pointer;
-    box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
-  .flag-people>span{cursor:default}
+  /* a person who runs the place is the App's button, `.ow-popit-btn` (words in a hairline, their colour on hover);
+     only the room for the face is set here. One with no @name is not a link, so it is the same shape, never pressable */
+  .flag-people .ow-popit-btn,.flag-people>span{display:inline-flex;align-items:center;gap:8px;padding:5px 11px 5px 5px;border-radius:999px}
+  .flag-people>span{font:560 12.5px var(--ow-font,var(--font));color:#fff;cursor:default;
+    box-shadow:0 0 0 1px rgba(255,255,255,.3)}
   .flag-people .fp{width:24px;height:24px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
     background:linear-gradient(150deg,rgb(var(--h)),rgba(var(--h2),.75));font:800 10px var(--font-display)}
   .flag-people .fp[data-shape="rounded"]{border-radius:8px 6px 7px 6px}.flag-people .fp[data-shape="square"]{border-radius:4px}
@@ -2062,7 +2059,6 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
   .cn-wrap{min-width:0;width:100%;max-width:460px;margin:0 auto;text-align:left}
   .cn-wrap .po-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
   .cn-wrap .po-glance{width:100%;text-align:left}
-  .cn-wrap .flag-card{border-radius:28px}
 
   /* ── 5 · THE APP — the phones, nothing to read beside them ──────────── */
   .phones{position:relative;display:flex;justify-content:center;align-items:flex-end;min-width:0;padding:10px 0}
@@ -2235,14 +2231,19 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
 <!-- ═══ 7 · RESERVE YOUR NAME ═══════════════════════════════════════════ -->
 <section class="lp" id="explore">
   <div class="lp-wrap">
-    <div class="rsv rv d2" id="rsv" style="--ow-h1:139,92,255;--ow-h2:93,226,255">
-      <h2 class="rsv-t">Reserved usernames received.</h2>
-      <div class="rsv-received" style="display:flex;flex-direction:column;align-items:flex-start;gap:10px;margin-top:16px"><span class="rsv-done-chip"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M3 8.6l3.1 3.1L13 4.9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Oneway is opening soon</span><p class="rsv-note" style="text-align:left;margin:0">Applications for the closed beta open soon.</p></div>
+    <div class="rsv rsv--posted rv d2" id="rsv" style="--ow-h1:139,92,255;--ow-h2:93,226,255">
+      
+      <article class="po-card"><span class="po-card__face"></span><span class="po-card__who"><span class="po-card__av" data-kind="center" data-ini="O"><i>O</i></span><span class="po-card__n"><span class="po-card__nm">Oneway</span><span class="po-card__when">Opening soon</span></span></span><span class="po-card__body"><span class="po-card__t">Reserved usernames received.</span><span class="po-card__d">Applications for the closed beta open soon.</span></span><span class="po-card__foot"><span class="po-acts"><span class="po-act po-act--icon po-act--stat" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path style="fill:none" d="M5 12.6l4.4 4.4L19 7.4"/></svg><b>Oneway is opening soon</b></span></span></span></article>
       <div class="rsv-done" id="rsv-done" hidden>
-        <span class="rsv-done-chip">Reserved</span>
-        <div class="rsv-done-handle" id="rsv-done-handle">@you</div>
-        <p>Held for <strong id="rsv-done-email" style="color:#fff"></strong> · <span class="rsv-ref" id="rsv-done-ref">—</span></p>
-        <button type="button" class="pill rsv-again" id="rsv-again">Reserve another name</button>
+        <!-- THE RESERVED NAME IS AN APP POST, EXACTLY (the founder, 2026-10-09: "the reserved usernames recivided doesnt look
+             like its using the apps post design language ... as asked for EXACTlY, not a recreation"): `.po-card` and its own
+             parts, from oneway-popit.css, the markup OW.card draws for a Post. Nothing on this page restyles them. -->
+        <article class="po-card" aria-live="polite">
+          <span class="po-card__face"></span>
+          <span class="po-card__who"><span class="po-card__av" data-kind="person"><i id="rsv-done-initial"></i></span><span class="po-card__n"><span class="po-card__nm" id="rsv-done-handle">@you</span><span class="po-card__when">Reserved</span></span></span>
+          <span class="po-card__body"><span class="po-card__d">Held for <b id="rsv-done-email"></b> · <span class="rsv-ref" id="rsv-done-ref">—</span></span></span>
+          <span class="po-card__foot"><span class="po-acts"><button type="button" class="po-act po-act--icon" id="rsv-again" data-glyph="write"><b>Reserve another name</b></button></span></span>
+        </article>
       </div>
     </div>
   </div>
@@ -2270,7 +2271,7 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
 <script defer src="/frontend/landing/static/inline-03-da8892856b.js"></script>
 <script defer src="/frontend/landing/static/inline-04-a503692068.js"></script>
 <script defer src="/frontend/landing/static/inline-05-b8bd236ef4.js"></script>
-<script defer src="/frontend/landing/static/inline-06-c7bf297b15.js"></script>
+<script defer src="/frontend/landing/static/inline-06-635bb08594.js"></script>
 <script defer src="/frontend/landing/static/inline-07-ced288bedf.js"></script>
 
 <footer>
@@ -2292,7 +2293,7 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
        association with Apple is claimed or suggested -->
   <p class="footer-tm">iMac is a trademark of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.</p>
 </footer>
-<script defer src="/frontend/landing/static/inline-08-52d0f7bae6.js"></script>
+<script defer src="/frontend/landing/static/inline-08-9b71b0007e.js"></script>
 
 
 

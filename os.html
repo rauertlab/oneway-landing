@@ -493,6 +493,8 @@
         rx:Math.random()*6.28,drx:(Math.random()-.5)*.006,ry:Math.random()*6.28,dry:(Math.random()-.5)*.007,
         rz:Math.random()*6.28,drz:(Math.random()-.5)*.005,verts,col,alpha:0.18+Math.random()*0.28};}
     const shapes=Array.from({length:SCOUNT},mkS);
+    /* NO DOT FOLLOWS THE CURSOR (the founder, 2026-10-09: "remove the pale white dots that follow the cursor", and "i still wanna keep the moving galaxy effect"): the stars fly in as before, take no cursor, and fade out before they come close; only the wireframes keep a slight parallax */
+    const NEAR_S=2.4,NEAR_FADE=.8,NEAR_Z=FOV/NEAR_S-FOV;
     let mx=.5,my=.5;addEventListener('mousemove',e=>{mx=e.clientX/W;my=e.clientY/H;},{passive:true});
     function frame(){ctx.clearRect(0,0,W,H);const pmx=(mx-.5)*90,pmy=(my-.5)*55;
       for(let i=0;i<shapes.length;i++){const sh=shapes[i];sh.rx+=sh.drx;sh.ry+=sh.dry;sh.rz+=sh.drz;sh.z+=sh.vz;
@@ -503,9 +505,9 @@
         for(let j=1;j<pts.length;j++)ctx.lineTo(pts[j].sx,pts[j].sy);ctx.closePath();
         ctx.strokeStyle=`rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;ctx.lineWidth=Math.max(.25,s0*1.1);ctx.stroke();}
       for(let i=0;i<particles.length;i++){const p=particles[i];p.z+=p.vz;
-        if(p.z<-FOV+50){Object.assign(particles[i],mkP(false));continue;}
-        const proj=project(p.x+pmx,p.y+pmy,p.z);if(!proj)continue;const{sx,sy,s}=proj;
-        if(sx<-60||sx>W+60||sy<-60||sy>H+60)continue;const size=p.r*s*2.2,alpha=p.alpha*Math.min(1,s*2);
+        if(p.z<NEAR_Z){Object.assign(particles[i],mkP(false));continue;}
+        const proj=project(p.x,p.y,p.z);if(!proj)continue;const{sx,sy,s}=proj;
+        if(sx<-60||sx>W+60||sy<-60||sy>H+60)continue;const size=p.r*s*2.2,alpha=p.alpha*Math.min(1,s*2)*Math.min(1,(NEAR_S-s)/NEAR_FADE);
         if(alpha<.01||size<.15)continue;const[r,g2,bl]=p.col;ctx.beginPath();ctx.arc(sx,sy,Math.max(.2,size),0,6.28);
         ctx.fillStyle=`rgba(${r},${g2},${bl},${alpha.toFixed(3)})`;ctx.fill();}
       requestAnimationFrame(frame);}
