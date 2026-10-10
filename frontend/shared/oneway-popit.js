@@ -833,12 +833,20 @@
        rectangle beside it: no thumb, no knuckle, no cuff — a shape nobody
        reads as a hand. Redrawn with a real thumb, a fist and a separate cuff,
        pointing down, so it is legible at 24px without a caption. */
-    heart:   '<path d="M12 20.4 4.6 13.2a4.6 4.6 0 0 1 0-6.6 4.6 4.6 0 0 1 '
-             + '6.5 0l.9.9.9-.9a4.6 4.6 0 0 1 6.5 0 4.6 4.6 0 0 1 0 6.6z"/>',
-    thumbdown:'<path d="M15.2 3.2H8.6a2 2 0 0 0-2 1.7l-1 6.4a2 2 0 0 0 2 2.3h3.2'
-             + 'l-.7 3.3a2.1 2.1 0 0 0 2 2.6c.5 0 .9-.3 1.1-.7l2.9-5.6z"/>'
-             + '<path d="M18.1 3.2h1.2a1.4 1.4 0 0 1 1.4 1.4v7.2a1.4 1.4 0 0 1'
-             + '-1.4 1.4h-1.2z"/>',
+    /* ── LARGER, ROUNDER, MORE DEFINED (the founder, 2026-10-09: "our heart icon larger and more defined and visual
+       rounded wise, with a smash of an animation"; "the dislike button make it clearer by the dudes sleeve and his
+       hand better"). The heart is two full lobes and a soft point, drawn to fill the 24 grid. The thumbs are a hand
+       and a SLEEVE: the cuff is its own rounded block with a gap before the hand, so the two read apart even when the
+       held state fills them. `thumbup` is the Facebook style's like (OW.likes). */
+    heart:   '<path d="M12 20.6c-.4 0-.8-.15-1.1-.43C6.4 16.3 2.8 13.2 2.8 9.1 2.8 6.2 5.1 3.9 8 3.9'
+             + 'c1.6 0 3 .76 4 2 1-1.24 2.4-2 4-2 2.9 0 5.2 2.3 5.2 5.2 0 4.1-3.6 7.2-8.1 11.07'
+             + '-.3.28-.7.43-1.1.43z"/>',
+    thumbup: '<rect x="2.4" y="10.2" width="3.7" height="10.3" rx="1.3"/>'
+             + '<path d="M7.3 11.2l3.4-6.4c.32-.6 1-.92 1.66-.74 1.12.3 1.78 1.44 1.48 2.56l-.78 2.98h5.1'
+             + 'c1.36 0 2.36 1.25 2.06 2.57l-1.36 6.3c-.22 1.02-1.12 1.75-2.16 1.75H7.3z"/>',
+    thumbdown:'<rect x="2.4" y="3.5" width="3.7" height="10.3" rx="1.3"/>'
+             + '<path d="M7.3 12.8l3.4 6.4c.32.6 1 .92 1.66.74 1.12-.3 1.78-1.44 1.48-2.56l-.78-2.98h5.1'
+             + 'c1.36 0 2.36-1.25 2.06-2.57l-1.36-6.3c-.22-1.02-1.12-1.75-2.16-1.75H7.3z"/>',
     repost:  '<path d="M4 9V7a3 3 0 0 1 3-3h9"/><path d="M13 1.5L16.5 4 13 6.5"/><path d="M20 15v2a3 3 0 0 1-3 3H8"/><path d="M11 22.5L7.5 20 11 17.5"/>',
     share:   '<path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1"/>',
     bookmark:'<path d="M6 3h12v18l-6-4.5L6 21z"/>',
@@ -2427,7 +2435,7 @@
         + tally(count) + '</button>';
     }
     var html = offers.map(function (verb) {
-      var icon = ({ like: 'heart', dislike: 'thumbdown' })[verb] || 'spark';
+      var icon = ({ like: OW.likes.glyph(), dislike: 'thumbdown' })[verb] || 'spark';
       return act(verb, icon, OW.word(verb), mine === verb, counts[verb] || 0);
     }).join('');
 
@@ -2672,6 +2680,34 @@
   };
 
   OW.glyph = function (name) { return svg(name); };
+
+  /* ── LIKES AND DISLIKES, IN THE STYLE A PERSON CHOOSES ─────────────────────
+     ★ FOUNDER, 2026-10-09: *"give users the option in settings and appeance to choose between likes and dislikes
+       (facebook) and instagram likes and dislikes maximize it"*.
+     Two styles of the same two opinions, chosen in Settings > Appearance: Instagram's heart, or Facebook's thumbs up;
+     the dislike is the thumbs down in both. Kept on this device like the theme and the logos (OW.marks), read
+     wherever a like is drawn: the card's control, the Scroll rail, a Post's own page, the double-tap bloom and the
+     "liked by" line. Changing it redraws every like already on screen; its count and pressed state are untouched. */
+  OW.likes = {
+    get: function () {
+      try { return global.localStorage.getItem('ow_likes') === 'facebook' ? 'facebook' : 'instagram'; }
+      catch (e) { return 'instagram'; }
+    },
+    glyph: function () { return OW.likes.get() === 'facebook' ? 'thumbup' : 'heart'; },
+    set: function (v) {
+      try { global.localStorage.setItem('ow_likes', v === 'facebook' ? 'facebook' : 'instagram'); } catch (e) {}
+      OW.likes.paint();
+    },
+    paint: function () {
+      root.setAttribute('data-ow-likes', OW.likes.get());
+      var mark = svg(OW.likes.glyph());
+      Array.prototype.forEach.call(doc.querySelectorAll('[data-po-respond="like"] > svg, .po-card__known > svg'), function (old) {
+        var t = doc.createElement('span'); t.innerHTML = mark;
+        if (t.firstChild) old.parentNode.replaceChild(t.firstChild, old);
+      });
+    }
+  };
+  root.setAttribute('data-ow-likes', OW.likes.get());
 
   function svg(name) {
     var d = ICONS[name]; if (!d) return '';
@@ -3509,7 +3545,7 @@
         ? '<button type="button" class="po-card__known" data-po-likers'
           + ' data-obj="' + esc(g.id) + '"'
           + ' aria-label="' + esc(knownWords(g._known)) + '. Open the list.">'
-          + OW.glyph('heart')
+          + OW.glyph(OW.likes.glyph())
           + '<span>' + esc(knownWords(g._known)) + '</span></button>'
         : '') +
       '<span class="po-card__foot">' +

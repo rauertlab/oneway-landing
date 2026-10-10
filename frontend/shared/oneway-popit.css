@@ -3088,7 +3088,7 @@ video.po-card__v,.po-card__cover video,.po-shots video{background:#000}
    a control must not be padded into being large. */
 .po-card__who{display:inline-flex;align-items:center;gap:10px;
   width:max-content;max-width:calc(100% - var(--po-inset) * 2);
-  margin:var(--po-inset) var(--po-inset) 10px;padding:0}
+  margin:var(--po-inset) var(--po-inset) 6px;padding:0}
 .po-card__av{flex:none;width:34px;height:34px;border-radius:50%;overflow:hidden;
   display:grid;place-items:center;
   background:radial-gradient(58% 46% at 32% 22%,rgba(255,255,255,.6),transparent 70%),
@@ -3184,7 +3184,7 @@ video.po-card__v,.po-card__cover video,.po-shots video{background:#000}
 .po-card__cover[data-empty] .po-acts--rail{display:none}
 .po-card__media{margin:0 var(--po-inset)}
 
-.po-card__body{padding:12px var(--po-inset) 6px}
+.po-card__body{padding:6px var(--po-inset) 2px}
 .po-card__t{font-family:var(--ow-font-display);font-weight:650;font-size:18px;
   letter-spacing:-.01em;line-height:1.16;color:var(--ow-ink)}
 /* ── THE CARD IS SHAPED AROUND WHAT SOMEBODY WROTE ────────────────────────
@@ -3206,7 +3206,7 @@ video.po-card__v,.po-card__cover video,.po-shots video{background:#000}
    AND THE SHORT POST STAYS SHORT. `-webkit-line-clamp` is a maximum, not a
    reservation: a one-line post is still one line and its card is still 142px.
    Verified both ways rather than assumed. */
-.po-card__d{font-size:13.5px;line-height:1.5;color:var(--ow-ink-2);margin-top:5px;
+.po-card__d{font-size:13.5px;line-height:1.5;color:var(--ow-ink);margin-top:4px;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:6;overflow:hidden}
 /* ★ FOUNDER/470: *"text posts def shouldnt be grey."* A Post with no media is
    its words — they are the content, not a caption: the page's own ink, a
@@ -3264,7 +3264,7 @@ video.po-card__v,.po-card__cover video,.po-shots video{background:#000}
   letter-spacing:.01em;color:rgba(var(--h2),.9)}
 
 .po-card__foot{display:flex;align-items:center;gap:7px;flex-wrap:wrap;
-  padding:8px var(--po-inset) var(--po-inset)}
+  padding:6px var(--po-inset) 12px}
 .po-card__count{font-family:var(--ow-font);font-weight:500;font-size:11.5px;
   letter-spacing:0;text-transform:none;color:var(--ow-ink-3);margin-left:auto}
 
@@ -5532,7 +5532,7 @@ html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{justify-content:center;
 .ow-fpos[data-kind="group"] .po-card__foot .po-acts .po-act{
   width:auto;height:auto;padding:0;
   background:none;box-shadow:none;border:0;border-radius:0;
-  color:var(--ow-ink-2);
+  color:var(--ow-ink);
   transition:color .16s var(--ow-ease), transform .18s var(--ow-spring)}
 /* HOME'S GLYPH, 19px, IN BOTH. These were 27px and 24px — a Like that is a
    different SIZE in each feed is a different control to the eye, and the
@@ -5541,7 +5541,7 @@ html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{justify-content:center;
    32px-minimum hit area independent of the glyph, so this is a visual change
    and not a reachability one (346 §8). */
 .ow-fpos[data-kind="group"] .po-card__foot .po-acts .po-act > svg{
-  stroke-width:1.7}
+  stroke-width:2}
 /* HOME'S ACTION RHYTHM, IN BOTH PRESENTATIONS. These were 26px and 22px
    against Home's 20px — a small number that moves every control's position, so
    the thumb finds Like in a different place depending on which feed it is in.
@@ -6489,7 +6489,7 @@ html[data-motion="reduced"] .ow-world__stars{animation:none !important}
 .po-act--icon{display:inline-flex;align-items:center;gap:6px;padding:8px 11px;
   line-height:1}
 .po-act--icon svg{width:17px;height:17px;stroke:currentColor;fill:none;
-  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;display:block}
+  stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;display:block}
 .po-act--icon b{font-family:var(--ow-font);font-weight:600;font-size:12.5px;
   letter-spacing:0}
 /* pressed = this is YOUR answer. The heart fills, because a half-hearted
@@ -7027,7 +7027,7 @@ html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after,
 .po-acts--rail .po-act,
 .po-card__foot .po-acts .po-act{
   background:none;box-shadow:none;padding:0;border-radius:0;
-  color:var(--ow-ink-2);
+  color:var(--ow-ink);
   transition:transform .18s var(--ow-spring),color .18s var(--ow-ease)}
 .po-acts--rail .po-act:hover,
 .po-card__foot .po-acts .po-act:hover{color:var(--ow-ink);transform:scale(1.08)}
@@ -7040,7 +7040,7 @@ html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after,
   flex-direction:column;flex-wrap:nowrap;align-items:center;gap:15px;
   z-index:2;pointer-events:auto}
 .po-acts--rail .po-act{flex-direction:column;gap:3px}
-.po-acts--rail .po-act svg{width:25px;height:25px;stroke-width:1.75;
+.po-acts--rail .po-act svg{width:28px;height:28px;stroke-width:2;
   /* a glyph must survive whatever photograph is under it — a shadow, not a
      plate, because a plate behind every icon rebuilds the buttons this exists
      to remove. Not `filter`: the mobile safe floor strips it, and these sit on
@@ -7076,8 +7076,8 @@ html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after,
   justify-content:space-between;width:100%;flex-wrap:nowrap}
 .po-card__foot .po-acts .po-act{flex:0 0 auto}
 .po-card__foot .po-acts .po-act{flex-direction:row;gap:6px}
-.po-card__foot .po-acts .po-act svg{width:19px;height:19px}
-.po-card__foot .po-acts .po-act b{font-size:12px;font-weight:600}
+.po-card__foot .po-acts .po-act svg{width:23px;height:23px}
+.po-card__foot .po-acts .po-act b{font-size:13.5px;font-weight:650}
 
 /* a count of zero is not a number to print — the glyph alone is the honest
    state, and "0" reads as a judgement nobody made */
@@ -7102,7 +7102,7 @@ html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after,
   flex-direction:column;gap:3px;background:none;box-shadow:none;padding:0;
   color:#fff}
 .ow-fpos[data-kind="media"] .po-card__foot .po-acts .po-act svg{
-  width:25px;height:25px;stroke-width:1.75;paint-order:stroke;stroke-linejoin:round}
+  width:28px;height:28px;stroke-width:2;paint-order:stroke;stroke-linejoin:round}
 .ow-fpos[data-kind="media"] .po-card__foot .po-acts .po-act b{
   font-size:11.5px;font-weight:600;letter-spacing:.01em;color:#fff}
 .ow-fpos[data-kind="media"] .po-card__foot .po-acts::before{content:"";position:absolute;
@@ -8249,7 +8249,9 @@ html[data-theme="light"][data-theme="light"] .po-sheet__seam{
 .ow-post__nm span{font-size:12px;color:var(--ow-ink-3)}
 .ow-post__t{font-family:var(--ow-font-display);font-weight:650;font-size:22px;
   letter-spacing:-.01em;line-height:1.18;margin:0 0 8px;color:var(--ow-ink)}
-.ow-post__body p{font-size:16px;line-height:1.6;color:var(--ow-ink-2);margin:0 0 10px}
+/* a Post's words on its own page are the ink, never the grey (the founder, 2026-10-09: "no posts should have
+   captions with grey text") */
+.ow-post__body p{font-size:16px;line-height:1.6;color:var(--ow-ink);margin:0 0 10px}
 .ow-post__media{margin:12px 0;border-radius:18px 15px 19px 16px;overflow:hidden;
   background:rgba(var(--ow-h1),.10)}
 .ow-post__media img,.ow-post__media video{width:100%;display:block}
@@ -12101,3 +12103,30 @@ html[data-ow-thread] .ow-thread__foot .ow-props{position:fixed;left:0;right:0;z-
 .ow-day__lic{margin:0 0 10px}
 .ow-day__lic.is-urgent{background:color-mix(in srgb,#e03131 10%,transparent);border-color:color-mix(in srgb,#e03131 32%,transparent)}
 .ow-day__licsub{display:block;font:400 12.5px/1.4 var(--ow-font);color:var(--ow-ink-2)}
+
+/* ── THE POST'S CONTROLS, LARGER AND MORE DEFINED, AND THE LIKE THAT SMASHES ───────────────────────────────────
+   ★ FOUNDER, 2026-10-09: "our heart icon larger and more defined and visual rounded wise, with a smash of an
+     animation ... make all of the icons larger and more defined and leave less dead space in the post cards".
+   The glyphs are 23px on a card and 28px on the Scroll's rail (from 19 and 25), drawn at 2-2.1 in the ink, not
+   the grey; the counts 13.5px. A like pops past its size, settles and glows once in its own colour; the touch
+   target (`.po-act::after`) is untouched, so nothing moves under the thumb. */
+.po-act[data-po-respond="like"].is-smash > svg{animation:ow-smash .62s cubic-bezier(.2,1.5,.35,1) both;transform-origin:50% 55%}
+@keyframes ow-smash{
+  0%{transform:scale(.55);filter:drop-shadow(0 0 0 currentColor)}
+  38%{transform:scale(1.48);filter:drop-shadow(0 0 9px currentColor)}
+  60%{transform:scale(.88)}
+  80%{transform:scale(1.08)}
+  100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}}
+@media (prefers-reduced-motion:reduce){.po-act[data-po-respond="like"].is-smash > svg{animation:none}}
+html[data-ow-motion="reduce"] .po-act[data-po-respond="like"].is-smash > svg{animation:none}
+
+/* ── LIKES AND DISLIKES, THE PERSON'S CHOICE (Settings > Appearance; OW.likes) ─────────────────────────────────
+   The App's own choice row; each option shows the two marks it gives. */
+.ow-likepick{display:flex;gap:8px;flex-wrap:wrap}
+.ow-likepick .po-act{display:inline-flex;align-items:center;gap:10px;padding:10px 14px;font-size:13.5px}
+.ow-likepick .po-act b{font-weight:650}
+.ow-likepick .po-act em{font-style:normal;opacity:.75;font-size:12.5px}
+.ow-likepick__g{display:inline-flex;gap:6px}
+.ow-likepick__g svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* the Facebook style's held like is Facebook's blue, the Instagram style's stays the red (--ow-like) */
+html[data-ow-likes="facebook"]{--ow-like:#2d88ff;--ow-like-rgb:45,136,255}

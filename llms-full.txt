@@ -58,6 +58,8 @@ to running full businesses and zooming in on the operations of specific location
 
 OS Brain
 
+iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
+
 Connect your casino in one place.
 
 Open Oneway OS Oneway OS
@@ -71,11 +73,8 @@ Organization .yourplace
 
 Reserve your @name
 
-Reserved
-@you
-
+@you Reserved
 Held for · —
-
 Reserve another name
 
 Go anywhere. Connect everywhere.
@@ -85,237 +84,18 @@ Oneway OS ›
 Business OS ›
 Developer OS
 
+Ecosystem
+Our Approach
 Oneway App
 Oneway OS
 About
+Security
+Contact
 Privacy
 Terms
 Corporate Charter
 
 2027, Oneway Technologies LLC
-
-iMac is a trademark of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
-
----
-
-## Oneway App
-
-Source: https://oneway.center/app (last changed 2026-10-09)
-
->
-
-Sign in
-Claim your @name
-
-App
-
-Go anywhere. Connect everywhere.
-
-Follow your friends and the places you love. The App greets you by name and shows what the people and places you follow are posting, as cards or full screen.
-
-Claim your @name Open the App
-
-Discovery
-Find people and places on the map.
-Search for places, events and people near you or anywhere on Earth, and choose whether anyone sees your location.
-
-Centers
-Get to know the places you go.
-Each place can show its posts, events, people and its own website, and you can follow, join or message it.
-
-Events
-Say you're going.
-Reply Going, Maybe or Not going, see how many people are going, and add the event to your Home.
-
-Messages
-Message friends and places from one list.
-Write to a friend or to a place you plan to visit. A visitor can message a place without an account.
-
-Lightbulb
-The camera opens first.
-Add photos, videos or a link, then post to your profile or to a place you belong to.
-
-My Center
-
-Choose how your profile looks.
-
-Choose your picture, colour, @name and bio, and add links to your other profiles, each shown with its real icon.
-
-Claim your name.
-
-Personal @name
-Organization .name
-
-@
-
-Claim my @name
-
-Your name is reserved.
-@you
-
-It is held for your email while Oneway opens in stages.
-
-· —
-
-Open the App
-
-Oneway remembers the people and places you care about, and that memory is private by default.
-
-Each @name belongs to whoever claims it first.
-
-The name you claim becomes your one name across Oneway.
-
-Claim your @name
-
-Oneway OS for organizations
-
-Oneway
-Oneway OS
-Privacy
-Terms
-2027, Oneway Technologies LLC
-
-Claim your @name
-
----
-
-## Oneway OS
-
-Source: https://oneway.center/os (last changed 2026-10-09)
-
->
-
-How it works
-System Store
-Access
-Oneway App
-
-Sign in
-OS
-
-OS
-
-Connect your casino in one place.
-
-A casino, a hotel, a stadium, a city, a restaurant, a club — give it a Center, and give the people who care about it somewhere to gather.
-
-Open Oneway OS →
-View Systems
-
-How it works
-
-One Center. Then everything connects.
-
-Oneway OS gives every team, business, community, or project a Center. Brain sits underneath it, the System Store adds capabilities, and every installed System routes back through Brain — so the whole operation moves as one.
-
-Center →
-Brain →
-System Store →
-Installed Systems →
-Team · website · operations
-
-In Oneway OS
-
-The base layer, included.
-
-Every Center starts with the essentials — the environment, the intelligence, and the front door. Everything else is included on top.
-
-Your whole operation, one view
-Members, activity and the day-to-day in a single connected home.
-
-AI that remembers
-Your organization remembers its members, conversations and how the work gets done.
-
-Capabilities, included
-Install whatever your Center needs — each one connects back through Brain.
-
-Your team in one place
-Departments, roles and the daily work, together.
-
-Set up in one guided run
-Identity, Brain, Systems and team — ready from day one.
-
-One inbox for the public
-Every message, request and signup arrives in one place.
-
-System Store
-
-Everything your Center needs.
-
-Systems are installable capabilities — every one is included with your Center. Install whatever you need, unlimited; each connects back into Brain so the whole operation moves as one.
-
-Your Center 0 / 8 systems active
-
-Hotel Ops
-Marketing
-Website
-Newsroom
-Video Ads
-Social
-Team Ops
-More
-
-Every Center includes every System. Install only what you need.
-
-Room to grow
-
-Oneway OS, Business OS and Developer OS.
-
-Oneway OS
-A free operating environment with the basic capabilities of a Center: its public side, its community, and the tools to run it.
-
-Oneway Business OS
-The full business operating system: the Brain, Systems, Agents, Cross Projection and operational intelligence.
-
-Oneway Developer OS
-The developer platform for building applications, systems, integrations, agents and custom experiences on Oneway.
-
-Brain access
-
-Brain access by plan.
-
-Free
-Memory that makes Oneway more useful over time — it remembers the people, places and events you interact with.
-
-Oneway+
-Your private Personal Brain — your own map, deeper recommendations and more control over what it remembers.
-
-Oneway Business OS
-Operational AI for your whole organization — the Center Brain runs across your team, members, messaging, marketing and operations.
-
-When a user joins a Center, the Center Brain learns only permitted facts needed to operate it — membership, role, and activity inside that Center. Private personal context does not automatically leak into Centers.
-
-How a Center grows
-
-Start as a community. Grow into an operation.
-
-Stage 1
-Community
-Members, channels, events, and shared resources.
-
-Stage 2
-Connected
-+ a public website, public intake, and Brain.
-
-Stage 3
-Operational
-+ installed Systems, a Team Portal, and staff.
-
-Stage 4
-Enterprise
-+ multiple Systems, departments, and advanced Brain.
-
-Build your Center on Oneway OS.
-
-Open Oneway OS →
-Create your account
-
-Built for communities, organizations, businesses, and places.
-
-Oneway
-Oneway App
-Hotel Operations
-Privacy
 
 ---
 

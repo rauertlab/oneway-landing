@@ -1739,12 +1739,24 @@
      THIS FUNCTION STAYS, and it still holds, for any caller that genuinely has
      both gestures on one target. It is simply not on the Post-open path any
      more; `home.js` calls it only for a tap that landed in a like zone. */
-  OW.openAfterTap = function (fn) {
-    var at = (global.performance || Date).now();
-    global.setTimeout(function () {
-      if (OW.tapGuard > at - 40) return;      /* it was a double tap */
+  /* ── THE DOUBLE TAP THAT STILL OPENED THE POST, FIXED AT THE ROOT (the founder, 2026-10-09: "fix the double tap to
+     like bug opening posts, multiple attempts have been made on the issue before to no prevail ... users can 2 tap
+     anywhere on the post to like it ... ideally it knows just one press means open post after a sec").
+     A double tap is two clicks, and EACH click asked for an open. The guard was stamped at the second pointerdown
+     and compared with each click's own time minus 40 ms, so the second click's open (scheduled 50-150 ms after its
+     pointerdown on a phone) was never cancelled, and the Post opened 300 ms after the like. Now one open waits per
+     card: a second click inside the window cancels the waiting open instead of adding its own, and any open still
+     waiting gives up if a double tap landed after it was asked for. */
+  var OPEN_AFTER_MS = 300, DOUBLE_GUARD_MS = 600;
+  OW.openAfterTap = function (fn, key) {
+    var k = key || doc, at = (global.performance || Date).now();
+    if (k.__owTapWait) { global.clearTimeout(k.__owTapWait); k.__owTapWait = 0; return; }
+    if (OW.tapGuard && at - OW.tapGuard < DOUBLE_GUARD_MS) return;      /* the second press of a double tap */
+    k.__owTapWait = global.setTimeout(function () {
+      k.__owTapWait = 0;
+      if (OW.tapGuard >= at) return;      /* a double tap landed while this waited */
       fn();
-    }, 320);
+    }, OPEN_AFTER_MS);
   };
 
   /* IS THIS TAP INSIDE THE LIKE ZONE — the one question both halves ask, so
@@ -1793,21 +1805,21 @@
                        + '[data-po-repost], [data-po-save], [data-po-share], [data-po-who], '
                        + '[data-po-center], a, input, textarea')) return null;
 
-    var media = target.closest('.po-card__media, .po-card__cover, .po-shots');
-    if (media) return media;
-
-    var card = target.closest('.po-card[data-po-id]');
-    if (!card) return null;
-    /* NO MEDIA ON THIS CARD → THE CARD IS THE ZONE. */
-    if (card.querySelector('.po-card__cover, .po-card__media, .po-shots')) return null;
-    return card;
+    /* ANYWHERE ON THE POST (the founder, 2026-10-09: "users can 2 tap anywhere on the post to like it"): the words,
+       the picture, the space between. Only the controls, links and faces above keep their own taps. */
+    return target.closest('.po-card[data-po-id]');
   };
 
   /* DOES THIS LIKE ZONE ALSO OPEN? Only the text-Post case does, and only it
      pays the wait. One function so the gesture and the open cannot disagree
      about which case they are in — the same reason `likeZone` is shared. */
-  OW.likeZoneOpens = function (zone) {
-    return !!(zone && zone.classList && zone.classList.contains('po-card'));
+  /* EVERY ZONE OPENS, AFTER THE BEAT (one press = open the Post a moment later; two = like it, never open), except
+     the picture in the full-screen Scroll, where a tap on the media is the viewer's own and never an open. */
+  OW.likeZoneOpens = function (zone, target) {
+    if (!zone) return false;
+    if (target && target.closest && doc.documentElement.getAttribute('data-ow-view') === 'immersive'
+        && target.closest('.po-card__media, .po-card__cover, .po-shots')) return false;
+    return true;
   };
 
   (function () {
@@ -1820,9 +1832,8 @@
       if (hue) n.style.setProperty('--h', hue);
       n.style.left = x + 'px';
       n.style.top = y + 'px';
-      n.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
-        + '<path d="M12 21s-7.5-4.9-7.5-10.2A4.8 4.8 0 0 1 12 7.3a4.8 4.8 0 0 1 '
-        + '7.5 3.5C19.5 16.1 12 21 12 21z"/></svg>';
+      /* the double tap's bloom is the like the person chose (OW.likes): a heart, or a thumbs up */
+      n.innerHTML = OW.glyph((OW.likes && OW.likes.glyph()) || 'heart');
       doc.body.appendChild(n);
       var gone = function () { if (n.parentNode) n.parentNode.removeChild(n); };
       n.addEventListener('animationend', gone, { once: true });
@@ -1894,7 +1905,7 @@
           } else {
             try { cvid.pause(); } catch (_) {}
           }
-        });
+        }, cv.closest('.po-card') || cv);
         return;
       }
     }
@@ -1912,6 +1923,26 @@
           b.setAttribute('aria-pressed', 'false'); b.setAttribute('data-act', 'off');
         }
       });
+      /* ── THE NUMBER MOVES WITH THE PRESS (the founder, 2026-10-09: "make sure things like live like counters and
+         allat is working ... ULTRA CONSITANTLY"). Measured that day: a like turned the heart on and its count stayed
+         at 0, because every tally was painted only from the live bus, and the bus was not watching that card. Now the
+         press moves its own number and the cleared opinion's at once; the server's answer then paints the true counts
+         on every copy of this Post on screen (OW.realtime.paintCounts); a refusal puts the numbers back. */
+      var wasOn = r.getAttribute('aria-pressed') === 'true';
+      var before = [];
+      function bump(btn, d) {
+        var b = btn.querySelector('b');
+        if (!b || btn.closest('[data-counts-hidden]')) return;
+        before.push([b, b.textContent]);
+        b.textContent = String(Math.max(0, (parseInt(b.textContent, 10) || 0) + d));
+      }
+      bump(r, wasOn ? -1 : 1);
+      sibs.forEach(function (x) { if (x[1] === 'true') bump(x[0], -1); });
+      /* THE SMASH (the founder: "with a smash of an animation"): a like pops, overshoots and settles, once */
+      if (!wasOn && verb === 'like') {
+        r.classList.remove('is-smash'); void r.offsetWidth; r.classList.add('is-smash');
+        global.setTimeout(function () { r.classList.remove('is-smash'); }, 700);
+      }
       /* the control says what it is answering; `gallery` remains the default
          so every existing caller behaves exactly as before */
       var okind = r.getAttribute('data-okind') || 'post';
@@ -1925,10 +1956,15 @@
          refused) was left dark while the server still held the like
          (founder/502 sweep). */
       if (pr && pr.then) pr.then(function (res) {
-        if (res && !res.ok && !res.queued) sibs.forEach(function (x) {
-          x[0].setAttribute('aria-pressed', x[1] || 'false');
-          x[0].setAttribute('data-act', x[2] || 'off');
-        });
+        var counts = res && res.ok && res.data && res.data.responses && res.data.responses.counts;
+        if (counts && OW.realtime && OW.realtime.paintCounts) OW.realtime.paintCounts(id, counts);
+        if (res && !res.ok && !res.queued) {
+          sibs.forEach(function (x) {
+            x[0].setAttribute('aria-pressed', x[1] || 'false');
+            x[0].setAttribute('data-act', x[2] || 'off');
+          });
+          before.forEach(function (x) { x[0].textContent = x[1]; });
+        }
       });
       return;
     }
@@ -2584,42 +2620,9 @@ function iconTab(id, label, render, n) {
     /* THE GEAR, UPPER RIGHT. Only when this surface actually has a menu —
        somebody else's profile has no settings to open, and a gear that opens
        nothing is worse than no gear. */
-    if (typeof o.menu === 'function') {
-      /* ── A MARK, NOT A BUTTON ───────────────────────────────────────────
-         ★ FOUNDER, 2026-08-26: *"the button shouldn't look ai generated nor
-           have that border around it."*
-
-         It had a plate: a tinted rounded rectangle with a 1.5px hue ring
-         around a stock twelve-tooth cog. Two faults in one control — a
-         CONTAINER where the surface already provides one (the header sits on
-         the banner; a chip on top of it is a second surface for no reason),
-         and the most generic possible glyph inside it.
-
-         So the plate is gone entirely and the mark is drawn for this platform:
-         three concentric arcs with a single break, which reads as adjustment —
-         a dial, not a machine part — and matches the thin-stroke geometry the
-         rest of the App is drawn in. Nothing behind it, nothing around it. */
-      var gear = mk('button', 'ow-shell__gear'); gear.type = 'button';
-      gear.setAttribute('aria-label', 'Settings and your account');
-      gear.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">'
-        + '<circle cx="12" cy="12" r="2.1"/>'
-        + '<path d="M12 4.2a7.8 7.8 0 0 1 7.6 6.1"/>'
-        + '<path d="M19.7 13.5A7.8 7.8 0 0 1 12 19.8"/>'
-        + '<path d="M10.3 19.6A7.8 7.8 0 0 1 4.3 13"/>'
-        + '<path d="M4.5 10.2A7.8 7.8 0 0 1 9.6 4.6"/>'
-        + '<path d="M12 7.4v1.6M16.6 12h-1.6M12 16.6v-1.6M7.4 12h1.6"/>'
-        + '</svg>';
-      gear.addEventListener('click', function () {
-        if (typeof o.onMenu === 'function') {
-          o.onMenu(gear, function (id, label, render) {
-            show({ id: id, label: label, render: render });
-          });
-          return;
-        }
-        show({ id: '__menu', label: 'Menu', render: o.menu });
-      });
-      root.appendChild(gear);
-    }
+    /* NO DIAL ON THE PROFILE (the founder, 2026-10-09: "on a persons profile the compass with appeance STILL EXISTS
+       Instead of being moved into the new settings menu like it was supposed to"). Settings is the gear beside the
+       bell (founder/495), and the dial's Appearance is a row there now (settingsMenu, Content and display). */
     root.appendChild(bar);
     root.appendChild(panel);
     host.appendChild(root);
@@ -3787,7 +3790,7 @@ function iconTab(id, label, render, n) {
           /* WHAT THE SERVER DID NOT KEEP IS SAID, in its own words (founder/660): a 25th
              widget was dropped while the screen showed it chosen */
           var notKept = ((r.data && r.data.refused) || []).map(function (x) { return x && x.words; }).filter(Boolean);
-          if (notKept.length && OW.toast) OW.toast(notKept.join(' · '));
+          if (notKept.length && OW.toast) OW.toast(spoken(notKept.join(' · ')));
           data.invalidate('/api/oneway/people/');
           style.profile_widgets = clear ? undefined : chose.slice();
           host.innerHTML = '';
@@ -3906,7 +3909,7 @@ function iconTab(id, label, render, n) {
       var kindEl = card.querySelector('[data-okind]');
       if (kindEl && kindEl.getAttribute('data-okind') !== 'post') return;
       var zone = OW.likeZone && OW.likeZone(e.target);
-      var waits = zone && OW.likeZoneOpens && OW.likeZoneOpens(zone);
+      var waits = zone && OW.likeZoneOpens && OW.likeZoneOpens(zone, e.target);
       if (zone && !waits) return;
       var pid = card.getAttribute('data-po-id');
       if (!pid || typeof global.openPost !== 'function') return;
@@ -3914,7 +3917,7 @@ function iconTab(id, label, render, n) {
       var origin = { node: card, rect: { top: r.top, left: r.left, width: r.width, height: r.height },
                      at: { x: e.clientX, y: e.clientY } };
       var enter = function () { global.openPost(pid, origin); };
-      if (waits && OW.openAfterTap) { OW.openAfterTap(enter); return; }
+      if (waits && OW.openAfterTap) { OW.openAfterTap(enter, card); return; }
       enter();
     });
   };
@@ -6096,8 +6099,6 @@ function iconTab(id, label, render, n) {
           var _t = OW.opps && OW.opps.tabEntry && OW.opps.tabEntry('me', _om.offering);
           return _t ? [_t] : [];
         })()), acts: myActs,
-        menu: function (pane) { return settings(pane); },
-        onMenu: function (anchor, open) { personMenu(anchor, open, style, email, tabs); }
       });
       /* AFTER the shell, because the read is asynchronous and the node is
          already mounted — nothing waits on the network to appear. */
@@ -6530,101 +6531,6 @@ function iconTab(id, label, render, n) {
        'The world stops moving; everything still works.']
     ]]
   ];
-
-  /* ═══ THE PERSON'S MENU — a dropdown, and Settings is its own page ══════
-     ★ FOUNDER, 2026-08-26: *"settings should be its own page or dropdown."*
-
-     THE FIRST VERSION WAS A LIST OF ROWS AND THAT WAS THE MISTAKE. Four
-     destinations rendered as text rows in a plate — a shape that could belong
-     to any product, and one that buried Settings as the fourth line of an
-     index nobody asked to read. A person reaching for the gear wants Settings;
-     making them read a menu first to get there is a step that earns nothing.
-
-     So the gear opens a short dropdown, each entry carries its OWN mark, and
-     every one of them opens as a FULL PAGE — the same mechanism the tabs use,
-     so a pane is a pane wherever it was opened from and there is no second
-     kind of surface to maintain.
-
-     THE MARKS ARE THE POINT. Strip the words and each is still identifiable:
-     a node graph for Understanding, a stack of records for Your activity, a
-     filled disc in the person's own colour for Appearance, two tracks with
-     knobs for Settings. That is §17 — hue and form are recognition — applied
-     to a menu instead of to a Popit. */
-  var MENU_MARKS = {
-    calendar: '<rect x="4" y="5.5" width="16" height="14.5" rx="3"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
-    understanding: '<circle cx="6" cy="7" r="1.7"/><circle cx="17" cy="5.5" r="1.4"/>'
-         + '<circle cx="12" cy="13" r="2.1"/><circle cx="19" cy="16" r="1.5"/>'
-         + '<circle cx="6.5" cy="17.5" r="1.5"/>'
-         + '<path d="M6 7l6 6M17 5.5L12 13M12 13l7 3M12 13l-5.5 4.5"/>',
-    activity: '<path d="M4 6.5h13M4 11h16M4 15.5h9M4 20h11"/>'
-            + '<circle cx="19.5" cy="15.5" r="1.4"/>',
-    appearance: '<circle cx="12" cy="12" r="7.4" class="ow-dd__disc"/>'
-        + '<path d="M12 4.6a7.4 7.4 0 0 1 0 14.8"/>',
-    settings: '<path d="M3.5 8.5h17M3.5 15.5h17"/>'
-            + '<circle cx="9" cy="8.5" r="2.5"/><circle cx="15.5" cy="15.5" r="2.5"/>'
-  };
-
-  function personMenu(anchor, open, style, email, tabs) {
-    /* one at a time — a second dropdown over the first is two answers to one
-       press, and the older one keeps its own click handlers alive */
-    var old = doc.querySelector('.ow-dd'); if (old) old.remove();
-
-    function tabRender(id) {
-      var t = (tabs || []).filter(function (x) { return x.id === id; })[0];
-      return t && t.render;
-    }
-
-    var items = [
-      ['settings', 'Settings', 'Privacy, who can reach you, notifications'],
-      ['appearance', 'Appearance', 'Your colour, banner and profile Popits'],
-      ['calendar', 'Calendar', 'Your stays, bookings and plans, in order'],
-      ['understanding', 'Understanding', 'What your world adds up to'],
-      ['activity', 'Your activity', 'Everything ONEWAY holds about you']
-    ];
-
-    var dd = mk('div', 'ow-dd');
-    dd.setAttribute('role', 'menu');
-    items.forEach(function (it) {
-      var b = mk('button', 'ow-dd__row'); b.type = 'button'; b.setAttribute('role', 'menuitem');
-      b.innerHTML =
-        '<span class="ow-dd__mark"><svg viewBox="0 0 24 24" aria-hidden="true">'
-        + (MENU_MARKS[it[0]] || '') + '</svg></span>'
-        + '<span class="ow-dd__txt"><span class="ow-dd__t">' + esc(it[1]) + '</span>'
-        + '<span class="ow-dd__n">' + esc(it[2]) + '</span></span>';
-      b.addEventListener('click', function () {
-        close();
-        /* A REAL NAVIGATION, not a panel swap — so Back works, the URL is
-           shareable and a reload lands where the person was. The App owns the
-           router; the runtime asks it rather than reaching into it. */
-        doc.dispatchEvent(new CustomEvent('ow:go-account', { detail: { to: it[0] } }));
-      });
-      dd.appendChild(b);
-    });
-
-    /* ANCHORED TO THE GEAR, and kept on screen. A dropdown that opens off the
-       right edge on a phone is a menu the person cannot read. */
-    (anchor.offsetParent || doc.body).appendChild(dd);
-    var a = anchor.getBoundingClientRect();
-    var host = (anchor.offsetParent || doc.body).getBoundingClientRect();
-    dd.style.top = (a.bottom - host.top + 10) + 'px';
-    dd.style.right = Math.max(8, host.right - a.right) + 'px';
-    requestAnimationFrame(function () { dd.classList.add('is-in'); });
-
-    function close() {
-      dd.classList.remove('is-in');
-      doc.removeEventListener('keydown', onKey, true);
-      doc.removeEventListener('pointerdown', onOut, true);
-      setTimeout(function () { dd.remove(); }, 160);
-    }
-    function onKey(e) { if (e.key === 'Escape') { e.stopPropagation(); close(); } }
-    function onOut(e) {
-      if (dd.contains(e.target) || anchor.contains(e.target)) return;
-      close();
-    }
-    doc.addEventListener('keydown', onKey, true);
-    doc.addEventListener('pointerdown', onOut, true);
-    var first = dd.querySelector('.ow-dd__row'); if (first) first.focus();
-  }
 
   function settings(host) {
     loading(host, 2);
@@ -7561,7 +7467,7 @@ function iconTab(id, label, render, n) {
           /* and what it refused is said, in the server's own words — it reported them and
              nothing read them, so a 13th banner vanished in silence (founder/660) */
           var notKept = ((r.ok && r.data && r.data.refused) || []).map(function (x) { return x && x.words; }).filter(Boolean);
-          if (notKept.length && OW.toast) OW.toast(notKept.join(' · '));
+          if (notKept.length && OW.toast) OW.toast(spoken(notKept.join(' · ')));
           /* every caller of this ignores its answer, so it says a refusal
              itself — a banner or a shape that did not save is on this
              device only (founder/502 sweep) */
@@ -7848,9 +7754,12 @@ function iconTab(id, label, render, n) {
             up.firstChild.textContent = 'Upload a banner';
             var url = (r.data || {}).url || '';
             if (!url) return;
-            style.banner_urls = [url].concat(style.banner_urls || []).slice(0, 12);
+            /* THE SERVER KEEPS TWELVE AND SAYS SO (founder/660): this trimmed to 12 here, so a 13th banner
+               let the oldest go before the server saw it, and its words never reached the toast */
+            style.banner_urls = [url].concat(style.banner_urls || []);
             style.banner_url = url; style.banner_customized = true;
-            paintPicks(); save({ banner_url: url, banner_customized: true });
+            /* drawn at once, then drawn again from what the server kept, so the row never shows a 13th */
+            paintPicks(); save({ banner_url: url, banner_customized: true }).then(function () { paintPicks(); });
             var live = doc.querySelector('.ow-banner img');
             if (live) { live.src = imageUrl(url); }
             else {
@@ -7929,6 +7838,9 @@ function iconTab(id, label, render, n) {
      EACH FETCHES WHAT IT NEEDS. A deep link arrives with no profile in hand, so
      these cannot depend on My Center having run first — that dependency is
      precisely what made them subsections. */
+  /* the server's words are fragments made to be joined; a toast reads as a sentence, capital and stop */
+  function spoken(t) { t = sentence(t); return t.charAt(0).toUpperCase() + t.slice(1); }
+
   function ownStyle() {
     return data.get('/api/oneway/people/me/style').then(function (r) {
       return (r.ok && r.data && r.data.style) || {};
@@ -9050,7 +8962,11 @@ function iconTab(id, label, render, n) {
           { id: 'appearance', label: 'Appearance', icon: 'moon',
             value: (doc.documentElement.getAttribute('data-theme') === 'light' ? 'Light' : 'Dark'),
             keys: 'dark light mode theme galaxy background plain colour color logos icons black white mono simple',
-            move: ['Appearance', 'Plain background', 'Simple mode'], extra: marksRow },
+            move: ['Appearance', 'Plain background', 'Simple mode'], extra: function (body) { marksRow(body); likesRow(body); } },
+          /* THE PROFILE'S OWN LOOK, moved here from the dial that sat on the profile (the founder, 2026-10-09: "the
+             compass with appeance STILL EXISTS Instead of being moved into the new settings menu"). */
+          { id: 'go-look', label: 'Your colour, banner and Popits', icon: 'sliders', go: 'appearance',
+            keys: 'appearance profile look colour color hue banner popits customize style picture shape' },
           { id: 'discovery', label: 'Discovery', icon: 'compass',
             keys: 'personalised personalized discovery suggestions recommendations', move: ['Discovery'] },
           { id: 'accessibility', label: 'Accessibility', icon: 'access',
@@ -9824,6 +9740,33 @@ function iconTab(id, label, render, n) {
           var next = row.getAttribute('aria-pressed') !== 'true';
           row.setAttribute('aria-pressed', String(next));
           if (OW.marks) OW.marks.set(next ? 'color' : 'mono');
+        });
+        sec.appendChild(row);
+        body.appendChild(sec);
+      }
+
+      /* ── LIKES AND DISLIKES (the founder, 2026-10-09: "give users the option in settings and appeance to choose
+         between likes and dislikes (facebook) and instagram likes and dislikes maximize it"). The App's own choice
+         row, each option drawn with the marks it gives; pressing one redraws every like on screen (OW.likes). */
+      function likesRow(body) {
+        if (!OW.likes) return;
+        var sec = mk('div', 'ow-cust__row');
+        sec.appendChild(mk('span', 'ow-cust__lbl', 'Likes and dislikes'));
+        var row = mk('div', 'ow-choice ow-likepick');
+        row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Likes and dislikes');
+        [['instagram', 'Hearts', 'Like Instagram', 'heart'], ['facebook', 'Thumbs', 'Like Facebook', 'thumbup']].forEach(function (o) {
+          var b = mk('button', 'po-act'); b.type = 'button';
+          var on = OW.likes.get() === o[0];
+          b.setAttribute('aria-pressed', String(on)); b.setAttribute('data-act', on ? 'on' : 'off');
+          b.innerHTML = '<span class="ow-likepick__g">' + OW.glyph(o[3]) + OW.glyph('thumbdown') + '</span>'
+            + '<b>' + esc(o[1]) + '</b><em>' + esc(o[2]) + '</em>';
+          b.addEventListener('click', function () {
+            OW.likes.set(o[0]);
+            Array.prototype.forEach.call(row.children, function (x) {
+              var y = x === b; x.setAttribute('aria-pressed', String(y)); x.setAttribute('data-act', y ? 'on' : 'off');
+            });
+          });
+          row.appendChild(b);
         });
         sec.appendChild(row);
         body.appendChild(sec);

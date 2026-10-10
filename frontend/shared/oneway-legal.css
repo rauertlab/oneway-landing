@@ -60,7 +60,10 @@ html,body{min-height:100vh;background:var(--lg-bg);color:var(--lg-ink);font-fami
 @keyframes lg-fly{to{opacity:1}}
 @media (prefers-reduced-motion:reduce){#flyLogo{animation:none;opacity:1}}
 .hero-eyebrow{position:relative;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:20px}
-.hero h1{position:relative;font-size:clamp(48px,10vw,96px);font-weight:900;letter-spacing:-.04em;line-height:.95;color:#fff;text-transform:uppercase;margin-bottom:28px}
+/* the title as it is written: the word Oneway shows as Oneway (the founder, 2026-10-09: "i dont want the platform by
+   SEO to be refered to as ONEWAY all caps should be Oneway"). It was uppercased here, so About and Security read
+   ONEWAY on screen while their text said Oneway (C (web), 21:40Z). */
+.hero h1{position:relative;font-size:clamp(48px,10vw,96px);font-weight:900;letter-spacing:-.04em;line-height:.95;color:#fff;margin-bottom:28px}
 .hero-sub{position:relative;font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.78);max-width:520px;margin:0 auto;line-height:1.6}
 
 /* ── the page: the Settings menu's grammar (oneway-popit.css, SETTINGS AND PRIVACY, founder/501): one flat

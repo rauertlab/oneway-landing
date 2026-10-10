@@ -6,12 +6,6 @@
     <image:image><image:loc>https://oneway.center/frontend/site/app-screen-home.webp</image:loc></image:image>
     <image:image><image:loc>https://oneway.center/frontend/site/app-screen-center.webp</image:loc></image:image>
   </url>
-  <url><loc>https://oneway.center/app</loc><lastmod>2026-10-09</lastmod>
-    <image:image><image:loc>https://oneway.center/og-card.jpg</image:loc></image:image>
-  </url>
-  <url><loc>https://oneway.center/os</loc><lastmod>2026-10-09</lastmod>
-    <image:image><image:loc>https://oneway.center/og-card.jpg</image:loc></image:image>
-  </url>
   <url><loc>https://oneway.center/about</loc><lastmod>2026-10-09</lastmod>
     <image:image><image:loc>https://oneway.center/og-card.jpg</image:loc></image:image>
   </url>

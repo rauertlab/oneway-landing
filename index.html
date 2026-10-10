@@ -40,7 +40,7 @@
   <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center. We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway: your fully customizable social network and OS","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-09"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/os"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center. We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway: your fully customizable social network and OS","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-09"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#os"}]}</script>
   <!-- /SEO -->
   <!-- ═══ MOBILE RENDER SAFE-FLOOR + ON-DEVICE BISECTION (Priority Zero: the
        iPhone Safari renderer crash) ═══════════════════════════════════════
@@ -724,14 +724,23 @@ html[data-contrast="high"] .ow-thread + .ow-thread::before { background: rgba(25
 html[data-contrast="high"] .ow-set__row + .ow-set__row { border-color: rgba(255, 255, 255, 0.2); }
 html[data-contrast="high"] .ow-msg-sys, html[data-contrast="high"] .ow-msg__t { opacity: 1; }
 html[data-text="large"] .ow-main { zoom: 1.12; }
-html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; right: 0px; z-index: 119; bottom: calc(64px + env(safe-area-inset-bottom)); padding: 0px 10px; margin: 0px auto; max-width: 640px; }</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=d0adea78" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=d0adea78"></noscript>
+html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; right: 0px; z-index: 119; bottom: calc(64px + env(safe-area-inset-bottom)); padding: 0px 10px; margin: 0px auto; max-width: 640px; }
+@keyframes ow-smash { 
+  0% { transform: scale(0.55); filter: drop-shadow(currentcolor 0px 0px 0px); }
+  38% { transform: scale(1.48); filter: drop-shadow(currentcolor 0px 0px 9px); }
+  60% { transform: scale(0.88); }
+  80% { transform: scale(1.08); }
+  100% { transform: scale(1); filter: drop-shadow(transparent 0px 0px 0px); }
+}
+html[data-ow-motion="reduce"] .po-act[data-po-respond="like"].is-smash > svg { animation: auto ease 0s 1 normal none running none; }
+html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; }</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=3deb9ddd" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=3deb9ddd"></noscript>
   <script defer src="/frontend/shared/oneway-hue.js?v=28eb408a"></script>
-  <script defer src="/frontend/shared/oneway-popit.js?v=109cbae4"></script>
+  <script defer src="/frontend/shared/oneway-popit.js?v=742a9594"></script>
   <script defer src="/frontend/shared/oneway-links.js?v=c3df779e"></script>
   <!-- ★ FOUNDER/401: a Center opens RIGHT OVER this page — the App's own
        surface for it, projected, not a trip to the App. These are the App's
        surfaces and the one projection verb; a page anywhere can carry them. -->
-  <script defer src="/frontend/app/popit-live.js?v=5fd5f70d"></script>
+  <script defer src="/frontend/app/popit-live.js?v=17eeb9fc"></script>
   <!-- A CENTER'S SITE, PROJECTED (B, founder/437): the pages Lightbulb wrote, natively in
        the site's own fonts and colours, and the company's own site exactly, as the
        Center's categories. After popit-live.js, whose Center surface asks OW.site for them. -->
@@ -1457,8 +1466,8 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
     </a>
     <div class="nav-center">
       <a href="#account" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span>Ecosystem</a>
-      <a href="/app" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 17c.8-2.2 2.5-3.2 4.5-3.2s3.7 1 4.5 3.2"/></svg></span>Oneway App</a>
-      <a href="/os" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>Oneway OS</a>
+      <a href="#app" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 17c.8-2.2 2.5-3.2 4.5-3.2s3.7 1 4.5 3.2"/></svg></span>Oneway App</a>
+      <a href="#os" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>Oneway OS</a>
     </div>
   </div>
   <div class="nav-right">
@@ -1579,8 +1588,8 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
          hidden copy. -->
     <h1 class="hero-h1"><b class="vh">Oneway. </b><span><i>We build &amp; elevate experiences</i></span><span><i>people want to return&nbsp;to.</i></span></h1>
     <div class="hero-btns">
-      <a href="/app" class="h-btn-app" aria-label="Download the Oneway app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Download App</span></a>
-      <a href="/os" class="h-btn-os" aria-label="Explore Oneway OS"><img style="aspect-ratio:800/173" src="logo-black.png" alt="Oneway"/><span class="os">Explore Oneway OS</span></a>
+      <a href="#app" class="h-btn-app" aria-label="Download the Oneway app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Download App</span></a>
+      <a href="#os" class="h-btn-os" aria-label="Explore Oneway OS"><img style="aspect-ratio:800/173" src="logo-black.png" alt="Oneway"/><span class="os">Explore Oneway OS</span></a>
     </div>
     <!-- ★ FOUNDER/412: no "early access", no gemstone — the words are the line -->
     <div class="hero-beta">Selective server beta — open when accessible</div>
@@ -2084,7 +2093,10 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
   @media (max-width:640px){ .os-flow{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);font-size:16px} }
   .os-flow__a{grid-column:1;text-align:right}
   .os-flow__b{grid-column:2;text-align:left}
-  .footer-tm{max-width:1080px;margin:18px auto 0;padding:0 clamp(20px,5vw,48px);font-size:11.5px;line-height:1.5;color:rgba(255,255,255,.5)}
+  /* Apple's credit for the iMac and the iPhone the page shows, right under the iMac and as small as type renders
+     (the founder, 2026-10-09: "put this under the imac and add the iphone aswell and make it as small as phyiscally
+     possible"). Once per site, as Apple's guidelines ask; no association with Apple is claimed. */
+  .aio-tm{max-width:820px;margin:8px auto 0;font-size:7px;line-height:1.3;letter-spacing:.01em;color:rgba(255,255,255,.55);text-align:center}
   /* A REAL iMac (the founder, 2026-10-09: "have the computer reflect the real mold of an apple imac, not a random ai
      generated computer model"). The Silver iMac (M4, 2024), photographed by AzureSaturn and released CC0 on Wikimedia
      Commons, straightened from its screen's four corners to face front and cut out of the store. Apple's own bezels
@@ -2223,6 +2235,7 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
           </div>
         </div>
     </div>
+    <p class="aio-tm">iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.</p>
     <p class="os-connect rv d3">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</p>
     
   </div>
@@ -2259,10 +2272,10 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
   <div class="lp-wrap">
     <h2 class="lp-h2">Go anywhere. Connect everywhere.</h2>
     <nav class="ladder2" aria-label="Oneway, from the App to Developer OS">
-      <a href="/app" style="--h:139,92,255">Oneway App</a><i>›</i>
-      <a href="/os" style="--h:38,150,222">Oneway OS</a><i>›</i>
-      <a href="/os#tiers" style="--h:93,226,255">Business OS</a><i>›</i>
-      <a href="/os#tiers" style="--h:255,168,58">Developer OS</a>
+      <a href="#app" style="--h:139,92,255">Oneway App</a><i>›</i>
+      <a href="#os" style="--h:38,150,222">Oneway OS</a><i>›</i>
+      <a href="#os" style="--h:93,226,255">Business OS</a><i>›</i>
+      <a href="#os" style="--h:255,168,58">Developer OS</a>
     </nav>
   </div>
 </section>
@@ -2279,8 +2292,8 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
     <div class="footer-left">
       <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" class="footer-logo"/>
       <div class="footer-links">
-        <a href="/app">Oneway App</a>
-        <a href="/os">Oneway OS</a>
+        <a href="#app">Oneway App</a>
+        <a href="#os">Oneway OS</a>
         <a href="/about">About</a>
         <a href="/privacy">Privacy</a>
         <a href="/terms">Terms</a>
@@ -2289,9 +2302,6 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
     <!-- ★ FOUNDER/493: *"Put 2027, Oneway Technologies LLC"* -->
     <div class="footer-right">2027, Oneway Technologies LLC</div>
   </div>
-  <!-- the trademark credit for the iMac the OS is shown on (Apple's guidelines ask for it once per site); no
-       association with Apple is claimed or suggested -->
-  <p class="footer-tm">iMac is a trademark of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.</p>
 </footer>
 <script defer src="/frontend/landing/static/inline-08-9b71b0007e.js"></script>
 
