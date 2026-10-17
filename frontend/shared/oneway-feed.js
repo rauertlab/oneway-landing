@@ -1627,13 +1627,15 @@
     if (from && OW.originOpen) { try { OW.originOpen(from, inner); } catch (_) {} }
 
     if (OW.live && typeof OW.live.post === 'function') {
+      /* a stub fails by a rejected promise, never a throw (the boot split): either closes this overlay, never a later one */
+      var mine = live.over;
       try {
-        OW.live.post(page, id, {
+        Promise.resolve(OW.live.post(page, id, {
           onPerson: function (em) {
             doc.dispatchEvent(new CustomEvent('ow:open-person', { detail: { email: em } }));
           },
           onBack: closePost
-        });
+        })).catch(function () { if (live && live.over === mine) closePost(); });
       } catch (e) { closePost(); }
     } else {
       /* NO POST SURFACE MEANS NO OVERLAY — never an empty black sheet. Falling

@@ -1,3 +1,4 @@
+@import url('/frontend/landing/compat.css');
 /* ONEWAY — THE LEGAL PAGES (frontend/shared/oneway-legal.css)
    privacy.html, terms.html, data-deletion.html.
 
@@ -31,95 +32,93 @@ html[data-theme="light"]{
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-html,body{min-height:100vh;background:var(--lg-bg);color:var(--lg-ink);font-family:var(--lg-face);
+html,body{min-height:100vh;background:var(--lg-bg);color:var(--lg-ink);font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;   /* a literal stack, never only var() (test_landing_fonts.py) */
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 
-/* ── the bar ───────────────────────────────────────────────────────────── */
-.top-bar{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;
-  height:60px;padding:0 max(20px,calc((100% - 1040px)/2));background:#000}
-.logo{display:inline-flex;align-items:center}
-.logo .slot{height:20px;width:auto;display:block;opacity:0}   /* the dock: #flyLogo comes to rest here */
-.top-nav{display:flex;align-items:center;gap:22px}
-.top-nav a{font-size:14px;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none;transition:color .15s}
-.top-nav a:hover{color:#fff}
-.top-nav a.signin{color:#fff;padding:7px 15px;border-radius:999px;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
-.top-nav a.signin:hover{box-shadow:0 0 0 1px rgba(255,255,255,.7)}
-@media (max-width:720px){.top-nav{gap:14px}.top-nav a.wide{display:none}}
+/* ── the bar: the one top bar (oneway-bar.css), solid black above the red ──────────────────── */
 
 .back-link{font-size:14px;font-weight:500;color:rgba(255,255,255,.7);text-decoration:none}
 .back-link:hover{color:#fff}
 
 /* ── the title: the red hero stays, as the founder locked it (founder/493) and kept it on 2026-10-05:
    "keep the red header though dont completely redo it". Red in both themes; only the face is new. ── */
-.hero{background:#cc0000;padding:72px 24px 80px;text-align:center;position:relative;overflow:hidden}
+/* the founder, 2026-10-10: "for the RED BAR pages make the caption under the oneway wordmark disappear on all pages.
+   make the bar way smaller and keep simply SECUIRTY the small subtext. this should be for all": the red band holds the
+   wordmark and the page's name in small capitals, nothing else (the name is the page's one H1). */
+.hero{background:#cc0000;padding:30px 24px 26px;text-align:center;position:relative;overflow:hidden}
 .hero::before{content:'';position:absolute;inset:0;pointer-events:none;
   background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 4px)}
-.hero-mark{display:block;width:min(46vw,340px);height:auto;margin:0 auto 26px;visibility:hidden}   /* holds the start geometry */
-#flyLogo{filter:brightness(0) invert(1) drop-shadow(0 0 0 #fff) drop-shadow(0 0 0 #fff) drop-shadow(0 0 0 #fff);position:fixed;top:0;left:0;z-index:200;width:min(46vw,340px);height:auto;pointer-events:none;
-  transform-origin:center center;will-change:transform;opacity:0;animation:lg-fly .7s .1s ease forwards}
-@keyframes lg-fly{to{opacity:1}}
-@media (prefers-reduced-motion:reduce){#flyLogo{animation:none;opacity:1}}
-.hero-eyebrow{position:relative;font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:20px}
-/* the title as it is written: the word Oneway shows as Oneway (the founder, 2026-10-09: "i dont want the platform by
-   SEO to be refered to as ONEWAY all caps should be Oneway"). It was uppercased here, so About and Security read
-   ONEWAY on screen while their text said Oneway (C (web), 21:40Z). */
-.hero h1{position:relative;font-size:clamp(48px,10vw,96px);font-weight:900;letter-spacing:-.04em;line-height:.95;color:#fff;margin-bottom:28px}
-.hero-sub{position:relative;font-size:clamp(15px,2vw,18px);color:rgba(255,255,255,.78);max-width:520px;margin:0 auto;line-height:1.6}
+.hero-mark{display:block;width:min(40vw,190px);height:auto;margin:0 auto 14px}   /* where the wordmark starts its flight (oneway-bar.js) */
+.hero-eyebrow{position:relative;font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);text-transform:none;color:rgba(255,255,255,.9);margin:0}   /* the page's name: the caption role, the smallest the type system draws */
 
 /* ── the page: the Settings menu's grammar (oneway-popit.css, SETTINGS AND PRIVACY, founder/501): one flat
    list, small grey section headings, a label and its words on each row. No cards, no boxes, no lines.
    The founder, 2026-10-05: "layout like our settings menu no ai lines or boxes or cards". ── */
 .wrap{max-width:640px;margin:0 auto;padding:44px 24px 120px}
-.scope{font-size:17px;line-height:1.6;color:var(--lg-ink2);margin:0}
+/* ONE TYPE SYSTEM (the founder, 2026-10-17: "font spacing isn't even the same across pages"; these headings were 12.5px):
+   every word here plays one role of compat.css at its size, weight, line-height and spacing. The opening line is the
+   lead; a section's head is the sub (a column's or an item's head); a part inside a section, and the Contact block's
+   name, the italic mark; every sentence, list row and table cell the body; a label or a note the caption. Not a word of
+   these pages changes. */
+.scope{font-size:var(--lp-fs-lead);font-weight:500;line-height:var(--lp-lh-lead);letter-spacing:var(--lp-ls-lead);color:var(--lg-ink2);margin:0;text-wrap:pretty}
 .scope strong{color:var(--lg-ink);font-weight:600}
-h2{font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--lg-ink3);margin:40px 0 6px;scroll-margin-top:80px}
+h2{font-size:var(--lp-fs-sub);font-weight:850;line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading);color:var(--lg-ink);margin:52px 0 12px;scroll-margin-top:80px;text-wrap:balance}
 h2:first-child{margin-top:0}
-h3{font-size:12.5px;font-weight:600;letter-spacing:.01em;color:var(--lg-ink3);margin:28px 0 4px}
-p{font-size:15px;color:var(--lg-ink2);line-height:1.6;margin:8px 0}
+h3{font-style:italic;font-size:var(--lp-fs-mark);font-weight:900;line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display);color:var(--lg-ink);margin:32px 0 8px;text-wrap:balance}
+p{font-size:var(--lp-fs-body);font-weight:500;line-height:var(--lp-lh-body);letter-spacing:var(--lp-ls-body);color:var(--lg-ink2);margin:10px 0;text-wrap:pretty}
 ul,ol{margin:4px 0 8px;padding:0;list-style:none}
-li{font-size:15px;color:var(--lg-ink2);line-height:1.55;padding:7px 0}
+li{font-size:var(--lp-fs-body);font-weight:500;line-height:var(--lp-lh-body);letter-spacing:var(--lp-ls-body);color:var(--lg-ink2);padding:6px 0;text-wrap:pretty}
 a{color:var(--lg-ink);text-decoration:underline;text-decoration-color:var(--lg-ink3);text-underline-offset:3px}
 a:hover{text-decoration-color:var(--lg-accent)}
 strong{color:var(--lg-ink);font-weight:600}
 .divider{display:none}
 
 /* the contents: one plain list, like a Settings section */
-.toc{display:block;margin:30px 0 0}
-.toc-h{display:block;font-size:12.5px;font-weight:600;color:var(--lg-ink3);margin-bottom:2px}
-.toc a{display:block;font-size:15px;color:var(--lg-ink2);text-decoration:none;padding:5px 0}
+.toc{display:block;margin:36px 0 0}
+.toc-h{display:block;font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:var(--lg-ink3);margin-bottom:4px}
+.toc a{display:block;font-size:var(--lp-fs-body);font-weight:500;line-height:var(--lp-lh-body);letter-spacing:var(--lp-ls-body);color:var(--lg-ink2);text-decoration:none;padding:4px 0}
 .toc a:hover{color:var(--lg-ink)}
 
 /* a table is a list of rows: the label, then its words */
 .data-table{width:100%;border-collapse:collapse;margin:2px 0 8px}
 .data-table thead{display:none}
 .data-table tbody,.data-table tr{display:block}
-.data-table tr{display:grid;grid-template-columns:minmax(110px,30%) 1fr;column-gap:20px;padding:11px 2px}
-.data-table td{display:block;grid-column:2;padding:0;font-size:15px;line-height:1.55;color:var(--lg-ink2)}
+.data-table tr{display:grid;grid-template-columns:minmax(110px,30%) 1fr;column-gap:20px;padding:11px 0}   /* on the headings' left edge */
+.data-table td{display:block;grid-column:2;padding:0;font-size:var(--lp-fs-body);font-weight:500;line-height:var(--lp-lh-body);letter-spacing:var(--lp-ls-body);color:var(--lg-ink2)}
 .data-table td:first-child{grid-column:1;grid-row:1 / span 4;font-weight:500;color:var(--lg-ink)}
 .data-table td:first-child:only-child{grid-column:1 / -1}
-.data-table td:nth-child(3){font-size:13.5px;color:var(--lg-ink3);margin-top:2px}
+.data-table td:nth-child(3){font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:var(--lg-ink3);margin-top:2px}
 @media (max-width:600px){
-  .data-table tr{grid-template-columns:1fr;padding:11px 2px}
+  .data-table tr{grid-template-columns:1fr;padding:11px 0}
   .data-table td,.data-table td:first-child{grid-column:1;grid-row:auto}
   .data-table td:first-child{margin-bottom:2px}
 }
 
-.contact-block{margin-top:44px}
-.contact-block h3,.contact-block .block-label{margin:0 0 4px;font-size:12.5px;font-weight:600;color:var(--lg-ink3)}
+.contact-block{margin-top:56px}
+.contact-block h3,.contact-block .block-label{margin:0 0 8px;font-style:italic;font-size:var(--lp-fs-mark);font-weight:900;line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display);color:var(--lg-ink)}
 .contact-block p{margin:4px 0 0}
-.contact-meta{font-size:13px;color:var(--lg-ink3);margin-top:8px!important}
+.contact-meta{font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:var(--lg-ink3);margin-top:8px!important}
 
 /* data deletion: sections, steps, a note */
-.block{margin-bottom:36px}
-.block-label{font-size:12.5px;font-weight:600;color:var(--lg-ink3);margin:0 0 2px}
-.block h2{font-size:19px;font-weight:700;letter-spacing:-.01em;color:var(--lg-ink);margin:0 0 8px}
+.block{margin-bottom:48px}
+.block-label{font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:var(--lg-ink3);margin:0 0 6px}
+.block h2{font-size:var(--lp-fs-sub);font-weight:850;line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading);color:var(--lg-ink);margin:0 0 10px}
 .steps{counter-reset:s;margin:8px 0 12px}
 .steps li{padding:9px 0 9px 30px;position:relative}
-.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:2px;top:9px;font-size:14px;font-weight:600;color:var(--lg-ink3)}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:2px;top:9px;font-size:var(--lp-fs-body);font-weight:500;line-height:var(--lp-lh-body);letter-spacing:var(--lp-ls-body);color:var(--lg-ink3)}
 .warn-box{margin:14px 0}
-.warn-box p{margin:0;font-size:14px;color:var(--lg-ink2)}
+.warn-box p{margin:0;font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:var(--lg-ink2)}
+/* Data Deletion's word to Meta, at the end of the guide (founder/801: "a message at the end saying we made this page for
+   meta, threads, instagram and facebook, hello!"), then the Facebook instructions under it: one hairline above it */
+.meta-hello{margin-top:56px;padding-top:30px;border-top:1px solid var(--lg-rim)}
+.meta-hello h2{font-size:clamp(20px,4.8vw,24px);font-weight:700;letter-spacing:-.01em;line-height:1.3;color:var(--lg-ink);margin:0}
 
-footer{padding:28px max(24px,calc((100% - 1040px)/2));display:flex;align-items:center;
-  justify-content:space-between;font-size:13px;color:var(--lg-ink3);flex-wrap:wrap;gap:14px}
-footer a{color:var(--lg-ink3);text-decoration:none}
-footer a:hover{color:var(--lg-ink)}
+/* the footer is THE ONE FOOTER of every landing page (oneway-bar.css .owfoot, founder/801), in this page's ink. These
+   pages follow the person's light or dark room, so in the light room its wordmark is the black file (founder/519: a
+   different file, never a filter), as the bar's is in the OS's light room. */
+@media (prefers-color-scheme:light){
+  html:not([data-theme="dark"]):not([data-theme="light"]) .owfoot-mark img{content:url(/logo-black.png)}
+}
+html[data-theme="light"] .owfoot-mark img{content:url(/logo-black.png)}
+/* Data Deletion's word to Meta wears the sub role too, as every head on these pages does (one type system, 2026-10-17) */
+.meta-hello h2{font-size:var(--lp-fs-sub);font-weight:850;line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading)}

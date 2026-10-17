@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
   <title>Data Deletion · Oneway</title>
-  <meta name="description" content="What Oneway holds when you connect an account, and how to remove it. We do not hold your password for any platform.">
+  <meta name="description" content="How to delete your data and your account on Oneway: what goes at once, what is kept and why, and how to delete what Oneway received from Facebook.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://oneway.center/data-deletion">
   <link rel="alternate" hreflang="en" href="https://oneway.center/data-deletion">
@@ -17,93 +18,179 @@
   <meta property="og:locale" content="en_US">
   <meta property="og:url" content="https://oneway.center/data-deletion">
   <meta property="og:title" content="Oneway Data Deletion">
-  <meta property="og:description" content="What we hold when you connect an account, and how to remove it.">
+  <meta property="og:description" content="How to delete your data and your account on Oneway.">
   <meta property="og:image" content="https://oneway.center/og-card.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Oneway Data Deletion">
-  <meta name="twitter:description" content="What we hold when you connect an account, and how to remove it.">
+  <meta name="twitter:description" content="How to delete your data and your account on Oneway.">
   <meta name="twitter:image" content="https://oneway.center/og-card.jpg">
   <meta name="twitter:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
   <meta name="theme-color" content="#05050b">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
-  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
   <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
   <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
   <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
   <link rel="icon" href="/assets/icons/oneway-globe-512.png" sizes="512x512" type="image/png">
-  <link rel="icon" href="/app-icon-1024.png" sizes="1024x1024" type="image/png">
   <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center. We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/data-deletion#webpage","url":"https://oneway.center/data-deletion","name":"Data Deletion","headline":"Data Deletion · Oneway","description":"What Oneway holds when you connect an account, and how to remove it. We do not hold your password for any platform.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-09","breadcrumb":{"@id":"https://oneway.center/data-deletion#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://oneway.center/data-deletion#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Data Deletion","item":"https://oneway.center/data-deletion"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/data-deletion#webpage","url":"https://oneway.center/data-deletion","name":"Data Deletion","headline":"Data Deletion · Oneway","description":"How to delete your data and your account on Oneway: what goes at once, what is kept and why, and how to delete what Oneway received from Facebook.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-17","breadcrumb":{"@id":"https://oneway.center/data-deletion#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://oneway.center/data-deletion#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Data Deletion","item":"https://oneway.center/data-deletion"}]}]}</script>
   <!-- /SEO -->
   <meta name="color-scheme" content="dark light" />
-<rect width='32' height='32' rx='7' fill='%23000'/><text y='23' x='3' font-size='13' font-family='-apple-system,Arial Black,sans-serif' font-weight='900' font-style='italic' fill='%23fff' letter-spacing='-0.5'>OW</text></svg>" />
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a">
-  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=774e1cf5">
+  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=80c34e7d">
   <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only) */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
-  <noscript><style>.logo .slot{opacity:1}#flyLogo,.hero-mark{display:none}</style></noscript>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e9c47574"/>
 </head>
 <body>
 
-<div class="top-bar">
-  <a href="/" class="logo" aria-label="Oneway"><img class="slot" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" /></a>
-  <a href="/privacy" class="back-link">← Privacy Policy</a>
-</div>
+<nav class="owbar owbar--solid owbar--fly" aria-label="Oneway">
+  <div class="owbar-brand">
+    <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+    <div class="owbar-pages">
+      <a href="/mission">Our Mission</a>
+      <a href="/#app">App</a>
+      <a href="/#os">OS</a>
+      <a href="/security">Security</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+  <div class="owbar-right">
+    <a href="/beta" class="owbar-signin">Sign in</a>
+  </div>
+</nav>
+<script src="/frontend/shared/oneway-bar.js?v=5030702d"></script>
 
 <div class="hero">
-  <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" />
-  <div class="hero-eyebrow">Data &amp; Privacy</div>
-  <h1>Data<br>Deletion</h1>
-  <p class="hero-sub">What we hold when you connect an account, and how to remove it.</p>
+  <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" data-owbar-hero />
+  <h1 class="hero-eyebrow">Data Deletion</h1>
 </div>
 
-<!-- BODY -->
+<!-- BODY: A GENERAL GUIDE TO DELETING YOUR DATA AND YOUR ACCOUNT (founder/801: "make data deltion more of a general guide to
+     deletating the data and account on a profile with a message at the end saying we made this page for meta, threads,
+     instagram and facebook, hello! and then put the insturvtions for deleating the facebook data below"). Every step is
+     the product's own: the App's Settings rows (frontend/app/account/account.js), a Post's and a comment's Delete
+     (frontend/app/posts/posts.js), the deletion itself (api/oneway/identity/departure.py), what a disconnect removes
+     (api/oneway/distribution/routes.py), what Facebook and Threads hand Oneway (api/integrations/oauth_routes.py), and the
+     Privacy Policy's "How long we keep it". -->
 <div class="wrap">
 
-  <div class="block">
-    <div class="block-label">What We Hold</div>
-    <h2>When you connect an account</h2>
-    <ul>
-      <li>The access the platform gave us, kept encrypted and never shown back</li>
-      <li>The account's name and ID, and its picture, shown in Connected accounts</li>
-      <li>For Facebook and Instagram, the Pages you chose and their names</li>
-      <li>If you started an import, the posts we copied onto Oneway. They are your posts.</li>
-    </ul>
-    <p>We do not hold your password for any platform. For Bluesky, we hold an app password you can revoke.</p>
+  <p class="scope"><strong>How to delete what is yours on Oneway,</strong> from one post to your whole account: what goes at once, what is kept, for how long, and why. The <a href="/privacy">Privacy Policy</a> is the full account of what we hold.</p>
+
+  <nav class="toc" aria-label="Contents"><span class="toc-h">Contents</span><a href="#a-post">A post or a photo</a><a href="#a-comment">A comment</a><a href="#a-connected-account">A connected account</a><a href="#a-copy">A copy of your data</a><a href="#your-account">Your whole account</a><a href="#what-is-kept">What is kept, and why</a><a href="#facebook">For Meta, Threads, Instagram and Facebook</a></nav>
+
+  <div class="block" id="a-post">
+    <div class="block-label">On your profile</div>
+    <h2>A post or a photo</h2>
+    <ol class="steps">
+      <li>Open the post in the Oneway App</li>
+      <li>Press <strong>Delete</strong>, then <strong>Delete for good?</strong></li>
+      <li>It leaves your profile, every feed and every Center it was posted to at once, with its photos and videos.</li>
+    </ol>
+    <p>A photo goes with the post it is in. The files themselves are erased when you delete your account.</p>
   </div>
 
-  <hr class="divider" />
-
-  <div class="block">
-    <div class="block-label">Option 1 — From Oneway</div>
-    <h2>Disconnect an account</h2>
+  <div class="block" id="a-comment">
+    <div class="block-label">Under a post</div>
+    <h2>A comment</h2>
     <ol class="steps">
-      <li>Sign in at <strong>oneway.center</strong></li>
-      <li>Go to <strong>Settings → Connected accounts</strong></li>
-      <li>Press <strong>Disconnect</strong> next to the account</li>
-      <li>The stored access is deleted straight away, and so is the verified mark it gave your profile.</li>
+      <li>Open the post and find your comment</li>
+      <li>Press <strong>Delete</strong> beside it</li>
+      <li>It leaves the conversation at once, and the post's count goes down.</li>
     </ol>
   </div>
 
+  <div class="block" id="a-connected-account">
+    <div class="block-label">Instagram, Facebook, Threads, X and the others</div>
+    <h2>A connected account</h2>
+    <ol class="steps">
+      <li>In the Oneway App, open <strong>Settings</strong>, then <strong>Connected accounts</strong></li>
+      <li>Press <strong>Disconnect</strong> beside the account, then press it again</li>
+      <li>The access the platform gave Oneway is deleted straight away, and nothing more is sent there. Where connecting it verified that account on your profile, the verified mark goes with it.</li>
+    </ol>
+    <p>An account connected for a Center you run is disconnected the same way, in Oneway OS under <strong>Settings</strong>, then <strong>Connected accounts</strong>.</p>
+    <p>Posts already sent stay on the platform, where you can delete them. Posts you imported from it stay on Oneway as your posts, and you delete each one like any other post. The platform keeps Oneway in its own list of connected apps until you remove it there too.</p>
+  </div>
+
+  <div class="block" id="a-copy">
+    <div class="block-label">Before you delete anything</div>
+    <h2>A copy of your data</h2>
+    <p>In the Oneway App, <strong>Settings</strong>, then <strong>What Oneway knows about you</strong>, shows what Oneway understands about you. For a full copy, email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a> from the address on your account. We answer within 30 days, and may need to confirm it is you.</p>
+  </div>
+
+  <div class="block" id="your-account">
+    <div class="block-label">Everything at once</div>
+    <h2>Your whole account</h2>
+    <ol class="steps">
+      <li>In the Oneway App, open <strong>Settings</strong>, then <strong>Delete your account</strong></li>
+      <li>Enter your password, and the code from your authenticator app if two-step is on</li>
+      <li>Press <strong>Delete your account</strong>, then <strong>Tap again to delete it for good</strong></li>
+    </ol>
+    <p>If you own a Center, hand it over to someone in Oneway OS first; you are told which one. Your own space is not a Center you run, and it goes with your account.</p>
+    <p><strong>What goes at once:</strong> every session, on every device. Your profile, picture and search listings. Your posts from view, and your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected on your profile, with the access we held for them. Your linked identities. Your shared location and your Footsteps. What reached your screen, and what the feed learned from it. Your list of bookings. Your notifications.</p>
+    <p>It cannot be undone, and nobody can sign in to it again. If you cannot sign in, email us from the address on the account.</p>
+  </div>
+
+  <div class="block" id="what-is-kept">
+    <div class="block-label">After you delete</div>
+    <h2>What is kept, and why</h2>
+    <table class="data-table">
+      <thead><tr><th>What</th><th>How long, and why</th></tr></thead>
+      <tbody>
+        <tr><td>Your email address, the day you joined and the day you left</td><td>Kept, with no end date, so no one else can register the address and inherit your history.</td></tr>
+        <tr><td>Comments and messages you left in other people's conversations</td><td>They stay, shown as Deleted account with no picture, because they are part of other people's conversations.</td></tr>
+        <tr><td>A post or a comment you deleted</td><td>Gone from view at once. Its record stays in our database, so a reply or a share that pointed at it can say it was removed.</td></tr>
+        <tr><td>What a Center keeps</td><td>Its own records, its bookings, the pictures uploaded for it and the accounts connected for it stay with the Center: they are its records, not your profile's.</td></tr>
+        <tr><td>The security log</td><td>Kept after you delete your account, because it is the record of sign-ins and changes to who can get in. We have not set an end date. We will set one and publish it in the <a href="/privacy">Privacy Policy</a> before the App opens to the public.</td></tr>
+        <tr><td>Casino compliance records</td><td>At least five years, as the law requires. They cannot be deleted on request.</td></tr>
+        <tr><td>Backups</td><td>We will state the backup period in the Privacy Policy before the App opens to the public.</td></tr>
+        <tr><td>Legal holds</td><td>Longer only when the law, a regulator or a legal claim requires it, and only for as long as it does.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="block meta-hello" id="facebook">
+    <h2>We made this page for Meta, Threads, Instagram and Facebook. Hello!</h2>
+  </div>
+
+  <div class="block" id="facebook-data">
+    <div class="block-label">What Oneway receives from Facebook</div>
+    <h2>When you connect a Facebook Page</h2>
+    <ul>
+      <li>The access Facebook gives Oneway: a key for your Facebook account and one for each Page you chose. They are kept encrypted and are never shown back to anyone.</li>
+      <li>Each Page's name and ID, and, for the Page Oneway posts to, the ID of the Instagram professional account linked to it, if it has one. Instagram comes through the same Facebook sign-in.</li>
+      <li>If you start an import: the Page's posts, with their photos and videos, copied onto Oneway as posts.</li>
+    </ul>
+    <p>Oneway uses it to send the posts you pick to that Page and its Instagram account, and to copy the Page's posts when you start an import. It never receives your Facebook password, and it does not ask Facebook for your friends or your messages. Threads connects through its own sign-in and gives Oneway its own key, with your Threads account's ID and username.</p>
+  </div>
+
   <div class="block">
-    <div class="block-label">Option 2 — From the platform</div>
+    <div class="block-label">On Facebook</div>
     <h2>Remove Oneway from your Facebook account</h2>
     <ol class="steps">
-      <li>Open Facebook <strong>Settings &amp; Privacy → Settings</strong></li>
-      <li>Open <strong>Security and Login → Apps and Websites</strong></li>
+      <li>On Facebook, open <strong>Settings &amp; privacy</strong>, then <strong>Settings</strong></li>
+      <li>Open <strong>Apps and websites</strong> (<a href="https://www.facebook.com/settings?tab=applications">facebook.com/settings?tab=applications</a>)</li>
       <li>Find <strong>Oneway Services</strong> and press <strong>Remove</strong></li>
-      <li>Facebook tells us, and we remove the Facebook and Instagram connection.</li>
+      <li>Facebook ends the access it gave Oneway: Oneway can no longer post to your Pages or read them.</li>
     </ol>
-    <p>Other platforms have the same screen in their own settings.</p>
+    <p>What Oneway already received stays with Oneway until you delete it, below.</p>
+  </div>
 
-    <div class="warn-box">
-      <p>Disconnecting does <strong>not</strong> delete your Oneway account, or the posts you made on Oneway. To delete the account, use <strong>Settings → Delete your account</strong>. The <a href="privacy.html">Privacy Policy</a> says what that removes and what stays.</p>
-    </div>
+  <div class="block">
+    <div class="block-label">On Oneway</div>
+    <h2>Delete what Oneway received from Facebook</h2>
+    <ol class="steps">
+      <li>In the Oneway App, open <strong>Settings</strong>, then <strong>Connected accounts</strong>. For a Center, open Oneway OS, then <strong>Settings</strong>, then <strong>Connected accounts</strong></li>
+      <li>Press <strong>Disconnect</strong> beside Facebook, then press it again. Do the same beside Instagram</li>
+      <li>Oneway deletes the access it held for them straight away, with each Page's name and ID, and nothing more is sent to them.</li>
+      <li>Posts you imported from Facebook are Oneway posts: delete each one like any other post.</li>
+    </ol>
+    <p>Deleting your Oneway account deletes the Facebook and Instagram connections on your profile too. Or email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a> from the address on your Oneway account with the name of the Facebook Page, and we delete what Oneway received from Facebook for it. We answer within 30 days, and may need to confirm it is you.</p>
   </div>
 
   <div class="contact-block">
@@ -115,7 +202,33 @@
 
 </div>
 
-<img id="flyLogo" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" />
-<script src="/frontend/shared/oneway-legal.js?v=f865b48c"></script>
+<!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
+<footer class="owfoot">
+  <div class="owfoot-in">
+    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <nav class="owfoot-pages" aria-label="Oneway's pages">
+      <a href="/mission">Our Mission</a>
+      <a href="/#app">App</a>
+      <a href="/#os">OS</a>
+      <a href="/os-business">Business OS</a>
+      <a href="/security">Security</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <nav class="owfoot-help" aria-label="Help">
+      <a href="/support">Support</a>
+      <a href="/safety">Safety</a>
+      <a href="/community-guidelines">Community Guidelines</a>
+      <a href="/accessibility">Accessibility</a>
+      <a href="/learn">Glossary</a>
+    </nav>
+    <nav class="owfoot-legal" aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/data-deletion">Data Deletion</a>
+    </nav>
+    <small class="owfoot-line">2027, Oneway Technologies LLC</small>
+  </div>
+</footer>
+
 </body>
 </html>

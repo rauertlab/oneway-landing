@@ -5,17 +5,16 @@
 > It is made by Oneway Technologies LLC, a New York limited liability company, and is in closed beta. Oneway is
 > not affiliated with other services that use the name Oneway.
 
-We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.
+One standard for the whole ecosystem. The same protections cover every part of Oneway: a person's account, profile and messages in the Oneway App; a community's or a business's Center; the operating side of every Center in Oneway OS, Business OS and Developer OS; every System a Center runs, from a restaurant's floor and a hotel's rooms to a venue, a shop and a casino resort; every website a Center wears; and every integration and app built on the platform.
 
 ## What Oneway is
 
-- [About Oneway](https://oneway.center/about): the ecosystem, the App, Oneway OS and its three tiers
 - The Oneway App: your fully customizable social network. You see what your friends and the places you
   love are posting, and what is coming up at each of them.
 - Oneway OS: from managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
   - Oneway OS: a free operating environment with the basic capabilities of a Center
-  - Oneway Business OS: the full business operating system, with the Brain, Systems, Agents, Cross Projection and
-    operational intelligence
+  - Oneway Business OS ($330 a month for one Center, by contact): bookings and events, a shop, customers, staff
+    and roles, one inbox, the System Store's Systems, the platforms it connects, and the Brain's map of all of it
   - Oneway Developer OS: the developer platform for building applications, systems, integrations, agents and custom
     experiences on Oneway
 
@@ -29,4 +28,4 @@ We grant users and Centers absolute sovereignty over their data, what they displ
 
 - [Every page, in words](https://oneway.center/llms-full.txt)
 
-Read from oneway.center's own pages on 2026-10-09 (tools/site_seo.py).
+Read from oneway.center's own pages on 2026-10-17 (tools/site_seo.py).

@@ -1,0 +1,141 @@
+/* THE LANDING'S CARDS: A SOCIAL TOP HEADER, CONDENSED (the founder, 2026-10-17: "condense the profile and center cards to be
+   the same size, completely redo them with correct design and info"; "If a new Claude session or a person can't look at it
+   and say, wow, that looks like a perfect representation of a condensed social media top header ... like a TikTok or
+   Instagram ... it also adds information and the user's social links so well, then do not show it to me"). The one
+   renderer's markup (OW.cards, as 'tile', through OW.lcard in landing-cards.js), styled here for the landing's decks only
+   (.lc), so the App's cards and its header work are untouched. Two layouts, as the platform has them: beside (Instagram:
+   the picture with the name and the counts beside it) and above (TikTok: the picture over everything, centred). Every
+   card: the name, the handle, the counts as a number over its word, the bio, where it is (a person's place, a Center's
+   category and place), a person's platforms as their own marks, and Follow and Message, equal, the words centred.
+   The shared tile's own rules are strong (popit material, projections), so the ones that must hold here say so. */
+.lc.lc.lc{--lc-h:var(--h,262);box-sizing:border-box;width:100%;max-width:420px;margin:0 auto;padding:20px 20px 18px!important;
+  border-radius:26px!important;color:#fff;font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;text-align:left;
+  background:radial-gradient(120% 70% at 10% 0%,hsl(var(--lc-h) 70% 34% / .55),transparent 60%),
+             linear-gradient(180deg,hsl(var(--lc-h) 38% 15%),hsl(var(--lc-h) 30% 9%))!important;
+  box-shadow:0 1px 0 rgba(255,255,255,.09) inset,0 0 0 1px hsl(var(--lc-h) 70% 72% / .18) inset,0 26px 50px -26px rgba(0,0,0,.75)!important}
+.lc.lc.lc::before,.lc.lc.lc::after{display:none!important}
+.lc.lc.lc .ow-ocard__top{display:grid!important;grid-template-columns:84px minmax(0,1fr)!important;column-gap:16px!important;row-gap:0!important;align-items:center!important;margin:0!important}
+.lc.lc.lc .ow-ocard__face{width:84px!important;height:84px!important;margin:0!important;border-radius:50%!important;display:grid!important;place-items:center!important;overflow:hidden!important;
+  background:radial-gradient(75% 75% at 32% 22%,hsl(var(--lc-h) 85% 74%),hsl(var(--lc-h) 70% 44%))!important;
+  box-shadow:0 0 0 3px hsl(var(--lc-h) 30% 10%),0 0 0 5.5px hsl(var(--lc-h) 90% 68%)!important}
+.lc.lc.lc .ow-ocard__face i{font-style:normal!important;font-weight:800!important;font-size:28px!important;letter-spacing:-.02em!important;color:#fff!important;line-height:1!important}
+.lc.lc.lc .ow-ocard__face svg{display:none!important}
+.lc.lc.lc .ow-ocard__id{display:flex!important;flex-direction:column!important;min-width:0!important;align-items:flex-start!important}
+.lc.lc.lc .ow-ocard__name{font-weight:750!important;font-size:19px!important;line-height:1.2!important;letter-spacing:-.01em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%}
+.lc.lc.lc .ow-ocard__sub{font-weight:500!important;font-size:14px!important;line-height:1.35!important;color:rgba(255,255,255,.62)!important;margin-top:2px!important}
+/* the counts: a number over its word, three columns of one width, as Instagram sets them */
+.lc.lc.lc .ow-ocard__counts{display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(0,max-content)!important;column-gap:22px!important;margin:12px 0 0!important;justify-content:start!important}
+.lc.lc.lc .ow-ocard__count{display:flex!important;flex-direction:column!important;align-items:flex-start!important;font-weight:500!important;font-size:12.5px!important;line-height:1.25!important;color:rgba(255,255,255,.62)!important;white-space:nowrap!important;letter-spacing:0!important}
+.lc.lc.lc .ow-ocard__count b{font-weight:750!important;font-size:16.5px!important;line-height:1.2!important;color:#fff!important;letter-spacing:-.01em!important}
+.lc.lc.lc .ow-ocard__summary{display:block!important;margin:16px 0 0!important;grid-template-columns:none!important}
+.lc.lc.lc .ow-ocard__bio{display:-webkit-box!important;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden!important;width:auto!important;max-width:none!important;
+  font-weight:500!important;font-size:15px!important;line-height:1.45!important;color:rgba(255,255,255,.93)!important;margin:0!important}
+.lc.lc.lc .ow-ocard__info{display:block!important;width:auto!important;margin:0!important}
+.lc.lc.lc .ow-ocard__info .ow-ocard__detail{display:none!important}   /* a Center's place and categories are said once, in the where line */
+.lc.lc.lc .lc-where{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;font-weight:500;line-height:1.35;color:rgba(255,255,255,.68)}
+.lc.lc.lc .lc-where svg{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.lc.lc.lc .lc-where b{font-weight:600;color:rgba(255,255,255,.9)}
+/* a person's platforms, their own marks in their own colours, one size, one gap */
+.lc.lc.lc .ow-ocard__links{display:flex!important;flex-wrap:wrap!important;gap:10px!important;margin:14px 0 0!important;padding:0!important}
+.lc.lc.lc .ow-linkbar__i{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;border-radius:50%!important;margin:0!important;
+  background:rgba(255,255,255,.08)!important;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset!important;pointer-events:none}
+.lc.lc.lc .ow-linkbar__i svg{width:18px!important;height:18px!important}
+/* Follow and Message, equal, the words centred (founder/803) */
+.lc.lc.lc .lc-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.lc.lc.lc .lc-acts span{display:flex;align-items:center;justify-content:center;height:38px;border-radius:12px;font-weight:650;font-size:14px;line-height:1;cursor:default;user-select:none}
+.lc.lc.lc .lc-acts .lc-follow{background:hsl(var(--lc-h) 88% 64%);color:#0b0a12}
+.lc.lc.lc .lc-acts .lc-msg{box-shadow:0 0 0 1px rgba(255,255,255,.36) inset;color:#fff;background:rgba(255,255,255,.04)}
+/* TIKTOK'S LAYOUT: the picture over everything, every line centred */
+.lc.lc.lc[data-layout="above"] .ow-ocard__top{grid-template-columns:1fr!important;justify-items:center!important;row-gap:12px!important;text-align:center!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__face{width:92px!important;height:92px!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__id{align-items:center!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__counts{justify-content:center!important;column-gap:30px!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__count{align-items:center!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__bio{text-align:center!important}
+.lc.lc.lc[data-layout="above"] .lc-where,.lc.lc.lc[data-layout="above"] .ow-ocard__links{justify-content:center!important}
+/* the shared tile places its name, handle and counts on its own grid (align-self:end, grid-area) and fixes the link row's
+   width; inside this card's column they flow in order, and the link row is as wide as its card */
+.lc.lc.lc .ow-ocard__id > *{align-self:auto!important;grid-area:auto!important;justify-self:auto!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__id > *{align-self:center!important}
+.lc.lc.lc .ow-ocard__links{width:auto!important;max-width:none!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__summary{margin-top:14px!important}
+/* the picture centred on its name block (Instagram's row); no space the shared tile reserves under the counts; Follow and
+   Message at the card's foot, so cards set to one height (the deck's) end on one line */
+.lc.lc.lc{display:flex!important;flex-direction:column!important}
+.lc.lc.lc .ow-ocard__face{align-self:center!important}
+.lc.lc.lc .ow-ocard__top,.lc.lc.lc .ow-ocard__id{padding:0!important;min-height:0!important}
+.lc.lc.lc .ow-ocard__counts{margin-bottom:0!important}
+.lc.lc.lc .lc-acts{margin-top:auto!important;padding-top:16px}
+/* the summary is the top's third child: it spans the card under the picture and the name, in the row after them, and the
+   rows take only their content's height (the shared tile reserved more) */
+.lc.lc.lc .ow-ocard__top{grid-template-rows:none!important;grid-auto-rows:auto!important;align-content:start!important;height:auto!important}
+.lc.lc.lc .ow-ocard__top > .ow-ocard__summary{grid-column:1 / -1!important;grid-row:auto!important}
+.lc.lc.lc .ow-ocard__top > .ow-ocard__face,.lc.lc.lc .ow-ocard__top > .ow-ocard__id{grid-row:1!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__top > .ow-ocard__id{grid-row:2!important}
+/* THE JUDGE'S ROUND (a cold reviewer, 2026-10-17): one edge for the ring and the words, the name block centred on the
+   picture, even padding, a Center's category under its name, Follow's words by its hue, no word alone on a bio's last
+   line, the platforms' marks a size larger */
+.lc.lc.lc{padding:20px!important}
+.lc.lc.lc .ow-ocard__top{grid-template-columns:96px minmax(0,1fr)!important}
+.lc.lc.lc .ow-ocard__face{width:86px!important;height:86px!important;margin:5px!important;justify-self:start!important}
+.lc.lc.lc .ow-ocard__id{align-self:center!important}
+.lc.lc.lc .ow-ocard__sub{color:rgba(255,255,255,.62)!important}
+.lc.lc.lc[data-kind="center"] .ow-ocard__sub,.lc.lc.lc .ow-ocard__top[data-kind="center"] .ow-ocard__sub{color:hsl(var(--lc-h) 85% 76%)!important}
+.lc.lc.lc .lc-cat{display:block;margin-top:3px;font-size:13.5px;font-weight:500;line-height:1.3;color:rgba(255,255,255,.66);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.lc.lc.lc .ow-ocard__counts{margin-top:10px!important}
+.lc.lc.lc .ow-ocard__bio{text-wrap:pretty}
+.lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{color:#fff}
+.lc.lc.lc .ow-linkbar__i svg{width:20px!important;height:20px!important}
+
+/* in a deck the cards stand behind each other (oneway-deck.css .pcard), never one after another */
+.lc.lc.lc.pcard{position:absolute!important;left:0;right:0;top:0}
+.lc.lc.lc:not(.pcard){position:relative}
+/* THE SECOND JUDGE'S ROUND: the shared tile gives the name a 34px top margin, which pushed the words down off the picture's
+   centre and left the top empty; Instagram's order of figures (posts, followers, following); a business's handle gray like
+   a person's; platform marks in 40px discs, one optical size; the bio fills its lines; Follow's pink deep enough for
+   white words */
+.lc.lc.lc .ow-ocard__name{margin:0!important;padding:0!important}
+.lc.lc.lc .ow-ocard__count[data-count="posts"]{order:1}
+.lc.lc.lc .ow-ocard__count[data-count="followers"]{order:2}
+.lc.lc.lc .ow-ocard__count[data-count="following"],.lc.lc.lc .ow-ocard__count[data-count="events"]{order:3}
+.lc.lc.lc[data-kind="center"] .ow-ocard__sub,.lc.lc.lc .ow-ocard__top[data-kind="center"] .ow-ocard__sub{color:rgba(255,255,255,.62)!important}
+.lc.lc.lc .ow-ocard__links{gap:10px!important}
+.lc.lc.lc .ow-linkbar__i{width:40px!important;height:40px!important}
+.lc.lc.lc .ow-linkbar__i svg{width:20px!important;height:20px!important;object-fit:contain}
+.lc.lc.lc .ow-linkbar__i[data-platform="youtube"] svg{width:22px!important;height:22px!important}
+.lc.lc.lc .ow-linkbar__i[data-platform="x"] svg{width:18px!important;height:18px!important}
+.lc.lc.lc .ow-ocard__bio{text-wrap:wrap!important}
+.lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{background:hsl(var(--lc-h) 72% 52%)}
+/* THE THIRD JUDGE'S ROUND: a business's category reads as its kind, not as a second handle (white, medium); the platforms'
+   marks one weight in plain discs (no gray ring that looks disabled, one glyph box); the picture plain with a fine edge (an
+   always-on coloured ring reads as Instagram's "new story"); Follow and Message 44px, the tap size */
+.lc.lc.lc .lc-cat{color:rgba(255,255,255,.88);font-weight:600}
+.lc.lc.lc .ow-linkbar__i{box-shadow:none!important;background:rgba(255,255,255,.09)!important}
+.lc.lc.lc .ow-linkbar__i svg,.lc.lc.lc .ow-linkbar__i[data-platform] svg{width:20px!important;height:20px!important}
+.lc.lc.lc .ow-ocard__face{box-shadow:0 0 0 1px rgba(255,255,255,.16)!important;margin:0!important;width:88px!important;height:88px!important;align-self:center!important}
+.lc.lc.lc .ow-ocard__top{grid-template-columns:88px minmax(0,1fr)!important}
+.lc.lc.lc .lc-acts span{height:44px}
+/* THE PASSING ROUND'S TWO NOTES: no word alone on a bio's last line; a business's category under its handle at the
+   handle's weight, a shade brighter (its kind, not a second address); the three figures spread over the column */
+.lc.lc.lc .ow-ocard__bio{text-wrap:pretty!important}
+.lc.lc.lc .lc-cat{color:rgba(255,255,255,.76);font-weight:500}
+.lc.lc.lc .ow-ocard__counts{grid-auto-columns:minmax(0,1fr)!important;column-gap:12px!important;max-width:280px;justify-content:stretch!important}
+/* A CENTER'S BUSINESS BESIDE ITS BIO: the bio at the left, its details in a column at the right (founder/801: "the info
+   condensed to the right, bio in line to the left"), a quiet word over each value; the pin line under both */
+.lc.lc.lc .lc-pair{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);column-gap:16px;align-items:start}
+.lc.lc.lc .lc-pair .ow-ocard__bio{-webkit-line-clamp:5}
+.lc.lc.lc .lc-facts{display:flex;flex-direction:column;gap:9px;padding-left:14px;border-left:1px solid rgba(255,255,255,.12)}
+.lc.lc.lc .lc-fact{display:flex;flex-direction:column;min-width:0}
+.lc.lc.lc .lc-fact i{font-style:normal;font-size:11.5px;font-weight:600;line-height:1.2;color:rgba(255,255,255,.55)}
+.lc.lc.lc .lc-fact b{font-size:13.5px;font-weight:600;line-height:1.3;color:rgba(255,255,255,.92);overflow-wrap:anywhere}
+
+/* AS MANY DETAILS AS THE CENTER HAS: one to three in the column beside the bio (the bio may run as long as the column);
+   four or more in two even columns under the bio, the bio then the card's full width */
+.lc.lc.lc[data-facts="few"] .lc-pair .ow-ocard__bio{-webkit-line-clamp:7}
+.lc.lc.lc[data-facts="many"] .lc-pair{grid-template-columns:1fr;row-gap:14px}
+.lc.lc.lc[data-facts="many"] .lc-facts{display:grid;grid-template-columns:1fr 1fr;column-gap:16px;row-gap:10px;padding:12px 0 0;border-left:0;border-top:1px solid rgba(255,255,255,.12)}
+
+/* A DECK THAT FITS ITS FRONT CARD (oneway-deck.js opts.fit): the cards behind fade out instead of peeking, since a taller
+   card behind would show under a shorter one; the faces under the deck choose which stands in front */
+.deck .lc.lc.lc.pcard:not([data-at="0"]){opacity:0!important;transform:none!important;filter:none!important;pointer-events:none}
+.deck .lc.lc.lc.pcard{transition:opacity .35s ease!important}

@@ -60,6 +60,8 @@
   var esc = _u.esc;
   var loading = _u.loading;
   var mk = _u.mk;
+  /* earlier pages a found message may be read back through before the thread stops and says so (search inside chats) */
+  var JUMP_PAGES_MAX = 10;
   var nothing = _u.nothing;
   var refused = _u.refused;
   var whenWords = _u.whenWords;
@@ -190,8 +192,7 @@
     pg.appendChild(top);
     var face = mk('span', 'ow-thread__av ow-chatset__face ow-door-g__face');
     face.setAttribute('data-kind', 'center');
-    if (d.picture) { var im = doc.createElement('img'); im.src = OW.imageUrl ? OW.imageUrl(d.picture) : d.picture; im.alt = ''; face.appendChild(im); }
-    else face.textContent = OW.initials ? OW.initials(d.title || 'Group') : 'G';
+    OW.cards.fill(face, { kind: 'group', name: d.title || 'Group', picture: d.picture });   /* the one face rule (S21) */
     pg.appendChild(face);
     pg.appendChild(mk('h1', 'ow-door-g__t', esc(d.title || 'A group')));
     pg.appendChild(mk('p', 'ow-door-g__n', esc(d.members + (d.members === 1 ? ' person' : ' people'))));
@@ -285,6 +286,53 @@
       nw.addEventListener('click', function () { newMessage(host, opts); });
       top.appendChild(nw);
       host.appendChild(top);
+
+      /* ── SEARCH INSIDE CHATS (register row 8; C-parity, 2026-10-11) ───────
+         iMessage's and WhatsApp's way: one field above the chats; while it
+         holds words, the messages that say them stand in place of the list,
+         newest first, each opening its conversation AT that message. Only
+         what this person may open comes back (the server's own read rule);
+         what was not searched is said under the results. For his eye: the
+         field's place and the result row. */
+      var sbox = mk('label', 'ow-set__search ow-inbox__search');
+      sbox.innerHTML = OW.setIcon ? OW.setIcon('search') : '';
+      var sq = doc.createElement('input');
+      sq.type = 'search'; sq.placeholder = 'Search messages'; sq.autocomplete = 'off';
+      sq.setAttribute('aria-label', 'Search messages');
+      sbox.appendChild(sq);
+      host.appendChild(sbox);
+      offerPush(host);
+      var found = mk('div', 'ow-threads ow-inbox__found'); found.style.display = 'none';
+      host.appendChild(found);
+      /* hidden by style, not the attribute: the list's own display rule outranks [hidden] */
+      function showFound(on) {
+        Array.prototype.forEach.call(host.children, function (el) {
+          if (el === top || el === sbox || el === found) return;
+          if (on && el.style.display !== 'none') { el.style.display = 'none'; el.setAttribute('data-search-hid', '1'); }
+          if (!on && el.getAttribute('data-search-hid')) { el.style.display = ''; el.removeAttribute('data-search-hid'); }
+        });
+        found.style.display = on ? '' : 'none';
+      }
+      var sTimer = 0, sAsked = 0;
+      sq.addEventListener('input', function () {
+        global.clearTimeout(sTimer);
+        var q = sq.value.trim();
+        if (q.length < 2) { sAsked++; found.innerHTML = ''; showFound(false); return; }
+        sTimer = global.setTimeout(function () {
+          var mine = ++sAsked;
+          data.get('/api/oneway/messaging/search?q=' + encodeURIComponent(q), { fresh: true }).then(function (r) {
+            if (mine !== sAsked) return;          /* a newer search is on its way */
+            found.innerHTML = ''; showFound(true);
+            if (!r.ok) {
+              found.appendChild(mk('p', 'ow-note show ow-note--bad', 'Search could not be read just now. Your messages are still there.'));
+              return;
+            }
+            var d = r.data || {}, res = d.results || [];
+            res.forEach(function (m) { found.appendChild(foundRow(m, opts)); });
+            if (!res.length || d.words) found.appendChild(mk('p', 'ow-note show', esc(d.words || 'No messages say that.')));
+          });
+        }, 220);
+      });
 
       var reqs = (rq.ok && ((rq.data || {}).requests || [])) || [];
       var list = ((ib.data || {}).conversations || []).filter(function (c) {
@@ -415,8 +463,7 @@
       var b = mk('button', 'ow-set__row ow-newmsg__p'); b.type = 'button';
       var f = mk('span', 'ow-newmsg__face');
       var pic = pp.picture || pp.image || '';
-      if (pic) { var im = doc.createElement('img'); im.src = OW.imageUrl ? OW.imageUrl(pic) : pic; im.alt = ''; f.appendChild(im); }
-      else if (OW.faceMark) f.innerHTML = OW.faceMark();
+      OW.cards.fill(f, { kind: 'person', picture: pic });
       b.appendChild(f);
       var w = mk('span', 'ow-setpick__w');
       w.appendChild(mk('b', '', esc(pp.name || pp.display_name || 'Someone')));
@@ -430,7 +477,7 @@
           if (!d || !b.isConnected) return;
           if (d.display_name || d.name) w.querySelector('b').textContent = d.display_name || d.name;
           var pc = d.picture && (d.picture.url || d.picture);
-          if (pc && typeof pc === 'string') { f.innerHTML = ''; var im2 = doc.createElement('img'); im2.src = OW.imageUrl ? OW.imageUrl(pc) : pc; im2.alt = ''; f.appendChild(im2); }
+          if (pc && typeof pc === 'string') OW.cards.fill(f, { kind: 'person', picture: pc });
         });
       }
       b.addEventListener('click', function () {
@@ -498,6 +545,312 @@
      One predicate, used everywhere. An object thread (a conversation ABOUT
      something) is not a person's row even when it is between two people —
      that is what `c.object` has always meant here. */
+  /* ══ CALLS (C-parity, 2026-10-11; register row 8): voice and video between the two people of a chat ══════════════
+     Browser to browser (WebRTC). The server keeps the call and relays the two browsers' offer, answer and candidates on
+     the chat's own topic (messaging/calls.py); sound and picture never pass through it. The person called is rung by
+     the notifier (`calling`), which reaches this screen as `ow:notification` while Messages is open (and their devices
+     by push). One surface fills the screen while a call rings or runs (never a box over a page), and leaves when it
+     ends; how it ended is a line in the chat. The callee says "ready" until the caller's offer arrives, so an offer is
+     never sent to a browser that is not yet listening. For his eye: the surface's look. */
+  OW.call = (function () {
+    var live = null;
+    function path(cid, rest) { return '/api/oneway/messaging/conversations/' + encodeURIComponent(cid) + '/calls' + (rest || ''); }
+    function say(t) { if (live && live.ui && live.ui.say) live.ui.say.textContent = t; }
+    function sig(type, extra) {
+      if (!live) return;
+      data.post(path(live.cid, '/' + encodeURIComponent(live.id) + '/signal'), Object.assign({ type: type }, extra || {})).catch(function () {});
+    }
+    function surface(name, kind) {
+      var el = mk('div', 'ow-call', '');
+      el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', (kind === 'video' ? 'Video call' : 'Voice call') + ' with ' + name);
+      el.style.cssText = 'position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:14px;padding:24px 16px calc(28px + env(safe-area-inset-bottom));background:var(--ow-ground);color:var(--ow-ink)';
+      /* THE OTHERS' PICTURES: one fills the screen, two to three share it, as WhatsApp's small group calls tile them */
+      var grid = mk('div', 'ow-call__grid', '');
+      grid.style.cssText = 'position:absolute;inset:0;display:grid;gap:2px;grid-template-columns:1fr;' + (kind === 'video' ? '' : 'display:none');
+      var local = doc.createElement('video'); local.autoplay = true; local.muted = true; local.playsInline = true; local.className = 'ow-call__local';
+      local.style.cssText = 'position:absolute;top:16px;right:16px;width:28%;max-width:180px;border-radius:14px;object-fit:cover;z-index:1;' + (kind === 'video' ? '' : 'display:none');
+      var face = mk('div', 'ow-call__who', '');
+      face.style.cssText = 'position:relative;margin:auto 0 0;text-align:center';
+      face.appendChild(mk('b', '', esc(name))); face.firstChild.style.cssText = 'display:block;font-size:26px;font-weight:650';
+      var st = mk('p', 'ow-call__state', ''); st.style.cssText = 'margin:6px 0 0;color:var(--ow-ink-2)';
+      face.appendChild(st);
+      var acts = mk('div', 'ow-call__acts', ''); acts.style.cssText = 'position:relative;display:flex;gap:12px;flex-wrap:wrap;justify-content:center';
+      el.appendChild(grid); el.appendChild(local); el.appendChild(face); el.appendChild(acts);
+      doc.body.appendChild(el);
+      return { el: el, grid: grid, local: local, say: st, acts: acts };
+    }
+    function retile() {
+      if (!live) return;
+      var n = live.ui.grid.children.length;
+      live.ui.grid.style.gridTemplateColumns = n > 1 ? '1fr 1fr' : '1fr';
+    }
+    function button(label, fn) {
+      var b = mk('button', 'po-act', esc(label)); b.type = 'button'; b.addEventListener('click', fn); live.ui.acts.appendChild(b); return b;
+    }
+    function controls() {
+      live.ui.acts.innerHTML = '';
+      button('Mute', function () {
+        var t = live && live.stream && live.stream.getAudioTracks()[0]; if (!t) return;
+        t.enabled = !t.enabled; this.textContent = t.enabled ? 'Mute' : 'Unmute';
+      });
+      if (live.kind === 'video') button('Camera off', function () {
+        var t = live && live.stream && live.stream.getVideoTracks()[0]; if (!t) return;
+        t.enabled = !t.enabled; this.textContent = t.enabled ? 'Camera off' : 'Camera on';
+      });
+      var end = button(live.group ? 'Leave' : 'End', function () { hangUp(); }); end.setAttribute('data-call-end', '1');
+    }
+    function media() {
+      return global.navigator.mediaDevices.getUserMedia({ audio: true, video: live.kind === 'video' }).then(function (s) {
+        if (!live) { s.getTracks().forEach(function (t) { t.stop(); }); return null; }
+        live.stream = s; live.ui.local.srcObject = s;
+        return s;
+      }, function () { say('Your microphone' + (live && live.kind === 'video' ? ' or camera' : '') + ' could not be used.'); hangUp(); return null; });
+    }
+    /* ONE CONNECTION PER OTHER PERSON IN THE CALL, each with its own tile */
+    function peer(id) {
+      if (live.pcs[id]) return live.pcs[id];
+      var pc = new global.RTCPeerConnection({ iceServers: live.ice || [] });
+      live.pcs[id] = pc; live.pending[id] = live.pending[id] || [];
+      if (live.stream) live.stream.getTracks().forEach(function (t) { pc.addTrack(t, live.stream); });
+      pc.onicecandidate = function (e) { if (e.candidate) sig('candidate', { to: id, candidate: e.candidate.toJSON() }); };
+      pc.ontrack = function (e) {
+        if (!live) return;
+        var v = live.ui.grid.querySelector('[data-peer="' + id + '"]');
+        if (!v) {
+          v = doc.createElement('video'); v.autoplay = true; v.playsInline = true; v.setAttribute('data-peer', id);
+          v.style.cssText = 'width:100%;height:100%;object-fit:cover;min-height:0';
+          live.ui.grid.appendChild(v); retile();
+        }
+        v.srcObject = e.streams[0];
+      };
+      pc.onconnectionstatechange = function () {
+        if (!live) return;
+        var any = Object.keys(live.pcs).some(function (k) { return live.pcs[k].connectionState === 'connected'; });
+        live.ui.el.setAttribute('data-connection', any ? 'connected' : pc.connectionState);
+        if (any && !live.timer) {
+          var t0 = Date.now();
+          live.timer = global.setInterval(function () {
+            var s2 = Math.floor((Date.now() - t0) / 1000);
+            say((s2 >= 3600 ? Math.floor(s2 / 3600) + ':' : '') + ('0' + Math.floor(s2 / 60) % 60).slice(-2) + ':' + ('0' + s2 % 60).slice(-2));
+          }, 1000);
+          say('00:00');
+        }
+      };
+      return pc;
+    }
+    function drop(id) {
+      var pc = live && live.pcs[id];
+      if (!pc) return;
+      try { pc.close(); } catch (e) {}
+      delete live.pcs[id];
+      var v = live.ui.grid.querySelector('[data-peer="' + id + '"]'); if (v) v.parentNode.removeChild(v);
+      retile();
+    }
+    function addCandidate(id, c) {
+      var pc = live && live.pcs[id];
+      if (!pc) return;
+      if (!pc.remoteDescription) { (live.pending[id] = live.pending[id] || []).push(c); return; }
+      pc.addIceCandidate(c).catch(function () {});
+    }
+    function flush(id) { (live.pending[id] || []).splice(0).forEach(function (c) { addCandidate(id, c); }); }
+    function offerTo(id) {
+      var pc = peer(id);
+      if (live.offers[id]) { sig('offer', { to: id, sdp: live.offers[id].sdp }); return; }
+      pc.createOffer().then(function (o) { return pc.setLocalDescription(o).then(function () { live.offers[id] = o; sig('offer', { to: id, sdp: o.sdp }); }); });
+    }
+    function onConv(e) {
+      var d = (e && e.detail) || {}, x = d.data || {};
+      if (!live || x.conversation !== live.cid) return;
+      if (d.kind === 'call' && x.id === live.id) {
+        if (/^(ended|missed|declined)$/.test(x.state)) { close(x.state === 'declined' ? 'Declined' : x.state === 'missed' ? 'No answer' : 'Call ended'); return; }
+        if (x.state === 'active' && !Object.keys(live.pcs).length && live.you === 'p1') say('Connecting…');
+        (x.peers || []).forEach(function (p) { if (p.left && live.pcs[p.peer]) drop(p.peer); });
+        return;
+      }
+      if (d.kind !== 'call_signal' || x.call !== live.id || !live.you || x.from === live.you) return;
+      if (x.to && x.to !== live.you) return;
+      if (!live.stream) return;                     /* not ready to talk yet: the sender says ready or offers again */
+      if (x.type === 'ready') { offerTo(x.from); return; }
+      if (x.type === 'offer') {
+        var pc = peer(x.from);
+        if (live.answered[x.from]) return;
+        live.answered[x.from] = true;
+        pc.setRemoteDescription({ type: 'offer', sdp: x.sdp }).then(function () { flush(x.from); return pc.createAnswer(); })
+          .then(function (a) { return pc.setLocalDescription(a).then(function () { sig('answer', { to: x.from, sdp: a.sdp }); }); });
+        return;
+      }
+      if (x.type === 'answer' && live.pcs[x.from] && !live.pcs[x.from].remoteDescription) {
+        live.pcs[x.from].setRemoteDescription({ type: 'answer', sdp: x.sdp }).then(function () { flush(x.from); });
+        return;
+      }
+      if (x.type === 'candidate' && x.candidate) addCandidate(x.from, x.candidate);
+    }
+    function listen() {
+      if (OW.realtime && OW.realtime.watchTopics) OW.realtime.watchTopics('call', ['conv:' + live.cid]);
+      doc.addEventListener('ow:conv', onConv);
+    }
+    function begin(cid, c, ice) {
+      live = { cid: cid, id: c.id, kind: c.kind, you: c.you || '', group: !!c.group, ice: ice || [],
+               pcs: {}, pending: {}, offers: {}, answered: {} };
+      live.ui = surface(c['with'] || 'Someone', c.kind);
+    }
+    function close(words) {
+      var l = live; live = null;
+      if (!l) return;
+      doc.removeEventListener('ow:conv', onConv);
+      if (OW.realtime && OW.realtime.unwatch) OW.realtime.unwatch('call');
+      if (l.timer) global.clearInterval(l.timer);
+      if (l.ready) global.clearInterval(l.ready);
+      if (l.ring) global.clearTimeout(l.ring);
+      if (l.stream) l.stream.getTracks().forEach(function (t) { t.stop(); });
+      Object.keys(l.pcs).forEach(function (k) { try { l.pcs[k].close(); } catch (e) {} });
+      l.ui.say.textContent = words || 'Call ended'; l.ui.acts.innerHTML = '';
+      l.ui.el.setAttribute('data-ended', '1');
+      global.setTimeout(function () { if (l.ui.el.parentNode) l.ui.el.parentNode.removeChild(l.ui.el); }, 1500);
+    }
+    function hangUp() {
+      if (!live) return;
+      var l = live;
+      data.post(path(l.cid, '/' + encodeURIComponent(l.id) + '/end'), {}).catch(function () {});
+      close(l.group ? 'You left the call' : 'Call ended');
+    }
+    function start(cid, kind, name) {
+      if (live) return;
+      data.post(path(cid), { kind: kind }).then(function (r) {
+        if (!r || !r.ok) { if (OW.toast) OW.toast((r && r.error) || 'That call could not be placed.'); return; }
+        var c = (r.data || {}).call || {};
+        if (!c['with']) c['with'] = name;
+        begin(cid, c, (r.data || {}).ice);
+        live.ui.el.setAttribute('data-role', 'caller');
+        say('Calling…'); controls(); listen();
+        media();
+        live.ring = global.setTimeout(function () { if (live && !Object.keys(live.pcs).length) hangUp(); }, ((c.ring_seconds || 45) + 2) * 1000);
+      });
+    }
+    function incoming(cid) {
+      if (live) return;
+      data.get(path(cid, '/current'), { fresh: true }).then(function (r) {
+        var c = r && r.ok && r.data && r.data.call;
+        if (!c || !/^(ringing|active)$/.test(c.state) || c.you_called || c.you || live) return;
+        begin(cid, c, r.data.ice);
+        live.ui.el.setAttribute('data-role', 'callee');
+        say((c.group ? 'Group ' : '') + (c.kind === 'video' ? 'video call' : 'voice call'));
+        listen();
+        button('Decline', function () {
+          data.post(path(cid, '/' + encodeURIComponent(c.id) + '/decline'), {}).catch(function () {});
+          close('Declined');
+        });
+        button(c.state === 'active' ? 'Join' : 'Accept', function () {
+          live.ui.acts.innerHTML = ''; say('Connecting…');
+          data.post(path(cid, '/' + encodeURIComponent(c.id) + '/answer'), {}).then(function (rr) {
+            if (!rr || !rr.ok) { close((rr && rr.error) || 'That call ended.'); return; }
+            live.you = ((rr.data || {}).call || {}).you || '';
+            controls();
+            return media().then(function (s) {
+              if (!s || !live) return;
+              /* SAY READY UNTIL EVERYONE ALREADY IN HAS OFFERED: an offer never reaches a browser not yet listening */
+              var n = 0;
+              sig('ready');
+              live.ready = global.setInterval(function () {
+                var others = ((((rr.data || {}).call || {}).peers) || []).filter(function (p) { return p.joined && !p.left && p.peer !== live.you; });
+                var have = others.every(function (p) { return live.answered[p.peer]; });
+                if (!live || have || ++n > 15) { if (live && live.ready) global.clearInterval(live.ready); return; }
+                sig('ready');
+              }, 1000);
+            });
+          });
+        }).setAttribute('data-call-accept', '1');
+      }, function () {});
+    }
+    /* A RING, from the notifier, while Messages is open: the line names the chat it opens */
+    doc.addEventListener('ow:notification', function (e) {
+      var d = (e && e.detail) || {};
+      if (d.kind !== 'calling') return;
+      var m = /^#messages\/(.+)$/.exec(String(d.link || ''));
+      if (m) incoming(decodeURIComponent(m[1]));
+    });
+    return {
+      start: start, incoming: incoming, end: hangUp,
+      /* for a probe: where the call is, without reaching into it */
+      state: function () {
+        if (!live) return Promise.resolve(null);
+        var ids = Object.keys(live.pcs);
+        var out = { you: live.you, kind: live.kind, peers: {}, bytesIn: 0,
+                    connection: ids.length && ids.every(function (k) { return live.pcs[k].connectionState === 'connected'; }) ? 'connected' : 'new' };
+        return Promise.all(ids.map(function (k) {
+          return live.pcs[k].getStats().then(function (st) {
+            var b = 0; st.forEach(function (s) { if (s.type === 'inbound-rtp') b += s.bytesReceived || 0; });
+            out.peers[k] = { connection: live.pcs[k].connectionState, bytesIn: b }; out.bytesIn += b;
+          });
+        })).then(function () { return out; });
+      }
+    };
+  })();
+
+  /* NOTIFICATIONS ON THIS DEVICE (C-parity, 2026-10-11; register row 8), offered where WhatsApp Web and Instagram's web
+     inbox offer them: one line at the top of Messages, only when the server has push set up
+     (GET /api/oneway/me/push), the browser can do it and this device has not answered yet. The browser's own question
+     is asked by the press, never on arrival; a device already on, or one that said no, sees nothing here. */
+  function offerPush(host) {
+    var nav = global.navigator || {};
+    if (!nav.serviceWorker || !global.PushManager || !global.Notification || global.Notification.permission === 'denied') return;
+    data.get('/api/oneway/me/push', { fresh: true }).then(function (r) {
+      var st = r && r.ok && r.data;
+      if (!st || !st.enabled || !st.key) return;
+      return nav.serviceWorker.ready.then(function (reg) {
+        return reg.pushManager.getSubscription().then(function (sub) {
+          if (sub && global.Notification.permission === 'granted') return;       /* already on for this device */
+          var line = mk('div', 'ow-act__sub ow-inbox__push', '');
+          line.appendChild(mk('span', 'ow-act__n', esc('Get notified of new messages on this device.')));
+          var b = mk('button', 'po-act', 'Turn on'); b.type = 'button'; b.style.whiteSpace = 'nowrap';
+          line.appendChild(b);
+          host.insertBefore(line, host.children[1] || null);
+          b.addEventListener('click', function () {
+            b.disabled = true;
+            global.Notification.requestPermission().then(function (perm) {
+              if (perm !== 'granted') { line.firstChild.textContent = 'Notifications stay off on this device. Your browser settings can turn them on.'; b.remove(); return; }
+              var k = st.key.replace(/-/g, '+').replace(/_/g, '/'), raw = global.atob(k + '==='.slice((k.length + 3) % 4));
+              var key = new Uint8Array(raw.length);
+              for (var i = 0; i < raw.length; i++) key[i] = raw.charCodeAt(i);
+              return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: key }).then(function (s) {
+                return data.put('/api/oneway/me/push', s.toJSON());
+              }).then(function (rr) {
+                if (!rr || !rr.ok) { b.disabled = false; line.firstChild.textContent = (rr && rr.error) || 'That did not turn on. Try again.'; return; }
+                line.firstChild.textContent = 'Notifications are on for this device.'; b.remove();
+                line.setAttribute('data-push', 'on');
+              });
+            }).catch(function () { b.disabled = false; line.firstChild.textContent = 'That did not turn on. Try again.'; });
+          });
+        });
+      });
+    }, function () {});
+  }
+
+  /* ONE FOUND MESSAGE, drawn as a chat row is: the conversation's face and name, the
+     words around the match where the last message would be, and when it was said.
+     Pressing it opens the conversation at that message (search inside chats). */
+  function foundRow(m, opts) {
+    var c = m.conversation || { id: m.conversation_id };
+    if (!c.id) c.id = m.conversation_id;
+    var b = threadRow(c, Object.assign({}, opts || {}, { onOpen: function (cc) {
+      OW.messaging = OW.messaging || {};
+      OW.messaging._landOn = { cid: c.id, mid: m.id, seq: m.seq || 0 };
+      /* THE CHAT MAY ALREADY BE OPEN (beside the list at desktop width, or the one just read): opening it again
+         draws nothing new, so the open thread is told there is somewhere to land. Any other chat ignores it. */
+      try { doc.dispatchEvent(new CustomEvent('ow:landon')); } catch (e) {}
+      if (opts && opts.onOpen) opts.onOpen(cc || c);
+      else global.location.hash = '#messages/' + encodeURIComponent(c.id);
+    } }));
+    b.classList.add('ow-thread--found');
+    b.setAttribute('data-mid', m.id || '');
+    b.removeAttribute('data-unread');
+    var badge = b.querySelector('.ow-thread__n'); if (badge) badge.parentNode.removeChild(badge);
+    var t = b.querySelector('.ow-thread__t'); if (t) t.innerHTML = esc(inboxWhen(m.created_at));
+    var last = b.querySelector('.ow-thread__last');
+    if (last) last.innerHTML = esc((m.mine ? 'You: ' : (!isDirect(c) && m.author ? m.author + ': ' : '')) + (m.snippet || ''));
+    return b;
+  }
+
   function isDirect(c) {
     if (!c || c.object) return false;
     var k = String(c.kind || c.type || '').toLowerCase();
@@ -530,8 +883,7 @@
        for data that is right there in the row. */
     /* founder/495: a DM row is a PERSON and gets the outline; a Center or a
        room keeps its monogram, which is what `data-kind="center"` above marks */
-    if (!av.hasAttribute('data-kind') && OW.faceMark) av.innerHTML = OW.faceMark();
-    else av.textContent = OW.initials ? OW.initials(rowTitle(c) || '?') : '?';
+    OW.cards.fill(av, { kind: isDirect(c) ? 'person' : 'center', name: rowTitle(c) || '?' });
     /* THEIR COLOUR, NOT MINE. The stylesheet has always drawn this face from
        `--ch1`/`--ch2` ("the person's hue, on the person", founder/493) and
        nothing ever set them, so every face in the inbox wore the viewer's
@@ -562,10 +914,7 @@
           if (nm && name) nm.textContent = name;
           var pic = d.picture ? (OW.imageUrl ? OW.imageUrl(d.picture) : d.picture) : '';
           if (pic) {
-            av.textContent = '';
-            var im = doc.createElement('img'); im.src = pic; im.alt = ''; im.decoding = 'async';
-            im.className = 'ow-thread__face';
-            av.appendChild(im);
+            OW.cards.fill(av, { kind: 'person', picture: d.picture }, { img: ' decoding="async" class="ow-thread__face"' });
             if (/^(round|rounded|square)$/.test(String(d.shape || ''))) av.setAttribute('data-shape', d.shape);
           }
         }).catch(function () {});
@@ -745,8 +1094,7 @@
       var sender = q.from || q['from'] || '';
       var row = mk('div', 'ow-req');
       var av = mk('span', 'ow-thread__av');
-      if (OW.faceMark) av.innerHTML = OW.faceMark();          /* founder/495 */
-      else av.textContent = OW.initials ? OW.initials(sender) : '?';
+      OW.cards.fill(av, { kind: 'person', name: sender });          /* founder/495 */
       row.appendChild(av);
       var b = mk('div', 'ow-req__b');
       var reqNm = mk('span', 'ow-req__nm', esc(bare(sender || '')));
@@ -844,6 +1192,7 @@
     var policy = {}, myRole = '', oldest = null, more = false;
     var acked = {};
     var closed = false;
+    var landing = false;            /* this thread is landing on a message search found (landOn_) */
 
     /* ══ THE CHAT'S OWN BAR — founder/550, 552 ════════════════════════════
        *"it needs to feel iconic but also simple enough and familar enough to
@@ -867,14 +1216,9 @@
       var fc = conv.face || {};
       var direct = isDirect(conv);
       if (!direct) headFace.setAttribute('data-kind', 'center');
-      if (fc.image) {
-        var hi = doc.createElement('img'); hi.src = OW.imageUrl ? OW.imageUrl(fc.image) : fc.image; hi.alt = ''; headFace.appendChild(hi);
-      } else if (direct && OW.faceMark) headFace.innerHTML = OW.faceMark();
-      else {
-        /* a group's own name first, the way its inbox row letters it */
-        var gt = (conv.title && !/@/.test(String(conv.title)) && !looksLikeAnId(conv.title)) ? conv.title : titleFor(conv);
-        headFace.textContent = OW.initials ? OW.initials(gt || '?') : '?';
-      }
+      /* a group's own name first, the way its inbox row letters it */
+      var gt = (conv.title && !/@/.test(String(conv.title)) && !looksLikeAnId(conv.title)) ? conv.title : titleFor(conv);
+      OW.cards.fill(headFace, { kind: direct ? 'person' : 'center', name: gt || '?', picture: fc.image });
       if (typeof fc.hue === 'number' && OW.hue && OW.hue.fromAngle) {
         var hh = OW.hue.fromAngle(fc.hue); headFace.style.setProperty('--ch1', hh[0]); headFace.style.setProperty('--ch2', hh[1] || hh[0]);
       }
@@ -887,9 +1231,7 @@
       var fc = conv.face || {};
       if (!isDirect(conv) && conv.title && headNm) headNm.textContent = conv.title;
       if (!isDirect(conv)) {
-        headFace.innerHTML = '';
-        if (fc.image) { var hi2 = doc.createElement('img'); hi2.src = OW.imageUrl ? OW.imageUrl(fc.image) : fc.image; hi2.alt = ''; headFace.appendChild(hi2); }
-        else headFace.textContent = OW.initials ? OW.initials(conv.title || titleFor(conv) || '?') : '?';
+        OW.cards.fill(headFace, { kind: 'center', name: conv.title || titleFor(conv) || '?', picture: fc.image });
       }
     }
     var hb = mk('div', 'ow-thread-head__b');
@@ -977,6 +1319,18 @@
       el.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); openChatSet(); } });
     });
     hb.classList.add('is-door');
+    /* CALLS (C-parity, 2026-10-11; register row 8): a chat's bar carries voice and video, as WhatsApp's does (a group of up to 16 is rung; 4 join a call) */
+    if (OW.call && (isDirect(conv) || (conv.participants || []).length <= 16)) {
+      [['voice', 'Voice call', '<path d="M6.6 3.5h2.6l1.4 4.1-1.9 1.3a12 12 0 0 0 6.4 6.4l1.3-1.9 4.1 1.4v2.6a2.1 2.1 0 0 1-2.3 2.1A17 17 0 0 1 4.5 5.8a2.1 2.1 0 0 1 2.1-2.3z"/>'],
+       ['video', 'Video call', '<rect x="3" y="6.5" width="12.5" height="11" rx="2.2"/><path d="m15.5 10.5 5-3v9l-5-3z"/>']].forEach(function (k) {
+        var cb = mk('button', 'ow-thread-head__more ow-thread-head__call'); cb.type = 'button';
+        cb.setAttribute('aria-label', k[1]); cb.setAttribute('data-call', k[0]);
+        cb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + k[2] + '</svg>';
+        cb.addEventListener('click', function () { OW.call.start(cid, k[0], headNm.textContent || ''); });
+        head.appendChild(cb);
+      });
+      OW.call.incoming(cid);              /* a call already ringing in this chat is answered here */
+    }
     head.appendChild(moreB);
     host.appendChild(head);
     var chatSet = mk('div', 'ow-chatset'); chatSet.hidden = true;
@@ -1413,15 +1767,7 @@
       var hp = (typeof w.hue === 'number' && OW.hue && OW.hue.fromAngle) ? OW.hue.fromAngle(w.hue) : null;
       if (hp) { f.style.setProperty('--h', hp[0]); f.style.setProperty('--h2', hp[1] || hp[0]); }
       var url = w.image || '';
-      if (url) {
-        var im = doc.createElement('img');
-        im.src = OW.imageUrl ? OW.imageUrl(url) : url;
-        im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
-        f.appendChild(im);
-      } else {
-        if (OW.faceMark) f.innerHTML = OW.faceMark();          /* founder/495 */
-        else f.appendChild(mk('i', '', esc(OW.initials ? OW.initials(w.name || w.email) : String(w.name || w.email || '').slice(0, 2).toUpperCase())));
-      }
+      OW.cards.fill(f, { kind: 'person', name: w.name || w.email, picture: url }, { img: ' loading="lazy" decoding="async"', letters: 'i' });   /* founder/495 */
       f.title = w.name || w.email || '';
       /* a face is a door to the person (founder/411: "you move between the
          Center and Profiles") — unless there is no one behind it: an address
@@ -1457,19 +1803,10 @@
        sent (founder/502 sweep). The row carries `pending`, `failed` (the
        reason) and `retry`; this draws them on every paint. */
     function markState(b, m) {
+      /* S23 (the founder, 2026-10-11): a message WAITING to send may show it quietly, as Instagram and WhatsApp do;
+         a message that FAILED is an alert, and an alert is the toast, never a mark on the bubble (`refused` below). */
       if (!b || !m || !m.pending) return;
-      if (!m.failed) { b.setAttribute('data-pending', '1'); return; }
-      b.setAttribute('data-failed', '1');
-      var f = mk('div', 'ow-msg__fail');
-      f.appendChild(mk('span', 'ow-msg__fail-x', esc('Not sent — ' + m.failed)));
-      if (typeof m.retry === 'function') {
-        var again = mk('button', 'ow-msg__fail-go', 'Try again');
-        again.type = 'button';
-        again.addEventListener('click', function (ev) { ev.stopPropagation(); m.retry(); });
-        f.appendChild(again);
-      }
-      var acts = b.querySelector('.ow-msg__acts');
-      if (acts) b.insertBefore(f, acts); else b.appendChild(f);
+      b.setAttribute('data-pending', '1');
     }
     /* a failed placeholder leaves the LIST, not only the screen, when it is
        tried again — or the next paint draws it back beside the new attempt */
@@ -1631,6 +1968,34 @@
       return data.get(p, { fresh: !!before });
     }
 
+    /* WRITTEN DOWN ON THIS DEVICE, NOT YET SENT (PLAN G6): a message still in the outbox after a reload is drawn again,
+       quietly waiting (S23: a state, not an alert), and becomes the real one when it lands; refused later, it leaves and
+       the toast says why. Without this a message written in a tunnel vanished from the thread on reload while it still
+       waited to send. */
+    function waitingFromOutbox() {
+      if (!global.OW || !OW.offline || !OW.offline.pending) return;
+      var path = conv_(cid) + '/messages';
+      OW.offline.pending().then(function (st) {
+        if (closed) return;
+        var n = 0;
+        (st.items || []).forEach(function (op) {
+          if (!op || op.state === 'failed' || (op.method || 'POST') !== 'POST' || op.path !== path) return;
+          var tid = 'tmp_' + op.id, b = op.body || {};
+          if (byId[tid]) return;
+          merge([{ id: tid, author: me, mine: true, body: b.body || '', pending: true,
+                   seq: (rows.length ? rows[rows.length - 1].seq : 0) + 0.5,
+                   created_at: new Date(op.at || Date.now()).toISOString(), replying_to: null, reply_to: b.reply_to || '',
+                   reactions: {}, attachments: [] }]);
+          n++;
+          if (OW.outbox && OW.outbox.watch) {
+            OW.outbox.watch(op.id, function () { dropRow(tid); paint(); pull(); },
+                            function (words) { dropRow(tid); paint(); if (OW.toast) OW.toast('Not sent. ' + (words || 'Try again.')); });
+          }
+        });
+        if (n) { msgs.classList.remove('po-grid'); paint(); toBottom(); }
+      }).catch(function () {});
+    }
+
     function load() {
       return readPage(null).then(function (r) {
         if (!r.ok) { refused(msgs, r, 'This conversation'); return 0; }
@@ -1657,6 +2022,7 @@
         if (d.retention !== undefined || d.notify !== undefined) facts_(d);
         openProps = d.proposals || [];
         merge(d.messages || []);
+        waitingFromOutbox();
         oldest = rows.length ? rows[0].seq : null;
         more = d.next_cursor != null;
         addDoor_(policy, myRole);
@@ -1674,15 +2040,19 @@
              first few seconds — and after that whenever the person is already
              at the bottom — a picture landing keeps them there. */
           var openedAt = Date.now();
-          global.requestAnimationFrame(toBottom);
+          /* ...unless it opened to land on a message search found: then that message is where it stays (the next
+             frame's scroll to the newest undid the landing at 1440, measured 2026-10-11) */
+          global.requestAnimationFrame(function () { if (!landing) toBottom(); });
           Array.prototype.forEach.call(msgs.querySelectorAll('img, video'), function (el) {
             el.addEventListener(el.tagName === 'VIDEO' ? 'loadedmetadata' : 'load', function () {
+              if (landing) return;
               if (Date.now() - openedAt < 5000 || atBottom()) toBottom();
             }, { once: true });
           });
         }
         pagerState();
         mountComposer();
+        landOn_();                    /* a message Messages' search found (C-parity) */
         paintProps();                 /* what the room is deciding (556) */
         seenIt();
         watch();
@@ -1696,6 +2066,36 @@
        point: prepending 30 messages moves everything the person is reading
        down by however tall they are, and correcting for it afterwards is a
        jump they can see. Measure, prepend, restore. */
+    /* SEARCH INSIDE CHATS LANDS ON WHAT IT FOUND: the one-shot target the search
+       row left. Earlier pages are read until the message is drawn (at most
+       JUMP_PAGES_MAX, then it says so), and it is centred and lit by the same
+       jumpTo a reply uses. A message the page does not show is not forced. */
+    function landOn_() {
+      var t = OW.messaging && OW.messaging._landOn;
+      if (!t || t.cid !== cid) return;
+      /* ONLY THE THREAD ON THE PAGE TAKES IT: a thread of the same chat left behind by an earlier opening (the phone's
+         full-screen one, before the window grew) took the one-shot target and the one being read never landed. */
+      if (!msgs.isConnected) return;
+      OW.messaging._landOn = null;
+      landing = true;
+      var pages = 0;
+      (function step() {
+        if (closed) return;
+        if (msgs.querySelector('[data-mid="' + cssq(t.mid) + '"]')) { jumpTo(t.mid); return; }
+        if (!more || (oldest != null && oldest <= t.seq)) return;
+        if (pages >= JUMP_PAGES_MAX) { note('That message is further back. Earlier messages reads more.'); return; }
+        pages++;
+        readPage(oldest).then(function (r) {
+          if (!r.ok || closed) return;
+          var d = r.data || {};
+          merge(d.messages || []);
+          oldest = rows.length ? rows[0].seq : oldest;
+          more = d.next_cursor != null;
+          paint(); pagerState(); step();
+        });
+      })();
+    }
+
     function pagerState() {
       older.innerHTML = '';
       if (!more) return;
@@ -1774,13 +2174,15 @@
          Join button on a Center that cannot be joined. `my_role` comes from
          the server, so this asks rather than assumes — and where a person may
          not write, it says WHY instead of showing nothing. */
-      var mayWrite = myRole && myRole !== 'banned' && myRole !== 'viewer';
+      var postingRole = String((policy || {}).who_can_post || 'guest').toLowerCase();
+      var mayWrite = myRole && myRole !== 'banned' && myRole !== 'viewer'
+        && (RANK_[String(myRole).toLowerCase()] || 0) >= (RANK_[postingRole] || RANK_.guest);
       if (!mayWrite) {
         foot.innerHTML = '';
         foot.appendChild(mk('p', 'ow-composer__no',
           esc(myRole === 'banned'
             ? 'You cannot post in this conversation.'
-            : 'You can read this conversation but not write in it.')));
+            : 'This chat does not allow your role to post.')));
         return;
       }
       if (foot.querySelector('.ow-composer')) return;
@@ -1851,9 +2253,20 @@
       }
       function fail(tmp, why_, retry) {
         attach.disabled = false;
-        tmp.failed = why_;
-        tmp.retry = retry || null;
+        refused(tmp, why_, retry);
+      }
+      /* A REFUSED SEND (S23): the bubble that was never stored leaves the thread, so nothing on screen looks sent
+         (founder/502: a failed message must never sit there looking sent), and the toast says why, once, with Try
+         again. Its words go back into the box when the box is empty, so nothing typed is lost after the toast fades. */
+      function refused(tmp, why_, retry, words) {
+        dropRow(tmp.id);
         paint();
+        if (words && !ta.value.trim()) {
+          ta.value = words; send.disabled = false;
+          ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px';
+        }
+        if (OW.toast) OW.toast('Not sent. ' + (why_ || 'Try again.'),
+                               typeof retry === 'function' ? { action: 'Try again', onAction: retry } : {});
       }
 
       ta.addEventListener('input', function () {
@@ -1879,7 +2292,8 @@
         if (!body) return;
         var aim = reuse ? reuse.aim : replyTo;
         if (reuse) dropRow(reuse.tmpId);
-        ta.value = ''; ta.style.height = 'auto'; send.disabled = true;
+        /* a retry from the toast clears the box only when the box still holds these words: what was typed since stays */
+        if (!reuse || ta.value.trim() === body) { ta.value = ''; ta.style.height = 'auto'; send.disabled = true; }
         var chip = foot.querySelector('.ow-reply-aim');
         if (chip) chip.remove();
         replyTo = null;
@@ -1888,9 +2302,10 @@
         /* THE SEND IS OPTIMISTIC AND HONEST ABOUT IT. The bubble appears
            immediately because that is what makes messaging feel like
            messaging, and it is marked `data-pending` until the server
-           confirms and `data-failed` if it refuses. A message that silently
-           never sent is the worst failure this surface can have, and an
-           unmarked optimistic bubble is exactly what that looks like. */
+           confirms. If it refuses, the bubble leaves and the toast says why
+           (S23). A message that silently never sent is the worst failure this
+           surface can have, and an unmarked optimistic bubble is exactly what
+           that looks like. */
         var tmp = {
           id: 'tmp_' + Math.random().toString(36).slice(2),
           author: me, mine: true, body: body, pending: true,
@@ -1911,27 +2326,17 @@
         if (node) node.setAttribute('data-pending', '1');
         toBottom();
 
-        data.post(conv_(cid) + '/messages',
-          { body: body, reply_to: aim ? aim.id : '' }).then(function (r) {
-          if (!r.ok) {
-            /* ── A FAILED SEND HAS TO BE UNMISSABLE, AND HAS TO SAY WHY ──
-               ★ FOUNDER/350, "No false UI state". The rule that refused it,
-               in the place it was refused, and a way forward: the message was
-               never stored, so re-sending cannot duplicate it. Recorded on the
-               ROW so every later paint keeps saying it (markState). */
-            tmp.failed = why(r);
-            tmp.retry = function () { post({ body: body, aim: aim, tmpId: tmp.id }); };
-            paint();
-            return;
-          }
-          /* THE SERVER'S ID AND SEQ REPLACE THE PLACEHOLDER'S. Without this
-             the realtime echo of my own message arrives as a stranger and the
-             thread shows it twice — the duplicate the founder's proof list
-             asks about, and it comes from exactly here. */
+        /* THE SERVER'S ID AND SEQ REPLACE THE PLACEHOLDER'S. Without this
+           the realtime echo of my own message arrives as a stranger and the
+           thread shows it twice — the duplicate the founder's proof list
+           asks about, and it comes from exactly here. Used whether the server
+           answers now or the outbox delivers it later (PLAN G6). */
+        function landed(d) {
+          d = d || {};
           delete byId[tmp.id];
           var at = rows.indexOf(tmp);
           if (at >= 0) rows.splice(at, 1);
-          var real = { id: (r.data || {}).message_id, seq: (r.data || {}).seq,
+          var real = { id: d.message_id, seq: d.seq,
                        author: me, mine: true, body: body,
                        created_at: new Date().toISOString(),
                        replying_to: tmp.replying_to, reply_to: tmp.reply_to,
@@ -1945,7 +2350,28 @@
              message you had just sent offered no Edit and no Remove until the
              chat was reopened — a typo you could not take back (founder/553,
              found by chat-flows.cjs). The re-read replaces it by id. */
-          pull((r.data || {}).seq);
+          pull(d.seq);
+        }
+        function failedSend(words) {
+          /* ── A FAILED SEND HAS TO BE UNMISSABLE, AND HAS TO SAY WHY ──
+             ★ FOUNDER/350, "No false UI state". The rule that refused it,
+             in the place it was refused, and a way forward: the message was
+             never stored, so re-sending cannot duplicate it. Recorded on the
+             ROW so every later paint keeps saying it (markState). */
+          refused(tmp, words, function () { post({ body: body, aim: aim, tmpId: tmp.id }); }, body);
+        }
+
+        data.post(conv_(cid) + '/messages',
+          { body: body, reply_to: aim ? aim.id : '' }, { queueable: true }).then(function (r) {
+          if (r.queued) {
+            /* WRITTEN DOWN, NOT YET SENT (PLAN G6). The bubble is already there and already marked pending; it stays that way
+               — not failed, because nothing was refused — and it becomes the real message when the outbox delivers it, once. */
+            OW.outbox.watch(r.pending_id, function (d) { landed(d.result); }, failedSend);
+            if (OW.toast) OW.toast('Saved on this device. It will send when you are back online.', { tone: 'ok' });
+            return;
+          }
+          if (!r.ok) { failedSend(why(r)); return; }
+          landed(r.data);
         });
       }
 
@@ -1954,8 +2380,26 @@
     }
 
     function react(mid, emoji) {
+      /* THE STATE ASKED FOR, NOT A FLIP (PLAN G6): the reaction this person has on this message is known here, so the request
+         says whether it wants it on or off, and a retry of it is a no-op. It shows at once; if the network is gone it waits in
+         the outbox and is put back only if the server refuses it later. */
+      var m0 = byId[mid], had = !!(m0 && (((m0.reactions || {})[emoji]) || []).indexOf(me) >= 0);
+      function shown(want) {
+        var m = byId[mid];
+        if (!m) return;
+        var rx = Object.assign({}, m.reactions || {}), who = (rx[emoji] || []).filter(function (x) { return x !== me; });
+        if (want) who.push(me);
+        if (who.length) rx[emoji] = who; else delete rx[emoji];
+        m.reactions = rx; paint();
+      }
       data.post(conv_(cid) + '/messages/' + encodeURIComponent(mid) + '/react',
-        { emoji: emoji }).then(function (r) {
+        { emoji: emoji, on: !had }, { queueable: true }).then(function (r) {
+        if (r.queued) {
+          shown(!had);
+          OW.outbox.watch(r.pending_id, null, function (words) { shown(had); note(words); });
+          if (OW.toast) OW.toast('Saved on this device. It will send when you are back online.', { tone: 'ok' });
+          return;
+        }
         if (!r.ok) { note(why(r)); return; }
         var m = byId[mid];
         if (m) { m.reactions = (r.data || {}).reactions || {}; paint(); }
@@ -2002,10 +2446,9 @@
       run(true);                /* the row already asked (Tap again to remove) */
     }
 
+    /* S23: what goes wrong in a thread is said as the toast, not as a line above the box */
     function note(text) {
-      var n = mk('div', 'ow-thread__note', esc(text));
-      foot.insertBefore(n, foot.firstChild);
-      global.setTimeout(function () { try { n.remove(); } catch (e) {} }, 4200);
+      if (text && OW.toast) OW.toast(String(text));
     }
 
     /* ══ REALTIME ════════════════════════════════════════════════════════
@@ -2036,17 +2479,23 @@
        notices (`screenshots: recorded`) those keys are reported, and the
        server records it. A phone's own screenshot gesture never reaches a
        web page; the native App is where that becomes complete. */
+    var lastShotAt = 0;
     var onShot = function (e) {
       if (closed || (policy || {}).screenshots !== 'recorded') return;
       var mac = e.metaKey && e.shiftKey && /^(Digit3|Digit4|Digit5)$/.test(e.code || '');
       if (e.key !== 'PrintScreen' && !mac) return;
+      if (e.repeat || Date.now() - lastShotAt < 750) return;
+      lastShotAt = Date.now();
       data.post(conv_(cid) + '/screenshot', {}).catch(function () {});
     };
     var onShotUp = function (e) { if (e.key === 'PrintScreen') onShot(e); };
     doc.addEventListener('keydown', onShot);
     doc.addEventListener('keyup', onShotUp);
+    var onLand = function () { if (!closed && rows.length) landOn_(); };
+    doc.addEventListener('ow:landon', onLand);
     function teardown() {
       closed = true;
+      doc.removeEventListener('ow:landon', onLand);
       doc.removeEventListener('pointerdown', onOutside, true);
       doc.removeEventListener('keydown', onShot);
       doc.removeEventListener('keyup', onShotUp);
@@ -2327,11 +2776,10 @@
       return need === 'owner' ? 'Only the owner of this chat can change these.' : 'Only the admins of this chat can change these.';
     }
     function sendRule(changes, el, after) {
-      if (el) { el.disabled = true; el.removeAttribute('data-failed'); }
+      if (el) el.disabled = true;
       data.put(conv_(cid) + '/policy', { changes: changes }).then(function (r) {
         if (el) el.disabled = false;
         if (!r || !r.ok) {
-          if (el) el.setAttribute('data-failed', '1');
           if (OW.toast) OW.toast((r && r.error) || 'That rule did not change. Try again.');
           return;
         }
@@ -2342,6 +2790,7 @@
         } else {
           policy = Object.assign({}, policy || {}, changes);
           if (OW.toast) OW.toast('Saved for everyone in this chat.', { tone: 'ok' });
+          if (Object.prototype.hasOwnProperty.call(changes, 'who_can_post')) mountComposer();
         }
         data.invalidate(conv_(cid));
         if (after) after(d);
@@ -2439,8 +2888,7 @@
           var row = mk('div', 'ow-set__row ow-setpick ow-people__row');
           row.setAttribute('data-role', String(p.role || 'participant'));
           var av = mk('span', 'ow-thread__av ow-people__av');
-          if (p.image) { var im = doc.createElement('img'); im.src = OW.imageUrl ? OW.imageUrl(p.image) : p.image; im.alt = ''; av.appendChild(im); }
-          else if (OW.faceMark) av.innerHTML = OW.faceMark();
+          OW.cards.fill(av, { kind: 'person', picture: p.image });
           /* each face in its own person's colour, as the inbox draws it */
           data.get('/api/oneway/people/' + encodeURIComponent(p.email)).then(function (r) {
             var d = (r && r.ok && r.data) || null; if (!d || !row.isConnected) return;
@@ -2451,7 +2899,7 @@
             }
             var pic = d.picture && (d.picture.url || d.picture);
             if (pic && typeof pic === 'string' && !p.image) {
-              av.innerHTML = ''; var im2 = doc.createElement('img'); im2.src = OW.imageUrl ? OW.imageUrl(pic) : pic; im2.alt = ''; av.appendChild(im2);
+              OW.cards.fill(av, { kind: 'person', picture: pic });
             }
           }).catch(function () {});
           row.appendChild(av);
@@ -2496,7 +2944,7 @@
         reqs.forEach(function (q) {
           var row = mk('div', 'ow-set__row ow-setpick ow-people__row');
           var av = mk('span', 'ow-thread__av ow-people__av');
-          if (OW.faceMark) av.innerHTML = OW.faceMark();
+          OW.cards.fill(av, { kind: 'person' });
           row.appendChild(av);
           var w = mk('span', 'ow-setpick__w');
           w.appendChild(mk('b', '', esc(q.name || bare(q.person || ''))));
@@ -2563,6 +3011,7 @@
         }
         if (d.my_role) myRole = d.my_role;
         if (d.policy) policy = d.policy;
+        mountComposer();
         if (d.people) _people = Object.assign(_people || {}, d.people);
         if (d.proposals) { openProps = d.proposals; paintProps(); }
         if (d.messages) { merge(d.messages); paint(); }
@@ -2628,13 +3077,15 @@
       var sP = section(body, 'Privacy');
       ruleSwitch(sP, 'read_receipts', 'Read receipts', 'People see when their messages are read.', 'Nobody sees when a message is read.', can);
       ruleSwitch(sP, 'typing', 'Typing indicator', 'People see when someone is typing.', 'Typing is never shown.', can);
-      ruleSwitch(sP, 'screenshots', 'Screenshot notices', 'The chat is told when someone takes a screenshot.', 'Screenshots are not reported.', can);
+      ruleSwitch(sP, 'screenshots', 'Screenshot notices', 'Detected screenshot shortcuts notify the chat. Phone hardware screenshots cannot be detected here.', 'Screenshot notices are off.', can);
       var sD = section(body, 'Disappearing messages');
       ruleChoice(sD, 'disappearing', 'Messages disappear', [['denied', 'Off'], [86400, 'After 24 hours'], [604800, 'After 7 days'], [7776000, 'After 90 days']], can);
 
       if (conv.type !== 'direct' && others.length > 1 || conv.type === 'group') {
         var sG = section(body, 'Group');
         ruleChoice(sG, 'who_can_add', 'Who can add people', [['admin', 'Admins'], ['participant', 'Everyone']], can);
+        ruleChoice(sG, 'who_can_remove', 'Who can remove people of a lower role', [['admin', 'Admins'], ['moderator', 'Moderators and admins'], ['participant', 'Members and admins']], can);
+        ruleChoice(sG, 'who_can_post', 'Who can post', [['guest', 'Anyone in the chat'], ['participant', 'Members and admins'], ['moderator', 'Moderators and admins'], ['admin', 'Admins']], can);
         ruleChoice(sG, 'who_can_settings', 'Who can change these rules', [['admin', 'Admins'], ['participant', 'Everyone']], can);
         ruleChoice(sG, 'joining', 'How people join', [['invite', 'By invitation'], ['request', 'They ask, an admin approves'], ['open', 'Anyone who finds it']], can);
         ruleSwitch(sG, 'history_for_new', 'New people see earlier messages', 'Someone added later can read what came before.', 'Someone added later starts from when they joined.', can);
@@ -2678,13 +3129,12 @@
         /* WHO THIS IS */
         var who = mk('div', 'ow-chatset__who');
         var f = mk('span', 'ow-chatset__face');
-        if (one && one.image) { var im = doc.createElement('img'); im.src = OW.imageUrl ? OW.imageUrl(one.image) : one.image; im.alt = ''; f.appendChild(im); }
-        else if (OW.faceMark) f.innerHTML = OW.faceMark();
+        OW.cards.fill(f, { kind: 'person', picture: one && one.image });
         who.appendChild(f);
         var nm = mk('div', 'ow-chatset__nm');
         nm.appendChild(mk('b', '', esc(one ? (one.name || bare(one.email || '')) : (head.querySelector('.ow-thread-head__nm') || {}).textContent || 'This chat')));
         /* never an address under a name — their @handle, when they have one */
-        var sub_ = mk('span', '', esc(one ? (one.account === false ? 'Not on ONEWAY yet' : '') : (others.length + 1) + ' people'));
+        var sub_ = mk('span', '', esc(one ? (one.account === false ? 'Not on Oneway yet' : '') : (others.length + 1) + ' people'));
         nm.appendChild(sub_);
         who.appendChild(nm);
         /* the face in their colour, as the bar and the inbox draw it */
@@ -2692,10 +3142,9 @@
         var fh_ = conv.face && typeof conv.face.hue === 'number' && OW.hue && OW.hue.fromAngle ? OW.hue.fromAngle(conv.face.hue) : null;
         if (fh_) { f.style.setProperty('--ch1', fh_[0]); f.style.setProperty('--ch2', fh_[1] || fh_[0]); }
         if (!one) {
-          f.setAttribute('data-kind', 'center'); f.innerHTML = '';
-          var gp = (conv.face || {}).image;
-          if (gp) { var gpi = doc.createElement('img'); gpi.src = OW.imageUrl ? OW.imageUrl(gp) : gp; gpi.alt = ''; f.appendChild(gpi); }
-          else f.textContent = (headFace.textContent || '').trim();
+          f.setAttribute('data-kind', 'center');
+          /* the group's face, as its head draws it (the one face rule, S21) */
+          OW.cards.fill(f, { kind: 'center', name: conv.title || titleFor(conv) || '?', picture: (conv.face || {}).image });
           /* THE GROUP'S PICTURE: press its face (founder/556) */
           if (mayRule()) {
             f.setAttribute('role', 'button'); f.tabIndex = 0;

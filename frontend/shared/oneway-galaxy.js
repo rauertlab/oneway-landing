@@ -81,6 +81,9 @@
     if (!arrays) { return function () {}; }
     function paint() {
       var h = currentHue();
+      /* the tab's globe takes the colour this ground shows (founder, 2026-10-17: "following exact sync rule"); a page
+         that chose its own colours keeps them (oneway-hue.js owTabHue) */
+      if (global.owTabHue) { try { global.owTabHue(h, true); } catch (e) {} }
       ['CYAN', 'PURPLE', 'AMBER'].forEach(function (k) {
         if (arrays[k]) { tint(arrays[k], h + OFFSET[k], SAT[k], LUM[k]); }
       });
@@ -99,6 +102,14 @@
     } catch (e) {}
     return paint;
   }
+
+  /* A PAGE ON THIS GROUND WITHOUT A STARFIELD still shows its hue in the tab: once the document is read, and on every
+     change oneway-hue.js announces */
+  function tellTab() { if (global.owTabHue) { try { global.owTabHue(currentHue(), true); } catch (e) {} } }
+  try {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tellTab); else tellTab();
+    global.addEventListener('ow:hue', tellTab);
+  } catch (e) {}
 
   global.OW = global.OW || {};
   global.OW.galaxy = { follow: follow, currentHue: currentHue, BASE: BASE };

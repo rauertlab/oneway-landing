@@ -1,43 +1,47 @@
 # Oneway, every page in words
 
-> The words of every page on oneway.center, read on 2026-10-09 from the pages themselves (tools/site_seo.py).
+> The words of every page on oneway.center, read on 2026-10-17 from the pages themselves (tools/site_seo.py).
 
 ---
 
 ## Oneway
 
-Source: https://oneway.center/ (last changed 2026-10-09)
+Source: https://oneway.center/ (last changed 2026-10-17)
 
 >
 
-Ecosystem
-Oneway App
-Oneway OS
+Our Mission
+App
+OS
+Security
+Contact
 
 Sign in
 
 Oneway. We build & elevate experiences people want to return to.
 
+One profile for every person, a Center for every place, and Oneway OS to run it.
+
 Download App
 Explore Oneway OS
-
-Selective server beta — open when accessible
 
 Making entertainment, connection, and the Internet better for all sides.
 
 A modern ecosystem for people to easily and conveniently connect with cities, communities, and businesses.
 
-Explore the ecosystem
+Our mission
 
 Ecosystem
 
 We give every person one profile and every community or business a Center.
 
-Create your account Oneway Ecosystem
+Create your account
 
-We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.
+Find a place, follow its updates or build a space for a community.
 
 What a Center is
+
+These profiles and Centers are examples, until the beta's own arrive.
 
 App
 
@@ -50,17 +54,34 @@ Open the App The Oneway App
 
 OS
 
+A Center you make entirely your own.
+
+A Center is a canvas: place its posts, events, links and website where you want them, and everyone who opens it sees it your way. Oneway OS is the AI business management side of the same social network, so the place people follow and the place you run are one.
+
 See how deep it goes.
 
-From managing online communities, developing custom tools,
+Connect your casino in one place.
 
-to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
+Go anywhere. Connect everywhere.
+
+Write it from your words,
+09429b1a; bookings, events, the shop, customers, staff and roles, the inbox; the System Store; the Brain's web on
+Business OS). PROPOSED words, for his eye. -->
+
+Build your Center
+Make its page, its look and its own website, arranged as a canvas of Popits, from layouts made for your kind of place.
+
+Run it from one place
+Bookings and events, a shop, customers, staff and roles, and every message in one inbox.
+
+Grow it as you go
+Add Systems when you need them, connect the platforms you already use, and on Business OS see how all of it connects through the Brain.
+
+From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
 
 OS Brain
 
 iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
-
-Connect your casino in one place.
 
 Open Oneway OS Oneway OS
 
@@ -77,107 +98,652 @@ Reserve your @name
 Held for · —
 Reserve another name
 
-Go anywhere. Connect everywhere.
+Plans and pricing.
 
-Oneway App ›
-Oneway OS ›
-Business OS ›
+Every person and every Center starts free.
+
+App
+OS
+Business OS
 Developer OS
 
-Ecosystem
-Our Approach
-Oneway App
-Oneway OS
-About
++
+For people
+
+The App's own private Brain
+
+Your own map
+
+Deeper recommendations
+
+More control over what it remembers
+
+Create your account
+
+OS
+For every Center
+
+Free
+
+A Center's public side
+
+Its community
+
+The tools to run it
+
+Create your Center
+
+Core
+For one Center's team
+
+One Center's staff, customers, assets and commitments
+
+Direct acts, reports and configured rules
+
+Industry-specific work
+
+Contact us
+
+Business OS
+
+For one business Center
+
+$330 a month
+
+Everything in Core, plus
+
+Coordinated decisions and delegated execution
+
+Organization-wide control
+
+The Brain, Systems, Agents and Cross Projection
+
+Several Business Centers under one organization are by contact.
+
+Buy Business OS today
+
+What a Center gets on each plan.
+
+What a Center gets
+OS Free
+Business OS $330 a month
+Developer OS Free
+
+A public page and its community OS Included Business Included Developer Included
+
+Posts and events OS Included Business Included Developer Included
+
+The canvas and its Popits OS Included Business Included Developer Included
+
+A website on its own domain OS Included Business Included Developer Included
+
+Its members and the people who run it OS Included Business Included Developer Included
+
+Bookings OS Not included Business Included Developer Not included
+
+One inbox for everything that arrives OS Not included Business Included Developer Not included
+
+Custom roles OS Not included Business Included Developer Not included
+
+Systems from the System Store OS Not included Business Included Developer Not included
+
+The Brain and Cross Projection OS Not included Business Included Developer Not included
+
+Several Centers under one organization OS Not included Business Included Developer Not included
+
+Modules of its own OS Not included Business Included Developer Included
+
+Developer OS, for building applications, Systems and integrations on Oneway, is in closed beta.
+
+Invitation Only NYC Beta
+
+Our first launch is New York City.
+
+Closed Selective Server Beta
+
+Contact
+
+Get Oneway OS today.
+
+Tell us what you run or what you want to build, and we set it up with you. We reply almost instantly to any business inquiry and adapt Oneway to any use case. Build this model of the internet with us.
+
+Buy Business OS today Start on Developer OS
+
+Questions
+
+Oneway, in plain words.
+
+What is Oneway?
+Oneway is a social network and a business platform in one. Every person has one profile, and every community, place and business has a Center.
+
+What is a Center?
+A Center is the home of a place, a community or a business on Oneway. At its simplest it is an information page; it can also be a social profile, a website on its own domain, a storefront and the workspace its team runs it from.
+
+What is Oneway OS?
+Oneway OS is where a Center is run: its page and website, posts, events and community, free. Business OS adds bookings, staff and the Systems of its industry.
+
+Who controls my data?
+You do. Your profile shows only what you choose, your work for a Center stays apart from your personal activity, and you can delete your data and your account; if you own a Center, you hand it over first.
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
 Security
 Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
 Privacy
 Terms
+Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
 
 ---
 
-## About Oneway
+## Our Mission
 
-Source: https://oneway.center/about (last changed 2026-10-09)
+Source: https://oneway.center/mission (last changed 2026-10-17)
 
->
+class="mission-page">
 
-Ecosystem
-App
-OS
+Our Mission App OS Security Contact
+
 Sign in
 
-About
+Mission
 
-About
-Oneway
+Oneway aims to bring the web and local community together.
 
-Making entertainment, connection, and the Internet better for all sides.
+Always building a place for individual expression, stronger communities and more connected workplaces, shaped by the people who use it.
 
-Oneway is at oneway.center. It is made by Oneway Technologies LLC, a New York limited liability company, and it is in closed beta. Oneway is not affiliated with other services that use the name Oneway.
+Compatibility & Integration
+Bring the web together without leaving it behind.
+Oneway is designed to connect websites, social platforms and business tools. Cross Projection keeps one Oneway record connected across its supported views, so an event can appear in the App, its Center and a connected website.
 
-The ecosystem
+Bluesky
 
-We give every person one profile and every community or business a Center.
+Mastodon
 
-We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.
+Instagram
 
-The Oneway App
+Facebook
 
-Introducing your fully customizable social network.
+X
 
-See what your friends and the places you love are posting, and what is coming up at each of them.
+Threads
+
+LinkedIn
+
+TikTok
+
+YouTube
+
+Pinterest
+
+Reddit
+
+Telegram
+
+Discord
+
+Google Business Profile
+
+Stripe
+
+Resend
+
+Firebase Cloud Messaging
+
+Apple Push Notification service
+
+Mozilla Push Service
+
+Windows Push Notification Services
+
+Google Calendar
+
+Apple
+
+OpenStreetMap
+
+Nominatim
+
+Overpass API
+
+Protomaps
+
+MapLibre
+
+Leaflet
+
+CesiumJS
+
+OSRM
+
+Google Maps
+
+Apple Maps
+
+GitHub
+
+Fly.io
+
+Google Fonts
+
+jsDelivr
+
+unpkg
+
+WordPress
+
+Wix
+
+Squarespace
+
+Webflow
+
+Weebly
+
+GoDaddy Website Builder
+
+Framer
+
+Carrd
+
+Duda
+
+HubSpot CMS
+
+Ghost
+
+Drupal
+
+Joomla!
+
+Google Sites
+
+Toast
+
+Oracle OPERA Cloud
+
+Oracle MICROS Simphony
+
+Shopify
+
+Wikipedia
+
+Wikimedia Commons
+
+National Weather Service
+
+NOAA
+
+Anthropic
+
+xAI
+
+Groq
+
+OpenAI
+
+Gemini
+
+Mistral AI
+
+DeepSeek
+
+OpenRouter
+
+Connections are built platform by platform. Availability depends on each service's supported capabilities and permissions.
+
+Privacy
+Your identity and data stay under your control.
+Choose what your profile shows and keep personal and workplace activity separate. Access to organizational work follows permissions, not a public profile.
+Privacy and security
 
 Oneway OS
+Building the best social media ecosystem for businesses and communities.
+A public Center is where people connect with a place. Oneway OS is where its team can manage that presence and organize the work behind it.
+Explore Oneway OS
 
-See how deep it goes. From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
+Go anywhere. Connect everywhere.
+Explore the App Talk to us
 
-Oneway OS. A free operating environment with the basic capabilities of a Center.
-
-Oneway Business OS. The full business operating system: the Brain, Systems, Agents, Cross Projection and operational intelligence.
-
-Oneway Developer OS. The developer platform for building applications, systems, integrations, agents and custom experiences on Oneway.
-
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
 Contact
 
-Oneway Technologies LLC, a New York limited liability company
-williamrau78@gmail.com
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
 
 2027, Oneway Technologies LLC
 
-About
+---
+
+## Oneway OS
+
+Source: https://oneway.center/os (last changed 2026-10-17)
+
+>
+
+Our Mission
+App
+OS
+Security
+Contact
+
+Sign in
+OS
+
+OS
+
+Connect your casino in one place.
+
+Open Oneway OS →
+View Systems
+
+Business OS
+
+Run your people, Systems and daily work from one Center. Run your whole operation.
+
+Explore Business OS Business →
+
+Oneway OS
+
+Create a Center for your community or an information page. Create a community Center.
+
+Open Oneway OS Oneway →
+
+Developer OS
+
+Build apps, modules and integrations for Centers. Build for the ecosystem.
+
+Explore Developer OS Developer →
+
+Business OS is $330 a month, set up by contact. Get Oneway OS today
+
+What a Center is
+
+A Center is whatever your place needs it to be.
+
+A Center can be:
+
+an information page for a place, a landmark or what locals know
+
+a social profile with posts and followers, the way Instagram works
+
+your business's website, on your own domain
+
+a community's home, with members, groups, chat and events
+
+a storefront that takes orders and bookings
+
+the workspace your team runs the business from
+
+Whichever it is, its page is a canvas its team lays out in Oneway OS, Popit by Popit.
+
+System Store
+
+Everything your Center needs.
+
+Systems bring industry and everyday capabilities into a Center. Explore what is available, then connect the tools that fit your operation.
+
+For your kind of place
+Hotel Operations
+Restaurant Operations
+Casino Operations
+Property Management
+Community Management
+
+For every Center
+Reservations
+Events
+Scheduling
+Customer Relationships
+Rewards & Membership
+Communications
+People
+Inventory
+Maintenance
+Asset Management
+Marketing
+
+Not built yet: Consulting & Advisory, Agency Operations, Summer Camp Operations, Local Government, News Organization, Service Management, Short-Term Rental Operations, HVAC Service Operations, Dental Practice Operations, Mortgage Pipeline, Accounting Firm Client Management, Documents, Finance, Security & Access.
+
+Install the Systems your place needs; each adds its tools to your Center and its Popits to the canvas.
+
+Business OS vs. the stack
+
+Seven apps, or one Center.
+
+Most businesses run on a pile of separate tools that never talk to each other. Business OS puts them in one Center, on one login.
+
+Instead of On Business OS
+
+A website builder Wix, Squarespace Your Center itself, as its website
+
+A booking app Calendly, OpenTable Bookings and reservations, in the same Center people follow
+
+An online store Shopify, Square Online A shop beside everything else the place does
+
+A customer list HubSpot, Mailchimp Customers kept from every visit, order and message
+
+A social media scheduler Hootsuite, Later Posts that go to the platforms you connect, from one place
+
+A team chat and staff app Slack, Homebase Staff, roles and every message in one inbox
+
+A link-in-bio page Linktree One Center that people follow, with everything on it
+
+Add up your own stack: tick each tool you pay for and type what it costs you a month.
+
+Your stack: $0 a month
+
+Your stack costs a month more than Business OS.
+
+Your numbers stay in your browser.
+
+The names are examples of each kind of tool, and none of them has any affiliation with Oneway.
+
+Compatibility & the Brain
+
+Bring everything you use into one place.
+
+On Business OS, the Brain sits under your Center. It connects the platforms and tools you already use, the Systems you install route back through it, and the whole operation moves as one.
+
+Center →
+Brain →
+System Store →
+Installed Systems →
+Team · website · operations
+
+How a Center grows
+
+Start as a community. Grow into an operation.
+
+Stage 1
+Community
+Members, channels, events, and shared resources.
+
+Stage 2
+Connected
++ a public website, public intake, and Brain.
+
+Stage 3
+Operational
++ installed Systems and staff.
+
+Stage 4
+Enterprise
++ multiple Systems, departments, and advanced Brain.
+
+Build your Center on Oneway OS.
+
+Open Oneway OS →
+Create your account
+
+Built for communities, organizations, businesses and places.
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
 Privacy
 Terms
-Corporate Charter
 Data Deletion
-← Back to site
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Get Oneway OS today
+
+Source: https://oneway.center/contact (last changed 2026-10-17)
+
+>
+
+Our Mission
+App
+OS
+Security
+Contact
+
+Sign in
+
+Contact
+
+Get Oneway OS today.
+
+Write to us below for a business, a developer's project, a community or the App beta.
+
+Closed Selective Server Beta
+
+For businesses
+
+Business OS.
+
+Run your business, venue or community on Oneway OS: your Center and its website, bookings and reservations, customers, staff schedules, inventory and online sales, with the AI that works alongside your team.
+
+The rates are in the plans . For several Centers under one organization, write to us.
+
+Buy Business OS today
+
+For developers
+
+Developer OS.
+
+Build Systems and modules on Oneway's platform, from your own code or from a description in plain words, and offer them to the Centers that run on Oneway.
+
+Free for developers.
+
+Start on Developer OS
+
+For people
+
+The Oneway App.
+
+One profile for the places you go, opening by invitation in New York City first.
+
+Ask for an invitation
+
+Send an inquiry.
+
+Pressing send opens your email app with your inquiry written out, to send from your own address. Nothing leaves this page until you send it there.
+
+A business
+A developer
+A community
+The App beta
+Something else
+
+Your name
+Business, organization or project
+Where you are
+What you want to run or build
+
+Send inquiry
+
+Other ways to reach us.
+
+Support
+Press
+Partnerships
+Privacy and data deletion
+
+Oneway Technologies LLC, a New York limited liability company. Other services that use the name Oneway are not connected with us. williamrau78@gmail.com
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
 
 ---
 
 ## Privacy Policy
 
-Source: https://oneway.center/privacy (last changed 2026-10-09)
+Source: https://oneway.center/privacy (last changed 2026-10-17)
 
 >
 
-Ecosystem
+Our Mission
 App
 OS
+Security
+Contact
+
 Sign in
 
-Legal
-
-Privacy
-Policy
-
-What we collect, why, who sees it, and how to have it removed.
+Privacy Policy
 
 This is the Privacy Policy for the Oneway ecosystem: the Oneway App, the Oneway OS, Sign in with Oneway on any site, oneway.center, and any other or future Oneway service. It is published by Oneway Technologies LLC, a New York limited liability company. Oneway is in closed beta. Last updated October 5, 2026.
 
-Contents Who decides what happens to your information What we collect How we use it Who can see what Recognition by places Connected accounts Businesses and their records Sensitive information Who we share it with How long we keep it Security Your choices Children Where it is handled Changes
+Contents Who decides what happens to your information What we collect How we use it Who can see what Recognition by places Connected accounts Businesses and their records Sensitive information Who we share it with How long we keep it Security Your choices Without an account Paying a Center Automatic checks Children Where it is handled Changes
 
 Who decides what happens to your information
 
@@ -230,6 +796,12 @@ To run Oneway: sign you in, show your profile, deliver posts and messages, make 
 To keep accounts safe: limit sign-in attempts, require two-step sign-in in casino, guest, rewards and credential areas, and keep the security log.
 
 To rank Home from who and what you follow, the places you belong to, your reactions, what you have already seen and what you are watching now.
+
+To order For you in two moments. When you open it, the first posts come from what you follow and belong to, places near yours, and updates from city and community Centers near you, with other people's reactions counting for little. As you scroll, posts that more people reacted to come first. A feed you set to top this week is ordered by reactions alone.
+
+To favour posts from places near yours on Home. The places are the ones you belong to, follow, saved, visited or typed on your profile, and Oneway never reads your device's position for this. No more than one post in five comes from a nearby place you do not follow, and no author or place fills more than two of any ten. Following, and feeds you set to newest first, are not ranked.
+
+To fill the feeds you build from the kinds of Center you choose, such as restaurants or hotels. Only the kinds you pick are used, and nothing is inferred about you from them.
 
 To show friends what you share through StreetPass: Centers you both belong to and events you are both going to.
 
@@ -436,9 +1008,33 @@ Depending on where you live, such as California, Colorado, Connecticut, Texas, V
 
 To use a right, email williamrau78@gmail.com . We answer within 30 days, and may need to confirm it is you. You may ask someone to act for you; we will ask for proof they can. Using your rights will not change how we treat you. If we refuse, reply with the word Appeal and someone who did not make the first decision will review it and tell you the result in writing within 45 days. For Facebook and Instagram data, see Data Deletion .
 
-Children
+Without an account
 
-Oneway is for people 18 and older, and we do not knowingly collect information from anyone younger. If you think a child has an account, email us and we will delete it.
+You can look around Oneway without signing in. We make no account and no record of you for it. A like or dislike you press is kept in your browser, on this device, and is not sent to us; when you sign in, it is sent once, as you. Nothing you do signed out becomes a page or appears in search. To comment, repost or save, you sign in.
+
+Paying a Center
+
+When you buy from a Center through Oneway, you pay on Stripe’s own page, to the Center’s Stripe account. Your card details go to Stripe and never to Oneway. We keep the order: what it was for, its amount, and whether Stripe says it is paid or refunded. Oneway’s fee is at most 1% of the sale, and it is refunded when the sale is refunded.
+
+Automatic checks
+
+Posts and comments are checked automatically for hate, threats and sexual words. A match is sent to a person at Oneway to review, with the words that matched; the check itself hides nothing. A message to a Center’s team from someone without an account is checked the same way, more strictly, and is not sent if it has any of those words or a link: the page says so, so it can be written again.
+
+Teens and children
+
+Oneway is for people 13 and older. When you sign up for the App we ask your birthday. It stays private, is never shown on your profile, and sets the protections for your age. When you sign up for a workspace, to join a Center’s team or to start a business, we ask only which age range you are in, never your birthday. A sign-up from someone younger than 13 is refused before anything about them is stored, and we do not knowingly collect information from anyone under 13. If you think a child under 13 has an account, email us and we will delete it.
+
+An account for someone 13 to 17 starts protected:
+
+The profile is private until they choose otherwise.
+
+Only people they follow can message them.
+
+Notifications are held from 10 PM to 7 AM in their own time zone.
+
+From 13 to 15, their posts are not recommended to people who do not follow them, and their profile can be opened to everyone only with a parent’s approval.
+
+Where a state’s law asks for more for minors, that law applies.
 
 Where it is handled
 
@@ -453,34 +1049,44 @@ Contact
 Oneway Technologies LLC, a New York limited liability company
 williamrau78@gmail.com
 
-2027, Oneway Technologies LLC
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
 
 Privacy
 Terms
-Corporate Charter
 Data Deletion
-Delete Account
-← Back to site
+Corporate Charter
+
+2027, Oneway Technologies LLC
 
 ---
 
 ## Terms of Service
 
-Source: https://oneway.center/terms (last changed 2026-10-09)
+Source: https://oneway.center/terms (last changed 2026-10-17)
 
 >
 
-Ecosystem
+Our Mission
 App
 OS
+Security
+Contact
+
 Sign in
 
-Legal
-
-Terms of
-Service
-
-The rules for using Oneway.
+Terms of Service
 
 This is the Terms of Service for the Oneway ecosystem: the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in closed beta. Last updated October 5, 2026.
 
@@ -492,7 +1098,7 @@ The Service is in closed beta, by invitation. It can change, break or be withdra
 
 2. Who can use it
 
-You must be 18 or older and able to enter a binding agreement. Some features, such as casino features, carry a higher legal age in some places, and you must meet it. You may not use the Service if you are barred from receiving it under United States law, including export and sanctions law. If you act for a Center, you confirm you have the authority to.
+You must be 13 or older. If you are under 18, or under the age of majority where you live, a parent or guardian must agree to these Terms with you. Accounts for people under 18 carry the protections the Privacy Policy describes. Some features, such as casino features, carry a higher legal age in some places, and you must meet it. You may not use the Service if you are barred from receiving it under United States law, including export and sanctions law. If you act for a Center, you confirm you have the authority to.
 
 3. Your account
 
@@ -634,9 +1240,13 @@ The Service connects to services we do not run, such as the platforms you connec
 
 17. Plans and billing
 
-Oneway Free is for people and small communities.
+Oneway is free for people, and Oneway OS is free for any Center.
 
-Oneway OS+ is $60 per month. Oneway OS Max is $330 per month. Enterprise is priced by agreement. Plans carry limits, such as AI generations, automations and storage, and the limits are shown on the plan.
+Business OS is $330 per month for one Center, and Oneway sets it up with you by contact; more than one Business Center is priced by agreement. Any other plan’s price is shown to you before you agree to it. No plan stops your work at a limit it does not show you.
+
+When a Center sells through Oneway, Oneway’s fee is at most 1% of the sale, and it is refunded when the sale is refunded.
+
+When you buy from a Center, the Center is the seller and is responsible for what it sells. You pay on Stripe’s page, to the Center’s own Stripe account, and Stripe’s terms apply to the payment.
 
 Nothing is charged today. When billing opens, the price, the billing period, the renewal date and how to cancel are shown to you before you agree, and nothing is charged without your agreement.
 
@@ -691,73 +1301,170 @@ Contact
 Oneway Technologies LLC, a New York limited liability company
 williamrau78@gmail.com
 
-2027, Oneway Technologies LLC
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
 
 Privacy
 Terms
-Corporate Charter
 Data Deletion
-Delete Account
-← Back to site
+Corporate Charter
+
+2027, Oneway Technologies LLC
 
 ---
 
 ## Data Deletion
 
-Source: https://oneway.center/data-deletion (last changed 2026-10-09)
+Source: https://oneway.center/data-deletion (last changed 2026-10-17)
 
 >
 
-← Privacy Policy
+Our Mission
+App
+OS
+Security
+Contact
 
-Data & Privacy
+Sign in
 
-Data
-Deletion
+Data Deletion
 
-What we hold when you connect an account, and how to remove it.
+How to delete what is yours on Oneway, from one post to your whole account: what goes at once, what is kept, for how long, and why. The Privacy Policy is the full account of what we hold.
 
-What We Hold
+Contents A post or a photo A comment A connected account A copy of your data Your whole account What is kept, and why For Meta, Threads, Instagram and Facebook
 
-When you connect an account
+On your profile
 
-The access the platform gave us, kept encrypted and never shown back
+A post or a photo
 
-The account's name and ID, and its picture, shown in Connected accounts
+Open the post in the Oneway App
 
-For Facebook and Instagram, the Pages you chose and their names
+Press Delete , then Delete for good?
 
-If you started an import, the posts we copied onto Oneway. They are your posts.
+It leaves your profile, every feed and every Center it was posted to at once, with its photos and videos.
 
-We do not hold your password for any platform. For Bluesky, we hold an app password you can revoke.
+A photo goes with the post it is in. The files themselves are erased when you delete your account.
 
-Option 1 — From Oneway
+Under a post
 
-Disconnect an account
+A comment
 
-Sign in at oneway.center
+Open the post and find your comment
 
-Go to Settings → Connected accounts
+Press Delete beside it
 
-Press Disconnect next to the account
+It leaves the conversation at once, and the post's count goes down.
 
-The stored access is deleted straight away, and so is the verified mark it gave your profile.
+Instagram, Facebook, Threads, X and the others
 
-Option 2 — From the platform
+A connected account
+
+In the Oneway App, open Settings , then Connected accounts
+
+Press Disconnect beside the account, then press it again
+
+The access the platform gave Oneway is deleted straight away, and nothing more is sent there. Where connecting it verified that account on your profile, the verified mark goes with it.
+
+An account connected for a Center you run is disconnected the same way, in Oneway OS under Settings , then Connected accounts .
+
+Posts already sent stay on the platform, where you can delete them. Posts you imported from it stay on Oneway as your posts, and you delete each one like any other post. The platform keeps Oneway in its own list of connected apps until you remove it there too.
+
+Before you delete anything
+
+A copy of your data
+
+In the Oneway App, Settings , then What Oneway knows about you , shows what Oneway understands about you. For a full copy, email williamrau78@gmail.com from the address on your account. We answer within 30 days, and may need to confirm it is you.
+
+Everything at once
+
+Your whole account
+
+In the Oneway App, open Settings , then Delete your account
+
+Enter your password, and the code from your authenticator app if two-step is on
+
+Press Delete your account , then Tap again to delete it for good
+
+If you own a Center, hand it over to someone in Oneway OS first; you are told which one. Your own space is not a Center you run, and it goes with your account.
+
+What goes at once: every session, on every device. Your profile, picture and search listings. Your posts from view, and your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected on your profile, with the access we held for them. Your linked identities. Your shared location and your Footsteps. What reached your screen, and what the feed learned from it. Your list of bookings. Your notifications.
+
+It cannot be undone, and nobody can sign in to it again. If you cannot sign in, email us from the address on the account.
+
+After you delete
+
+What is kept, and why
+
+What How long, and why
+
+Your email address, the day you joined and the day you left Kept, with no end date, so no one else can register the address and inherit your history.
+
+Comments and messages you left in other people's conversations They stay, shown as Deleted account with no picture, because they are part of other people's conversations.
+
+A post or a comment you deleted Gone from view at once. Its record stays in our database, so a reply or a share that pointed at it can say it was removed.
+
+What a Center keeps Its own records, its bookings, the pictures uploaded for it and the accounts connected for it stay with the Center: they are its records, not your profile's.
+
+The security log Kept after you delete your account, because it is the record of sign-ins and changes to who can get in. We have not set an end date. We will set one and publish it in the Privacy Policy before the App opens to the public.
+
+Casino compliance records At least five years, as the law requires. They cannot be deleted on request.
+
+Backups We will state the backup period in the Privacy Policy before the App opens to the public.
+
+Legal holds Longer only when the law, a regulator or a legal claim requires it, and only for as long as it does.
+
+We made this page for Meta, Threads, Instagram and Facebook. Hello!
+
+What Oneway receives from Facebook
+
+When you connect a Facebook Page
+
+The access Facebook gives Oneway: a key for your Facebook account and one for each Page you chose. They are kept encrypted and are never shown back to anyone.
+
+Each Page's name and ID, and, for the Page Oneway posts to, the ID of the Instagram professional account linked to it, if it has one. Instagram comes through the same Facebook sign-in.
+
+If you start an import: the Page's posts, with their photos and videos, copied onto Oneway as posts.
+
+Oneway uses it to send the posts you pick to that Page and its Instagram account, and to copy the Page's posts when you start an import. It never receives your Facebook password, and it does not ask Facebook for your friends or your messages. Threads connects through its own sign-in and gives Oneway its own key, with your Threads account's ID and username.
+
+On Facebook
 
 Remove Oneway from your Facebook account
 
-Open Facebook Settings & Privacy → Settings
+On Facebook, open Settings & privacy , then Settings
 
-Open Security and Login → Apps and Websites
+Open Apps and websites ( facebook.com/settings?tab=applications )
 
 Find Oneway Services and press Remove
 
-Facebook tells us, and we remove the Facebook and Instagram connection.
+Facebook ends the access it gave Oneway: Oneway can no longer post to your Pages or read them.
 
-Other platforms have the same screen in their own settings.
+What Oneway already received stays with Oneway until you delete it, below.
 
-Disconnecting does not delete your Oneway account, or the posts you made on Oneway. To delete the account, use Settings → Delete your account . The Privacy Policy says what that removes and what stays.
+On Oneway
+
+Delete what Oneway received from Facebook
+
+In the Oneway App, open Settings , then Connected accounts . For a Center, open Oneway OS, then Settings , then Connected accounts
+
+Press Disconnect beside Facebook, then press it again. Do the same beside Instagram
+
+Oneway deletes the access it held for them straight away, with each Page's name and ID, and nothing more is sent to them.
+
+Posts you imported from Facebook are Oneway posts: delete each one like any other post.
+
+Deleting your Oneway account deletes the Facebook and Instagram connections on your profile too. Or email williamrau78@gmail.com from the address on your Oneway account with the name of the Facebook Page, and we delete what Oneway received from Facebook for it. We answer within 30 days, and may need to confirm it is you.
 
 Contact
 
@@ -766,4 +1473,1304 @@ To have anything else removed, email us. We answer within 30 days.
 williamrau78@gmail.com
 
 Oneway Technologies LLC
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Oneway Business OS
+
+Source: https://oneway.center/os-business (last changed 2026-10-17)
+
+class="mission-page ind-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Oneway OS › Business OS
+Business OS
+
+Oneway Business OS.
+
+The full business operating system: the Brain, Systems, Agents, Cross Projection and operational intelligence.
+
+Talk to us Oneway OS
+
+Industries
+
+Start with your industry.
+
+Each page shows what Business OS runs for that kind of place, and the Systems it starts with.
+
+Restaurants
+Seating the floor, a waitlist guests follow on their phones, and what the kitchen has run out of.
+
+Hospitality
+Rooms sold by type and rate, the front desk through its night audit, and casino resorts beside their own systems.
+
+Entertainment & Venues
+Who is coming to each event, checking them in as they arrive, and keeping the venue in repair.
+
+Additional Industries
+Leases and what tenants owe, for rental property, and a Center for a museum, a school, a club or a city.
+
+What it carries
+
+The business layer of a Center.
+
+Everything a free Center has, and the parts a business runs on.
+
+Systems
+Each industry's tools, picked in the System Store and installed into the Center.
+
+The Brain
+The memory of the whole operation.
+
+Cross Projection
+Where the business's own website or its map entry shows other hours or another phone number than its record, the Brain sets the two side by side for someone to choose. The choice is written once, and every page that reads the record shows it.
+
+Agents
+Not built yet.
+
+Bring your business to Oneway OS.
+Talk to us
+
+Oneway OS is free. A Center on Business OS costs $330 a month, arranged with us.
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Business OS for Restaurants
+
+Source: https://oneway.center/os-business-restaurants (last changed 2026-10-17)
+
+class="mission-page ind-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Oneway OS › Business OS › Restaurants
+Business OS
+
+Restaurants.
+
+The floor and the kitchen, run from Oneway OS.
+
+Talk to us
+
+The floor
+
+Every table, and who is at it.
+
+The host sees each table with its seats and its section, the party at it, and how long they have been there.
+
+Tables and sections
+Each table is one of the restaurant's own things: its number, its seats and its section.
+
+Every seating
+A walk-in, a party from the waitlist or a booking that has arrived, seated and then cleared for the next party.
+
+Bookings due
+The bookings due at your tables over the next twelve hours, each seated in one press.
+
+Turn times
+The day's turn times, with its covers and its parties.
+
+The table that fits
+For a party waiting, the floor names an open table that seats them and is not held for a booking before they would leave. The host still chooses.
+
+Returning guests
+A guest who has let places recognize them is named as returning, at the table and in the line.
+
+System Store: Restaurant Operations, with Reservations for the bookings.
+
+The waitlist
+
+The line, on the guest's phone too.
+
+Who is waiting, how many, the quote they were given and how long they have waited, and which parties are past their quote.
+
+Join from the App
+A guest joins the waitlist from the restaurant's page in the Oneway App and follows their own place in line.
+
+Ready
+When the host says a table is ready, a guest who joined from the App is told there at once. Anyone else, the host calls.
+
+The kitchen
+
+The 86 board.
+
+What the kitchen is out of today, who said so and when, and back on with one press.
+
+Point of sale
+
+Your point of sale stays.
+
+Once it is connected, a check opened or closed at a table shows on the floor. Oneway takes no payment.
+
+Of a closed check, Oneway keeps its totals, and never the tips, the payment or what was ordered.
+
+System Store
+
+Add what the restaurant needs.
+
+A restaurant can start with these five.
+
+Restaurant Operations
+The floor, the waitlist and the 86 board.
+
+Reservations
+A party books a table from the Oneway App for as many as it seats, and a time already taken says when the table is next free.
+
+Scheduling
+Shifts for the floor and the kitchen, flagged when one would leave someone less than eight hours' rest or take their week past 40 hours. Someone who cannot work a shift offers it, and a manager approves whoever takes it.
+
+Maintenance
+Repairs on the kitchen's own equipment, and when one piece keeps breaking, its failures read as one incident with what fixed it last time.
+
+Rewards & Membership
+A diner's card, opened by their member number, with what they spend on dining posted to it and credits redeemed from it.
+
+Run your restaurant on Oneway OS.
+Talk to us Business OS
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Business OS for Hospitality
+
+Source: https://oneway.center/os-business-hospitality (last changed 2026-10-17)
+
+class="mission-page ind-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Oneway OS › Business OS › Hospitality
+Business OS
+
+Hospitality.
+
+Hotel operations, the guest's experience and the front office, in one Center.
+
+Talk to us
+
+Hotel Operations
+
+The book, from the rate to the room.
+
+A hotel sells a room type, for a night, at a rate. The book keeps all three, and what is left to sell on every date.
+
+Rooms and rates
+Room types, rate plans and what is left to sell, by type and by date.
+
+Holds and moves
+A room taken out of sale for dates, with its reason, and a guest moved to another room in the house or before they arrive.
+
+Group blocks
+Rooms held for a group until its cut-off date, and the pick-up as its guests book.
+
+Deposits and the city ledger
+Deposits recorded as guests put them down, and the house accounts billed instead of the guest. Oneway records money and never moves it.
+
+Pace
+The nights ahead on the books, how fast they are coming in, and where last year stood at the same time.
+
+Housekeeping and upkeep
+A cleaned room sells only once a supervisor has inspected it. Upkeep follows use too, such as a boiler's run hours or an elevator's trips.
+
+System Store: Hotel Operations, with Maintenance and Asset Management.
+
+Guest Experience
+
+Every guest, known across the property.
+
+What each department needs to know about a stay, the guest's own messages, and a program that rewards them for coming back.
+
+Traces
+A note about a guest's stay, for a department, on a day. The department sees it in its Workspace that day and marks it done.
+
+Rewards
+The hotel's own program: a tier earned within the program year is kept through the next, and the credits a guest spends lapse after months without activity. At a casino resort, the casino's own system keeps the points.
+
+One inbox
+Guests' messages arrive in the Center's one inbox.
+
+A problem, reported once
+A guest reports a problem in their room from the Oneway App, during the stay or up to 30 days after it. If the room already has work open, the report joins it, and the guest is told when it is fixed.
+
+System Store: Rewards & Membership and Maintenance, beside Hotel Operations.
+
+Front Office
+
+The desk's day, and the numbers.
+
+Arrivals, the guests in the house and the ones leaving today, the night audit, and the figures every hotelier judges a property by.
+
+The board
+Who arrives, who is in the house and who is due out, with each room's state.
+
+Check-in and the folio
+The stay begins, the room becomes occupied, and a deposit held meets the folio every charge lands on.
+
+The night audit
+Each night's room charges and taxes posted to the folio, by the rules the property names.
+
+The numbers
+Occupancy, ADR and RevPAR from what the audit posted, beside the same night last year.
+
+Charges to post
+A check charged to a room by a connected point of sale waits for the desk, which posts it in one press. Nothing posts by itself.
+
+The book you have today
+A reservations export from the hotel system you use now, or a spreadsheet, brought in as this hotel's stays.
+
+System Store: Reservations, with Hotel Operations.
+
+Additional Hospitality Systems
+
+The property's other systems, one intake.
+
+What the hotel system, the points of sale, housekeeping and the valet report becomes one Center's events, one guest's timeline, and work for the person on shift.
+
+One system at a time
+Each is connected on its own, in Oneway OS's Integrations, and a system nobody has connected says exactly that.
+
+One guest, on evidence
+Two systems' guests are one guest only when the same card, the same address or the system's own guest id arrives from both. A name alone joins nothing.
+
+Casino resorts
+Oneway runs beside the casino management system. It reads it, writes nothing to it, and keeps no gaming money.
+
+The casino's own day
+The hosts' book of guests and their trips, the floor by area, and the pit's dealer rotation.
+
+System Store: Casino Operations.
+
+Run your property on Oneway OS.
+Talk to us Business OS
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Business OS for Entertainment & Venues
+
+Source: https://oneway.center/os-business-entertainment (last changed 2026-10-17)
+
+class="mission-page ind-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Oneway OS › Business OS › Entertainment & Venues
+Business OS
+
+Entertainment & Venues.
+
+Events with Going and Maybe, the people who come, the door on the night, and the work behind it.
+
+Talk to us
+
+Events
+
+Found, answered and counted.
+
+People find the event on the Center's page in the Oneway App, say Going, Maybe or Not going, and see how many are going.
+
+A draft until it is out
+A draft is the team's alone until it is published. A cancelled event stays on the page and says so.
+
+Spaces to book
+A room, a court or a lane booked from the App. Where the venue confirms each booking, the guest is told it is a request before sending it.
+
+System Store: Events and Reservations.
+
+The door
+
+Who is here, of who is coming.
+
+At the door the team sees the next events, how many are here of how many are coming, and checks each guest in with one press, or undoes it.
+
+The people who come
+
+Who follows, who has joined, who is going.
+
+The Center's followers see its posts in their feeds, its members have joined it, and each event knows who is going.
+
+The work
+
+The work behind every night.
+
+Work orders on the venue's own things, in the order to do them.
+
+Requests
+Staff, members and guests with a booking report a problem, and Maintenance takes it on as a work order or declines it, saying why.
+
+Inspections
+A checklist the venue writes, run on a stage, a room or the whole place. An item that fails opens its own repair.
+
+Preventive work
+Upkeep that recurs opens its own work order before it is due.
+
+Vendors
+Work sent to a contractor, and what they said and what it cost when it came back.
+
+Shifts
+Each night's crew clocks in from their Workspace, and before payroll a manager fixes or excuses every late start and missed shift.
+
+System Store: Maintenance, Asset Management and Scheduling.
+
+Run your venue on Oneway OS.
+Talk to us Business OS
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Business OS for Additional Industries
+
+Source: https://oneway.center/os-business-industries (last changed 2026-10-17)
+
+class="mission-page ind-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Oneway OS › Business OS › Additional Industries
+Business OS
+
+Additional Industries.
+
+Rental property, and every kind of place a Center can be.
+
+Talk to us
+
+Rental property
+
+The rent roll, unit by unit.
+
+Every unit leased, on notice or vacant, what is owed past its due date, and the leases coming to an end.
+
+Units
+Each unit named as the building names it, with its bedrooms and its asking rent.
+
+Leases
+The tenant, the rent, the deposit and the term: in force, on notice or ended. Two leases never overlap on one unit.
+
+Statements
+Each lease's rent, fees and credits, and the payments recorded against them. Oneway collects no rent.
+
+Past due
+What is owed, oldest first, aged 1⁠–⁠30, 31⁠–⁠60, 61⁠–⁠90 and over 90 days.
+
+Renewals
+The leases ending within 90 days, each renewed from where it shows.
+
+Move-in and move-out
+A checklist walked at each end of a lease. Once both are done, every item sound at move-in that failed at move-out is named, with both notes.
+
+The owner's statement
+A month of the property as its owner reads it: for each unit, what was charged and what was collected.
+
+System Store: Property Management, with Maintenance for the work orders.
+
+Every kind of place
+
+A Center for every kind of place.
+
+Museums and galleries, schools and clubs, churches and nonprofits, festivals, neighborhoods and cities.
+
+A Center that is not a business
+A community, a club, a festival or a city runs on the free Oneway OS and needs no Business OS.
+
+Members
+People join a Center's community from the Oneway App.
+
+Events
+What is on at the place, answered in the App.
+
+System Store: Community Management, free on Oneway OS. Events, Reservations and Scheduling come with Business OS.
+
+Give your place a Center.
+Talk to us Business OS
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## What Oneway's words mean
+
+Source: https://oneway.center/learn (last changed 2026-10-17)
+
+class="learn-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Learn
+
+What Oneway's words mean.
+
+Oneway has its own words for its parts. Here is what each one means, as the platform is built today.
+
+Oneway is in its Closed Selective Server Beta.
+
+Profile
+
+A Profile is a person's one identity on Oneway, with an @name, the same in the App and in Oneway OS. You choose how it looks and what it shows, and you can make it private.
+
+Explore the App
+
+Guest
+
+A guest is anyone using Oneway without an account; in the App, “Look around first” starts as one. A guest can explore the map and Discovery, and like a post, which is kept on their device and counts once they sign in. Where a Center lets anyone ask, a guest can ask it a question and get its answer by email, or leave a phone number for the Center to call back. Commenting, reposting and saving need an account.
+
+Without an account
+
+Center
+
+A Center is what a place, a community or a business is on Oneway: one object with two sides. Its public side is what anyone sees in the App, and its operating side is Oneway OS, where its team runs it. Founding a Center makes both sides at once.
+
+What a Center is
+
+Canvas
+
+A canvas is a page its owner arranges. Every Center is one: its team places Popits on it in Oneway OS, moves and sizes them, and a visitor sees it as it was laid out, in fewer columns on a phone. Your Home in the App is a canvas of your own.
+
+Popit
+
+A Popit is one live piece of a canvas, drawn from one thing its owner keeps: its latest posts, what is coming up, its links or its website. When that thing changes, every Popit that shows it changes with it.
+
+Popits in Oneway OS
+
+Systems
+
+Systems are the tools a kind of place runs on, such as a hotel's operations, a restaurant's floor or a community's membership, added to a Center from the System Store. Each one works from the same Center, and which ones a Center can add depends on its OS.
+
+The System Store
+
+Oneway OS
+
+Oneway OS is the operating side of a Center, where its team builds and runs it. Its base layer is free: the Center's page and identity, its posts, events, announcements, groups, Popits and community. Business OS is built on top of it, and so is Developer OS.
+
+Explore Oneway OS
+
+Business OS
+
+Business OS is what a business adds to its Center: a team with roles and departments, bookings, the Systems of its industry, the Brain, Cross Projection and Lightbulb LED.
+
+Explore Business OS Buy Business OS today
+
+Developer OS
+
+Developer OS is for building on Oneway: sites where people sign in with Oneway, Systems built on the same contract as Oneway's own, and integrations that report into a Center. It is free to start, and in closed beta.
+
+Explore Developer OS
+
+The Brain
+
+The Brain is a Center's understanding of itself, read from the Center's own records: what needs a person, what it knows apart from what it has only found, and the changes it recommends. It does something on its own only when the Center's owner allows it, and only what can be put back. It comes with Business OS.
+
+Compatibility and the Brain
+
+Cross Projection
+
+Cross Projection keeps one record of a Center behind every place it appears: the App, the Center's page and its own website. When a connected source shows something different, such as new hours, a person approves the change before the record moves, and everything that reads the record follows. It comes with Business OS.
+
+Compatibility and integration
+
+Lightbulb (Create)
+
+Lightbulb, labelled Create in the App, is where you make something: a post, a document, a note, a page to write or draw on, or a place for the map. What you make goes where it belongs, a post to a feed and a document to your Workspace. A Center's team makes things as the Center with Lightbulb LED, which comes with Business OS.
+
+Lightbulb in the App
+
+Discovery
+
+Discovery is where you find places, events, people and communities on Oneway, starting from a map. Signed out, it shows the places anyone can walk into; signed in, it starts from the Centers you follow and the communities you join.
+
+Discovery in the App
+
+Teen mode and parent supervision
+
+Teen mode is how the App runs for anyone 13 to 17: stricter from the first day about who can message them, who sees their posts and what reaches their phone at night. Supervision is a parent the teen invites, who can only make it stricter.
+
+Teen accounts Supervision
+
+Is a word missing, or unclear?
+Ask us
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Community Guidelines
+
+Source: https://oneway.center/community-guidelines (last changed 2026-10-17)
+
+class="mission-page trust-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Guidelines
+
+Community Guidelines
+
+The rules for everyone on Oneway, what happens to an account or a Center that breaks them, and how to ask us to look at a decision again.
+
+They apply everywhere on Oneway: profiles, posts, comments, messages and Centers. They sit beside the Terms of Service . Updated 17 October 2026.
+
+Not allowed
+
+What is not allowed on Oneway.
+
+None of these, anywhere on Oneway, in public or in private.
+
+Harassment
+Do not harass, bully or stalk anyone, or keep contacting someone who has made it clear they do not want you to.
+
+Hate
+Do not attack or demean people for their race, ethnicity, national origin, religion, sex, gender identity, sexual orientation, disability or serious illness.
+
+Threats and violence
+Do not threaten to hurt anyone, push someone to hurt themselves, or promote violence or terrorism.
+
+Sexual content involving minors
+Never post, share or ask for sexual content involving anyone under 18, or anything that sexualizes a child, exploits one or puts one in danger. There are no exceptions.
+
+Intimate images without consent
+Do not share, or threaten to share, a nude or sexual image or video of someone without their consent, including one that is faked or edited to look real.
+
+Impersonation
+Do not pretend to be another person, a business, an organization or Oneway.
+
+Spam and scams
+Do not spam people, phish for their passwords or money, or run a scam. Do not fake reviews, or buy followers, likes or comments.
+
+Illegal goods and services
+Do not sell, buy, trade or arrange anything illegal, such as illegal drugs, stolen goods, or weapons sold outside the law.
+
+Private information
+Do not share someone's private information without their consent: their home address, phone number, documents or where they are. Do not use a place's guest list, location sharing or StreetPass to find or follow someone.
+
+What happens
+
+What Oneway does when a rule is broken.
+
+A person decides every report. A machine can raise a report for a person to look at, but it never decides one.
+
+Reports
+However often one person reports the same thing, it counts once. How to report someone, or block or mute them, is on Safety .
+
+The word check
+A post written in the App is checked for hateful, threatening and sexual words, some disguised spellings included. What it finds waits for a person, and the check hides nothing by itself.
+
+A Center's own space
+A Center's team can remove comments left on its posts, and you can remove comments left on posts on your own profile. A complaint about a Center is decided by Oneway, never by that Center.
+
+Community notes
+Where readers have added context to a post, it shows under the post, and anyone signed in, other than its writer, can rate it helpful or not helpful. How it shows comes from those ratings, and no note is ever labelled as verified.
+
+Removal
+Oneway can take a Center that breaks these rules out of search, the map and everywhere else it is shown, its posts with it.
+
+Restricting an account
+Oneway can restrict an account that breaks these rules, for a set time or until it is lifted. Every session it has ends at once, it cannot sign in, and the person is told the reason when they try.
+
+Appeals
+
+Ask for a decision to be looked at again.
+
+If you think a decision about you is wrong, you can appeal it.
+
+How to appeal
+Write to us from the contact page : which decision it was, and why you think it is wrong.
+
+Who can appeal
+Only the person a decision was about, never the person who made the report.
+
+What follows
+When an appeal overturns a decision, a restriction that rested on it is lifted and the person is told. Every decision is recorded with who made it.
+
+Look out for each other.
+Safety on Oneway Terms of Service
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Safety
+
+Source: https://oneway.center/safety (last changed 2026-10-17)
+
+class="mission-page trust-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Safety
+
+Safety on Oneway
+
+The controls you have, the protections teen accounts start with, how a parent can supervise, and how to reach us when something is wrong.
+
+The rules everyone keeps to, and what happens when someone does not, are in the Community Guidelines . How the platform itself is protected is on Security . Updated 17 October 2026.
+
+Block, mute, report
+
+Stop anyone reaching you.
+
+On a person's profile, press More beside Follow and Message. In a chat with one person, open Chat settings, then Privacy and safety.
+
+Block
+They can no longer message you, mention you or see your posts. Follows between you end, what they already sent leaves your notifications, and they are not told. Undo it in Settings, under Blocked accounts; follows do not come back on their own.
+
+Mute
+Their posts stop reaching your feed, and nothing else changes; they are not told. To undo it, find them in Settings, under Muted accounts.
+
+Report
+Choose what is wrong: spam, harassment, hate, violence, nudity, self harm, misinformation, impersonation, intellectual property, illegal, or other. Nobody is told who reported it.
+
+Anything else
+To report a post, a comment, a message or a Center, tell us through the contact page and say where it is on Oneway.
+
+Teen accounts
+
+Teen accounts start protected.
+
+Oneway asks your birthday when you join the App, and your age decides which of these apply. No one under 13 can join.
+
+Private to start
+A teen's profile starts private.
+
+Messages
+Only people a teen follows can message them, whatever their other settings say.
+
+Bedtime
+Between 10 PM and 7 AM their time, no push notification goes to their phone; what comes in waits in their list in the App. No more than three push notifications are sent in a day.
+
+Daily limit
+After 60 minutes in a day, the App says so and offers to keep going. It never cuts them off. Their time each day and over the week is in Settings, under Supervision.
+
+13 to 15
+Oneway does not suggest their posts to strangers, and a parent must approve before their profile is open to everyone.
+
+Not in search
+No one under 18 is listed in Google or any other search engine.
+
+Your birthday
+It is never shown to anyone else. How it is kept, and the rest of what applies to someone under 18, is in the Privacy Policy .
+
+Supervision
+
+A parent can supervise.
+
+Only the teen can start it, and it ends on its own when they turn 18.
+
+Starting it
+The teen invites a parent in Settings, under For families, Supervision. The parent needs a Oneway account of their own, with a birthday showing they are 18 or over, and has 7 days to accept. A teen can have two parents supervising.
+
+Limits, only stricter
+A parent can make bedtime longer and the day shorter, never the other way: bedtime can start as early as 6 PM and end as late as 10 AM, and a day can be as short as 15 minutes.
+
+Approvals
+A teen's ask to open their profile goes to the parent, who decides, and the teen is told either way.
+
+What a parent sees
+The protections in force, what the teen has asked for, and who the teen talks to, by name. Never what they say, never a group's name, and never the teen's birthday.
+
+Ending it
+Either of them can end it at any time, and the other is told. When no parent is left, the stricter limits end with it.
+
+Privacy
+
+Choose who sees you and who reaches you.
+
+Each one is in the App's Settings: look under Privacy, or under Messages.
+
+Private profile
+Only friends, people you follow who follow you back, see what you post.
+
+Who can message you
+Friends, people from your Centers and people you have crossed paths with each have a switch, and Anyone stays off until you choose it. Unless you change it, a first message from someone new waits in Message requests.
+
+Comments
+Let anyone comment, or only friends and people from your Centers.
+
+Search engines
+Keep your profile and public posts out of Google and other search engines. A link someone shares still opens.
+
+Online and typing
+Hide when you are online, and when you are typing.
+
+Lists and counts
+Hide who follows you and who you follow. Hide the counts of reactions and replies on your posts, or on everything you see.
+
+Location
+Share where you are with nobody, people you name, followers, friends, your Centers or everyone, exactly or approximately. Turning it off deletes it.
+
+Let places recognise you
+Turn it off and no place is offered a match with you. How a match is made, and what a place sees once you are linked, is in the Privacy Policy .
+
+Images and child safety
+
+Intimate images and child safety.
+
+If an intimate image is shared without consent, or anything sexualizes a child, report it as soon as you see it. Do not share it further, and do not send it to us.
+
+In the App
+Open the profile of whoever shared it, press More, then Report, and choose nudity or illegal.
+
+Anywhere else
+Use the contact page and give a link to where it is, or the account's name.
+
+If someone threatens you
+If someone says they will share an image of you unless you pay or send more, you do not have to do either. Report them first, then block them.
+
+Help outside Oneway
+NCMEC's CyberTipline takes reports of child sexual exploitation. Take It Down helps with images taken before you were 18, and StopNCII.org helps adults. They are run by others, not by Oneway, and work with the platforms that take part in them.
+If someone is in danger now, call 911. If you are thinking about hurting yourself, call or text 988 in the United States.
+
+Your data
+
+Delete what is yours.
+
+Delete a post from the post itself, or your whole account in Settings, under Delete your account. What goes at once and what stays, with the reasons, is on the Data Deletion page.
+
+Data Deletion
+
+Something wrong? Tell us.
+Contact
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Support
+
+Source: https://oneway.center/support (last changed 2026-10-17)
+
+class="mission-page trust-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Support
+
+Help with Oneway.
+
+Short answers, each one pointing to the page that says more.
+
+Questions
+
+Common questions.
+
+How do I sign in?
+
+While the Closed Selective Server Beta runs in New York City, Sign in on oneway.center opens the beta page. There a business can ask to start on Oneway OS, and anyone else can ask for an invitation to the App.
+
+The beta
+
+How do I get Business OS?
+
+Ask for it from the contact page, and we set it up together.
+
+Business OS
+
+I am a developer. How do I start?
+
+Tell us what you plan to build, from the developer part of the contact page.
+
+Developer OS
+
+How do I delete my data or my account?
+
+The Data Deletion page walks through each way to remove what is yours, from one post to your whole account, and says what stays.
+
+Data Deletion
+
+What does Oneway do with my information?
+
+What we collect, why we use it and who can see it are all set out in the Privacy Policy.
+
+Privacy Policy
+
+How do I block or report someone?
+
+The Safety page shows where Block, Mute and Report are in the App, and what each one does.
+
+Safety
+
+What is allowed on Oneway?
+
+The Community Guidelines hold the rules, and our Terms are the agreement under them.
+
+Community Guidelines Terms of Service
+
+Something on Oneway does not work for me.
+
+The Accessibility page lists what works today, the gaps we know of, and how to tell us about a barrier.
+
+Accessibility
+
+Who makes Oneway?
+
+Oneway Technologies LLC makes Oneway, and Our Mission says why.
+
+Our Mission
+
+Contact
+
+Still need help? Write to us.
+
+Send an inquiry
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Accessibility
+
+Source: https://oneway.center/accessibility (last changed 2026-10-17)
+
+class="mission-page trust-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Accessibility
+
+Oneway should work for everyone who uses it.
+
+We aim to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA, on this site and in the App. It is an aim we are working toward, not a certification.
+
+Today
+
+What the site and the App do now.
+
+Keyboard
+
+Every link, button and field on this site shows a ring when you reach it with the keyboard. The App draws its own ring on its controls, from the dock to the rows of Settings.
+
+Motion
+
+When your device asks for reduced motion, this site's sky holds still and its sections appear without rising into place. The App stops moving too: on its Home screen, every animation stops.
+
+The App also has its own switch, in Settings, then Accessibility. Reduce motion turns off the App's animations without changing what you can do, on every device you sign in on.
+
+Contrast
+
+We measure contrast on the rendered page, not only in the code. On Our Mission, Support, this page and the legal pages, every word stands at least 4.8 to 1 against what is behind it, in light and in dark, where level AA asks for 4.5 to 1.
+
+In the App, Higher contrast makes its quieter words and its edges stronger.
+
+Text size
+
+No page on this site or in the App turns off zooming, so you can enlarge any of it with your browser or a pinch. In the App, Larger text enlarges what you read.
+
+Pictures
+
+Every picture on this site has a text alternative, or is marked as decoration so a screen reader passes over it.
+
+Not yet
+
+Where we know we fall short.
+
+Descriptions for your photos
+
+You cannot yet write a description for a photo you post. Until you can, a screen reader hears each one by its place in the post, such as Photo 1.
+
+Some small marks
+
+A few small marks on the landing and the OS page, such as the initials in sample profile pictures and the faint arrows between steps, measure below the contrast level AA asks for.
+
+Arranging a Center's canvas
+
+In Oneway OS, a Center's Popits are moved and sized by holding and dragging them. There is no keyboard way to arrange them yet.
+
+An outside audit
+
+Everything here comes from our own checks. No outside auditor has tested Oneway against WCAG 2.2.
+
+Report a barrier
+
+Tell us what stopped you.
+
+On the contact page, name the page or screen, what you were trying to do, and what you use to get around, such as a screen reader, a keyboard or zoom, so we can fix it.
+
+Report a barrier
+
+This page was last reviewed on 17 October 2026.
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
+## Security
+
+Source: https://oneway.center/security (last changed 2026-10-17)
+
+>
+
+Our Mission
+App
+OS
+Security
+Contact
+
+Sign in
+
+Security
+
+One standard for the whole ecosystem. The same protections cover every part of Oneway: a person's account, profile and messages in the Oneway App; a community's or a business's Center; the operating side of every Center in Oneway OS, Business OS and Developer OS; every System a Center runs, from a restaurant's floor and a hotel's rooms to a venue, a shop and a casino resort; every website a Center wears; and every integration and app built on the platform. A neighborhood group and a casino's operating floor sit on the same platform, so they are held to the same bar: the one set by the most regulated industry we serve.
+
+What this page is. Oneway is in closed beta and is not yet running as a public service. This page describes the security controls built into the platform today, each exactly as it is implemented. Nothing here claims a certification we do not hold. For how we handle personal information, read the Privacy Policy ; for blocking, reporting and the protections teen accounts start with, read Safety .
+
+Identity and sessions
+
+Passwords are hashed with bcrypt at a work factor of 12, each with its own salt. A password is never stored, logged or returned in plain text.
+
+Two-step verification uses time-based one-time passwords (TOTP, RFC 6238) from any standard authenticator app. Codes are verified in constant time, and recovery codes are stored only as hashes. We do not offer codes by text message, because SIM swapping defeats them.
+
+Two-step is available on every account and required where the stakes are highest: the whole operating side of a casino's Center asks for it by default.
+
+Sessions are held on our servers and referenced by a random token in a __Host- cookie marked Secure, HttpOnly and SameSite=Lax. No session token is ever stored where a script can read it, and signing out ends the session on the server, not only in the browser.
+
+Changing a password ends every other session on the account at once.
+
+Signing in reveals no account. A signed-out sign-in or password reset answers the same whether or not an address has an account.
+
+Rate limits on every endpoint , applied per session and per network address, so one person's traffic never spends another's allowance. Over the limit, a request is answered with 429 and a Retry-After, and nothing behind the endpoint runs.
+
+Between people and between Centers
+
+Authority comes from the relationship, never from the request. What a person may see or do is decided by their real standing with a Center (owner, admin, staff or member) and by what each person has chosen to share, never by an identifier the caller supplies.
+
+One Center can never reach another's operating side. An automated test reads every Center endpoint from the application's own route list and calls each one as the owner of a different Center. A new endpoint is tested the day it is added.
+
+Every change requires a signed-in person. An automated test calls every endpoint that changes anything while signed out; none succeeds, except the few a signed-out person needs, such as signing in and resetting a password.
+
+Roles each Center defines for itself. Beyond owner, admin and staff, a Center can name its own roles. A role can only narrow what a member of staff may see and do, and every role change is written to the security log.
+
+Encryption and secrets
+
+Every Center has its own secrets vault. Credentials a Center uses to connect its own systems are encrypted with AES-256-GCM under a data key belonging to that Center alone.
+
+Envelope encryption. Each Center's data key is itself encrypted under a master key that is never stored in the database.
+
+Every ciphertext is bound to its place. Each one is authenticated with its Center and its name as associated data (AEAD). A value copied to another Center, or renamed, fails to decrypt, and any altered byte fails the authentication tag.
+
+Secrets are write-only. No endpoint returns a secret, not even to its owner. Operators see a secret's name, who set it, when, and when an integration last used it. The value reaches only the server code that calls that provider.
+
+Keys are 256-bit values from the operating system's cryptographically secure random generator, with a fresh nonce for every encryption.
+
+Key rotation without exposure. Rotating the master key re-wraps each Center's data key. No secret is decrypted to do it.
+
+Crypto-shredding. Removing a Center's vault destroys its data key, and from that moment the platform can no longer open any secret it held. Encrypted database backups made before the removal still hold the old key until they age out, within 14 days.
+
+Personal secrets, such as a two-step seed, are sealed under a key derived for that one purpose and bound to the person they belong to.
+
+In transit: HTTPS everywhere, with HTTP Strict Transport Security for one year across every subdomain.
+
+Integrations and apps
+
+A business connects its own systems. A provider cannot sign itself in to a Center. Each Center sets up its own integrations, with credentials only it holds, kept in its own vault.
+
+Every feed has its own key, shown once when it is issued and stored only as a SHA-256 hash. Issuing a new key disables the old one immediately.
+
+Signed webhooks. Messages from a connected vendor are verified by their HMAC-SHA256 signature in constant time before anything is read, and a signed message is refused once it is too old to be fresh.
+
+Apps built on Oneway run on their own sandbox host, under their own content security policy.
+
+Outbound requests
+
+Server-side request forgery, where a server is tricked into fetching an address that points inward, is how a vendor's server becomes a way into its customers' networks. Every request an integration makes goes through one guarded fetcher:
+
+HTTPS only, to the hosts each integration is allowed to reach.
+
+Publicly routable addresses only. Private, loopback, link-local, carrier-grade NAT and reserved networks, cloud metadata endpoints, and their IPv6 and IPv4-mapped forms are all refused.
+
+The name is resolved once, and the connection is made to exactly the address that was checked, so DNS rebinding cannot redirect a request after it is checked.
+
+TLS is verified against the host name, and every redirect is checked again from the start.
+
+Every request is bounded in size and time, and no proxy is taken from the environment.
+
+In the browser
+
+X-Content-Type-Options: nosniff : a response is never read as a type other than the one it declares.
+
+frame-ancestors 'self' : no other site can frame Oneway's pages for clickjacking.
+
+Referrer-Policy: strict-origin-when-cross-origin : no path or query string leaks to another site.
+
+A Permissions-Policy that allows location, the camera and the microphone only to Oneway's own pages, each only when the person allows it, and shuts Bluetooth, USB, serial ports, HID devices and payment.
+
+Cross-Origin-Opener-Policy: same-origin , and Cross-Origin-Resource-Policy: same-site on data, so another site cannot embed Oneway's data.
+
+Files and photos
+
+A file is identified by its bytes (its magic number), never by its name or its declared type. Anything unrecognized is refused.
+
+Sizes are capped before anything is decoded.
+
+Photos are stored without where they were taken or by what. GPS position, device and capture metadata are removed before storage, without altering a pixel, and the orientation is kept.
+
+Content-addressed storage. Every file is stored under its owner and a SHA-256 digest of its contents. An upload cannot choose its path, climb out of its folder or overwrite anyone else's file.
+
+Accountability and disclosure
+
+A tamper-evident security log records sign-ins, refused sign-ins, changes to how an account is protected, and changes to roles and access. Each entry is chained to the one before it with an HMAC, so an altered or removed entry shows exactly where. It never records a password, a code, a token or a credential's value.
+
+Dependencies are pinned to exact versions with cryptographic hashes, on a supported runtime.
+
+Vulnerability reports are welcome at the contact in security.txt (RFC 9116). We read every report.
+
+The standard we hold ourselves to
+
+The bar named at the top of this page, the one the most regulated industry we serve sets for its vendors, is OWASP ASVS Level 3 for every endpoint, mapped to a recognized control framework (CIS Controls, ISO/IEC 27001 or NIST SP 800-53), and GLI-GSF-3, the gaming industry's information security audit for vendors. A SOC 2 Type II report and independent penetration testing are part of that program. This page will say when each is complete, and never before.
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
 

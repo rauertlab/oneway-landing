@@ -803,7 +803,13 @@
     people:  '<circle cx="9" cy="8" r="3"/><path d="M3 19a6 6 0 0 1 12 0"/><path d="M16 6a3 3 0 0 1 0 6"/>',
     place:   '<path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/>',
     event:   '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>',
-    talk:    '<path d="M4 5h16v11H9l-4 4V5z"/>',
+    /* THE SPEECH BUBBLE IS ROUND (the founder, 2026-10-10: "round the comments button and give it three dots like the
+       typing animation when its open"): an oval with a tail, and three dots that only show, and only move, while the
+       conversation is open (`aria-expanded` on the control; oneway-popit.css, ".ow-dot"). */
+    talk:    '<path d="M12 3.4c4.8 0 8.6 3.3 8.6 7.4s-3.8 7.4-8.6 7.4c-.95 0-1.85-.1-2.7-.32L5.2 20.2l.85-3.55'
+             + 'C4.3 15.4 3.4 13.2 3.4 10.8 3.4 6.7 7.2 3.4 12 3.4z"/>'
+             + '<circle class="ow-dot" cx="8.2" cy="10.8" r="1.2"/><circle class="ow-dot" cx="12" cy="10.8" r="1.2"/>'
+             + '<circle class="ow-dot" cx="15.8" cy="10.8" r="1.2"/>',
     doc:     '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
     building:'<path d="M4 21V7l8-4 8 4v14"/><path d="M3 21h18M9 21v-5h6v5M9 11h.01M15 11h.01"/>',
     spark:   '<circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/>',
@@ -841,12 +847,15 @@
     heart:   '<path d="M12 20.6c-.4 0-.8-.15-1.1-.43C6.4 16.3 2.8 13.2 2.8 9.1 2.8 6.2 5.1 3.9 8 3.9'
              + 'c1.6 0 3 .76 4 2 1-1.24 2.4-2 4-2 2.9 0 5.2 2.3 5.2 5.2 0 4.1-3.6 7.2-8.1 11.07'
              + '-.3.28-.7.43-1.1.43z"/>',
-    thumbup: '<rect x="2.4" y="10.2" width="3.7" height="10.3" rx="1.3"/>'
-             + '<path d="M7.3 11.2l3.4-6.4c.32-.6 1-.92 1.66-.74 1.12.3 1.78 1.44 1.48 2.56l-.78 2.98h5.1'
-             + 'c1.36 0 2.36 1.25 2.06 2.57l-1.36 6.3c-.22 1.02-1.12 1.75-2.16 1.75H7.3z"/>',
-    thumbdown:'<rect x="2.4" y="3.5" width="3.7" height="10.3" rx="1.3"/>'
-             + '<path d="M7.3 12.8l3.4 6.4c.32.6 1 .92 1.66.74 1.12-.3 1.78-1.44 1.48-2.56l-.78-2.98h5.1'
-             + 'c1.36 0 2.36-1.25 2.06-2.57l-1.36-6.3c-.22-1.02-1.12-1.75-2.16-1.75H7.3z"/>',
+    /* THE THUMBS (the founder, 2026-10-10: "dislike icon needs to be better dude", "the thumbs icon they just need to
+       be more detailed and better", then "we didnt need to add no lines"): detail is in the SHAPE, never in strokes
+       drawn across it. A sleeve with a gap before the hand; a thumb with its knuckle; four fingers as bumps on the
+       hand's edge, so the same drawing reads as outline and as filled. The down is the up turned 180 degrees, as
+       every icon set draws it, so its sleeve is on the right. */
+    thumbup: '<path d="M3 10.6h2.7a1 1 0 0 1 1 1v8.4a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8.4a1 1 0 0 1 1-1z"/>'
+             + '<path d="M8.6 21V11.4c0-1 .35-1.8 1-2.5l2-2.6.9-2.4c.3-.9 1.1-1.5 2-1.4 1.3.1 2.1 1.3 1.8 2.6L15.6 8.4H19C21.6 8.4 21.6 11 20.3 11C22 11 22 13.6 20.1 13.6C21.7 13.6 21.7 16.2 19.7 16.2C20.8 16.2 20.8 18.8 18.9 18.8C18.9 20 18.2 21 17 21z"/>',
+    thumbdown:'<g transform="rotate(180 12 12)"><path d="M3 10.6h2.7a1 1 0 0 1 1 1v8.4a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8.4a1 1 0 0 1 1-1z"/>'
+             + '<path d="M8.6 21V11.4c0-1 .35-1.8 1-2.5l2-2.6.9-2.4c.3-.9 1.1-1.5 2-1.4 1.3.1 2.1 1.3 1.8 2.6L15.6 8.4H19C21.6 8.4 21.6 11 20.3 11C22 11 22 13.6 20.1 13.6C21.7 13.6 21.7 16.2 19.7 16.2C20.8 16.2 20.8 18.8 18.9 18.8C18.9 20 18.2 21 17 21z"/></g>',
     repost:  '<path d="M4 9V7a3 3 0 0 1 3-3h9"/><path d="M13 1.5L16.5 4 13 6.5"/><path d="M20 15v2a3 3 0 0 1-3 3H8"/><path d="M11 22.5L7.5 20 11 17.5"/>',
     share:   '<path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1"/>',
     bookmark:'<path d="M6 3h12v18l-6-4.5L6 21z"/>',
@@ -1818,28 +1827,28 @@
     /* ── the network, before anything of ours is reached ─────────────── */
     offline:        { who:'you', title:"You're offline",
                       detail:'Reconnect and this will go straight through.', do:'retry' },
-    unreachable:    { who:'unreachable', title:"Couldn't reach ONEWAY",
+    unreachable:    { who:'unreachable', title:"Couldn't reach Oneway",
                       detail:'Nothing answered.', do:'retry' },
-    blocked:        { who:'network', title:'Something is blocking ONEWAY',
+    blocked:        { who:'network', title:'Something is blocking Oneway',
                       detail:'Requests are being dropped rather than refused — usually '
                            + 'a firewall, VPN or guest network.', do:'retry' },
-    cors:           { who:'oneway', title:'ONEWAY is refusing this browser',
+    cors:           { who:'oneway', title:'Oneway is refusing this browser',
                       detail:'The service is up but will not accept requests from this '
                            + 'page. A configuration fault on our side.', do:null },
     timeout:        { who:'network', title:'That took too long',
-                      detail:'ONEWAY did not answer in time. It may still be working.',
+                      detail:'Oneway did not answer in time. It may still be working.',
                       do:'retry' },
 
     /* ── ours, and named as ours ──────────────────────────────────────── */
-    server_error:   { who:'oneway', title:'ONEWAY hit an error',
+    server_error:   { who:'oneway', title:'Oneway hit an error',
                       detail:'The service answered and reported a fault. Ours, not yours.',
                       do:'retry' },
-    bad_gateway:    { who:'oneway', title:'ONEWAY is between restarts',
+    bad_gateway:    { who:'oneway', title:'Oneway is between restarts',
                       detail:'A part of the service is not answering yet.', do:'retry' },
-    unavailable:    { who:'oneway', title:'ONEWAY is down for a moment',
+    unavailable:    { who:'oneway', title:'Oneway is down for a moment',
                       detail:'The service is deliberately not accepting work right now.',
                       do:'retry' },
-    gateway_timeout:{ who:'oneway', title:'ONEWAY took too long on its own side',
+    gateway_timeout:{ who:'oneway', title:'Oneway took too long on its own side',
                       detail:'The request reached us and we did not finish in time.',
                       do:'retry' },
 
@@ -1983,7 +1992,7 @@
     var api = (opts.api != null ? opts.api : (OW.assetBase || '')) || '';
     var where = '';
     try { where = api ? new global.URL(api, global.location.href).host : global.location.host; }
-    catch (_) { where = api || 'ONEWAY'; }
+    catch (_) { where = api || 'Oneway'; }
 
     if (global.navigator && global.navigator.onLine === false) {
       return Promise.resolve({ who: 'you', title: "You're offline",
@@ -2008,16 +2017,16 @@
     return _probe(api + '/api/oneway/health?_=' + Date.now(), 4000, false).then(function (reach) {
       if (reach.v === 'ok' || reach.v === 'unwell') {
         return _probe(api + '/api/oneway/health?_=' + Date.now(), 4000, true).then(function (read) {
-          if (read.v === 'unwell') return { who: 'oneway', title: 'ONEWAY hit an error',
+          if (read.v === 'unwell') return { who: 'oneway', title: 'Oneway hit an error',
             detail: 'The service answered and reported a fault. Ours, not yours.', retry: true };
           if (read.v === 'ok') return { who: 'request', title: "That request didn't go through",
             detail: 'Both ends are fine. Try it again.', retry: true };
-          return { who: 'oneway', title: 'ONEWAY is refusing this browser',
+          return { who: 'oneway', title: 'Oneway is refusing this browser',
             detail: 'The service is up at ' + where + ' but will not accept requests '
                   + 'from this page. A configuration fault on our side.', retry: false };
         });
       }
-      if (reach.v === 'timeout') return { who: 'network', title: 'Something is blocking ONEWAY',
+      if (reach.v === 'timeout') return { who: 'network', title: 'Something is blocking Oneway',
         detail: 'Requests to ' + where + ' are being dropped rather than refused — '
               + 'usually a firewall, VPN or guest network.', retry: true };
       /* A FAST FAILURE MEANS NO CONNECTION WAS ESTABLISHED — and that is ALL it
@@ -2032,7 +2041,7 @@
          that makes it actionable — and stops short of the diagnosis it cannot
          support. `who` is 'unreachable' rather than 'oneway' for the same
          reason: no surface should route this to "our fault" on this evidence. */
-      return { who: 'unreachable', title: "Couldn't reach ONEWAY",
+      return { who: 'unreachable', title: "Couldn't reach Oneway",
         detail: 'Nothing answered at ' + where + '.', retry: true };
     }).catch(function () {
       return { who: 'request', title: "That didn't go through",
@@ -2143,7 +2152,7 @@
        had been done. The flash is a statement about work finishing and must
        not be spent on a navigation. */
     var g = OW.globe({ size: opts.size || 116,
-                       label: opts.label || (opts.working ? 'One moment' : 'ONEWAY') });
+                       label: opts.label || (opts.working ? 'One moment' : 'Oneway') });
     stage.appendChild(g);
     if (opts.word) {
       var w = doc.createElement('span');
@@ -2432,7 +2441,7 @@
         + ' aria-label="' + esc(label) + '"'
         + ' data-act="' + (on ? 'on' : 'off') + '">'
         + OW.glyph(icon)
-        + tally(count) + '</button>';
+        + (verb === 'dislike' && inter.dislike_count_hidden ? '' : tally(count)) + '</button>';
     }
     var html = offers.map(function (verb) {
       var icon = ({ like: OW.likes.glyph(), dislike: 'thumbdown' })[verb] || 'spark';
@@ -2533,6 +2542,8 @@
        one of those handlers can already reach with `closest`. */
     if (hideCounts) slot.setAttribute('data-counts-hidden', '1');
     else slot.removeAttribute('data-counts-hidden');
+    if (inter.dislike_count_hidden) slot.setAttribute('data-dislike-count-hidden', '1');
+    else slot.removeAttribute('data-dislike-count-hidden');
     slot.innerHTML = html;
   };
 
@@ -2681,6 +2692,36 @@
 
   OW.glyph = function (name) { return svg(name); };
 
+  /* ── SOMEBODY IS TYPING UNDER A POST, AND THE POST'S CARD SAYS SO LIVE ────────
+     ★ FOUNDER, 2026-10-10: *"when a user is typing under a video even if the user watching doesnt have it open still
+     show the typing thatd be cool and futuistic if can do that live"*.
+     The server already announces who is composing under a post on the post's own topic (realtime/typing_presence.py), and
+     every card on screen is watched on that topic (`OW.realtime.watch`), so the event arrives at a card whose post is
+     not open. This marks each copy of that post's comment bubble `data-typing`, and the bubble runs the same three
+     typing dots it runs while its conversation is open (oneway-popit.css, ".ow-dot"). The card says THAT someone is
+     typing and never WHO: a feed is read by people the typist may not know. The server announces the stop; the timer
+     is only for a stream that dropped before it could. */
+  (function () {
+    var timers = {}, TTL = 9000;
+    function bubbles(id) {
+      var q = '[data-po-comment][data-obj="' + (global.CSS && global.CSS.escape ? global.CSS.escape(id) : id) + '"]';
+      return doc.querySelectorAll(q);
+    }
+    function paint(id, on) {
+      Array.prototype.forEach.call(bubbles(id), function (b) {
+        if (on) b.setAttribute('data-typing', '1'); else b.removeAttribute('data-typing');
+      });
+    }
+    doc.addEventListener('ow:typing', function (e) {
+      var d = (e && e.detail) || {}, t = String(d.topic || '');
+      if (t.indexOf('post:') !== 0) return;
+      var id = t.slice(5), on = !!(d.typing && d.typing.length);
+      paint(id, on);
+      global.clearTimeout(timers[id]);
+      if (on) timers[id] = global.setTimeout(function () { paint(id, false); }, TTL);
+    });
+  })();
+
   /* ── LIKES AND DISLIKES, IN THE STYLE A PERSON CHOOSES ─────────────────────
      ★ FOUNDER, 2026-10-09: *"give users the option in settings and appeance to choose between likes and dislikes
        (facebook) and instagram likes and dislikes maximize it"*.
@@ -2709,8 +2750,18 @@
   };
   root.setAttribute('data-ow-likes', OW.likes.get());
 
+  /* THE LIGHT AN ICON GIVES WHEN IT IS LIT (the founder, 2026-10-10: "look at facebook ... and all our interactions
+     do"). The interactions a person can hold or press carry three soft copies of their own shape behind them, hidden
+     until the button is lit (oneway-popit.css, "LIT BUTTONS GLOW"): wide and faint, then tighter and brighter,
+     stacked so the edge falls off in steps too small to read as a line, and the glow follows the thumb's or the heart's own outline instead of making a disc or a ring. They are drawn
+     in the SVG, not filtered: the safe floor that every phone runs strips CSS filters. */
+  var HALOED = { heart: 1, thumbup: 1, thumbdown: 1, repost: 1, bookmark: 1, share: 1, talk: 1 };
   function svg(name) {
     var d = ICONS[name]; if (!d) return '';
+    if (HALOED[name]) {
+      return '<svg viewBox="0 0 24 24" aria-hidden="true"><g class="ow-halo ow-halo--x">' + d + '</g>'
+        + '<g class="ow-halo ow-halo--w">' + d + '</g><g class="ow-halo ow-halo--t">' + d + '</g>' + d + '</svg>';
+    }
     return '<svg viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
   }
 
@@ -2793,11 +2844,9 @@
       if (shp === 'round' || shp === 'rounded' || shp === 'square') fc.setAttribute('data-shape', shp);
       var src = OW.imageUrl ? OW.imageUrl(data.face.image) : (data.face.image || '');
       if (src) fc.innerHTML = '<img src="' + esc(src) + '" alt="" loading="lazy" decoding="async">';
-      /* a person with no picture gets the outline (founder/495); anything
-         else — a Center, a place, a thing — keeps its monogram */
-      else if (String((data.face && data.face.kind) || '') === 'person' && OW.faceMark) {
-        fc.innerHTML = OW.faceMark();
-      }
+      /* WITH NO PICTURE, EVERY FACE IS ITS INITIALS ON ITS OWN COLOUR (the founder, 2026-10-17, of the landing's cards:
+         "These look absolutely fantastic, and all default profile pictures platform-wide should look like this"); the
+         outline of founder/495 is retired for a person, as for a Center */
       else fc.appendChild(el('i', '', esc(OW.initials ? OW.initials(data.face.name || data.label) : String(data.label || '').slice(0, 2).toUpperCase())));
       n.appendChild(fc);
     } else if (data.icon && ICONS[data.icon]) {
@@ -2941,6 +2990,14 @@
       _place: (p.destination_name
                && String(p.destination || '') !== String(p.center_id || ''))
         ? p.destination_name : '',
+      /* WHERE A CARRIED POST WAS POSTED (founder/758, 759): a place's feed carries the posts of the places inside
+         it, the posts about it and the feeds merged with it, and each says where it came from ("from Broad
+         Channel"), the server's own words; absent on a Center's own post. */
+      _from: (p.posted_in && p.posted_in.words) ? String(p.posted_in.words) : '',
+      /* AND, ON HOME, WHICH PLACE YOU FOLLOW BROUGHT IT (founder/760: following the Rockaways brings Broad Channel's
+         posts): "via the Rockaways", or "about Hamels" for a post about the place followed; the server's words, absent
+         on the carrying place's own page. */
+      _via: (p.posted_in && p.posted_in.via && p.posted_in.via.words) ? String(p.posted_in.via.words) : '',
       /* ── A HIGHLIGHT IS A CENTER, NOT A POST ──────────────────────────
          MEASURED 2026-09-14 as a brand-new person: the first card on Home
          was `type: "highlight"` — a Center the door picked for her — drawn
@@ -2959,6 +3016,11 @@
          sends it — which is how `audience`, `state` and the edited mark stayed
          invisible while being on every row. */
       audience: p.audience || '',
+      /* WHAT IT SELLS (commerce SHOP-2): the live product this Post is about, its public card read when the
+         Post was served; null when it was taken down, so the card simply has no product. */
+      _product: (p.about && p.about.kind === 'product' && p.about.product && p.about.product.id) ? p.about.product : null,
+      /* and when it was taken down, the Post says so under its words rather than losing the row (S11) */
+      _productGone: (p.about && p.about.kind === 'product' && !p.about.product) ? (p.about.title || 'This product') : '',
       state: p.state || '',
       publish_at: p.publish_at || '',
       edited_at: p.edited_at || '',
@@ -3076,6 +3138,21 @@
     }
 
     var media = (g.media_count || 0), posts = (g.post_count || 0);
+    if (g._highlight && g._center && OW.cards) {
+      n.setAttribute('data-po-center', g._center);
+      n.setAttribute('data-po-kind', 'highlight');
+      n.setAttribute('aria-label', 'Open ' + (who.name || 'this Center'));
+      n.classList.add('ow-ocard', 'ow-ocard--simple');
+      n.textContent = who.name || 'Loading profile';
+      OW.cards.mount(n, 'center', g._center, { as: 'simple', into: true, onOpen: false,
+        onMissing: function () { n.textContent = 'Profile unavailable'; },
+        onCard: function () { n.removeAttribute('data-blended'); }
+      });
+      if (opts.open !== false) n.addEventListener('click', function () {
+        doc.dispatchEvent(new CustomEvent('ow:enter-center', { detail: { id: g._center } }));
+      });
+      return n;
+    }
     var counted = [];
     if (g._highlight) {
       /* the Center's name is already the face; saying it twice is noise, and
@@ -3093,6 +3170,8 @@
          rather than a note to nobody. Absent when the runtime cannot name the
          place, never an id. */
       if (g._place) counted.push('in ' + g._place);
+      if (g._from) counted.push(g._from);
+      if (g._via) counted.push(g._via);
     } else {
       if (media) counted.push(media + (media === 1 ? ' photo' : ' pieces'));
       if (posts) counted.push(posts + (posts === 1 ? ' post' : ' posts'));
@@ -3258,6 +3337,26 @@
           : '<span class="po-card__t">' + esc(g.title || 'Untitled') + '</span>') +
         (g.description ? '<span class="po-card__d">' + esc(g.description) + '</span>' : '') +
       '</span>';
+    /* WHAT THE POST SELLS (commerce SHOP-2), under its words: the Center page's own thing row (its picture, its
+       name, its price) and the one-source button. Pressing the row opens the product; Buy opens the Center's own
+       checkout. Spans, not buttons, inside the card's button; both are claimed by their own listeners below. */
+    var prod = g._product;
+    var prodPic = prod && prod.pictures && prod.pictures[0] && prod.pictures[0].url;
+    var prodLine = prod ? (OW.priceWords(prod) + (prod.available === false ? ' · Sold out' : '')) : '';
+    var productHTML = prod
+      ? '<span class="ow-cpage__ev po-card__product" data-po-product="' + esc(prod.id) + '"'
+        + (prodPic ? ' data-pic="1"' : '') + ' role="button" tabindex="0"'
+        + ' aria-label="' + esc(prod.name + (prodLine ? ', ' + prodLine : '')) + '">'
+        + (prodPic ? '<img class="ow-cpage__pic" src="' + esc(OW.imageUrl ? OW.imageUrl(prodPic) : prodPic)
+                     + '" alt="" loading="lazy" decoding="async">' : '')
+        + '<span class="ow-cpage__t"><b>' + esc(prod.name) + '</b>' + (prodLine ? '<span>' + esc(prodLine) + '</span>' : '')
+        + '</span>'
+        + (OW.canBuy(prod) ? '<span class="ow-popit-btn po-card__buy" data-po-buy role="link" tabindex="0">Buy</span>' : '')
+        + '</span>'
+      : (g._productGone
+        ? '<span class="ow-cpage__ev po-card__product" data-po-product-gone><span class="ow-cpage__t"><b>'
+          + esc(g._productGone) + '</b><span>No longer sold here</span></span></span>'
+        : '');
     /* a reel: the cover is a video, or the first piece of a strip is */
     var capAbove = !!(cover && (isVid || (shots && shots[0] &&
       ((shots[0].kind === 'video') || /\.(mp4|m4v|mov|webm)(\?|#|$)/i.test(String(shots[0].url || shots[0].src || ''))))));
@@ -3312,7 +3411,7 @@
         var mkHue = (OW.links && OW.links.hueOf) ? OW.links.hueOf(k) : '';
         return '<i class="po-card__from__i" data-platform="' + esc(k) + '"'
           + (mkHue ? ' style="--mk:' + esc(mkHue) + '"' : '')
-          + ' aria-label="' + esc(k === 'oneway' ? 'ONEWAY' : k) + '">'
+          + ' aria-label="' + esc(k === 'oneway' ? 'Oneway' : k) + '">'
           + (OW.links && OW.links.icon ? OW.links.icon(k) : '') + '</i>';
       }).join('') +
       '</span>';
@@ -3429,9 +3528,7 @@
                 `profile`); all three are a person — only a Center or a
                 community keeps its monogram (2026-09-26 sweep: every person
                 on Home drew initials because the check read only `person`) */
-             : (/^(person|user|profile|)$/.test(String(who.kind || 'person'))
-                 ? (OW.faceMark ? OW.faceMark() : '')
-                 : '<i>' + esc(OW.initials(who.name)) + '</i>')) +
+             : '<i>' + esc(OW.initials(who.name)) + '</i>') +   /* no picture: the initials, a person's as a Center's (2026-10-17) */
         '</span>' +
         /* ── THE AUTHOR'S NAME WEARS THE FACE THEY CHOSE ──────────────────
            ★ FOUNDER, 2026-09-10: *"custom wordmarks on peoples profiles and
@@ -3517,6 +3614,7 @@
          same controls — and, on Home, a rail over the photograph. */
       '<span class="po-card__media"><span class="po-card__cover"' + emptyNote + coverAR + '>' + cover + '</span></span>') +
       (capAbove ? '' : bodyHTML) +
+      productHTML +
       /* ── SOCIAL PROOF, WHERE A PERSON LOOKS FOR IT ─────────────────────
          ★ FOUNDER, 2026-08-29: *"no where to see if other users the user knows
            have liked this post."*
@@ -3541,17 +3639,36 @@
          dead line of text on the one card element people actually want to
          press. `data-po-likers` is claimed by the App's one feed listener,
          beside the comment and repost controls. */
+      '<span class="po-card__foot">' +
+        '<span class="po-acts" data-po-responses></span>' +
+        (counted.length ? '<span class="po-card__count">' + esc(counted.join(' · ')) + '</span>' : '') +
+      '</span>' +
+      /* UNDER THE ICONS (the founder, 2026-10-10: "like messages and other interaction messages need to display under
+         the interactions of a post without creating a stupid amount of deadspace for them"). It sat between the words
+         and the icons; the foot gives up its bottom padding when this follows (oneway-popit.css, "LIKED BY UNDER THE
+         ICONS"), so the card grows by the line and nothing else. */
       (g._known && g._known.people && g._known.people.length
         ? '<button type="button" class="po-card__known" data-po-likers'
           + ' data-obj="' + esc(g.id) + '"'
           + ' aria-label="' + esc(knownWords(g._known)) + '. Open the list.">'
           + OW.glyph(OW.likes.glyph())
           + '<span>' + esc(knownWords(g._known)) + '</span></button>'
-        : '') +
-      '<span class="po-card__foot">' +
-        '<span class="po-acts" data-po-responses></span>' +
-        (counted.length ? '<span class="po-card__count">' + esc(counted.join(' · ')) + '</span>' : '') +
-      '</span>';
+        : '');
+
+
+    /* THE PRODUCT ROW KEEPS ITS OWN PRESS: it opens the product, its Buy opens the checkout, and neither opens
+       the Post nor likes it (OW.likeZone leaves [data-po-product] alone, so a double tap here is not a like). */
+    var prodEl = prod ? n.querySelector('[data-po-product]') : null;
+    if (prodEl) {
+      var press = function (e) {
+        e.preventDefault(); e.stopPropagation();
+        if (e.target.closest && e.target.closest('[data-po-buy]')) OW.buy(prod);
+        else OW.openProduct(prod, prodEl);
+      };
+      prodEl.addEventListener('click', press);
+      prodEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') press(e); });
+      prodEl.addEventListener('dblclick', function (e) { e.stopPropagation(); });
+    }
 
     n._po = {
       id: g.id,
@@ -3686,6 +3803,8 @@
          different facts and a person can act on one of them. */
       var failed = function () {
         try { im.remove(); } catch (_) {}
+        box.style.aspectRatio = '';
+        box.style.removeProperty('--po-ar');
         if (!box.hasAttribute('data-empty')) {
           box.setAttribute('data-empty', 'this picture could not be loaded');
         }
@@ -3776,10 +3895,15 @@
      honestly where the runtime cannot yet: every new account is issued the same
      default hue, so avatars were otherwise identical. A hash-derived colour
      would be inventing identity (Law 15); a person's own initial is not. */
+  /* LETTERS ONLY (founder, 2026-10-17: his own face showed '＠'): a name-less account's name is its handle, so each word
+     gives its first letter or digit, never a sigil or a mark ('＠williamrauert' is W, '$cash.app' is C, 'maya.cole' is M).
+     The one place initials are made; api/test_profile_header.py holds it. */
   OW.initials = function (name) {
-    var parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    var parts = String(name || '').trim().split(/\s+/).map(function (w) {
+      var m = w.match(/[\p{L}\p{N}]/u); return m ? m[0] : '';
+    }).filter(Boolean);
     if (!parts.length) return '';
-    return (parts[0][0] + (parts.length > 1 ? parts[parts.length - 1][0] : '')).toUpperCase();
+    return (parts[0] + (parts.length > 1 ? parts[parts.length - 1] : '')).toUpperCase();
   };
 
   /* ══ A PERSON WITH NO PICTURE IS A PERSON ════════════════════════════════
@@ -3821,7 +3945,6 @@
     var box = img && img.parentNode;
     if (!box) return;
     var kind = String(box.getAttribute('data-kind') || 'person');
-    if (/^(person|user|profile)$/.test(kind) && OW.faceMark) { box.innerHTML = OW.faceMark(); return; }
     var i = doc.createElement('i');
     i.textContent = box.getAttribute('data-ini') || '';
     box.innerHTML = '';
@@ -4608,6 +4731,136 @@
     openData = data || {};
     sheet.innerHTML = renderSheet(openData);
     return true;
+  };
+
+  /* ── A PRODUCT (commerce SHOP-2) ──────────────────────────────────────────
+     The founder, 2026-10-10: tonight a Center sells in the App. Under the Payments Law Oneway never takes the
+     money: Buy opens the Center's OWN checkout (its Shopify, Square or Stripe page) in a new tab, exactly as the
+     Center gave it, carrying nothing of the person (noopener, noreferrer), and the sheet says whose checkout it
+     is. The product opens as any Popit opens: OW.open, the sheet unfolding from what was pressed. */
+  OW.priceWords = function (p) {
+    if (!p || !p.price || !p.currency) { return ''; }
+    try {
+      return new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(Number(p.price));
+    } catch (e) { return p.price + ' ' + p.currency; }
+  };
+  OW.canBuy = function (p) {
+    return !!(p && p.available !== false && (p.pays_here || /^https:\/\//i.test(String(p.checkout_url || ''))));
+  };
+  /* ── PAID ON ONEWAY (founder/744; payments slice 2) ──────────────────────────────────────────────────────────────
+     A Center whose own Stripe is connected sells here: Buy asks this server for an order and Stripe's page for it, and
+     the person goes to Stripe's page in this tab (a tab opened after an answer is a blocked pop-up). The price, the fee
+     and the way back are the server's; the App sends only what was chosen. Stripe brings the person back to the Center
+     (#/c/<center>/order/...), where OW.orderBack says, in the server's words, whether it is paid. */
+  function choicesOf(p, el) {
+    var got = {}, missing = '';
+    (p.options || []).forEach(function (o) {
+      if (!o || !o.name || !(o.values || []).length) { return; }
+      var on = el && el.querySelector('[data-po-pick="' + CSS.escape(o.name) + '"][aria-pressed="true"]');
+      if (on) { got[o.name] = on.getAttribute('data-po-value'); } else if (!missing) { missing = o.name; }
+    });
+    return { choices: got, missing: missing };
+  }
+  OW.pay = function (p, el, btn) {
+    if (!p || !p.pays_here || !p.center_id || !OW.data) { return false; }
+    var c = choicesOf(p, el);
+    if (c.missing) {
+      if (!el) { OW.openProduct(p); } else { OW.toast('Choose its ' + c.missing.toLowerCase() + ' first.'); }
+      return true;
+    }
+    if (btn) { btn.disabled = true; }
+    OW.data.post('/api/oneway/places/' + encodeURIComponent(p.center_id) + '/checkout',
+                 { product_id: p.id, quantity: 1, choices: c.choices }).then(function (r) {
+      var url = r && r.ok && r.data && r.data.url;
+      if (url && /^https?:\/\//i.test(url)) { global.location.assign(url); return; }
+      if (btn) { btn.disabled = false; }
+      OW.toast((r && r.error) || 'The checkout did not open. Nothing was charged.');
+    });
+    return true;
+  };
+  OW.buy = function (p) {
+    if (!OW.canBuy(p)) { return false; }
+    if (p.pays_here) { return OW.pay(p, null, null); }
+    var w = global.open(p.checkout_url, '_blank', 'noopener,noreferrer');
+    if (w) { try { w.opener = null; } catch (e) {} }
+    return true;
+  };
+  /* back from Stripe: "<order>.<key>.back|cancel", read once; the key leaves the address at once */
+  OW.orderBack = function (center, ref) {
+    var m = /^(ord_[a-f0-9]+)\.([A-Za-z0-9_-]+)\.(back|cancel)$/.exec(String(ref || ''));
+    try { global.history.replaceState(global.history.state, '', global.location.pathname + '#/c/' + encodeURIComponent(center)); } catch (e) {}
+    if (!m || !OW.data) { return; }
+    OW.data.post('/api/oneway/orders/' + m[1] + '/receipt', { key: m[2], came: m[3] }).then(function (r) {
+      var d = r && r.ok && r.data;
+      if (d && d.words) { OW.toast(d.words, { tone: d.state === 'paid' || m[3] === 'cancel' ? 'ok' : 'bad' }); }
+    });
+  };
+  if (!doc.__owPayBound) {
+    doc.__owPayBound = true;
+    doc.addEventListener('click', function (e) {
+      var t = e.target && e.target.closest ? e.target : null;
+      var pick = t && t.closest('[data-po-pick]');
+      if (pick) {
+        e.preventDefault();
+        var name = pick.getAttribute('data-po-pick');
+        pick.parentNode.querySelectorAll('[data-po-pick]').forEach(function (b) {
+          if (b.getAttribute('data-po-pick') !== name) { return; }
+          var on = b === pick;
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          b.classList.toggle('ow-popit-btn--fill', on);
+        });
+        return;
+      }
+      var pay = t && t.closest('[data-po-pay]');
+      if (pay && openProductData) {
+        e.preventDefault();
+        OW.pay(openProductData, pay.closest('.ow-product'), pay);
+      }
+    });
+  }
+  var openProductData = null;
+  OW.openProduct = function (p, origin) {
+    if (!p || !p.id) { return; }
+    var pics = (p.pictures || []).filter(function (x) { return x && x.url; });
+    var src = function (u) { return OW.imageUrl ? OW.imageUrl(u) : u; };
+    var more = pics.slice(1).map(function (x) {
+      return '<img src="' + esc(src(x.url)) + '" alt="' + esc(x.alt || '') + '" loading="lazy" decoding="async">';
+    }).join('');
+    openProductData = p;
+    var buy = !OW.canBuy(p) ? ''
+      : p.pays_here
+      ? '<button type="button" class="ow-popit-btn ow-popit-btn--fill" data-po-pay>Buy</button>'
+        + '<span class="ow-product__whose">Checkout on Stripe</span>'
+      : '<a class="ow-popit-btn ow-popit-btn--fill" href="' + esc(p.checkout_url) + '" target="_blank"'
+        + ' rel="noopener noreferrer" data-po-buy>Buy</a>'
+        + (p.checkout_host ? '<span class="ow-product__whose">Checkout on ' + esc(p.checkout_host) + '</span>' : '');
+    /* THE PICTURE IS THE PRODUCT'S FACE: under its name on the one surface, at its own shape (an open sheet has
+       no picture band, by the founder's "no header" rule, so `image` would be a strip behind the name). */
+    OW.open({
+      kind_label: 'Product', label: p.name || '',
+      faceHTML: pics[0] ? '<img src="' + esc(src(pics[0].url)) + '" alt="' + esc(pics[0].alt || '') + '"'
+        + (pics[0].width && pics[0].height ? ' width="' + pics[0].width + '" height="' + pics[0].height + '"' : '')
+        + ' decoding="async">' : '',
+      faceKind: 'product',
+      glance: OW.priceWords(p), lifecycle: p.available === false ? 'Sold out' : '',
+      openHTML: '<div class="ow-product">'
+        + (p.description ? '<p class="ow-product__d">' + esc(p.description) + '</p>' : '')
+        /* its choices, as its owner named them (PLAN B8 slice 3); the store's own page takes the one a person picks */
+        + (p.options || []).filter(function (o) { return o && o.name && (o.values || []).length; }).map(function (o) {
+            /* paid here, each choice is picked on the sheet (one of its values, pressed); otherwise the store's own page
+               takes it, and the sheet only says what there is */
+            if (p.pays_here && OW.canBuy(p)) {
+              return '<p class="ow-product__d" data-po-option>' + esc(o.name) + '</p><div class="ow-product__buy" role="group" aria-label="' + esc(o.name) + '">'
+                + o.values.map(function (v) {
+                    return '<button type="button" class="ow-popit-btn" data-po-pick="' + esc(o.name) + '" data-po-value="' + esc(v.label) + '" aria-pressed="false">' + esc(v.label) + '</button>';
+                  }).join('') + '</div>';
+            }
+            return '<p class="ow-product__d" data-po-option>' + esc(o.name) + ': ' + esc(o.values.map(function (v) { return v.label; }).join(' \u00b7 ')) + '</p>';
+          }).join('')
+        + (more ? '<div class="ow-product__pics">' + more + '</div>' : '')
+        + (buy ? '<div class="ow-product__buy">' + buy + '</div>' : '')
+        + '</div>'
+    }, origin);
   };
 
   OW.open = function (data, origin) {
@@ -6108,6 +6361,76 @@
     e.preventDefault();
     btn.click();
   });
+
+  /* ══ THE TOAST: THE ONE PLACE AN ALERT IS SAID (STANDING_RULES S23) ═══════════════════════════════════════════
+     ★ FOUNDER/493: "a bottom notification bar that can popup like all social medias describing briefly for a second an
+       individual error if there is then fade away after a second."  ★ The founder, 2026-10-11: "any alerts appearing on
+       the interaction itself, they should appear as system notifications ... little gray boxes ... We have this."
+     Moved here from the App (app/popit-live.js) so the OS says its alerts in the same box. One bar, one message, one
+     place: a second message replaces the first; `tone` 'ok' for something that landed; an optional `action` with
+     `onAction` (Try again, See it). Not a dialog: nothing takes focus, nothing blocks, it fades on its own. Its look is
+     the founder's to tune (.ow-toast in oneway-popit.css). */
+  var toastEl = null, toastTimer = 0;
+  OW.toast = function (msg, opts) {
+    opts = opts || {};
+    if (!msg) return;
+    if (toastTimer) { global.clearTimeout(toastTimer); toastTimer = 0; }
+    if (!toastEl || !toastEl.parentNode) {
+      toastEl = doc.createElement('div');
+      toastEl.className = 'ow-toast';
+      toastEl.setAttribute('role', 'status');
+      toastEl.setAttribute('aria-live', 'polite');
+      toastEl.setAttribute('aria-atomic', 'true');
+      doc.body.appendChild(toastEl);
+    }
+    toastEl.innerHTML = '';
+    toastEl.setAttribute('data-tone', opts.tone === 'ok' ? 'ok' : 'bad');
+    var face = doc.createElement('span'); face.className = 'po-card__face';
+    face.setAttribute('aria-hidden', 'true'); toastEl.appendChild(face);
+    var head = doc.createElement('div'); head.className = 'ow-toast__head';
+    var brand = doc.createElement('span'); brand.className = 'ow-toast__brand';
+    brand.textContent = 'Oneway'; head.appendChild(brand);
+    var dismiss = doc.createElement('button'); dismiss.className = 'ow-toast__dismiss';
+    dismiss.type = 'button'; dismiss.setAttribute('aria-label', 'Dismiss notification');
+    dismiss.textContent = '\u00d7'; dismiss.addEventListener('click', function () { OW.toast.hide(); });
+    head.appendChild(dismiss); toastEl.appendChild(head);
+    var tt = doc.createElement('span'); tt.className = 'ow-toast__t'; tt.textContent = String(msg); toastEl.appendChild(tt);
+    if (opts.action && typeof opts.onAction === 'function') {
+      var b = doc.createElement('button'); b.className = 'ow-toast__a'; b.textContent = String(opts.action);
+      b.type = 'button';
+      b.addEventListener('click', function (e) {
+        e.preventDefault();
+        try { opts.onAction(); } catch (_) {}
+        OW.toast.hide();
+      });
+      toastEl.appendChild(b);
+    }
+    /* ABOVE THE DOCK, MEASURED (2026-10-11). `--ow-dock` is set only in the immersive view, so on Home a phone's bar sat
+       over the dock it promises to clear (walk camera-keep, 390). Where a dock runs along the bottom, the bar sits
+       above its top edge; a dock down the side (a wide screen) changes nothing. */
+    try {
+      var nav = doc.querySelector('.ow-nav'), vh = global.innerHeight || 0, nr = nav && nav.getBoundingClientRect();
+      var clear = (nr && nr.height && nr.top > vh * 0.6 && global.getComputedStyle(nav).display !== 'none') ? (vh - nr.top + 10) : 0;
+      toastEl.style.bottom = clear ? 'max(' + Math.round(clear) + 'px, calc(14px + var(--ow-dock,0px) + env(safe-area-inset-bottom)))' : '';
+    } catch (_) {}
+    /* reflow so a replacement message re-runs the entrance rather than
+       appearing already-arrived */
+    toastEl.removeAttribute('data-on');
+    void toastEl.offsetWidth;
+    toastEl.setAttribute('data-on', '1');
+    /* an error gets the second he asked for; something with an action to press
+       gets long enough to press it */
+    toastTimer = global.setTimeout(OW.toast.hide, opts.action ? 8000 : Math.min(10000, Math.max(4000, String(msg).length * 45)));
+  };
+  OW.toast.hide = function () {
+    if (toastTimer) { global.clearTimeout(toastTimer); toastTimer = 0; }
+    if (!toastEl) return;
+    toastEl.removeAttribute('data-on');
+    var el = toastEl;
+    global.setTimeout(function () {
+      if (el && el.parentNode && !el.hasAttribute('data-on')) el.parentNode.removeChild(el);
+    }, 320);
+  };
 
   global.OW = OW;
 })(window);

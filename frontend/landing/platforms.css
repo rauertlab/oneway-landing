@@ -1,0 +1,95 @@
+/* ONEWAY — THE PLATFORMS WHEEL  (frontend/landing/platforms.css)
+
+   ★ FOUNDER/794, 2026-10-16: *"add a scrolling wheel of ALL Of the platforms oneway works with and was built to work
+     with. the exact icons and wordmarks and links to their sites."*
+
+   The list is written by tools/platforms_wheel.py from the code's own citations (frontend/landing/platforms.json) and
+   projected into the page as a plain list of links; frontend/landing/platforms.js turns it into the wheel. Nothing here
+   is a new look: the motion is the landing's own drifting strip (index.html `.eco-run`: the 9% edge fade, a linear
+   drift by half the track, paused under the pointer, still for reduced motion), and each platform is a quiet button of
+   the one button language (S20: `.ow-btn--quiet`, defined once at the end of frontend/shared/oneway-popit.css: 36px, a
+   pill, 14px at 600, its words on nothing, a soft wash on hover). This sheet sets only how a mark and a name sit in it,
+   and where the rows run. A page that carries the wheel loads oneway-popit.css too (the guard holds it).
+
+   THE INK IS THE SECTION'S. The landing keeps its own dark ground in both rooms, while the shared --ow-ink follows the
+   room, so a page set to the light room drew the names in near-black on that dark ground (1.0:1, measured 2026-10-17,
+   measure-1). Inside the wheel the shared ink is the colour of the section the wheel sits on, and so is the wash.
+
+   FOUR STATES, NO SHIFT BETWEEN THEM:
+     · no script: a plain wrapping list of every platform, each a link;
+     · reduced motion: the same list standing still, wrapped, in full (a static grid);
+     · script, before platforms.js has run (or when it never arrives): one line per row, laid out by the `scripting`
+       media feature from the first paint; each row scrolls inside its lane, so a finger can swipe it, and while the
+       keyboard is in it the rows stand as the static list, so every link it reaches is whole (measure-1: with
+       platforms.js blocked, 62 of 67 links were out of reach at 390 px);
+     · the wheel: once platforms.js has laid the second copy in (`[data-on]`), the lane clips and the row drifts, from
+       where it stood.
+
+   FONTS (2026-10-16, Safari fell to a serif when a token was missing): the root face is a literal stack, every var()
+   in a font property carries a literal fallback, and no var() is inside a font shorthand.
+
+   PROPOSED, for his eye: two rows in opposite directions, the speed (platforms.js SPEED), the 20px mark beside the
+   name, and the near-black marks (X, Threads, GitHub) drawn in the room's ink, as their own guidelines draw them on a
+   dark ground. Not yet decided by him (S19/S20): a way to stop the rows on a touch screen, where there is no hover. */
+.owpl{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;max-width:100%;margin:clamp(28px,4vw,44px) 0 0;padding:0;
+  font-family:"ONEWAY Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-size:var(--mp-caption,15px);font-weight:600;font-style:normal;
+  line-height:var(--lp-lh-caption,1.5);letter-spacing:var(--lp-ls-caption,0);text-transform:none;
+  --ow-ink:currentColor;--ow-b-wash:color-mix(in srgb,currentColor 8%,transparent)}
+.owpl-lane{min-width:0}
+.owpl-track{display:flex;min-width:0}
+.owpl-row{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-width:0}
+.owpl-row>li{flex:none;margin:0;padding:0}
+/* the copy the wheel loops on is never read, never focused, and never drawn outside the wheel */
+.owpl-row--echo{display:none}
+
+/* ONE PLATFORM, in the shared quiet button: its Simple Icons mark in its colour, then its name as the brand writes it.
+   EXACT SPACING (tools/platforms_wheel.py ONE MARK BOX, the numbers there): every mark has the same 22px box, 8px
+   before its name; inside the box the mark is drawn at its optical size (the generator writes its view and its width
+   and height) and stands 2px from the box's end, so the space from every mark to its name is the same whatever its
+   shape, and a square mark stands centred. A platform with no mark is its name alone, in the same button. */
+.owpl-i{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.owpl-i:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+/* ON THE CAP HEIGHT: the box is centred on the name's line, then lifted .12px, which centres it on the capitals as the
+   browsers draw them: Chromium sets a line of text on a whole CSS pixel and WebKit on a whole device pixel, so where the
+   capitals land moves with the wheel's place on the page; measured at eight sub-pixel places (2026-10-17,
+   tools/probe/platforms-wheel.cjs capCentre), the mark's centre is then within 0.5px of the capitals' middle in both */
+.owpl-mk{position:relative;top:-.12px;flex:none;display:block;width:22px;height:22px;color:var(--owpl-mk,currentColor)}
+.owpl-i[data-ink] .owpl-mk{color:currentColor}
+.owpl-mk>svg{position:absolute;top:50%;inset-inline-end:2px;display:block;overflow:visible;transform:translateY(-50%)}
+.owpl-w{display:block}
+
+/* ONE LINE PER ROW, with the strip's edge fade, the copy beside the list */
+@media (scripting:enabled) and (prefers-reduced-motion:no-preference){
+  /* until the wheel is on, the row scrolls in its lane (no scrollbar is drawn, so the box is the wheel's either way).
+     The lane keeps the focus ring's room on every side (the ring is 2px at 2px off the link, .owpl-i:focus-visible):
+     the first link of a row stands at the track's start, which the drift cannot pass, so without the inline room the
+     clip cut its ring on the left (measure-2, 2026-10-17: Bluesky and GitHub, Chromium and WebKit, 390 and 1366). The
+     room is inside the lane, so the loop's period, the track's width, does not change. */
+  .owpl-lane{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;padding-block:4px;padding-inline:4px;
+    -webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
+  .owpl-lane::-webkit-scrollbar{display:none}
+  /* once it is on, the lane clips and the row moves by the drift alone */
+  .owpl[data-on] .owpl-lane{overflow:hidden;overflow:clip}
+  /* while the keyboard is in a wheel that never turned on, the rows stand as the static list, every link whole: a
+     browser does not scroll a link that is already partly in view (Chromium left one at 1% of its width, measured
+     2026-10-17), so a scrolling lane alone cannot show the keyboard where it is */
+  .owpl:not([data-on]):has(.owpl-i:focus-visible) .owpl-lane{overflow:visible}
+  .owpl:not([data-on]):has(.owpl-i:focus-visible) .owpl-track{width:auto}
+  .owpl:not([data-on]):has(.owpl-i:focus-visible) .owpl-row{flex-wrap:wrap;gap:4px}
+  .owpl:not([data-on]):has(.owpl-i:focus-visible) .owpl-row>li{margin-inline-end:0}
+  /* a link a person has reached with the keyboard is shown whole, edge fade and all */
+  .owpl:focus-within .owpl-lane{-webkit-mask-image:none;mask-image:none}
+  .owpl-track{width:max-content}
+  /* spacing by each item's own end margin, not the row's gap, so one copy is exactly one period of the loop */
+  .owpl-row{flex-wrap:nowrap;gap:0}
+  .owpl-row>li{margin-inline-end:4px}
+  .owpl-row--echo{display:flex}
+  .owpl[data-on] .owpl-track{animation:owpl-ahead var(--owpl-dur,120s) linear infinite;will-change:transform}
+  .owpl[data-on] .owpl-lane--back .owpl-track{animation-name:owpl-back}
+  /* it stands still under the pointer, while a link in it has the focus, and while it is off the screen */
+  .owpl:hover .owpl-track,.owpl:focus-within .owpl-track,.owpl[data-off] .owpl-track{animation-play-state:paused}
+}
+@keyframes owpl-ahead{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes owpl-back{from{transform:translateX(-50%)}to{transform:translateX(0)}}

@@ -1,0 +1,172 @@
+/* THE MAP'S PAGES — one sheet for the pages of the founder's map of oneway.center that are built from words, not
+   from the platform: /ecosystem, /approach, /contact, /os/business and its industries, /os/developer (his map,
+   2026-10-09, "final landing and oneway's center concepts"; built by B from site-copy/DRAFTS.md, C (web) wires the
+   build). Nothing here is a new look:
+     · the ground, the bar, the foot and the reveal are app.html's;
+     · the section, the lockup, the headline sizes and the pill are landing.css's;
+     · every card is the App's Post popit, `.ow-popit` (oneway-popit.css, C-app b6ec8b5d), and every quiet button
+       the App's `.ow-popit-btn`. This sheet gives them their room and their type, never their material.
+   All text is white (the founder, 2026-10-09: "i want it to be all white rather then divided into smaller chunks of
+   grey sidetext"). */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--font:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;--font-display:var(--font);
+  --ease:cubic-bezier(.4,0,.2,1);--ow-h1:139,92,255;--ow-h2:93,226,255;--line:rgba(255,255,255,.08)}
+/* the ground the landing pages share (493 #14) */
+html{scroll-behavior:smooth;overflow-x:hidden;min-height:100%}  /* a short page (the ecosystem stub) drew its ground in bands */
+html:root{background:
+  radial-gradient(60% 50% at 18% 22%, rgba(139,92,255,.16), transparent 72%),
+  radial-gradient(55% 45% at 82% 68%, rgba(92,255,255,.10), transparent 72%),
+  radial-gradient(45% 40% at 62% 8%, rgba(255,168,58,.07), transparent 70%),
+  #0e0d1a fixed}
+body{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:transparent;color:#fff;   /* a literal stack: the Safari guard (test_landing_fonts.py) */-webkit-font-smoothing:antialiased;line-height:1.6}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{text-wrap:balance}
+#hero-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+a:focus-visible,button:focus-visible{outline:2px solid rgba(var(--ow-h2),.9);outline-offset:3px}
+
+/* ── the bar: the mark, and the one thing only the corner does (founder/493) ── */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;height:calc(60px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:14px;
+  padding:env(safe-area-inset-top,0px) max(20px,env(safe-area-inset-right)) 0 max(20px,env(safe-area-inset-left));
+  transition:background .3s,box-shadow .3s}
+.nav.scrolled{background:rgba(10,9,20,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 1px 0 var(--line)}
+.nav-logo img{height:16px;display:block}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.nav-signin{font-size:14px;font-weight:500;color:#fff;padding:8px 12px;opacity:.8}
+.nav-signin:hover{opacity:1}
+
+/* ── the opening ─────────────────────────────────────────────────────── */
+.open{padding:clamp(112px,15vw,168px) 0 0}
+.open h1{font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:900;letter-spacing:var(--lp-ls-display);line-height:var(--lp-lh-display);font-size:clamp(40px,6vw,74px);max-width:16ch;word-spacing:var(--lp-ws)}
+/* a headline that is a whole sentence (founder/735: Our Mission opens on the mission itself): the same face, sized and
+   measured so a long statement reads as one, not as a column of words */
+.open h1.long,.open h2.long{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:900;font-size:52px;line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display);word-spacing:var(--lp-ws);max-width:27ch}
+@media(max-width:600px){.open h1.long,.open h2.long{font-size:30px}}
+.open .lp-p{font-size:clamp(18px,1.9vw,22px);max-width:40ch;margin-top:22px}
+.open .lp-acts{align-items:center;gap:12px}
+
+/* ── ONE TYPE SPACING, EVERY ROLE (founder/793: "all font spacing must be the same"; S26) ──────────────────────
+   The values are defined once, in compat.css (the sheet every landing page loads); this sheet only says which text
+   plays which role, on every page it serves. display: the opening headline and the lockup's word. heading: a
+   section's headline, its column heads, a card's title. lead: the line under a heading. body: a card's sentence.
+   caption: a note, a label, the trail (the footer's own spacing is the one footer's, oneway-bar.css). */
+.lk span{letter-spacing:var(--lp-ls-display);word-spacing:var(--lp-ws);line-height:var(--lp-lh-display)}
+.lp-h2,.lp-h3,.card h3{letter-spacing:var(--lp-ls-heading);word-spacing:var(--lp-ws);line-height:var(--lp-lh-heading)}
+.lp-p{letter-spacing:var(--lp-ls-lead);word-spacing:var(--lp-ws);line-height:var(--lp-lh-lead)}
+.card p,.card li,.flow li{letter-spacing:var(--lp-ls-body);line-height:var(--lp-lh-body)}
+.trail,.card .lab,.card .go,.card .soon{letter-spacing:var(--lp-ls-caption);line-height:var(--lp-lh-caption)}
+/* where a page sits in the map, above its heading: the way back up */
+.trail{display:flex;flex-wrap:wrap;gap:6px;font-size:13.5px;font-weight:600;margin:0 0 16px;color:#fff}
+.trail a{opacity:.72;border-bottom:1px solid rgba(255,255,255,.25)}
+.trail a:hover{opacity:1}
+.trail i{font-style:normal;opacity:.45}
+
+/* NO BUTTON IS LOOSE TEXT (founder/790): the map pages' `.pill.ow-popit-btn` (Contact's "Email us", the OS pages'
+   "Oneway OS", each industry page's "Business OS") wears the landing's one outlined button, written once in
+   landing.css ("ONE OUTLINED BUTTON ON EVERY LANDING PAGE"), the bar's Sign in exactly. */
+
+/* ── a section: its heading and its line, then its cards ─────────────── */
+.sec .lp-h2{max-width:18ch}
+.sec .lp-p{max-width:46ch}
+.sec-c{text-align:center}
+.sec-c .lp-h2,.sec-c .lp-p{margin-left:auto;margin-right:auto}
+
+/* THE CARDS ARE THE APP'S POST POPIT. `.ow-popit` brings the ground, the grain, the light and the shape; a card
+   only says what it is: its mark and word in its hue, its title, its sentence, and where it goes. */
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:16px;margin-top:clamp(28px,4vw,44px)}
+.cards--2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.card{display:flex;flex-direction:column;gap:10px;padding:22px 22px 20px;color:#fff;min-width:0}
+.card .lab{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;font-weight:700;color:rgb(var(--h2,93,226,255))}
+.card .lab svg{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card h3{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:800;font-size:clamp(20px,2vw,23px)}
+.card p{font-size:16.5px;font-weight:500;color:#fff}
+.card .go{margin-top:auto;padding-top:6px;font-size:14px;font-weight:650;display:inline-flex;align-items:center;gap:6px}
+.card .go::after{content:"\2192";transition:transform .2s var(--ease)}
+a.card:hover .go::after{transform:translateX(3px)}
+/* a part that is named but not built yet says so, in the App's hairline */
+.card .soon{align-self:flex-start;font-size:12px;font-weight:650;padding:4px 10px;border-radius:999px;box-shadow:0 0 0 1px rgba(255,255,255,.3)}
+.card ul{list-style:none;display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.card li{font-size:15.5px;font-weight:500;padding-left:16px;position:relative}
+.card li::before{content:"";position:absolute;left:0;top:.62em;width:6px;height:6px;border-radius:50%;background:rgb(var(--h,139,92,255))}
+
+/* ── his eight steps, one after another (cross projection) ─────────────
+   Each step is a popit; its number is an element of its own, because `.ow-popit` draws its ground with ::before. */
+.flow{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:clamp(28px,4vw,40px)}
+.flow li{display:flex;align-items:center;gap:12px;padding:14px 16px 14px 14px;font-size:15.5px;font-weight:600}
+.flow .n{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+  font-size:13px;font-weight:800;color:#fff;background:linear-gradient(150deg,rgb(var(--h,139,92,255)),rgba(var(--h2,93,226,255),.8))}
+
+/* ── the close ───────────────────────────────────────────────────────── */
+.close{padding:clamp(96px,13vw,150px) 0 clamp(90px,11vw,120px);text-align:center}
+.close .lp-h2{margin:0 auto;max-width:18ch}
+.close .lp-p{margin:18px auto 0;max-width:42ch}
+
+/* ── the foot: THE ONE FOOTER of every landing page, `.owfoot` in oneway-bar.css (founder/801); this sheet's own
+   .foot is gone with its markup ── */
+
+/* reveals: visible at rest; a section below the first screen only rises into place */
+.rv{transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.wait{opacity:0;transform:translateY(24px)}
+@media(prefers-reduced-motion:reduce){.rv.wait{opacity:1;transform:none}}
+
+/* OUR MISSION, A BLANK SLATE WITH ONE STORY (the founder, 2026-10-17: "the our mission page basically totally lost
+   coherence and a story, and the cards on it look absolutely terrible"; "there's still gray cards and random pop-it
+   boxes on here, which should all be completely removed. This basically has to become a blank slate"; "no boxes should
+   have randomly colored dots inside of them"). Every section is the top header one step down (founder/793): its name
+   (.t-mark) over its headline (.t-heading) over its line (.t-lead), centred on one column like the top header. Every
+   piece of text plays one role from compat.css (.t-*), and nothing here sets a size, a weight, a line-height or a
+   letter-spacing: this block only places things. No surface holds text: the words sit on the page's own ground; the
+   one picture is the locked globe. The gaps are one set, used by every section: */
+.mission-page{--mp-gap-mark:18px;--mp-gap-lead:20px;--mp-gap-act:28px;--mp-gap-cols:48px}
+.mission-page section[id]{scroll-margin-top:72px}
+.mission-page [hidden]{display:none!important}
+.mission-page #top{padding-top:clamp(112px,15vw,168px)}
+.mission-page :is(#top,.mission-sec,.close) .lp-wrap{text-align:center}
+.mission-page #top .lk{justify-content:center}
+.mission-page h1.t-display-long{max-width:24ch;margin:0 auto}
+.mission-page .t-mark{margin:0 0 var(--mp-gap-mark)}
+.mission-page h2.t-heading{max-width:20ch;margin:0 auto}
+.mission-page .t-lead{max-width:46ch;margin:var(--mp-gap-lead) auto 0}
+.mission-page .t-caption{max-width:52ch;margin:var(--mp-gap-act) auto 0}
+/* centred words break into even lines, never a long line over a short one (balance; pretty where it is not supported) */
+.mission-page :is(.t-lead,.t-caption,.t-body){text-wrap:pretty;text-wrap:balance}
+.mission-page .lp-acts{justify-content:center;margin-top:var(--mp-gap-act)}
+/* a Profile and a Center, side by side: each named, each in a sentence, each with the place its card will stand */
+.mission-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(32px,6vw,80px);max-width:760px;margin:var(--mp-gap-cols) auto 0}
+.mission-pair>*{min-width:0;scroll-margin-top:72px}
+.mission-pair .t-body{max-width:30ch;margin:10px auto 0}
+/* THE LOCKED GLOBE, with no box behind its lock: the lock is cut out of the globe by a rim in the ground's own colour */
+.mission-privacy-mark{position:relative;width:min(240px,60vw);aspect-ratio:1;margin:0 auto var(--mp-gap-act)}
+.mission-privacy-mark img{width:100%;height:100%;display:block}
+.mission-privacy-mark svg{position:absolute;right:-2%;bottom:-2%;width:40%;height:40%;overflow:visible;stroke-linecap:round;stroke-linejoin:round}
+.mission-privacy-mark .rim{fill:#0e0d1a;stroke:#0e0d1a;stroke-width:4.5}
+.mission-privacy-mark .ink{fill:#0e0d1a;stroke:#fff;stroke-width:1.6}
+@media(max-width:700px){
+  .mission-page #top{padding-top:100px}
+  .mission-pair{grid-template-columns:minmax(0,1fr);gap:36px}
+}
+
+/* ONE LIST ON THE PAGE'S OWN GROUND, AND ITS ONE VARIANT (founder/813, 816: a blank slate, no gray card, no boxed panel,
+   no dot; a cold judge, 2026-10-17: three list styles on eight pages broke the one type system). Every word keeps its
+   role from compat.css (.t-sub for an item's head, .t-body for its sentence); this only places them, with Our Mission's
+   gaps (--mp-gap-*) and one 1px hairline between items.
+   THE TRUST PAGES' LIST (Community Guidelines, Safety, Support, Accessibility): one column, left-aligned, because a list
+   is read down its left edge; an item's own buttons sit under its sentence. */
+.trust-page .tp-list{list-style:none;max-width:720px;margin:var(--mp-gap-cols) auto 0;padding:0;text-align:left}
+.trust-page .tp-item{padding:var(--mp-gap-act) 0;border-top:1px solid rgba(255,255,255,.12);scroll-margin-top:72px}
+.trust-page .tp-item:last-child{border-bottom:1px solid rgba(255,255,255,.12)}
+.trust-page .tp-item .t-sub{margin:0;color:#fff}
+.trust-page .tp-item .t-body{margin:12px 0 0;max-width:60ch;color:#fff;text-wrap:pretty}
+.trust-page .tp-item .lp-acts{justify-content:flex-start;margin-top:var(--mp-gap-lead)}
+.trust-page .lp-acts .pill{white-space:normal;text-align:center}
+.trust-page :is(.tp-item,#top .t-caption) a:not(.pill){border-bottom:1px solid rgba(255,255,255,.5)}
+.trust-page :is(.tp-item,#top .t-caption) a:not(.pill):hover{border-bottom-color:#fff}
+/* THE INDUSTRY PAGES' ROWS (Business OS's four industries), the one variant: the same hairline and roles, centred under a
+   centred section, two to a row on a wide screen; the way back up (.trail) stands a lead's gap above the lockup.
+   os-business.html still carries its own copy inline (with .ind-rows--go, its rows as doors): the same numbers. */
+.ind-page #top .trail{justify-content:center;margin-bottom:var(--mp-gap-lead)}
+.ind-rows{list-style:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--mp-gap-cols);max-width:880px;margin:var(--mp-gap-cols) auto 0;padding:0}
+.ind-rows>li{min-width:0;border-top:1px solid rgba(255,255,255,.12);padding:var(--mp-gap-lead) 0 var(--mp-gap-act)}
+.ind-rows>li:last-child:nth-child(odd){grid-column:1/-1}
+.ind-rows .t-sub{margin:0}
+.ind-rows .t-body{max-width:36ch;margin:10px auto 0}
+@media(max-width:700px){.ind-rows{grid-template-columns:minmax(0,1fr)}}

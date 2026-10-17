@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
+  <title>Security · Oneway</title>
+  <meta name="description" content="How Oneway protects every account, every Center and every system a Center connects: identity, encryption, and the standard we hold ourselves to.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://oneway.center/security">
+  <link rel="alternate" hreflang="en" href="https://oneway.center/security">
+  <link rel="alternate" hreflang="x-default" href="https://oneway.center/security">
+  <link rel="alternate" type="text/plain" title="Oneway, for assistants" href="/llms.txt">
+  <link rel="alternate" type="text/plain" title="Oneway, every page in words" href="/llms-full.txt">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Oneway">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://oneway.center/security">
+  <meta property="og:title" content="Security at Oneway">
+  <meta property="og:description" content="How Oneway protects every account, every Center and every system a Center connects.">
+  <meta property="og:image" content="https://oneway.center/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Security at Oneway">
+  <meta name="twitter:description" content="How Oneway protects every account, every Center and every system a Center connects.">
+  <meta name="twitter:image" content="https://oneway.center/og-card.jpg">
+  <meta name="twitter:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="theme-color" content="#05050b">
+  <meta name="application-name" content="Oneway">
+  <meta name="apple-mobile-web-app-title" content="Oneway">
+  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
+  <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
+  <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
+  <link rel="icon" href="/assets/icons/oneway-globe-512.png" sizes="512x512" type="image/png">
+  <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="author" href="/.well-known/security.txt" title="Security contact">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/security#webpage","url":"https://oneway.center/security","name":"Security","headline":"Security · Oneway","description":"How Oneway protects every account, every Center and every system a Center connects: identity, encryption, and the standard we hold ourselves to.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-17","breadcrumb":{"@id":"https://oneway.center/security#breadcrumb"}},{"@type":"BreadcrumbList","@id":"https://oneway.center/security#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Security","item":"https://oneway.center/security"}]}]}</script>
+  <!-- /SEO -->
+  <meta name="color-scheme" content="dark light" />
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a">
+  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=80c34e7d">
+  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only) */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e9c47574"/>
+</head>
+<body>
+
+<nav class="owbar owbar--solid owbar--fly" aria-label="Oneway">
+  <div class="owbar-brand">
+    <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+    <div class="owbar-pages">
+      <a href="/mission">Our Mission</a>
+      <a href="/#app">App</a>
+      <a href="/#os">OS</a>
+      <a href="/security">Security</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+  <div class="owbar-right">
+    <a href="/beta" class="owbar-signin">Sign in</a>
+  </div>
+</nav>
+<script src="/frontend/shared/oneway-bar.js?v=5030702d"></script>
+
+<div class="hero">
+  <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" data-owbar-hero />
+  <h1 class="hero-eyebrow">Security</h1>
+</div>
+
+<div class="wrap">
+<style>
+  /* the Security page's own: the two opening paragraphs apart */
+  .wrap > p.scope + p.scope { margin-top: 14px; }
+</style>
+  <p class="scope"><strong>One standard for the whole ecosystem.</strong> The same protections cover every part of Oneway: a person's account, profile and messages in the Oneway App; a community's or a business's Center; the operating side of every Center in Oneway OS, Business OS and Developer OS; every System a Center runs, from a restaurant's floor and a hotel's rooms to a venue, a shop and a casino resort; every website a Center wears; and every integration and app built on the platform. A neighborhood group and a casino's operating floor sit on the same platform, so they are held to the same bar: the one set by the most regulated industry we serve.</p>
+
+  <p class="scope"><strong>What this page is.</strong> Oneway is in closed beta and is not yet running as a public service. This page describes the security controls built into the platform today, each exactly as it is implemented. Nothing here claims a certification we do not hold. For how we handle personal information, read the <a href="/privacy">Privacy Policy</a>; for blocking, reporting and the protections teen accounts start with, read <a href="/safety">Safety</a>.</p>
+
+  <h2 id="identity">Identity and sessions</h2>
+  <ul>
+    <li><strong>Passwords</strong> are hashed with bcrypt at a work factor of 12, each with its own salt. A password is never stored, logged or returned in plain text.</li>
+    <li><strong>Two-step verification</strong> uses time-based one-time passwords (TOTP, RFC 6238) from any standard authenticator app. Codes are verified in constant time, and recovery codes are stored only as hashes. We do not offer codes by text message, because SIM swapping defeats them.</li>
+    <li><strong>Two-step is available on every account and required where the stakes are highest:</strong> the whole operating side of a casino's Center asks for it by default.</li>
+    <li><strong>Sessions</strong> are held on our servers and referenced by a random token in a <code>__Host-</code> cookie marked Secure, HttpOnly and SameSite=Lax. No session token is ever stored where a script can read it, and signing out ends the session on the server, not only in the browser.</li>
+    <li><strong>Changing a password ends every other session</strong> on the account at once.</li>
+    <li><strong>Signing in reveals no account.</strong> A signed-out sign-in or password reset answers the same whether or not an address has an account.</li>
+    <li><strong>Rate limits on every endpoint</strong>, applied per session and per network address, so one person's traffic never spends another's allowance. Over the limit, a request is answered with 429 and a Retry-After, and nothing behind the endpoint runs.</li>
+  </ul>
+
+  <h2 id="isolation">Between people and between Centers</h2>
+  <ul>
+    <li><strong>Authority comes from the relationship, never from the request.</strong> What a person may see or do is decided by their real standing with a Center (owner, admin, staff or member) and by what each person has chosen to share, never by an identifier the caller supplies.</li>
+    <li><strong>One Center can never reach another's operating side.</strong> An automated test reads every Center endpoint from the application's own route list and calls each one as the owner of a different Center. A new endpoint is tested the day it is added.</li>
+    <li><strong>Every change requires a signed-in person.</strong> An automated test calls every endpoint that changes anything while signed out; none succeeds, except the few a signed-out person needs, such as signing in and resetting a password.</li>
+    <li><strong>Roles each Center defines for itself.</strong> Beyond owner, admin and staff, a Center can name its own roles. A role can only narrow what a member of staff may see and do, and every role change is written to the security log.</li>
+  </ul>
+
+  <h2 id="encryption">Encryption and secrets</h2>
+  <ul>
+    <li><strong>Every Center has its own secrets vault.</strong> Credentials a Center uses to connect its own systems are encrypted with AES-256-GCM under a data key belonging to that Center alone.</li>
+    <li><strong>Envelope encryption.</strong> Each Center's data key is itself encrypted under a master key that is never stored in the database.</li>
+    <li><strong>Every ciphertext is bound to its place.</strong> Each one is authenticated with its Center and its name as associated data (AEAD). A value copied to another Center, or renamed, fails to decrypt, and any altered byte fails the authentication tag.</li>
+    <li><strong>Secrets are write-only.</strong> No endpoint returns a secret, not even to its owner. Operators see a secret's name, who set it, when, and when an integration last used it. The value reaches only the server code that calls that provider.</li>
+    <li><strong>Keys</strong> are 256-bit values from the operating system's cryptographically secure random generator, with a fresh nonce for every encryption.</li>
+    <li><strong>Key rotation without exposure.</strong> Rotating the master key re-wraps each Center's data key. No secret is decrypted to do it.</li>
+    <li><strong>Crypto-shredding.</strong> Removing a Center's vault destroys its data key, and from that moment the platform can no longer open any secret it held. Encrypted database backups made before the removal still hold the old key until they age out, within 14 days.</li>
+    <li><strong>Personal secrets,</strong> such as a two-step seed, are sealed under a key derived for that one purpose and bound to the person they belong to.</li>
+    <li><strong>In transit:</strong> HTTPS everywhere, with HTTP Strict Transport Security for one year across every subdomain.</li>
+  </ul>
+
+  <h2 id="integrations">Integrations and apps</h2>
+  <ul>
+    <li><strong>A business connects its own systems.</strong> A provider cannot sign itself in to a Center. Each Center sets up its own integrations, with credentials only it holds, kept in its own vault.</li>
+    <li><strong>Every feed has its own key,</strong> shown once when it is issued and stored only as a SHA-256 hash. Issuing a new key disables the old one immediately.</li>
+    <li><strong>Signed webhooks.</strong> Messages from a connected vendor are verified by their HMAC-SHA256 signature in constant time before anything is read, and a signed message is refused once it is too old to be fresh.</li>
+    <li><strong>Apps built on Oneway</strong> run on their own sandbox host, under their own content security policy.</li>
+  </ul>
+
+  <h2 id="outbound">Outbound requests</h2>
+  <p>Server-side request forgery, where a server is tricked into fetching an address that points inward, is how a vendor's server becomes a way into its customers' networks. Every request an integration makes goes through one guarded fetcher:</p>
+  <ul>
+    <li>HTTPS only, to the hosts each integration is allowed to reach.</li>
+    <li>Publicly routable addresses only. Private, loopback, link-local, carrier-grade NAT and reserved networks, cloud metadata endpoints, and their IPv6 and IPv4-mapped forms are all refused.</li>
+    <li>The name is resolved once, and the connection is made to exactly the address that was checked, so DNS rebinding cannot redirect a request after it is checked.</li>
+    <li>TLS is verified against the host name, and every redirect is checked again from the start.</li>
+    <li>Every request is bounded in size and time, and no proxy is taken from the environment.</li>
+  </ul>
+
+  <h2 id="browser">In the browser</h2>
+  <ul>
+    <li><code>X-Content-Type-Options: nosniff</code>: a response is never read as a type other than the one it declares.</li>
+    <li><code>frame-ancestors 'self'</code>: no other site can frame Oneway's pages for clickjacking.</li>
+    <li><code>Referrer-Policy: strict-origin-when-cross-origin</code>: no path or query string leaks to another site.</li>
+    <li>A <code>Permissions-Policy</code> that allows location, the camera and the microphone only to Oneway's own pages, each only when the person allows it, and shuts Bluetooth, USB, serial ports, HID devices and payment.</li>
+    <li><code>Cross-Origin-Opener-Policy: same-origin</code>, and <code>Cross-Origin-Resource-Policy: same-site</code> on data, so another site cannot embed Oneway's data.</li>
+  </ul>
+
+  <h2 id="files">Files and photos</h2>
+  <ul>
+    <li><strong>A file is identified by its bytes</strong> (its magic number), never by its name or its declared type. Anything unrecognized is refused.</li>
+    <li><strong>Sizes are capped before anything is decoded.</strong></li>
+    <li><strong>Photos are stored without where they were taken or by what.</strong> GPS position, device and capture metadata are removed before storage, without altering a pixel, and the orientation is kept.</li>
+    <li><strong>Content-addressed storage.</strong> Every file is stored under its owner and a SHA-256 digest of its contents. An upload cannot choose its path, climb out of its folder or overwrite anyone else's file.</li>
+  </ul>
+
+  <h2 id="accountability">Accountability and disclosure</h2>
+  <ul>
+    <li><strong>A tamper-evident security log</strong> records sign-ins, refused sign-ins, changes to how an account is protected, and changes to roles and access. Each entry is chained to the one before it with an HMAC, so an altered or removed entry shows exactly where. It never records a password, a code, a token or a credential's value.</li>
+    <li><strong>Dependencies</strong> are pinned to exact versions with cryptographic hashes, on a supported runtime.</li>
+    <li><strong>Vulnerability reports</strong> are welcome at the contact in <a href="/.well-known/security.txt">security.txt</a> (RFC 9116). We read every report.</li>
+  </ul>
+
+  <h2 id="standard">The standard we hold ourselves to</h2>
+  <p>The bar named at the top of this page, the one the most regulated industry we serve sets for its vendors, is OWASP ASVS Level 3 for every endpoint, mapped to a recognized control framework (CIS Controls, ISO/IEC 27001 or NIST SP 800-53), and GLI-GSF-3, the gaming industry's information security audit for vendors. A SOC 2 Type II report and independent penetration testing are part of that program. This page will say when each is complete, and never before.</p>
+
+  <!-- THE QUESTIONS FROM IT AND SECURITY TEAMS that stood here said the sections above a second time (bcrypt, TOTP,
+       sessions, key rotation, the guarded fetcher, the headers, the rate limits, the security log, security.txt: the design
+       check of 2026-10-17); they went, and the three facts only they carried moved into their sections (the keys' source,
+       the answer over a rate limit, every report read). The closing Contact block went too: the company line is the
+       contact page's, and the report contact is the Accountability section's (founder/823: no page repeats a point). -->
+</div>
+
+<!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
+<footer class="owfoot">
+  <div class="owfoot-in">
+    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <nav class="owfoot-pages" aria-label="Oneway's pages">
+      <a href="/mission">Our Mission</a>
+      <a href="/#app">App</a>
+      <a href="/#os">OS</a>
+      <a href="/os-business">Business OS</a>
+      <a href="/security">Security</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <nav class="owfoot-help" aria-label="Help">
+      <a href="/support">Support</a>
+      <a href="/safety">Safety</a>
+      <a href="/community-guidelines">Community Guidelines</a>
+      <a href="/accessibility">Accessibility</a>
+      <a href="/learn">Glossary</a>
+    </nav>
+    <nav class="owfoot-legal" aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/data-deletion">Data Deletion</a>
+    </nav>
+    <small class="owfoot-line">2027, Oneway Technologies LLC</small>
+  </div>
+</footer>
+
+</body>
+</html>
