@@ -12807,6 +12807,11 @@ button.ow-wk__draft{cursor:pointer}
 .ow-ocard__face[data-shape="square"]{border-radius:8px}
 .ow-ocard__face img{width:100%;height:100%;object-fit:cover;display:block}
 .ow-ocard__face i{font-style:normal;font-family:var(--ow-font-display,inherit);font-weight:800;font-size:17px;letter-spacing:.02em}
+/* IN THE LIGHT ROOM THE INITIALS STAY READABLE (a cold judge, 2026-10-17: white letters on a pale mint or sky face, about
+   1.5:1): a face with no picture wears the account's own colour, deepened, under its white letters */
+html[data-theme="light"] .ow-ocard__face:not(:has(img)){background:linear-gradient(rgba(0,0,0,.24),rgba(0,0,0,.3)),
+  radial-gradient(120% 90% at 30% 10%,rgb(var(--h,var(--ow-h1))),rgb(var(--h,var(--ow-h1))) 72%)}
+html[data-theme="light"] .ow-ocard__face:not(:has(img)) i{text-shadow:0 1px 2px rgba(0,0,0,.3)}
 .ow-ocard__face .ow-facemark{width:58%;height:58%}
 .ow-ocard__id{min-width:0;flex:1;display:block}
 .ow-ocard__name{display:block;font-family:var(--ow-font-display,inherit);font-weight:800;font-size:17px;letter-spacing:-.02em;line-height:1.15;
@@ -13048,6 +13053,53 @@ body:has(.ow-top.is-away) .ow-surface>.ow-quickpost{visibility:hidden;pointer-ev
 .ow-ocard[data-projection]:is([data-projection="mini"]) .ow-ocard__name{min-block-size:2.5em}
 .ow-ocard[data-projection="mini"] .ow-ocard__context{min-block-size:1.5em}
 .ow-ocard[data-projection="micro"]:hover,.ow-ocard[data-projection="mini"]:hover{background:rgba(var(--h,var(--ow-h1)),.12)}
+/* ── THE COMPACT CARD (founder/834; oneway-cards.js compactAside): the picture, the name with the handle small under it,
+   and at the right the platforms' marks and the business's details line by line, at ONE height whatever it holds (no
+   rows or six: "I don't want them really being pushed down more because it makes them look ugly"). Its details stand in
+   three lines and run on into further columns; what the width cannot hold is cut, never grown into. A card's actions,
+   where a surface gives it some, are a row of their own under it. ── */
+.ow-ocard[data-projection="mini"]{grid-template-columns:48px minmax(min(170px,50%),1fr) minmax(0,auto);grid-template-rows:64px;column-gap:12px;row-gap:0;
+  min-block-size:0;max-inline-size:820px;padding:4px 10px;align-items:center;box-sizing:border-box;container-type:inline-size;position:relative}
+/* the name on one line, as every name ("the text always needs to be universal it cannot be dropping down", PLAN §3.4),
+   given the room first: at least half the row on a phone */
+.ow-ocard[data-projection]:is([data-projection="mini"]) .ow-ocard__name{min-block-size:0}
+.ow-ocard[data-projection="mini"] .ow-ocard__id{min-width:0;align-self:center}
+.ow-ocard[data-projection="mini"] .ow-ocard__sub{display:block;font-size:12px;line-height:1.3;opacity:.62;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ow-ocard__aside{display:flex;align-items:center;gap:18px;min-width:0;max-inline-size:100%;overflow:hidden;justify-self:end}
+.ow-ocard__aside .ow-ocard__links{display:flex;flex-wrap:nowrap;gap:6px;margin:0;padding:0;flex:none}
+.ow-ocard__aside .ow-linkbar__i{inline-size:26px;block-size:26px;min-inline-size:26px;margin:0}
+.ow-ocard__aside .ow-linkbar__i svg{inline-size:14px;block-size:14px}
+/* the details: as many lines as there are, up to three, centred on the card, further ones in a second column; the block
+   one width at each size, so the platforms of cards stacked one under another stand in one line */
+.ow-ocard__facts{display:grid;grid-template-rows:repeat(var(--rows,3),15px);grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);column-gap:26px;row-gap:1px;
+  align-content:center;max-block-size:48px;min-width:0;flex:none;inline-size:420px;overflow:hidden;font-size:12px;line-height:15px}
+.ow-ocard__fact{display:block;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ow-ocard__fact i{display:inline-block;min-inline-size:var(--lw,0);font-style:normal;opacity:.6;margin-right:6px}
+.ow-ocard__fact b{font-weight:500}
+html[data-theme="light"] .ow-ocard__fact i{opacity:.72}
+html[data-theme="light"] .ow-ocard[data-projection="mini"] .ow-ocard__sub{opacity:.74}
+/* a card narrower than two columns of details shows its first three in one; narrower still, the values without labels */
+@container (max-width:699px){.ow-ocard__fact:nth-child(n+4){display:none}.ow-ocard__facts{inline-size:210px}}
+/* a card under 600px has room for the name, the details or the platforms, not all three: the name and the details, "the most
+   useful area", keep it */
+@container (max-width:599px){.ow-ocard__aside .ow-ocard__links:has(+ .ow-ocard__facts){display:none}.ow-ocard__facts{inline-size:170px}.ow-ocard__fact i{display:none}}
+/* A PHONE'S CARD (a cold judge, 2026-10-17: beside the details the name and the hours were both cut): one height still, the
+   name whole on its line, the handle small under it, and the first detail under that, whole; the rest wait for a wider
+   card. The card is its own container, so the grid is set on its children: the details sit under the name, not beside it. */
+@container (max-width:479px){
+  .ow-ocard__aside{position:absolute;left:70px;right:10px;bottom:7px;justify-content:flex-start;justify-self:auto;text-align:left}
+  .ow-ocard[data-projection="mini"] .ow-ocard__id{align-self:start;margin-top:5px}
+  .ow-ocard__aside .ow-ocard__links{display:none}
+  .ow-ocard__facts{inline-size:auto;flex:1 1 auto;grid-template-rows:15px;max-block-size:15px;justify-items:start;text-align:left}
+  .ow-ocard__fact:nth-child(n+2){display:none}
+  .ow-ocard__fact i{display:none}
+  .ow-ocard__fact{max-inline-size:none;opacity:.86}
+  .ow-ocard__fact b{font-weight:500}
+}
+/* in Discovery's search, a Center's row is its compact card (discovery.js findRow), the row's own padding given to it */
+.ow-find__row.ow-find__row--card{padding:0}
+.ow-find__card{display:flex;align-items:center;gap:13px;flex:1;min-width:0}
+.ow-find__card.ow-ocard{display:grid;inline-size:100%;background:none;border:0;box-shadow:none;margin:0;text-align:left}
 @container (max-width:280px){
   .ow-ocard__top[data-layout]{flex-direction:column;align-items:flex-start;text-align:left;gap:8px}
   .ow-ocard[data-projection] .ow-ocard__top>.ow-ocard__id{padding-block-start:0;width:100%}
@@ -13983,3 +14035,141 @@ html:not([data-simple="1"]) .ow-pick__i:is(:hover,:focus-visible){
 html[data-theme="light"]:not([data-simple="1"]) .ow-pick__i:is(:hover,:focus-visible){
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
     inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}
+
+/* ═══ A POST'S INTERACTIONS, SPACED AND SIZED AS INSTAGRAM'S (founder/831, 832, 2026-10-17) ═════════════════════════
+   *"the interactions are spaced too far apart. I want them to be spaced exactly like Instagram and have the sizes of the
+   interactions be exactly like Instagram too"*; *"leave space under the interactions for it to say liked by the mutuals
+   and then also have the caption on photos"*. Measured from his instagram.com screenshot (2026-10-17): 24px glyphs on
+   40px targets, each number 6px after its glyph at 14px/600, the next glyph 12px after the number, the row starting on
+   the content's own edge and Save alone at the far right; under it "Liked by <name> and <N others>" at 14px/18px with
+   the likers' faces at 20px, then the caption at 14px/18px led by the author's name in 600.
+   The row was `space-between` across the whole card (founder/488's six tallies at 290px), which put the acts ~110px
+   apart at 1366. A fixed rhythm that never overflows replaces it: at a narrow card the gap tightens before anything
+   wraps. NOT HERE: the Scroll's full-screen photograph keeps its rail (founder/485), and a widget or a Popit tile
+   keeps its own condensed sizes. LAST ON PURPOSE, and scoped by the same :not() so nothing above has to change. ═══ */
+html body .po-card > .po-card__foot:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  container-type:inline-size;align-items:center;flex-wrap:nowrap;gap:8px}
+html body .po-card__foot > .po-acts[data-po-responses]:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  display:flex;flex:1 1 auto;min-width:0;width:auto;flex-wrap:nowrap;align-items:center;justify-content:flex-start;
+  gap:0;margin:0 -8px;padding:0;position:static;inset:auto}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  flex:0 0 auto;display:inline-flex;flex-direction:row;align-items:center;gap:6px;
+  width:auto;height:40px;min-height:40px;padding:8px clamp(1px,1.1cqi,4px) 8px clamp(4px,2.2cqi,8px);margin:0;
+  background:none;border:0;border-radius:0;box-shadow:none;transform:none;line-height:1;
+  transition:opacity .15s var(--ow-ease),transform .18s var(--ow-spring)}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){color:var(--ow-ink)}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon[aria-pressed="true"]:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){color:rgb(var(--h,var(--ow-h1)))}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon[data-po-respond="like"][aria-pressed="true"]:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){color:var(--ow-like)}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon[data-po-respond="dislike"][aria-pressed="true"]:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){color:var(--ow-ink)}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--end:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  margin-left:auto;padding:8px}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon > svg:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  width:24px;height:24px;flex:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon > b:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  position:static;transform:none;margin:0;font-family:var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);
+  font-size:14px;line-height:18px;font-weight:600;letter-spacing:0;font-variant-numeric:tabular-nums;color:inherit}
+@media (hover:hover) and (pointer:fine){
+  html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:hover:not(:disabled):not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+    opacity:.6;transform:none;background:none}
+}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:active:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  transform:scale(.88)}
+/* the place a Post was made in, when the foot carries it, stays beside the row and never pushes Save off it */
+html body .po-card > .po-card__foot:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *) > .po-card__count{display:none}
+
+/* LIKED BY: the faces, then the words, 14/18 in the Post's ink, the names and the count in 600 */
+html body .po-card > .po-card__known:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  display:flex;align-items:center;gap:8px;margin:0;opacity:1;color:var(--ow-ink);
+  font-family:var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);font-size:14px;line-height:18px;font-weight:400;letter-spacing:0}
+html body .po-card > .po-card__known > span:not(.po-card__kfaces){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html body .po-card > .po-card__known b{font-weight:600}
+.po-card__kfaces{display:inline-flex;flex:none;align-items:center}
+.po-card__kfaces > i{width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:center/cover no-repeat color-mix(in srgb,var(--ow-ink) 16%,transparent);
+  border:1.5px solid color-mix(in srgb,var(--ow-ground,#0b0b16) 88%,transparent);
+  font:600 9px/1 var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);font-style:normal;color:var(--ow-ink)}
+.po-card__kfaces > i + i{margin-left:-7px}
+/* THE CAPTION, under who liked it: the author's name in 600, then their words */
+html body .po-card > .po-card__body--cap{display:block}
+html body .po-card > .po-card__body--cap .po-card__d{font-family:var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);
+  font-size:14px;line-height:18px;font-weight:400;letter-spacing:0;color:var(--ow-ink);margin:0}
+html body .po-card > .po-card__body--cap .po-card__capby{font-weight:600}
+html body .po-card > .po-card__body--cap .po-card__t{display:block;font-size:14px;line-height:18px;font-weight:600;margin:0 0 2px}
+
+/* THE VERTICAL RHYTHM, outside Simple's grid (which sets its own columns and leaves padding to the grid) */
+html:not([data-simple="1"]) body .po-card > .po-card__foot:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  padding:4px var(--po-inset) 8px}
+html:not([data-simple="1"]) body .po-card > .po-card__foot:has(+ :is(.po-card__known,.po-card__body--cap)):not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  padding-bottom:2px}
+html:not([data-simple="1"]) body .po-card > .po-card__known:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  padding:2px var(--po-inset) 12px}
+html:not([data-simple="1"]) body .po-card > .po-card__known:has(+ .po-card__body--cap):not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){
+  padding-bottom:6px}
+html:not([data-simple="1"]) body .po-card > .po-card__body--cap{padding:0 var(--po-inset) 14px}
+html[data-simple="1"] body .po-river > .po-card > .po-card__foot{padding-top:6px}
+html[data-simple="1"] body .po-river > .po-card > .po-card__known{padding-top:2px}
+html[data-simple="1"] body .po-river > .po-card > .po-card__body--cap{padding-top:6px}
+
+/* ═══ A PERSON'S NOTE STANDS TO THE RIGHT, NEVER ABOVE (founder/832, 2026-10-17) ══════════════════════════════════════
+   *"when a user has an attached note, it must go to the right of the card. It shouldn't extend the card upwards. And
+   when I say a note, I mean something they publish to their profile. And goes platform-wide."* It sat over the face and
+   every host reserved 26-34px above its row for it (`:has(> .po-note){padding-top:…}`), so a person with a note made
+   every card of theirs taller. Now it is a pill in the row, after the name, its tether pointing back left to the face;
+   a row with a note is exactly as tall as one without. One rule for every host OW.noteOn / OW.noteHTML writes into. */
+html body :is(.po-card__who,.ow-post__who,.ow-gal__who):has(> .po-note){padding-top:0}
+html body .ow-thread:has(> .po-note){padding-top:13px}
+html body .ow-fpos[data-kind="group"] .po-card__who:has(> .po-note){padding-top:0}
+html body :is(.po-card__who,.ow-post__who,.ow-gal__who,.ow-thread) > .po-note{
+  position:relative;top:auto;left:auto;right:auto;bottom:auto;translate:none;order:99;
+  flex:0 1 auto;min-width:0;max-width:min(240px,48%);margin:0 0 0 6px;align-self:center}
+html body .ow-fpos[data-kind="group"] .po-card__who > .po-note{flex:0 1 auto;max-width:min(240px,48%);order:99;padding:4px 10px 5px}
+html body .ow-fpos[data-kind="group"] .po-card__who{flex-wrap:nowrap}
+html body .po-note .po-note__t{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+/* the tether points LEFT now, from the plate's left edge back toward the face it belongs to */
+html body :is(.po-card__who,.ow-post__who,.ow-gal__who,.ow-thread,.ow-prof__id) > .po-note > .po-note__tie{
+  left:-7px;top:50%;bottom:auto;width:8px;height:2px;transform:translateY(-50%);
+  background:linear-gradient(to left,rgba(var(--ch1,var(--h,var(--ow-h1))),.85),rgba(var(--ch1,var(--h,var(--ow-h1))),0))}
+/* THE PROFILE: beside the identity, level with the face, at the header's right; the header gains no height for it */
+html body .ow-prof .ow-prof__id > .po-note{position:absolute;top:calc(34px + 8px);left:auto;right:18px;translate:none;
+  max-width:min(260px,calc(50% - 18px))}
+html body .ow-prof[data-layout="above"] .ow-prof__id > .po-note{top:calc(50px);left:auto;right:18px;translate:none}
+
+/* THE FACE IN THE NAVIGATION IS THE GLYPH'S SIZE, CENTRED (founder/831): the caption is gone from the screen, so the glyph
+   is the button's centre on the rail too, and the face covers it exactly at the new sizes (27 on a phone, 28 on the rail). */
+html body .ow-nav__face{width:27px;height:27px;top:50%;box-shadow:none}
+@media (min-width:900px){ html body .ow-nav__face{width:28px;height:28px;top:50%} }
+html body .ow-nav__b--me[aria-current="page"] .ow-nav__face{outline:2px solid var(--ow-ink);outline-offset:2px}
+
+/* ═══ THE APP'S WIDGETS SHAPED TO THEIR BOXES (founder/830, 2026-10-17: "The widgets have to be shaped to their boxes
+   perfectly on both the app and also iOS home screens") ══════════════════════════════════════════════════════════════
+   Measured by tools/probe/widgets-boxed-walk.cjs (every type at each family, 390 and 1366, Pop-it and Simple): the Posts
+   widget drew the feed card's own material INSIDE the widget's (a box in a box) and its six acts with their counts ran
+   3px past the widget's right edge at large, and one person in a large box was a single row floating mid-square. The Post
+   IS the widget: no second face, its acts as glyphs spread across the box (the like keeps
+   its count), Save at the end; the caption clamps inside. */
+html body .ow-w[data-card="post"] .po-card > .po-card__face,
+html body .ow-w[data-card="post"] .po-card::before,
+html body .ow-w[data-card="post"] .po-card::after{display:none}
+html body .ow-w[data-card="post"] .po-card{border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
+html body .ow-w[data-card="post"] .po-card__foot{padding:6px 0 0;margin:0;gap:0;flex-wrap:nowrap;min-width:0}
+html body .ow-w[data-card="post"] .po-card__foot .po-acts{display:flex;width:100%;min-width:0;margin:0;gap:0;
+  justify-content:space-between;align-items:center;flex-wrap:nowrap}
+html body .ow-w[data-card="post"] .po-card__foot .po-act--icon{padding:4px 2px;gap:3px;min-width:0;flex:0 1 auto}
+html body .ow-w[data-card="post"] .po-card__foot .po-act--icon svg{width:clamp(14px,6.5cqmin,20px);height:clamp(14px,6.5cqmin,20px)}
+html body .ow-w[data-card="post"] .po-card__foot .po-act--icon:not([data-po-respond="like"]) > b{display:none}
+html body .ow-w[data-card="post"] .po-card__foot .po-act--icon > b{font-size:clamp(10px,4.2cqmin,12.5px);font-weight:600}
+html body .ow-w[data-card="post"] .po-card__foot .po-act[data-po-respond="dislike"]{display:none}
+html body .ow-w[data-card="post"] .po-card__foot .po-act--stat{display:none}
+html body .ow-w[data-card="post"] .po-card__body--cap{padding:4px 0 0}
+html body .ow-w[data-card="post"] .po-card__body--cap .po-card__d{font-size:clamp(11px,4.6cqmin,13px);line-height:1.3;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+html body .ow-w[data-card="post"][data-family="small"] .po-card__body--cap{display:none}
+/* one face and name in a large or extra large box: centred, the face a third of the box, the name under it */
+html body .ow-w[data-mode="card"]:is([data-family="large"],[data-family="extra_large"]) .ow-w__cards[data-n="1"]{
+  align-items:center;justify-content:center}
+html body .ow-w[data-mode="card"]:is([data-family="large"],[data-family="extra_large"]) .ow-w__cards[data-n="1"] > .ow-ocard--chip{
+  width:auto;max-width:100%;gap:clamp(8px,4cqmin,14px)}
+html body .ow-w[data-mode="card"]:is([data-family="large"],[data-family="extra_large"]) .ow-w__cards[data-n="1"] > .ow-ocard--chip .ow-ocard__face{
+  width:clamp(64px,34cqmin,128px);height:clamp(64px,34cqmin,128px)}
+html body .ow-w[data-mode="card"]:is([data-family="large"],[data-family="extra_large"]) .ow-w__cards[data-n="1"] > .ow-ocard--chip .ow-ocard__name{
+  font-size:clamp(14px,6.4cqmin,19px);font-weight:650;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}

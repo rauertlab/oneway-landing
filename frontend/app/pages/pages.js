@@ -357,9 +357,14 @@
       var to = Math.min(bar.scrollLeft + Math.round(bar.clientWidth * 0.6), bar.scrollWidth - bar.clientWidth);
       try { bar.scrollTo({ left: to, behavior: 'smooth' }); } catch (e) { bar.scrollLeft = to; }
     });
+    var watched = false;
     function measure() {
       if (!bar.isConnected) return;
       if (!next.parentNode && bar.parentNode) bar.parentNode.insertBefore(next, bar.nextSibling);
+      /* THE ROW MOVES WHEN WHAT IS ABOVE IT DOES: a header that lands after the row (the profile's, from its card read) put
+         the row 205px lower and left the control where the row had been. Measured again whenever the row's container
+         changes size. */
+      if (!watched && global.ResizeObserver && bar.parentNode) { watched = true; new global.ResizeObserver(function () { measure(); }).observe(bar.parentNode); }
       var over = bar.scrollWidth - bar.clientWidth, more = over > 2 && over - bar.scrollLeft > 2;
       bar.classList.toggle('ow-tabs--more', more);
       bar.classList.toggle('ow-tabs--less', over > 2 && bar.scrollLeft > 2);
@@ -1063,21 +1068,13 @@
   _u.brainAsk = brainAsk;
   _u.bumpStat = bumpStat;
   _u.factList = factList;
-  /* ═══ THE PROFILE'S HEADER IS THE LANDING'S CARD (founder/816: "make sure actual profiles look just like this too") ═══
-     The standard is the landing's cards (frontend/landing/landing-cards.css and .js, judged by four cold reviewers until
-     the fourth passed): the picture beside the name and the handle (or above them, as the account chose); posts,
-     followers and following as a number over its word (a Center: posts, followers, events); the bio; the place; a
-     person's platforms as their own marks in discs; Follow and Message at the tap size with their words centred; a
-     Center's category under its handle and its details beside the bio (up to three) or in two columns under it.
-     So the header is drawn by that renderer (OW.lcard over OW.cards.node), from the card read every card on the
-     platform shows, and its acts are the profile's own buttons moved into it (Follow, Message, or the owner's own),
-     never the card's pictures of buttons. NO BANNER OR COVER IS EVER IN THE CARD (his correction of this header's first
-     form, 2026-10-17: the cover drawn as the card's top, "cards we agreed shouldnt look like this"): the account's banner,
-     when it has one, is drawn as the account chose in Settings (banner_style; "banners should be avaible on profiles on the
-     app and os ... jsut they should be shown corrdctly and not on cards"): Fade, across the whole top of the screen behind
-     the card; Framed, its own picture above the card (profile-header.css; red in api/test_profile_header.py and
-     oneway/cards/test_profile_banner.py). Until the card answers,
-     the shell's own header stands; a card that cannot be read leaves it standing. */
+  /* ═══ THE PROFILE'S HEADER (founder/834, which supersedes founder/816's "profiles look just like the cards"; profileHeader
+     below). Drawn from the card read every card shows, as a profile, never the card's markup; its acts are the profile's
+     own buttons moved into it (Follow, Message, or the owner's own). NO BANNER OR COVER IS EVER IN IT: the account's banner
+     is drawn as the account chose in Settings (founder/824, banner_style): Fade, across the whole top of the screen behind
+     the header; Framed, its own picture above it (profile-header.css; red in api/test_profile_header.py and
+     oneway/cards/test_profile_banner.py). Until the card read answers, the shell's own header stands; a read that fails
+     leaves it standing. */
   function angleOf(rgb) {
     var m = String(rgb || '').match(/(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)/);
     if (!m) return 262;
@@ -1100,6 +1097,86 @@
     fit();
     global.addEventListener('resize', fit);
   }
+  /* ── A PROFILE IS A PROFILE (founder/834, 2026-10-17: "I want to see profiles on the app being actually normal looking while
+     the cards are nice representations of them. And also, they should have the exact same glow that the popits have once
+     they are fixed unless on simple mode"; and "WHY ARE PROFILES WHEN CLICKED ON STILL JUST DISPLAYS OF THE CARD"). It
+     supersedes founder/816's "profiles look just like the cards": the card stays the condensed form everywhere else, and the
+     profile is drawn as Instagram and TikTok draw one. The picture and the counts on one row (a number over its word, each
+     list a door); the name, the handle under it once (a name that is only the handle is said once), a Center's category;
+     the bio; the place; a Center's details, a word over its value; the platforms; then the profile's own buttons, the
+     first filled. A wide screen sets the picture larger at the left and everything else beside it. Its panel is the one
+     Popit surface (`.ow-popit`, oneway-popit.css THE ONE POPIT SURFACE, founder/822) on the account's own light, its glow
+     outside Simple mode and Simple's own look in it. Read from the same card read as the card (OW.cards.counts, handleLine,
+     linksInner, no card markup): one truth, two forms. Held by api/test_profile_header.py and
+     tools/probe/profile-header-shoot.cjs (red if the profile is the card's markup, or its surface is not the Popits' outside
+     Simple). */
+  var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>';
+  function profileHeader(c, o, ev) {
+    var C = OW.cards, center = c.kind === 'center';
+    var el = mk('section', 'ow-ph ow-popit');
+    el.setAttribute('data-kind', center ? 'center' : 'person');
+    el.setAttribute('aria-label', (c.title || 'This') + (center ? '' : '’s profile'));
+    /* a person is round, as their picture is everywhere in the App (founder/471: a circle is the default); a Center keeps the
+       cut its mark was given (a logo is often rounded or square) */
+    var pic = (c.picture || {}), shape = center && /^(round|rounded|square)$/.test(pic.shape || '') ? pic.shape : 'round';
+    var face = mk('div', 'ow-ph__face');
+    face.setAttribute('data-shape', shape);
+    if (pic.url) { var im = doc.createElement('img'); im.src = imageUrl(pic.url) || pic.url; im.alt = ''; im.decoding = 'async'; face.appendChild(im); }
+    else face.appendChild(mk('span', 'ow-ph__ini', esc(OW.initials ? OW.initials(c.title) : String(c.title || '').charAt(0))));
+    el.appendChild(face);
+    /* the counts: followers always, a 0 included; a person's following; a Center's events (30+ past what is read) */
+    var list = (C.counts ? C.counts(c) : []).slice();
+    var have = function (k) { return list.some(function (x) { return x.key === k; }); };
+    if (!have('posts')) list.unshift({ key: 'posts', n: 0, text: '0', word: 'posts' });
+    if (!have('followers')) list.push({ key: 'followers', n: 0, text: '0', word: 'followers' });
+    if (!center && !have('following')) list.push({ key: 'following', n: 0, text: '0', word: 'following' });
+    var counts = mk('div', 'ow-ph__counts');
+    list.forEach(function (x) {
+      var door = x.key === 'followers' || x.key === 'following';
+      var n = mk(door ? 'button' : 'span', 'ow-ph__count', '<b>' + esc(x.key === 'events' && ev && ev.more ? ev.n + '+' : x.text) + '</b><span>' + esc(x.word) + '</span>');
+      n.setAttribute('data-count', x.key);
+      if (door) {
+        n.type = 'button';
+        n.addEventListener('click', function () {   /* the counts stay doors to their lists (founder/472) */
+          if (center) { var h = n.closest('.ow-prof') && n.closest('.ow-prof').parentNode; if (h && h.__owShowTab) h.__owShowTab('people'); }
+          else if (OW.project && OW.project.open && o.email) OW.project.open('people', x.key + ':' + o.email, n);
+        });
+      }
+      counts.appendChild(n);
+    });
+    el.appendChild(counts);
+    /* who: the name, the handle under it once, a Center's category */
+    var id = mk('div', 'ow-ph__id');
+    var name = String(c.title || ''), line = C.handleLine ? C.handleLine(c) : (c.handle || '');
+    var bare = function (t) { return String(t || '').toLowerCase().replace(/^[@.$＠]+/, '').split(' · ')[0]; };
+    id.appendChild(mk('h1', 'ow-ph__name', esc(name)));
+    if (line && bare(line) !== bare(name)) id.appendChild(mk('div', 'ow-ph__handle', esc(line)));
+    var cats = center ? ((c.categories && c.categories.length) ? c.categories : (c.category_label ? [c.category_label] : [])) : [];
+    if (cats.length) id.appendChild(mk('div', 'ow-ph__cat', esc(cats.join(' · '))));
+    el.appendChild(id);
+    /* about: the bio, the place, a Center's details, the platforms */
+    var about = mk('div', 'ow-ph__about');
+    var bio = center ? (c.blurb || '') : (c.line || '');
+    if (bio) { var b = mk('p', 'ow-ph__bio', esc(bio)); b.setAttribute('dir', 'auto'); about.appendChild(b); }
+    var place = center ? (c.line || '') : (c.place || '');
+    if (place) about.appendChild(mk('div', 'ow-ph__place', PIN + '<span>' + esc(place) + '</span>'));
+    if ((c.details || []).length) {
+      var facts = mk('dl', 'ow-ph__facts');
+      c.details.forEach(function (d) {
+        var f = mk('div', 'ow-ph__fact');
+        if (/\n/.test(d.value || '') || String(d.value || '').length > 26) f.setAttribute('data-wide', '1');
+        f.appendChild(mk('dt', '', esc(d.label)));
+        f.appendChild(mk('dd', '', esc(d.value)));
+        facts.appendChild(f);
+      });
+      about.appendChild(facts);
+    }
+    var links = C.linksInner ? C.linksInner(c) : '';
+    if (links) { var lb = mk('div', 'ow-ph__links ow-linkbar', links.replace(/ow-ocard__link-text/g, 'ow-ph__linktext')); lb.setAttribute('role', 'list'); about.appendChild(lb); }
+    el.appendChild(about);
+    el.appendChild(mk('div', 'ow-ph__acts'));
+    return el;
+  }
   var HEADER_EVENTS_READ = 30;                              /* a Center's upcoming events counted; past it, "30+" */
   function profileShellCard(host, o) {
     profileShell(host, o);
@@ -1114,9 +1191,9 @@
           return { n: list.length, more: !!(r && r.data && r.data.next_after) };
         }, function () { return null; })
       : Promise.resolve(null);
-    Promise.all([OW.cards.read([ref]), OW.lcard ? null : (OW.need ? OW.need('lcard') : null), events]).then(function (res) {
-      var card = (res[0] || {})[ref], ev = res[2];
-      if (!card || !OW.lcard || host.querySelector('.ow-prof') !== root) return;
+    Promise.all([OW.cards.read([ref]), events]).then(function (res) {
+      var card = (res[0] || {})[ref], ev = res[1];
+      if (!card || host.querySelector('.ow-prof') !== root) return;
       var c = JSON.parse(JSON.stringify(card));
       c.layout = root.getAttribute('data-layout') === 'above' ? 'above' : 'beside';
       c.counts = c.counts || {};
@@ -1137,18 +1214,13 @@
         c.details = merged;
         if (merged.some(function (d) { return /^address$/i.test(d.label || ''); })) c.line = '';
       }
-      var el = OW.lcard(c);
-      el.classList.add('lc--header');
-      el.removeAttribute('tabindex'); el.removeAttribute('aria-label'); el.removeAttribute('role');   /* a header, not a door */
-      if (ev && ev.more) {
-        var evb = el.querySelector('[data-count="events"] b'); if (evb) evb.textContent = ev.n + '+';
-      }
-      /* every act the shell's header offered, in its order (a Center's Message stands beside its acts row, not in it) */
-      var acts = el.querySelector('.lc-acts');
+      var el = profileHeader(c, o, ev);
+      /* every act the shell's header offered, in its order */
+      var acts = el.querySelector('.ow-ph__acts');
       var mine = [].slice.call(root.querySelectorAll('.ow-prof__id .po-act, .ow-prof__id .ow-prof__acts > *')).filter(function (b, i, all) {
         return all.indexOf(b) === i && !all.some(function (x) { return x !== b && x.contains(b); });
       });
-      /* ON ONE'S OWN PROFILE, Edit profile and Share profile lead, as on every platform (the cover's own edit stays on it) */
+      /* ON ONE'S OWN PROFILE, Edit profile and Share profile lead, as on every platform */
       if (typeof o.onBannerChange === 'function') {
         var edit = mk('button', 'po-act', 'Edit profile'); edit.type = 'button';
         edit.addEventListener('click', function () { global.location.hash = '#settings/profile'; });
@@ -1156,62 +1228,57 @@
         share.addEventListener('click', function () {
           var at = global.location.origin + '/oneway-app.html' + (o.cardRef ? '#center/@' + encodeURIComponent(String(o.cardRef).replace(/^@/, '')) : '');
           if (global.navigator.share) global.navigator.share({ title: o.name || '', url: at }).catch(function () {});
-          else if (global.navigator.clipboard) global.navigator.clipboard.writeText(at).then(function () { if (OW.toast) OW.toast('Your profile\u2019s link is copied.', { tone: 'ok' }); });
+          else if (global.navigator.clipboard) global.navigator.clipboard.writeText(at).then(function () { if (OW.toast) OW.toast('Your profile’s link is copied.', { tone: 'ok' }); });
         });
         mine.unshift(edit, share);
       }
-      if (acts) {
-        acts.innerHTML = '';
-        mine.forEach(function (b) {
-          acts.appendChild(b);
-          if (/^more$/i.test((b.textContent || '').trim())) { b.classList.add('lc-more'); b.setAttribute('aria-label', 'More'); }
-          /* a third way onward on one's own profile (Create your Center) is a compact control beside the two, as Instagram's
-             own header has one; its words are its label and its tip */
-          else if (acts.children.length === 3) { var w3 = (b.textContent || '').trim(); b.classList.add('lc-more', 'lc-plus'); b.setAttribute('aria-label', w3); b.title = w3; }
-        });
-        if (acts.children.length) acts.setAttribute('data-n', String(acts.children.length)); else acts.remove();
-        if (acts.querySelector('.lc-more')) acts.setAttribute('data-more', '1');
-      }
-      /* FOLLOWERS ALWAYS, A 0 INCLUDED (the standard: posts, followers, then following or events) */
-      var row = el.querySelector('.ow-ocard__counts');
-      if (row && !row.querySelector('[data-count="followers"]')) {
-        var f0 = mk('span', 'ow-ocard__count', '<b>0</b> followers'); f0.setAttribute('data-count', 'followers'); row.appendChild(f0);
-      }
-      if (row && o.kind !== 'center' && !row.querySelector('[data-count="following"]')) {
-        var g0 = mk('span', 'ow-ocard__count', '<b>0</b> following'); g0.setAttribute('data-count', 'following'); row.appendChild(g0);
-      }
-      if (row && !row.querySelector('[data-count="posts"]')) {
-        var p0 = mk('span', 'ow-ocard__count', '<b>0</b> posts'); p0.setAttribute('data-count', 'posts'); row.insertBefore(p0, row.firstChild);
-      }
-      /* the counts stay doors to their lists, as the shell's were (founder/472) */
-      [].forEach.call(el.querySelectorAll('.ow-ocard__count[data-count="followers"],.ow-ocard__count[data-count="following"]'), function (n) {
-        var key = n.getAttribute('data-count'), btn = mk('button', n.className, n.innerHTML);
-        btn.type = 'button'; btn.setAttribute('data-count', key);
-        btn.addEventListener('click', function () {
-          if (o.kind === 'center') { if (host.__owShowTab) host.__owShowTab('people'); }
-          else if (OW.project && OW.project.open && o.email) OW.project.open('people', key + ':' + o.email, btn);
-        });
-        n.parentNode.replaceChild(btn, n);
+      mine.forEach(function (b) {
+        acts.appendChild(b);
+        if (/^more$/i.test((b.textContent || '').trim())) { b.classList.add('ow-ph__more'); b.setAttribute('aria-label', 'More'); }
+        /* a third way onward on one's own profile (Create your Center) is a compact control beside the two, as Instagram's own
+           header has one; its words are its label and its tip */
+        else if (acts.children.length === 3) { var w3 = (b.textContent || '').trim(); b.classList.add('ow-ph__more', 'ow-ph__plus'); b.setAttribute('aria-label', w3); b.title = w3; }
       });
-      /* the profile's own acts in the card's place for them; none (a stranger's own page before it reads) leaves none */
-      if (o.live) { var after = el.querySelector('.lc-where') || el.querySelector('.ow-ocard__summary'); if (after) after.parentNode.insertBefore(o.live, after.nextSibling); }
+      if (acts.children.length) {
+        acts.setAttribute('data-n', String(acts.children.length));
+        if (acts.querySelector('.ow-ph__more')) acts.setAttribute('data-more', '1');
+        acts.firstChild.classList.add('ow-ph__lead');       /* Follow, or Edit profile: the one filled button */
+      } else acts.remove();
+      if (o.live) el.querySelector('.ow-ph__about').appendChild(o.live);
       var hero = root.querySelector('.ow-prof__hero');
-      var old = root.querySelector('.lc--header'); if (old) old.remove();
+      var old = root.querySelector('.ow-ph'); if (old) old.remove();
       hero.parentNode.insertBefore(el, hero.nextSibling);
-      root.setAttribute('data-header', 'card');
-      /* what the card says, so the page under it says it once (center.js drawVisit): its details by their labels */
+      root.setAttribute('data-header', 'profile');
+      /* THE FILLED BUTTON'S WORDS READ ON ITS LIGHT (a cold judge: white on a mint Center's gradient was "close to unreadable"):
+         dark words on a light pair, white on a deep one. First from the account's own hue (OW.hue.fromAngle, the pair the page
+         derives), then from the pair the header actually wears once the page's colour has settled (it crossfades in, and a
+         Center's authored pair wins over the derivation) */
+      (function () {
+        var lum = function (v) {
+          var m = String(v || '').match(/(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)/); if (!m) return -1;
+          var f = function (x) { x = x / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
+          return 0.2126 * f(+m[1]) + 0.7152 * f(+m[2]) + 0.0722 * f(+m[3]);
+        };
+        /* the button's ends as they show under its veil (profile-header.css: 38% of rgb(10,8,20)); the ink that reads better
+           on the worse end */
+        var VEIL = 0.38, veiled = function (v) {
+          var m = String(v || '').match(/(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)/); if (!m) return '';
+          return [+m[1] * (1 - VEIL) + 10 * VEIL, +m[2] * (1 - VEIL) + 8 * VEIL, +m[3] * (1 - VEIL) + 20 * VEIL].join(',');
+        };
+        var ratio = function (p, q) { return (Math.max(p, q) + 0.05) / (Math.min(p, q) + 0.05); };
+        var ink = function (a, b) {
+          var x = lum(veiled(a)), y = lum(veiled(b)); if (x < 0 || y < 0) return;
+          var white = Math.min(ratio(1, x), ratio(1, y)), dark = Math.min(ratio(lum('21,19,29'), x), ratio(lum('21,19,29'), y));
+          el.setAttribute('data-ink', dark > white ? 'dark' : 'light');
+        };
+        if (typeof c.hue === 'number' && OW.hue && OW.hue.fromAngle) { var pr = OW.hue.fromAngle(c.hue); ink(pr[0], pr[1]); }
+        var worn = function () { if (!el.isConnected) return; var cs = global.getComputedStyle(el); ink(cs.getPropertyValue('--h'), cs.getPropertyValue('--h2')); };
+        [400, 1200, 2500].forEach(function (ms) { global.setTimeout(worn, ms); });
+      })();
+      /* what the header says, so the page under it says it once (center.js drawVisit): its details by their labels */
       root.setAttribute('data-card-says', (c.details || []).map(function (d) { return String(d.label || '').toLowerCase().replace(/\s+/g, '-'); }).join(' '));
       try { root.dispatchEvent(new global.CustomEvent('ow:header-card')); } catch (e) {}
       if (hero.getAttribute('data-picture')) { root.setAttribute('data-has-banner', '1'); bleedBanner(root); }
-      /* a detail with several values, or a long one, has the details' whole width (an address, two runs of hours) */
-      [].forEach.call(el.querySelectorAll('.lc-fact'), function (f) {
-        var v = (f.querySelector('b') || {}).textContent || '';
-        if (/\n/.test(v) || v.length > 22 || (!/\s/.test(v) && v.length > 16)) f.classList.add('lc-fact--wide');   /* one long word (an email) would break between its letters */
-      });
-      /* A DETAIL TOO LONG FOR THE COLUMN BESIDE THE BIO goes under it with the rest (an address, two runs of hours): beside
-         a short bio it left the bio's column standing half empty (the cold judge, 2026-10-17) */
-      if (el.getAttribute('data-facts') === 'few' &&
-          (c.details || []).some(function (d) { return String(d.value || '').replace(/\n.*$/s, '').length > 20; })) el.setAttribute('data-facts', 'many');
     }, function () { /* the shell's own header stands */ });
   }
 

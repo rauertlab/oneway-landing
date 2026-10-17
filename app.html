@@ -2,10 +2,11 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
-  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l)})(window,document,188.7)</script>
-  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"></noscript>
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,188.7)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
   <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
@@ -35,20 +36,30 @@
   <meta name="theme-color" content="#05050b">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
-  <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/app#webpage","url":"https://oneway.center/app","name":"Oneway App","headline":"Oneway App: Home, Discovery, Create, Messages | Oneway","description":"The Oneway App: For You and custom feeds on Home, a map of places in Discovery, Create for photos, videos and imports, and group chats with their own rules.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-17","breadcrumb":{"@id":"https://oneway.center/app#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/app#software","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","url":"https://oneway.center/app","description":"Home, Discovery, Create, Messages and Me: a ranked For You feed and custom feeds, a map of places, photos, videos and imports, group chats that set their own rules, and a profile whose look follows the account.","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"BreadcrumbList","@id":"https://oneway.center/app#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Oneway App","item":"https://oneway.center/app"}]}]}</script>
   <!-- /SEO -->
-  <!-- THE APP'S PAGE (founder/829, 2026-10-17: "Dude, why are the actual app and OS pages not navigatable?"): the App
-       walked along its own dock, Home, Discovery, Create, Messages and Me, each in true sentences read from frontend/app/*
-       (nothing planned, nothing it cannot do today), none of them the landing's own (founder/823). Its doors are Open the
-       App and Sign in; on the published copy both open /beta, as every door does. -->
+  <!-- ★ FOUNDER/536 (2026-09-25): *"can you do it for oneway. profesionally
+       without stupid ai slang"* — the App landing he reviewed as a proposal in
+       founder/534 (https://claude.ai/artifact/QNFFp31iTq6qcK41j1rYzM), built.
+       One job: claim an @name. Seven real screens from the App's own menus.
+       The words were written by a panel of three copywriters against
+       context/audits/app-landing-536/BRIEF.md, judged twice, edited once and
+       checked by two skeptics for slang and for claims about anything not
+       built (final.json in the same folder). Nothing here is a number the
+       platform did not answer. -->
   <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
   <script src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
   <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
   <link rel="stylesheet" href="/frontend/landing/landing.css?v=32f96c77"/>
+  <link rel="stylesheet" href="/frontend/landing/reserve.css?v=afa8ff6f"/>
+  <!-- THE APP'S OWN STYLESHEET, for the reserve box's popit and the App Post it becomes (the founder, 2026-10-09:
+       "EXACTlY, not a recreation"). Not blocking: nothing on the first screen uses it (measured at 390: the heading,
+       the line and the bar keep their place, size and face when it arrives), the way the landing's build loads it. -->
+  <link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=f67d7f09" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=f67d7f09"></noscript>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--font:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--font-display:var(--font);
@@ -103,13 +114,33 @@
     .lp-choices li::before{content:"";position:absolute;left:0;top:.75em;width:10px;height:1.5px;background:rgba(255,255,255,.5)}   /* a dash, never a dot */
     .lp-fine{max-width:44ch;margin-top:16px}
 
+    /* ── 7 · My profile and workspace: the claim sits on the page's own ground, no card around it ── */
+    #claim{scroll-margin-top:80px}
+    #claim .rsv{max-width:420px;margin:30px 0 0;padding:0}
+    #rsv.ow-popit{box-shadow:none;background:none;border-radius:0}
+    #rsv.ow-popit::before,#rsv.ow-popit::after{display:none}
+    #rsv .rsv-t{font-size:var(--lp-fs-sub);font-weight:850;line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading)}
+    #rsv form{margin-top:16px}
+    #rsv .rsv-go{height:auto;align-self:flex-start;margin-top:4px}
+    #rsv .rsv-note{font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:#fff;text-align:left}
+    #rsv .rsv-state{font-size:var(--lp-fs-caption);font-weight:500;letter-spacing:var(--lp-ls-caption)}
+    #rsv .rsv-state::before{display:none}   /* the state is its word; no coloured dot inside the field */
 
-    /* ── the close ── */
+    /* ── 8 · 9 · the privacy line and the close ─────────────────────── */
+    .priv{text-align:center}
+    .priv svg{display:block;width:26px;height:26px;margin:0 auto 16px;fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+    .priv .lp-p{margin:0 auto;max-width:40ch}
     .close{padding:clamp(96px,13vw,150px) 0 clamp(90px,11vw,120px);text-align:center}
     .close .t-heading{margin:0 auto;max-width:20ch}
     .t-heading .ln{display:inline-block}   /* a headline of short sentences breaks between them, never inside one */
     .close .lp-p{margin:20px auto 0;max-width:40ch}
 
+    /* ── the bar pinned to a phone's bottom edge ─────────────────────── */
+    .stick{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;justify-content:center;
+      padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px));
+      background:linear-gradient(180deg,transparent,rgba(10,9,20,.92) 36%);transform:translateY(110%);transition:transform .35s var(--ease)}
+    .stick.on{transform:none}
+    @media(max-width:820px){.stick{display:flex}}
 
     /* reveals — visible at rest; a section only rises into place */
     .rv{transition:opacity .8s var(--ease),transform .8s var(--ease)}
@@ -123,31 +154,30 @@
 
   <nav class="owbar owbar--fly" id="nav" aria-label="Oneway">
     <div class="owbar-brand">
-      <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+      <a href="/" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
       <div class="owbar-pages">
         <a href="/mission">Our Mission</a>
-        <a href="/app" aria-current="page">App</a>
+        <a href="/app">App</a>
         <a href="/os">OS</a>
         <a href="/security">Security</a>
         <a href="/contact">Contact</a>
       </div>
     </div>
     <div class="owbar-right">
-      <a href="/beta" class="owbar-signin">Sign in</a>
+      <a href="#claim" class="pill pill--solid">Claim your @name</a>
     </div>
   </nav>
-  <script src="/frontend/shared/oneway-bar.js?v=4e69f7cd"></script>
+  <script src="/frontend/shared/oneway-bar.js?v=0a2852dc"></script>
 
   <main>
-    <!-- 1 · THE OPENING: the dock, as the App draws it (oneway-app.html's destinations: home, discovery, lightbulb labelled
-         Create, messages, workspace when there is work, center labelled Me) -->
+    <!-- 1 · THE OPENING -->
     <header class="lp open" id="top">
       <div class="lp-wrap lp-two">
         <div>
           <div class="lk"><img src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" data-owbar-hero/><span>App</span></div>
-          <h1 class="t-display">Five places, one dock.</h1>
-          <p class="lp-p t-lead">Home, Discovery, Create, Messages and Me sit along the bottom of the App. Workspace joins them when you work at a Center.</p>
-          <div class="lp-acts"><a class="pill pill--solid" href="/beta">Open the App</a><a class="pill pill--solid" href="/beta">Sign in</a></div>
+          <h1 class="t-display">Go anywhere. Connect everywhere.</h1>
+          <p class="lp-p t-lead">Follow your friends, discover places you love, and bring your favorite parts of the internet together.</p>
+          
         </div>
         <div class="stage" id="stage">
           <div class="lp-phone"><div class="scr"><img src="/frontend/site/app/home.jpg?v=b3b8e326" alt="Home in the Oneway App" decoding="async" fetchpriority="high"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true"/></div>
@@ -155,26 +185,17 @@
       </div>
     </header>
 
-    <!-- 2 · HOME (frontend/app/home/home.js: For You first, then Following, the feeds you pinned and + Feeds; imported
-         content drawn as itself; the Popits you arrange) -->
-    <section class="lp menu" id="home">
-      <div class="lp-wrap lp-two lp-flip"><div class="rv"><p class="t-mark">Home</p><h2 class="t-heading t-heading--wide">For You, and you get to choose.</h2><p class="lp-p t-lead">Start on a ranked For You feed, switch to Following, or pin custom feeds beside them that shape what you see.</p><p class="lp-p t-lead">Posts you import from supported connected platforms arrive on Home as themselves, and you arrange the Popits around them.</p></div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app-screen-home.webp" alt="Oneway Home showing a For You feed and an arranged Popit" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
-    </section>
-
-    <!-- 3 · DISCOVERY (frontend/app/discovery/discovery.js: the map, the place's portrait, its events, its communities) -->
     <section class="lp menu" id="discovery">
-      <div class="lp-wrap lp-two"><div class="rv"><p class="t-mark">Discovery</p><h2 class="t-heading t-heading--wide">The places on Oneway, on one map.</h2><p class="lp-p t-lead">Open a place from the map to see its page and its events, follow it, or join one of its communities.</p></div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app/discovery.jpg?v=9cef67ca" alt="Discovery in the Oneway App, the map at night" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
+      <div class="lp-wrap lp-two lp-flip"><div class="rv"><p class="t-mark">Discovery</p><h2 class="t-heading t-heading--wide">Discover people, places, and communities. Your way.</h2><p class="lp-p t-lead">Explore Oneway through an interactive map or a personalized grid of posts. Find local businesses, events, and communities, follow the places you love, and see what is happening around you.</p><p class="lp-p t-lead">Connect with other Oneway users passing the same local Centers, quietly, with Waypass. You control whether you take part.</p><p class="lp-p t-lead">Create Info Centers to populate our ecosystem and win monthly rewards and ranking in your area.</p><p class="lp-fine t-caption">Monthly rewards and eligibility rules are planned.</p></div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app/discovery.jpg?v=9cef67ca" alt="Discovery in the Oneway App, the map at night" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
     </section>
 
-    <!-- 4 · CREATE (frontend/app/create/create.js: one stepped path; a document lands in Workspace and reaches nobody until
-         the person decides otherwise) -->
-    <section class="lp menu" id="create">
-      <div class="lp-wrap lp-two lp-flip"><div class="rv"><p class="t-mark">Create</p><h2 class="t-heading t-heading--wide"><span class="ln">Capture it.</span> <span class="ln">Import it.</span> <span class="ln">Make it yours.</span></h2><p class="lp-p t-lead">Take a photo or a video, upload one, or import a post from a supported platform. Then name it and choose where it goes.</p><p class="lp-p t-lead">What you post goes out to a community you belong to. A document stays in your Workspace, seen by nobody, until you decide to share it.</p></div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app/lightbulb.jpg?v=15b256ba" alt="Create in the Oneway App: the camera pointed up at the Fremont Street light canopy in Las Vegas, with the shutter, Upload and Import" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
+    <section class="lp menu" id="home">
+      <div class="lp-wrap lp-two"><div class="rv"><p class="t-mark">Home</p><h2 class="t-heading t-heading--wide">For You, and you get to choose.</h2><p class="lp-p t-lead">Oneway is a customizable social media app for photos, videos, and posts. Explore a ranked For You feed, follow people and places, switch to Following, or create custom feeds that shape what you see.</p><p class="lp-p t-lead">Import posts from supported connected platforms and arrange Popits on your in-app Home. iOS Home Screen widgets are planned, not available yet.</p></div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app-screen-home.webp" alt="Oneway Home showing a For You feed and an arranged Popit" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
     </section>
 
-    <!-- 5 · MESSAGES (api/oneway/messaging/contracts.py POLICY: the choices a group chat makes for itself) -->
+
     <section class="lp menu" id="messages">
-      <div class="lp-wrap lp-two"><div class="rv">
+      <div class="lp-wrap lp-two lp-flip"><div class="rv">
         <p class="t-mark">Messages</p>
         <h2 class="t-heading">Messages, Your Way.</h2>
         <p class="lp-p t-lead">Most messaging apps decide how your conversations work. Oneway lets you and your groups choose the rules.</p>
@@ -191,28 +212,55 @@
           <li>Set slow mode or leave it off</li>
           <li>Get every alert, mentions only, or mute the chat</li>
           <li>Accept or decline message requests from new people</li>
+          <li>Set a group size limit (planned)</li>
+          <li>Control message saving (planned)</li>
         </ul><p class="lp-fine t-caption">Screenshot notices apply to detected shortcuts. The web App cannot detect phone screenshots.</p></details>
       </div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app/messages.jpg?v=3db51290" alt="Messages in the Oneway App" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
     </section>
 
-    <!-- 6 · ME (frontend/app/account/account.js: Galaxy or Plain, Popit mode or Simple mode, a Fade or Framed banner; the look
-         follows the account to every device, founder/819, 820) AND WORKSPACE (frontend/app/workspace/workspace.js: what a
-         person sees of a Center they work at, by role, inside their own account) -->
-    <section class="lp menu" id="me">
-      <div class="lp-wrap lp-two lp-flip"><div class="rv">
-        <p class="t-mark">Me</p>
-        <h2 class="t-heading"><span class="ln">Your profile.</span> <span class="ln">Your look.</span> <span class="ln">Every device.</span></h2>
-        <p class="lp-p t-lead">Me is your profile and your settings. Choose a galaxy or a plain background, Popit mode or Simple mode, and a banner that fades behind the top of the page or sits framed below it.</p>
-        <p class="lp-p t-lead">The look you choose follows your account to every device you sign in on.</p>
-        <p class="lp-p t-lead">When you work at a Center, Workspace shows its work for your role, from the same account.</p>
-      </div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app/profile.jpg?v=2137ce42" alt="A profile in the Oneway App" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
+    <section class="lp menu" id="lightbulb">
+      <div class="lp-wrap lp-two"><div class="rv"><p class="t-mark">Lightbulb</p><h2 class="t-heading t-heading--wide"><span class="ln">Capture it.</span> <span class="ln">Import it.</span> <span class="ln">Make it yours.</span></h2><p class="lp-p t-lead">Capture photos, videos, and posts, bring in content from supported platforms, save it to your Workspace, and share it with friends and communities.</p></div><div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app/lightbulb.jpg?v=15b256ba" alt="Lightbulb in the Oneway App: the camera pointed up at the Fremont Street light canopy in Las Vegas, with the shutter, Upload and Import" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div></div>
     </section>
 
-    <!-- 7 · THE CLOSE -->
+    <!-- 7 · MY PROFILE AND WORKSPACE -->
+    <section class="lp menu" id="claim">
+      <div class="lp-wrap lp-two lp-flip">
+        <div class="rv">
+          <p class="t-mark">My profile and workspace</p>
+          <h2 class="t-heading"><span class="ln">Your profile.</span> <span class="ln">Your work.</span> <span class="ln">Your choice.</span></h2>
+          <p class="lp-p t-lead">Your Oneway profile brings your identity, connections, and experiences together in one customizable space. Choose how it looks and what people can see.</p>
+          <p class="lp-p t-lead">Workplace identity is optional. It keeps professional connections and activity separate from your personal life while you continue to use one Oneway account.</p>
+          <div class="rsv" id="rsv" style="--ow-h1:139,92,255;--ow-h2:93,226,255">
+            <h3 class="rsv-t t-sub">Claim your name.</h3>
+            <article class="po-card"><span class="po-card__face"></span><span class="po-card__who"><span class="po-card__av" data-kind="center" data-ini="O"><i>O</i></span><span class="po-card__n"><span class="po-card__nm">Oneway</span><span class="po-card__when">Opening soon</span></span></span><span class="po-card__body"><span class="po-card__t">Reserved usernames received.</span><span class="po-card__d">Applications for the closed beta open soon.</span></span><span class="po-card__foot"><span class="po-acts"><span class="po-act po-act--icon po-act--stat" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path style="fill:none" d="M5 12.6l4.4 4.4L19 7.4"/></svg><b>Oneway is opening soon</b></span></span></span></article>
+            <div class="rsv-done" id="rsv-done" hidden>
+              <!-- THE RESERVED NAME IS AN APP POST, EXACTLY (the founder, 2026-10-09: "the reserved usernames recivided doesnt look
+                   like its using the apps post design language ... as asked for EXACTlY, not a recreation"): `.po-card` and its own
+                   parts, from oneway-popit.css, the markup OW.card draws for a Post. Nothing on this page restyles them. -->
+              <article class="po-card" aria-live="polite">
+                <span class="po-card__face"></span>
+                <span class="po-card__who"><span class="po-card__av" data-kind="person"><i id="rsv-done-initial"></i></span><span class="po-card__n"><span class="po-card__nm" id="rsv-done-handle">@you</span><span class="po-card__when">Reserved</span></span></span>
+                <span class="po-card__body"><span class="po-card__t">Your name is reserved.</span><span class="po-card__d">It is held for your email while Oneway opens in stages. <b id="rsv-done-email"></b> · <span class="rsv-ref" id="rsv-done-ref">—</span></span></span>
+                <span class="po-card__foot"><span class="po-acts"><button type="button" class="po-act po-act--icon" id="rsv-again" hidden></button></span></span>
+              </article>
+            </div>
+          </div>
+        </div>
+        <div class="rv"><div class="lp-phone"><div class="scr"><img src="/frontend/site/app/profile.jpg?v=2137ce42" alt="A profile in the Oneway App" loading="lazy" decoding="async"/></div><img class="fr" src="/frontend/site/iphone-frame.png" alt="" aria-hidden="true" loading="lazy"/></div></div>
+      </div>
+    </section>
+
+    <!-- 8 · PRIVATE BY DEFAULT -->
+    <section class="lp priv">
+      <div class="lp-wrap rv"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg><p class="lp-p t-lead">Oneway remembers the people and places you care about, and that memory is private by default.</p></div>
+    </section>
+
+    <!-- 9 · THE CLOSE -->
     <section class="close" id="close">
       <div class="lp-wrap rv">
-        <h2 class="t-heading">See it for yourself.</h2>
-        <div class="lp-acts lp-acts--c"><a class="pill pill--solid" href="/beta">Open the App</a><a class="pill pill--solid" href="/beta">Sign in</a></div>
+        <h2 class="t-heading"><span class="ln">Your name.</span> <span class="ln">Your place on Oneway.</span></h2>
+        <p class="lp-p t-lead">Claim your @name, personalize your profile, and get ready to connect with the people, places, and communities that matter to you.</p>
+        
       </div>
     </section>
   </main>
@@ -220,7 +268,7 @@
   <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
 <footer class="owfoot">
   <div class="owfoot-in">
-    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <a class="owfoot-mark" href="/" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
     <nav class="owfoot-pages" aria-label="Oneway's pages">
       <a href="/mission">Our Mission</a>
       <a href="/app">App</a>
@@ -246,6 +294,11 @@
   </div>
 </footer>
 
+  <div class="stick" id="stick"><a class="pill pill--solid" href="#claim">Claim your @name</a></div>
+
+  <!-- the one reader and writer, which the claim below writes through (as on index.html) -->
+  <script src="/frontend/shared/oneway-data.js?v=cf5ca700"></script>
+  
   <script>
   /* THE GALAXY — the same field the landing pages share, retinted from the
      person's hue (oneway-galaxy.js); the safe floor keeps it light on phones. */
@@ -302,10 +355,14 @@
   }());
   </script>
   <script>
-  /* THE BAR AND THE REVEALS */
+  /* THE BAR, THE REVEALS, THE BUTTON PINNED TO A PHONE'S EDGE */
   (function(){
-    var nav=document.getElementById('nav');
-    function onScroll(){ nav.classList.toggle('scrolled', scrollY>16); }
+    var nav=document.getElementById('nav'), stick=document.getElementById('stick'), claim=document.getElementById('claim'), open=document.getElementById('top'), close=document.getElementById('close');
+    function onScroll(){
+      nav.classList.toggle('scrolled', scrollY>16);
+      /* the pinned button steps aside wherever the page shows its own: the reserve box, and the close */
+      if(stick){ var past=open.getBoundingClientRect().bottom<80, r=claim.getBoundingClientRect(), atClaim=r.top<innerHeight && r.bottom>0, atClose=close.getBoundingClientRect().top<innerHeight; stick.classList.toggle('on', past && !atClaim && !atClose); }
+    }
     addEventListener('scroll', onScroll, {passive:true}); onScroll();
     /* a section is visible at rest; only one BELOW the first screen waits to rise */
     var els=[].slice.call(document.querySelectorAll('.rv'));

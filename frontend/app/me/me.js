@@ -62,6 +62,10 @@
    an endpoint that answers it. */
 var TAB_ICON = {
   main:      '<circle cx="12" cy="9" r="3.4"/><path d="M5.5 19.2a6.8 6.8 0 0 1 13 0"/>',
+  /* WORKPLACE IS NOT MAIN (founder/808: no two tabs with one icon; a cold judge, 2026-10-17: "the first two are near-identical
+     person glyphs side by side"): the work a person does, a case with its handle */
+  workplace: '<rect x="3.5" y="7.5" width="17" height="12" rx="2.6"/><path d="M9 7.5V6.2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.3"/>'
+           + '<path d="M3.5 12.6h17"/>',
   /* ★ FOUNDER, 2026-08-26: *"I like the icon with the four squares you
      use better than the photo icon you use for post. So swap that out."*
      The grid goes to POSTS. Home then needs its own mark rather than
@@ -2273,7 +2277,7 @@ function iconTab(id, label, render, n) {
            MEDIA -> FEED) and it belongs with the profile COLLECTIONS, which is
            what the founder reserved Popits for. It is on the Main tab with the
            rest of a person's world, not masquerading as their Posts. */
-        { id: 'workplace', label: 'Workplace', icon: TAB_ICON.main, render: function (pane) {
+        { id: 'workplace', label: 'Workplace', icon: TAB_ICON.workplace, render: function (pane) {
             return OW.live.workplaceProfile(pane, email, { bare: true });
           } },
         { id: 'posts', label: 'Posts', icon: TAB_ICON.posts, render: function (pane) {

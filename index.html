@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
-  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script><script>window.owStrip="/frontend/landing/strip-centers.json?v=c7615dba";</script>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script><script>window.owStrip="/frontend/landing/strip-centers.json?v=755b2f0e";</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <script id="ow-look">
   /* THE LOOK THIS LOAD, CHOSEN ONCE, FIRST (founder/829: "the icon doesnt sync to the landing pages color"). The page's
@@ -43,8 +43,8 @@
   })();
   </script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
-  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l)})(window,document,188.7)</script>
-  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"></noscript>
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,188.7)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
   <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
@@ -74,7 +74,6 @@
   <meta name="theme-color" content="#05050b">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
-  <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
   <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway - Social Media And AI Business Management Ecosystem","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-17"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/os"}]}</script>
@@ -827,13 +826,13 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
 }
 html[data-ow-motion="reduce"] .po-act[data-po-respond="like"].is-smash > svg { animation: auto ease 0s 1 normal none running none; }
 html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; }
-html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=987e198f" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=987e198f"></noscript>
+html[data-theme="light</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=f67d7f09" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=f67d7f09"></noscript>
   <script defer src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
-  <script defer src="/frontend/shared/oneway-popit.js?v=0578971f"></script>
+  <script defer src="/frontend/shared/oneway-popit.js?v=cd8b5d8e"></script>
   <script defer src="/frontend/shared/oneway-links.js?v=77fb7f61"></script>
   <!-- ★ S21: a Center and a person are drawn by ONE renderer from ONE compact read (api/oneway/cards): this page composes
        no display field itself. -->
-  <script defer src="/frontend/shared/oneway-cards.js?v=cd027b55"></script>
+  <script defer src="/frontend/shared/oneway-cards.js?v=588e9f5b"></script>
   <script defer src="/frontend/landing/oneway-deck.js?v=e7a3837b"></script>
   <script defer src="/frontend/landing/examples.js?v=0335764c"></script>
   <script defer src="/frontend/landing/landing-cards.js?v=e14e6b33"></script>
@@ -842,8 +841,8 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
        surfaces and the one projection verb; a page anywhere can carry them. -->
   <script defer src="/frontend/shared/oneway-data.js?v=cf5ca700"></script>
   <script defer src="/frontend/app/popit-live.js?v=17007cdf"></script>
-  <script defer src="/frontend/app/pages/pages.js?v=87b99cae"></script>
-  <script defer src="/frontend/app/me/me.js?v=31ca7944"></script>
+  <script defer src="/frontend/app/pages/pages.js?v=2e9d9698"></script>
+  <script defer src="/frontend/app/me/me.js?v=ca8cf2c0"></script>
   <script defer src="/frontend/app/center/center.js?v=ff291771"></script>
   <script defer src="/frontend/app/account/account.js?v=7a86ab94"></script>
   <script defer src="/frontend/app/compose/compose.js?v=b63baf46"></script>
@@ -856,7 +855,7 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
   <script defer src="/frontend/app/posts/posts.js?v=2424507b"></script>
   <script defer src="/frontend/app/events/events.js?v=d304a1ef"></script>
   <script defer src="/frontend/app/messaging/messaging.js?v=2938bfef"></script>
-  <script defer src="/frontend/shared/canvas.js?v=c0d6c3f2"></script>
+  <script defer src="/frontend/shared/canvas.js?v=867285c2"></script>
   <script defer src="/frontend/shared/oneway-projection.js?v=8c627fe2"></script>
   <script defer src="/frontend/landing/static/inline-01-b7399efeeb.js"></script>
   <script defer src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
@@ -1456,7 +1455,7 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
     <a href="/beta" class="owbar-signin">Sign in</a>
   </div>
 </nav>
-<script defer src="/frontend/shared/oneway-bar.js?v=4e69f7cd"></script>
+<script defer src="/frontend/shared/oneway-bar.js?v=0a2852dc"></script>
 
 <!-- HERO — Center-connected diagram over the black geometric canvas. -->
 <style>

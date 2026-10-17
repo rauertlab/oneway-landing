@@ -219,7 +219,11 @@
       if (OW.mountResponses) { try { OW.mountResponses(pbox, OW.riverRow(list[0])); } catch (e) {} }
       return true;
     }
-    var mode = family === 'small' ? '' : (one && (family === 'large' || family === 'extra_large')) ? 'standard' : 'mini';
+    /* ONE PERSON OR PLACE IN A SQUARE BOX IS ITS FACE AND NAME, centred and sized to the box (the small widget's form), not
+       one row floating in the middle of an empty square and not a card inside the widget's own (founder/830: "shaped to
+       their boxes perfectly"); several are the rows */
+    var lone = list.length === 1 && family !== 'medium';
+    var mode = (family === 'small' || lone) ? '' : (one && (family === 'large' || family === 'extra_large')) ? 'standard' : 'mini';
     var box = doc.createElement('div');
     box.className = 'ow-w__focal ow-w__cards';
     box.setAttribute('data-n', String(list.length));
@@ -7646,10 +7650,13 @@
     return it.state === 'not_supported';
   };
 
-  Canvas.prototype.packed = function () {
-    var self = this, cols = this.cols || COLS;
+  /* ── THE FLOW, ONE PACKER FOR DRAWING AND FOR DRAGGING (founder/788, 830) ──────────────────────────────────────
+     Apple's flow: each Popit takes its family's slots at the first place AFTER the one before it, row by row, so a later
+     Popit never jumps ahead of an earlier one to fill a gap: the arranged order is the drawn order on every device.
+     `flowPack` is that rule for any order and any box function, so the drag previews exactly what release draws, and the
+     stored twelve is rewritten by the same rule (`commitOrder`), which keeps (y, x) order equal to the arranged order. */
+  function flowPack(order, cols, boxOf) {
     var out = {}, rows = [];          /* rows[y] = array of booleans, cols wide */
-
     function free(x, y, w, h) {
       if (x < 0 || x + w > cols) return false;
       for (var j = y; j < y + h; j++) {
@@ -7665,19 +7672,9 @@
         for (var i = x; i < x + w; i++) rows[j][i] = true;
       }
     }
-
-    var order = (this.items || []).filter(function (it) {
-      return FREEFORM.indexOf(it.kind) < 0 && !self.isVoid(it);
-    }).sort(function (a, b) {
-      return ((a.y || 0) - (b.y || 0)) || ((a.x || 0) - (b.x || 0));
-    });
-
-    /* APPLE'S FLOW (founder/788): each Popit takes its family's slots at the first place AFTER the one before it,
-       row by row, so a later Popit never jumps ahead of an earlier one to fill a gap: the arranged order is the
-       drawn order on every device. */
     var cx = 0, cy = 0;
     order.forEach(function (it) {
-      var ab = appleBox(it, cols), y0, x0, done = false;
+      var ab = boxOf(it), y0, x0, done = false;
       for (y0 = cy; y0 < cy + 400 && !done; y0++) {
         for (x0 = (y0 === cy ? cx : 0); x0 <= cols - ab.w; x0++) {
           if (free(x0, y0, ab.w, ab.h)) {
@@ -7692,6 +7689,75 @@
       }
     });
     return out;
+  }
+
+  /* THE ARRANGED ORDER: every grid Popit drawn here, by its stored (y, x). */
+  Canvas.prototype.flowOrder = function () {
+    var self = this;
+    return (this.items || []).filter(function (it) {
+      return FREEFORM.indexOf(it.kind) < 0 && !self.isVoid(it);
+    }).sort(function (a, b) {
+      return ((a.y || 0) - (b.y || 0)) || ((a.x || 0) - (b.x || 0));
+    });
+  };
+
+  Canvas.prototype.packed = function () {
+    var cols = this.cols || COLS;
+    return flowPack(this.flowOrder(), cols, function (it) { return appleBox(it, cols); });
+  };
+
+  /* WRITE AN ORDER INTO THE CANONICAL TWELVE. Each Popit keeps its own footprint (its family); only its place moves, laid
+     out by the same flow on twelve columns, so sorting the stored (y, x) gives back exactly this order on every device,
+     the server's widget read (`widgets_of`) and the Apple apps included. Returns whether anything moved. */
+  Canvas.prototype.commitOrder = function (order) {
+    var canon = flowPack(order, BASE_COLS, function (it) {
+      return { w: Math.max(1, Math.min(BASE_COLS, Math.round(it.w || 3))), h: Math.max(1, Math.round(it.h || 3)) };
+    });
+    var changed = false;
+    order.forEach(function (it) {
+      var b = canon[it.id];
+      if (!b) return;
+      if (it.x !== b.x || it.y !== b.y) changed = true;
+      it.x = b.x; it.y = b.y;
+    });
+    return changed;
+  };
+
+  /* AN ORDER GIVEN FROM OUTSIDE THE GRID (founder/830: "let users change the order of their popits once moved to the side
+     of the screen"): the Popits parted to the sides are reordered there, and the new order is this canvas's, written the
+     same way a drag in the grid writes it. Ids not named keep their order after the named ones. */
+  Canvas.prototype.reorderIds = function (ids) {
+    if (!this.mayArrange) return false;
+    var flow = this.flowOrder(), byId = {}, order = [];
+    flow.forEach(function (it) { byId[it.id] = it; });
+    (ids || []).forEach(function (id) { if (byId[id]) { order.push(byId[id]); delete byId[id]; } });
+    flow.forEach(function (it) { if (byId[it.id]) order.push(it); });
+    this.commitOrder(order);
+    this.dirty = true;
+    this.render();
+    this.save();
+    return true;
+  };
+
+  /* THE DRAG'S INSERTION POINT. `layout` is the flow currently drawn (slot units), `others` the order without the moving
+     Popit; the point is in the grid's own pixels. The Popit under the point decides: before it when the point is in its
+     first half (by x, or by y for a Popit as wide as the row), after it otherwise; past the last row, the end. */
+  Canvas.prototype.insertionAt = function (layout, others, px, py, pitchX, pitchY) {
+    var best = -1, bestD = Infinity, after = false, i, b, l, t, w, h, cxp, cyp, d;
+    for (i = 0; i < others.length; i++) {
+      b = layout[others[i].id];
+      if (!b) continue;
+      l = b.x * pitchX; t = b.y * pitchY; w = b.w * pitchX; h = b.h * pitchY;
+      cxp = l + w / 2; cyp = t + h / 2;
+      var inside = px >= l && px < l + w && py >= t && py < t + h;
+      d = inside ? -1 : Math.pow(px - cxp, 2) + Math.pow(py - cyp, 2);
+      if (d < bestD) {
+        bestD = d; best = i;
+        after = (b.w >= (this.cols || COLS)) ? (py > cyp) : (px > cxp || py > t + h);
+      }
+    }
+    if (best < 0) return others.length;
+    return best + (after ? 1 : 0);
   };
 
   Canvas.prototype.relayout = function (anchorId) {
@@ -7730,14 +7796,15 @@
        having tilted. */
     it.rot = 0;
     tile.style.setProperty('--rot', '0deg');
-    var vx = Math.round(this.toView(it.x));
-    var vw = Math.max(1, Math.round(this.toView(it.w)));
-    if (vx + vw > this.cols) vx = Math.max(0, this.cols - vw);
-    tile.style.setProperty('--x', vx);
-    tile.style.setProperty('--y', it.y);
-    tile.style.setProperty('--w', vw);
-    tile.style.setProperty('--h', it.h);
+    /* THE FLOW DRAWS IT (founder/788, 830). This painted the stored twelve's x/y/w/h straight onto the tile, which on a
+       phone is a medium one slot wide and three rows tall until the next full draw. The pack is the only geometry: the
+       order is the stored (y, x), the size the family, and the tile is redrawn from it. */
     tile.setAttribute('data-size', depthOf(it));
+    this.commitOrder(this.flowOrder());     /* the stored twelve stays a clean flow in the same order */
+    this.render();
+    this.placeBox();
+    this.refill(it);
+    return;
     /* THE TYPE AND THE LIST RE-FIT TO THE BOX THAT NOW EXISTS. Both passes
        measure the rendered tile, and until now they only ran on a full render
        or a window resize — so a Popit resized by hand kept a hero sized for
@@ -7889,7 +7956,43 @@
        The drag works without capture; it is only smoother with it. */
     try { this._box.setPointerCapture(e.pointerId); } catch (_) {}
 
+    /* A POPIT'S SIZE IS ITS FAMILY (founder/788, 830). In the flow a resize changes the family, never the place in the
+       order: the handle's travel in SLOTS picks small (1x1), medium (2x1), large (2x2) or, where four slots fit, extra
+       large (4x2); the whole flow is re-packed live so the neighbours make room exactly as release will draw them. */
+    var sbox = (self._pack || {})[it.id] || appleBox(it, self.cols || COLS);
+    var famStart = { w: it.w || 3, h: it.h || 3 };
+    function familyFor(sw, sh) {
+      var c = self.cols || COLS;
+      if (c >= 4 && sw >= 3 && sh >= 2) return [12, 6];
+      if (sh >= 2) return [6, 6];
+      if (sw >= 2) return [6, 3];
+      return [3, 3];
+    }
+    function moveFlow(ev) {
+      var gx = (ev.clientX - sx) / (g.cw + GAP), gy = (ev.clientY - sy) / (g.rowh + GAP);
+      var sw = sbox.w, sh = sbox.h;
+      if (dir.indexOf('e') >= 0) sw = sbox.w + gx;
+      if (dir.indexOf('w') >= 0) sw = sbox.w - gx;
+      if (dir.indexOf('s') >= 0) sh = sbox.h + gy;
+      if (dir.indexOf('n') >= 0) sh = sbox.h - gy;
+      var fp = familyFor(Math.round(sw), Math.round(sh));
+      if (fp[0] === it.w && fp[1] === it.h) return;
+      it.w = fp[0]; it.h = fp[1];
+      var c = self.cols || COLS;
+      var lay = flowPack(self.flowOrder(), c, function (x) { return appleBox(x, c); });
+      Object.keys(lay).forEach(function (id2) {
+        var node = grid.querySelector('[data-id="' + id2 + '"]');
+        if (!node) return;
+        node.style.setProperty('--x', lay[id2].x); node.style.setProperty('--y', lay[id2].y);
+        node.style.setProperty('--w', lay[id2].w); node.style.setProperty('--h', lay[id2].h);
+      });
+      self._pack = lay;
+      tile.setAttribute('data-size', depthOf(it));
+      self.dirty = true;
+      self.placeBox(grid);
+    }
     function move(ev) {
+      if (!free) return moveFlow(ev);
       var dx = (ev.clientX - sx) / (g.cw + GAP);
       var dy = (ev.clientY - sy) / (g.rowh + GAP);
       var x = ox, y = oy, w = ow, h = oh;
@@ -8409,6 +8512,10 @@
     this.editing = on;
     if (this.grid) this.grid.setAttribute('data-editing', on ? '1' : '');
     if (!on) this.deselect();
+    if (!on && this._staleRemote && !this.dirty) {
+      var me = this; this._staleRemote = false;
+      global.setTimeout(function () { try { me.load(); } catch (_) {} }, 0);
+    }
     /* THE CONTROLS FOLLOW THE MODE IMMEDIATELY, NOT AT THE NEXT RENDER.
        `Cancel` is built in `render()`, so entering arrangement left it absent
        until something else caused a redraw — measured: enter Arrange and there
@@ -8558,6 +8665,7 @@
         t.setAttribute('data-dragging', '');
         global.setTimeout(function () { t.removeAttribute('data-dragging'); }, 0);
         try { if (global.navigator && navigator.vibrate) navigator.vibrate(8); } catch (_) {}
+        if (it2 && FREEFORM.indexOf(it2.kind) < 0) startDrag(e);
       }, HOLD_MS);
       function cancel(ev) {
         if (ev && ev.type === 'pointermove'
@@ -8572,7 +8680,13 @@
       grid.addEventListener('pointercancel', cancel);
     });
 
+    /* THE HOLD FLOWS INTO THE DRAG (founder/830): a long press enters Arrange AND picks the Popit up, so the same finger
+       carries it, as on iOS; before, the hold only entered Arrange and the person had to lift and press again. */
     grid.addEventListener('pointerdown', function (e) {
+      if (!self.editing) return;
+      startDrag(e);
+    });
+    function startDrag(e) {
       var t = e.target.closest ? e.target.closest('.ow-cv-t') : null;
       if (!t || !self.mayArrange || !self.editing) return;
       var id = t.getAttribute('data-id');
@@ -8628,14 +8742,23 @@
          THE GHOST IS THE PROMISE. What it shows is what release commits: the
          same layout, already applied to the neighbours, so nothing jumps at the
          moment of release. */
-      var vw = Math.max(1, Math.round(self.toView(it.w || 1)));
-      var vh = Math.max(1, it.h || 1);
-      var basePack = {}, kk;
-      for (kk in (self._pack || {})) if (self._pack.hasOwnProperty(kk)) {
-        basePack[kk] = { x: self._pack[kk].x, y: self._pack[kk].y,
-                         w: self._pack[kk].w, h: self._pack[kk].h };
+      /* ═══ THE REORDER (founder/830, 2026-10-17: "fix the dragging and reordring section") ═════════════════════════
+         Since founder/788 the canvas is Apple's FLOW: Popits stand in their arranged order, each at its family's size. The
+         drag still spoke the old free plane (a canonical x/y with a pushed-down neighbour), so the ghost started in the
+         wrong row at the wrong size, release wrote slot rows into canonical y, and the next pack scrambled the order on
+         every device. Now a drag picks a PLACE IN THE ORDER, as iOS's home screen does: the hand is continuous, the
+         neighbours flow aside into the order the drop will keep (the same `flowPack` release draws), and release writes
+         that order into the stored twelve (`commitOrder`), so every device, the widgets and the Apple apps read it back. */
+      var flow = free ? [] : self.flowOrder();
+      var others = flow.filter(function (x) { return x.id !== it.id; });
+      var liveIdx = flow.indexOf(it), liveLayout = null, liveOrder = null, ghost = null;
+      function layoutFor(idx) {
+        var o = others.slice(); o.splice(idx, 0, it);
+        var c = self.cols || COLS;
+        return { order: o, layout: flowPack(o, c, function (x) { return appleBox(x, c); }) };
       }
-      var lastTX = null, lastTY = null, liveLayout = null, ghost = null;
+      var startBox = (self._pack || {})[it.id] || { x: 0, y: 0, w: 1, h: 1 };
+      var vw = startBox.w, vh = startBox.h;
 
       function paintOthers(layout) {
         Object.keys(layout).forEach(function (id2) {
@@ -8644,6 +8767,8 @@
           if (!node) return;
           node.style.setProperty('--x', layout[id2].x);
           node.style.setProperty('--y', layout[id2].y);
+          node.style.setProperty('--w', layout[id2].w);
+          node.style.setProperty('--h', layout[id2].h);
         });
       }
 
@@ -8662,6 +8787,8 @@
             ghost.className = 'ow-cv-ghost';
             ghost.style.setProperty('--w', vw);
             ghost.style.setProperty('--h', vh);
+            ghost.style.setProperty('--x', startBox.x);
+            ghost.style.setProperty('--y', startBox.y);
             grid.appendChild(ghost);
           }
         }
@@ -8680,20 +8807,30 @@
         /* 1 · THE HAND. Nothing here is rounded. */
         t.style.transform = 'translate(' + dx + 'px,' + dy + 'px) scale(1.04)';
 
-        /* 2 · THE DESTINATION. Rounded once, from the pointer. */
-        var tx = Math.max(0, Math.min(self.cols - vw,
-                   Math.round(ox + dx / (cw + GAP))));
-        var ty = Math.max(0, Math.round(oy + dy / (rowh + GAP)));
-        if (tx === lastTX && ty === lastTY) return;
-        lastTX = tx; lastTY = ty;
+        /* 2 · THE PLACE IN THE ORDER, from the point under the hand, read against the flow as it is drawn now. Inside the
+           ghost's own slot nothing changes, so the order never flickers between two places at a boundary. */
+        var gr = grid.getBoundingClientRect();
+        var px = ev.clientX - gr.left, py = ev.clientY - gr.top;
+        var pitchX = cw + GAP, pitchY = rowh + GAP;
+        var cur = liveLayout || self._pack || {};
+        var mine = cur[it.id];
+        if (mine && px >= mine.x * pitchX && px < (mine.x + mine.w) * pitchX
+            && py >= mine.y * pitchY && py < (mine.y + mine.h) * pitchY && liveLayout) return;
+        var idx = self.insertionAt(cur, others, px, py, pitchX, pitchY);
+        if (idx === liveIdx && liveLayout) return;
+        liveIdx = idx;
 
-        /* 3 · MAKE ROOM, minimally, and show it. */
-        liveLayout = self.displace(basePack, it.id, { x: tx, y: ty, w: vw, h: vh });
+        /* 3 · THE NEIGHBOURS FLOW ASIDE, and the ghost shows where it lands. */
+        var next = layoutFor(idx);
+        liveLayout = next.layout; liveOrder = next.order;
         paintOthers(liveLayout);
-        if (ghost) {
-          ghost.style.setProperty('--x', tx);
-          ghost.style.setProperty('--y', ty);
+        if (ghost && liveLayout[it.id]) {
+          ghost.style.setProperty('--x', liveLayout[it.id].x);
+          ghost.style.setProperty('--y', liveLayout[it.id].y);
+          ghost.style.setProperty('--w', liveLayout[it.id].w);
+          ghost.style.setProperty('--h', liveLayout[it.id].h);
         }
+        try { if (global.navigator && navigator.vibrate) navigator.vibrate(4); } catch (_) {}
         self.dirty = true;
       }
 
@@ -8712,58 +8849,15 @@
            been looking at for the whole gesture is the one that is written —
            nothing is recomputed at the last moment, so nothing jumps. */
         if (moved && !free && liveLayout) {
-          /* ═══ COMMITTING A PROJECTED VIEW WITHOUT RE-AUTHORING THE PAGE ═══
-             ★ FOUNDER, 2026-08-30: *"only move things that need to move because
-               of the user's action"* · *"the layout engine may constrain user
-               intent, it may not routinely replace user intent with its own
-               optimization."*
-
-             THE FIRST VERSION OF THIS COMMIT MOVED SEVEN PLACEMENTS OUT OF
-             EIGHT for a single drag — measured. It wrote every tile's canonical
-             `x` back from its VIEW position, and on a two-column phone
-             `toBase()` multiplies by six, so one gesture rewrote an entire
-             twelve-column arrangement that had been authored on a desktop.
-             Zero overlaps, perfectly valid, and the person's composition gone.
-
-             SO THE TWO ROLES ARE SEPARATED:
-
-               THE DRAGGED POPIT is the user's explicit intent. Its position is
-               what they just said, so it is committed — x and y.
-
-               A DISPLACED NEIGHBOUR only moved because it was in the way. It
-               was pushed DOWN, so only its `y` changes. Its COLUMN was never
-               part of this gesture and must survive it — otherwise arranging on
-               a phone silently flattens the desktop layout.
-
-             AND ONLY WHAT ACTUALLY MOVED IS WRITTEN, so a tile the cascade
-             never reached keeps its exact stored values. */
+          /* RELEASE COMMITS WHAT THE FLOW SHOWED: the new order, written into the stored twelve by the same flow rule, so
+             the next pack (here and on every other device) draws exactly what the hand left. Each Popit keeps its size. */
+          self.commitOrder(liveOrder);
           self._pack = liveLayout;
-          var wasPack = basePack;
-          Object.keys(liveLayout).forEach(function (id2) {
-            var target = self.items.filter(function (x) { return x.id === id2; })[0];
-            if (!target) return;
-            var b2 = liveLayout[id2], was = wasPack[id2];
-            if (id2 === it.id) {
-              target.x = Math.round(self.toBase(b2.x));
-              target.y = b2.y;
-            } else if (!was || was.y !== b2.y) {
-              target.y += (b2.y - (was ? was.y : b2.y));   /* the push, nothing else */
-            } else {
-              return;                                       /* untouched stays untouched */
-            }
-            var node = grid.querySelector('[data-id="' + id2 + '"]');
-            if (node) {
-              node.style.setProperty('--x', b2.x);
-              node.style.setProperty('--y', b2.y);
-            }
-          });
-          /* AND THE STORED ARRANGEMENT MUST SATISFY THE INVARIANT TOO —
-             see `settleCanonical`. A redraw follows only when it actually had
-             to move something, so an ordinary drag costs no extra paint. */
-          if (self.settleCanonical(it.id)) self.render();
+          self.render();
           self.placeBox();
           self.save();
-        } else if (moved) { self.settle(it, t); self.save(); }
+        } else if (moved && free) { self.settle(it, t); self.save(); }
+        else if (moved) { self.render(); }
         /* A TAP SELECTS, A DRAG MOVES — one gesture, decided by whether the
            pointer travelled. Selecting on pointerdown would put a transform box
            over everything the person merely brushed past. */
@@ -8772,7 +8866,7 @@
       grid.addEventListener('pointermove', move);
       grid.addEventListener('pointerup', up);
       grid.addEventListener('pointercancel', up);
-    });
+    }
   };
 
   /* ── SAVING ─────────────────────────────────────────────────────────────
@@ -8808,6 +8902,10 @@
                it had itself recorded correctly on the server. */
             if (r.data.arranged === true) self.arranged = true;
             self.dirty = false;
+            if (self._staleRemote && !self.editing) {
+              self._staleRemote = false;
+              global.setTimeout(function () { try { self.load(); } catch (_) {} }, 0);
+            }
             /* A SUCCESSFUL WRITE RETIRES THE LAST FAILURE. Leaving "that change
                was not saved" above a canvas that has since saved is a second
                way of being wrong about the same thing. */
@@ -8833,7 +8931,9 @@
                correction honest rather than cosmetic — whatever the server
                actually holds is what ends up on screen, including the tile
                snapping back to where it really is. */
-            self.dirty = true;
+            /* the server's arrangement is the truth being re-read, so nothing here is pending any more (left `true`, it
+               held every later change from another device out of this canvas for as long as the page stayed open) */
+            self.dirty = false;
             self.note((r && r.status === 403)
               ? 'This canvas is not yours to arrange. Nothing was changed.'
               : 'That change was not saved. Showing what the server has.',
@@ -9163,7 +9263,9 @@
       freshTimer = global.setTimeout(function () {
         liveCanvases = liveCanvases.filter(function (x) { return x && x.host && x.host.isConnected; });
         liveCanvases.forEach(function (x) {
-          if (x.editing || x.dirty) return;
+          /* A CANVAS BEING ARRANGED WAITS, IT DOES NOT FORGET (founder/827, 830): the change is remembered and read the
+             moment arranging ends or the pending save lands, so a move made on another device is never lost here. */
+          if (x.editing || x.dirty) { x._staleRemote = true; return; }
           try { x.load(); } catch (err) {}
         });
       }, 250);
@@ -10849,8 +10951,8 @@
        outline and a wash of the surface hue, no material, no shadow, nothing
        that competes with the Popit actually under the finger. */
     '.ow-cv-ghost{position:absolute;pointer-events:none;z-index:1;',
-    '  left:calc((var(--x) / var(--cv-cols)) * 100%);',
-    '  width:calc((var(--w) / var(--cv-cols)) * 100% - var(--cv-gap));',
+    '  left:calc((var(--x) / var(--cv-cols)) * (100% + var(--cv-gap)));',
+    '  width:calc((var(--w) / var(--cv-cols)) * (100% + var(--cv-gap)) - var(--cv-gap));',
     '  top:calc(var(--y) * (var(--cv-row) + var(--cv-gap)));',
     '  height:calc(var(--h) * var(--cv-row) + (var(--h) - 1) * var(--cv-gap));',
     '  border-radius:var(--po-r,22px 17px 24px 19px);',

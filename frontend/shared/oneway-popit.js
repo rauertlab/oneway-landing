@@ -2450,8 +2450,11 @@
         + tally(reposts) + '</button>';
     }
 
+    /* SAVE STANDS AT THE ROW'S RIGHT END (founder/831: the interactions "spaced exactly like Instagram"): the acts
+       that answer the Post sit together on the left, and keeping it for yourself is the one at the far edge. It is
+       built here and placed last, after Share and the views. */
     var saves = hideCounts ? 0 : ((counts.save != null) ? counts.save : (g.saves || 0));
-    html += '<button type="button" class="po-act po-act--icon" data-po-save'
+    var saveHTML = '<button type="button" class="po-act po-act--icon po-act--end" data-po-save'
       + ' data-obj="' + esc(g.id) + '" data-okind="' + esc(okind) + '"'
       + ' aria-pressed="' + (saved ? 'true' : 'false') + '"'
       + ' aria-label="' + (saved ? 'Saved' : 'Save') + '"'
@@ -2482,6 +2485,7 @@
         + esc(g.views + ' opened this') + '">' + OW.glyph('eye')
         + '<b>' + esc(g.views) + '</b></span>';
     }
+    html += saveHTML;
     /* THE MARK THE LIVE PATH READS. Every optimistic press in popit-live.js
        creates a `<b>` when the server answers with a tally — so without this a
        card that correctly rendered no numbers would grow one the moment its
@@ -2993,41 +2997,38 @@
      the sample the server drew from was full it says "and others" rather than
      a figure — a truncated list must not be reported as an exact one. */
   function knownWords(k) {
-    /* THE NAME, NOT THE EMAIL'S LEFT HALF. This read `String(e).split('@')[0]`
-       — the comment two lines up says "a name is worth more than a count" and
-       then it printed `pal327375` about the person the notification beside it
-       called "Sam Vale". One human being, two identities, on one screen.
-
-       `known_likers.people` now carries `{email, name}` and the name is
-       resolved server-side once per person per page. A plain string is still
-       accepted, because a client that only works against the newest payload
-       breaks the moment a cached response is a version behind — and the
-       fallback is the same local part it always showed, so an old payload is
-       no worse than it was. */
+    /* THE NAME, NOT THE EMAIL'S LEFT HALF: `known_likers.people` carries `{name, ref, picture}`, the name resolved
+       server-side once per person per page; a plain string from an older payload still reads as its local part. */
+    return knownParts(k).map(function (x) { return x.t; }).join('');
+  }
+  /* "Liked by <someone> and N others", AS INSTAGRAM SAYS IT (founder/832). One person is named (the server puts the
+     people the viewer follows first); the rest is the Post's whole like count from the counter, so "21 others" is a
+     number the server stands behind. When it cannot (`capped`: the counts are hidden) it says "and others" and no
+     figure. Parts, so the names and the count can be set bold while the label reads the same words. */
+  function knownParts(k) {
     var who = (k.people || []).map(function (e) {
-      if (e && typeof e === 'object') {
-        return String(e.name || '').trim() ||
-               String(e.email || '').split('@')[0];
-      }
+      if (e && typeof e === 'object') return String(e.name || '').trim() || String(e.email || '').split('@')[0];
       return String(e).split('@')[0];
     }).filter(Boolean);
-    var more = Math.max(0, (k.n || who.length) - who.length);
-    if (!who.length) return '';
-    if (who.length === 1 && !more) {
-      return k.capped ? ('Liked by ' + who[0] + ' and others')
-                      : ('Liked by ' + who[0]);
-    }
-    /* THE COMMENT ABOVE PROMISED THIS AND THE CODE DID NOT KEEP IT. The
-       capped branch read `(k.capped ? ' you know' : ' you know')` — the same
-       string on both sides — so a list the server had cut at eight was
-       reported as "and 7 others", an exact figure for a count nobody had. B's
-       audit found it. When the sample is full, the number is not known and
-       is not said. */
-    if (k.capped) return 'Liked by ' + who[0] + ' and others you know';
-    if (who.length === 1) return 'Liked by ' + who[0] + ' and ' + more + ' more';
-    var head = who[0] + ' and ' + (who.length - 1 + more);
-    return 'Liked by ' + head + ' ' + ((who.length - 1 + more) === 1 ? 'other' : 'others')
-           + ' you know';
+    if (!who.length) return [];
+    var others = Math.max(0, (k.n || who.length) - 1);
+    var out = [{ t: 'Liked by ' }, { t: who[0], b: 1 }];
+    if (k.capped && (k.people || []).length > 1) out.push({ t: ' and ' }, { t: 'others', b: 1 });
+    else if (!k.capped && others) out.push({ t: ' and ' }, { t: others + (others === 1 ? ' other' : ' others'), b: 1 });
+    return out;
+  }
+  function knownHTML(k) {
+    var faces = (k.people || []).filter(function (p) { return p && typeof p === 'object'; }).slice(0, 3);
+    var stack = faces.length
+      ? '<span class="po-card__kfaces" aria-hidden="true">' + faces.map(function (p) {
+          var pic = p.picture ? (OW.imageUrl ? OW.imageUrl(p.picture) : p.picture) : '';
+          return pic ? '<i style="background-image:url(\'' + esc(pic) + '\')"></i>'
+                     : '<i data-ini="1">' + esc(String(p.name || '?').trim().charAt(0).toUpperCase()) + '</i>';
+        }).join('') + '</span>'
+      : '';
+    return stack + '<span>' + knownParts(k).map(function (x) {
+      return x.b ? '<b>' + esc(x.t) + '</b>' : esc(x.t);
+    }).join('') + '</span>';
   }
 
   /* WHO A POST WAS FOR, in the words a person would use. The keys are the
@@ -3308,6 +3309,20 @@
     /* a reel: the cover is a video, or the first piece of a strip is */
     var capAbove = !!(cover && (isVid || (shots && shots[0] &&
       ((shots[0].kind === 'video') || /\.(mp4|m4v|mov|webm)(\?|#|$)/i.test(String(shots[0].url || shots[0].src || ''))))));
+    /* A PHOTO'S CAPTION COMES AFTER WHO LIKED IT (founder/832: "leave space under the interactions for it to say liked
+       by the mutuals and then also have the caption on photos"): the picture, the icons, the liked-by line, then the
+       words, led by the author's name as Instagram sets a caption. A reel keeps its words above (founder/470) and a
+       post of words alone keeps them on top, where they are the post; the order under the icons is the same. */
+    var capBelow = !capAbove && !!coverSrc && !!(g.description || g.title);
+    var captionHTML = capBelow
+      ? '<span class="po-card__body po-card__body--cap">' +
+          (g.title && g._post ? '<span class="po-card__t">' + esc(g.title) + '</span>' : '') +
+          (g.description || (!g._post && g.title)
+            ? '<span class="po-card__d"><b class="po-card__capby">' + esc(who.name || '') + '</b> '
+              + esc(g.description || g.title) + '</span>'
+            : '') +
+        '</span>'
+      : '';
     /* ★ FOUNDER/470: *"platform icon should appear in top right corner of
        post depending on native platform it was posted from."* The row says
        where a piece came from (`media[].source` / `origin` / `origin_url`,
@@ -3561,7 +3576,7 @@
          TikTok rail with CSS. A second slot here was a second set of the
          same controls — and, on Home, a rail over the photograph. */
       '<span class="po-card__media"><span class="po-card__cover"' + emptyNote + coverAR + '>' + cover + '</span></span>') +
-      (capAbove ? '' : bodyHTML) +
+      (capAbove || capBelow ? '' : bodyHTML) +
       productHTML +
       /* ── SOCIAL PROOF, WHERE A PERSON LOOKS FOR IT ─────────────────────
          ★ FOUNDER, 2026-08-29: *"no where to see if other users the user knows
@@ -3599,9 +3614,9 @@
         ? '<button type="button" class="po-card__known" data-po-likers'
           + ' data-obj="' + esc(g.id) + '"'
           + ' aria-label="' + esc(knownWords(g._known)) + '. Open the list.">'
-          + OW.glyph(OW.likes.glyph())
-          + '<span>' + esc(knownWords(g._known)) + '</span></button>'
-        : '');
+          + knownHTML(g._known) + '</button>'
+        : '') +
+      captionHTML;
 
 
     /* THE PRODUCT ROW KEEPS ITS OWN PRESS: it opens the product, its Buy opens the checkout, and neither opens

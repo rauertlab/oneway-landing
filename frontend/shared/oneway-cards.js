@@ -307,6 +307,37 @@
     return parts.join(', ');
   }
   function placeOf(card) { return shortPlace(card.kind === 'person' ? card.place : card.line) || ''; }
+  /* THE COMPACT CARD (founder/834: "these should be the compact cards that are forced to be in this order, and this is what
+     should appear on search ... the right hand of the side is the most useful area, and I don't want them really being pushed
+     down more ... this gray text area here is where you could have the line by line by line business information that we
+     designed on the other card. To the left of that would be the um, social media platforms. I wouldn't put the bio on here
+     ... I would do the username ... right under the add of ops ... but small"). In this order: the picture; the name with
+     the handle small under it; then, at the right, the platforms' marks (a Center's too, here) and the business's details
+     line by line (the card read's rows: Hours, Serves, Address ...), else its one line (the place, else the category). No
+     bio, no role or plan line. One height whatever it holds (oneway-popit.css; red in oneway/cards/test_profile_banner.py). */
+  function compactAside(card) {
+    var marks = linkItems(card, { centers: true }).filter(function (it) { return it.known; });
+    var links = marks.length ? '<span class="ow-ocard__links ow-linkbar" role="list">' + marks.map(function (it) {
+      var hue = OW.links.hueOf ? OW.links.hueOf(it.key) : '';
+      return '<a class="ow-linkbar__i" role="listitem" href="' + esc(it.href) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(it.name) +
+        '" title="' + esc(it.name) + '" data-platform="' + esc(it.key) + '"' + (hue && hue !== '#000000' ? ' style="--mk:' + esc(hue) + '"' : '') + '>' + OW.links.icon(it.key) + '</a>';
+    }).join('') + '</span>' : '';
+    var rows = (card.details || []).filter(function (d) { return d && d.label && d.value; });
+    if (!rows.length) {             /* none: its one line, named as a detail is, so its value stands where theirs do */
+      var where = placeOf(card);
+      if (where) rows = [{ label: 'Place', value: where }]; else if (card.category_label) rows = [{ label: 'Category', value: card.category_label }];
+    }
+    /* the values of each column of three start in one line: its labels' width, its own */
+    var colW = [0, 1].map(function (c) { return Math.max.apply(null, [0].concat(rows.slice(c * 3, c * 3 + 3).map(function (d) { return String(d.label).length; }))); });
+    var facts = rows.length ? rows.map(function (d, i) {
+      var v = String(d.value).split('\n')[0];
+      return '<span class="ow-ocard__fact" style="--lw:' + (colW[i < 3 ? 0 : 1] * 0.6).toFixed(1) + 'em" title="' + esc(d.label + ': ' + d.value) + '"><i>' +
+        esc(d.label) + '</i> <b dir="auto">' + esc(v) + '</b></span>';
+    }).join('') : '';
+    var lines = rows.length || (facts ? 1 : 0);
+    return links || facts ? '<span class="ow-ocard__aside">' + links + (facts ? '<span class="ow-ocard__facts" style="--rows:' + Math.min(3, lines) + '">' +
+      facts + '</span>' : '') + '</span>' : '';
+  }
   /* the compact projections' one line: the place, else the category (mini); the category, the place and a status (standard) */
   function contextHTML(card, mini) {
     var location = placeOf(card);
@@ -396,9 +427,9 @@
      once here too), and nothing is cut by count. A host no platform is known for is its own platform: the first such
      site wears the web mark, and any other site its own words in an outlined pill, so two identical marks never stand
      side by side. */
-  function linkItems(card) {
+  function linkItems(card, opts) {
     var list = [], seen = {}, out = [], webMark = false;
-    if (!card || kindOf(card) === 'center') return out;
+    if (!card || (kindOf(card) === 'center' && !(opts && opts.centers))) return out;   /* the compact card's own (founder/834) */
     var site = websiteOf(card);
     if (site) list.push({ url: site.href });
     (card.links || []).forEach(function (l) { if (l) list.push(l); });
@@ -416,8 +447,8 @@
     });
     return out;
   }
-  function linksInner(card) {
-    return linkItems(card).map(function (it) {
+  function linksInner(card, opts) {
+    return linkItems(card, opts).map(function (it) {
       if (it.known) {
         var hue = OW.links.hueOf ? OW.links.hueOf(it.key) : '';
         return '<a class="ow-linkbar__i" role="listitem" href="' + esc(it.href) + '" target="_blank" rel="noopener noreferrer" aria-label="' + esc(it.name) + '" title="' + esc(it.name) + '"' +
@@ -465,11 +496,8 @@
     /* THE COMPACT PROJECTIONS draw the same parts for both kinds (founder/797: "condensed versions of the cards") */
     if (as === 'chip') return face(card) + '<b class="ow-ocard__name" title="' + esc(card.title || '') + '">' + esc(card.title) + '</b>';
     if (mode === 'micro') return face(card) + '<span class="ow-ocard__id">' + identityHTML(card, { secondary: false }) + '</span>';
-    if (mode === 'mini' || as === 'row') {
-      var ctx = contextHTML(card, true);
-      return face(card) + '<span class="ow-ocard__id">' + identityHTML(card, { line: handleOf(card) }) +
-        (ctx ? '<span class="ow-ocard__context">' + ctx + '</span>' : '') + '</span>';
-    }
+    if (mode === 'mini' || as === 'row') return face(card) + '<span class="ow-ocard__id">' +
+      identityHTML(card, { line: handleOf(card) }) + '</span>' + compactAside(card);
     if (as === 'simple') {
       return '<span class="po-card__face" aria-hidden="true"></span>' + face(card) + '<span class="ow-ocard__id">' + identityHTML(card, { line: handleOf(card) }) + '</span>';
     }

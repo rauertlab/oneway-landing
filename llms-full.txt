@@ -453,28 +453,27 @@ Security
 Contact
 
 Sign in
+Claim your @name
 
 App
 
-Five places, one dock.
+Go anywhere. Connect everywhere.
 
-Home, Discovery, Create, Messages and Me sit along the bottom of the App. Workspace joins them when you work at a Center.
+Follow your friends, discover places you love, and bring your favorite parts of the internet together.
 
-Open the App Sign in
+Claim your @name Open the App
+
+Discovery
+Discover people, places, and communities. Your way.
+Explore Oneway through an interactive map or a personalized grid of posts. Find local businesses, events, and communities, follow the places you love, and see what is happening around you.
+Connect with other Oneway users passing the same local Centers, quietly, with Waypass. You control whether you take part.
+Create Info Centers to populate our ecosystem and win monthly rewards and ranking in your area.
+Monthly rewards and eligibility rules are planned.
 
 Home
 For You, and you get to choose.
-Start on a ranked For You feed, switch to Following, or pin custom feeds beside them that shape what you see.
-Posts you import from supported connected platforms arrive on Home as themselves, and you arrange the Popits around them.
-
-Discovery
-The places on Oneway, on one map.
-Open a place from the map to see its page and its events, follow it, or join one of its communities.
-
-Create
-Capture it. Import it. Make it yours.
-Take a photo or a video, upload one, or import a post from a supported platform. Then name it and choose where it goes.
-What you post goes out to a community you belong to. A document stays in your Workspace, seen by nobody, until you decide to share it.
+Oneway is a customizable social media app for photos, videos, and posts. Explore a ranked For You feed, follow people and places, switch to Following, or create custom feeds that shape what you see.
+Import posts from supported connected platforms and arrange Popits on your in-app Home. iOS Home Screen widgets are planned, not available yet.
 
 Messages
 
@@ -507,21 +506,44 @@ Get every alert, mentions only, or mute the chat
 
 Accept or decline message requests from new people
 
+Set a group size limit (planned)
+
+Control message saving (planned)
+
 Screenshot notices apply to detected shortcuts. The web App cannot detect phone screenshots.
 
-Me
+Lightbulb
+Capture it. Import it. Make it yours.
+Capture photos, videos, and posts, bring in content from supported platforms, save it to your Workspace, and share it with friends and communities.
 
-Your profile. Your look. Every device.
+My profile and workspace
 
-Me is your profile and your settings. Choose a galaxy or a plain background, Popit mode or Simple mode, and a banner that fades behind the top of the page or sits framed below it.
+Your profile. Your work. Your choice.
 
-The look you choose follows your account to every device you sign in on.
+Your Oneway profile brings your identity, connections, and experiences together in one customizable space. Choose how it looks and what people can see.
 
-When you work at a Center, Workspace shows its work for your role, from the same account.
+Workplace identity is optional. It keeps professional connections and activity separate from your personal life while you continue to use one Oneway account.
 
-See it for yourself.
+Claim your name.
 
-Open the App Sign in
+Personal @name
+Organization .name
+
+@
+
+Claim my @name
+
+@you Reserved
+Your name is reserved. It is held for your email while Oneway opens in stages. · —
+Open the App
+
+Oneway remembers the people and places you care about, and that memory is private by default.
+
+Your name. Your place on Oneway.
+
+Claim your @name, personalize your profile, and get ready to connect with the people, places, and communities that matter to you.
+
+Claim your @name Oneway OS for organizations
 
 Our Mission
 App
@@ -543,6 +565,8 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
+
+Claim your @name
 
 ---
 

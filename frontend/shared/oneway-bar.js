@@ -108,9 +108,18 @@
     a.style.setProperty('--fx', (o < 0.01 ? -10 : x).toFixed(1) + 'px');
     return o;
   }
-  function set(open) {
-    if (open && flight && !flight.canOpen()) open = false;
+  /* A TOUCH SCREEN OPENS IT WITH ONE TAP AND IT STAYS (the founder, 2026-10-17: "OneTap and mobile should bring up the
+     scrolling menu on the header, and it should stay like that because it is not like able to be able to just come up as
+     well as it does on PC. And also, they must be able to easily return to the home"). A phone has no hover and starts at
+     the top of a page, where the wordmark has not docked and the bar would not open at all: a tap opens it wherever the
+     page is, scrolling and tapping the page keep it open, a tap on the bar again (or a page chosen) closes it, and once it
+     is open the wordmark is the way home. A mouse keeps the hover the bar always had. */
+  var touchOpen = false, lastPointer = '';
+  function set(open, byTouch) {
+    if (open && flight && !flight.canOpen() && !byTouch) open = false;
+    if (!byTouch && touchOpen && lastPointer === 'touch') return;    // a tap's emulated mouse events never undo the tap
     if (open === isOpen()) return;
+    touchOpen = !!(open && byTouch);
     if (open) fit();
     var row = pages ? parseFloat(getComputedStyle(pages).opacity) || 0 : 0, shown = 0;
     links.forEach(function (a) { shown = Math.max(shown, where(a, row)); });
@@ -132,28 +141,41 @@
     bar.dispatchEvent(ev);
   }
 
-  bar.addEventListener('mouseenter', function () { clearTimeout(linger); set(true); });
-  bar.addEventListener('mouseleave', function () { clearTimeout(linger); linger = setTimeout(function () { set(false); }, 2000); });
-  bar.addEventListener('focusin', function () { clearTimeout(linger); set(true); });
+  bar.addEventListener('mouseenter', function () { if (lastPointer === 'touch') return; clearTimeout(linger); set(true); });
+  bar.addEventListener('mouseleave', function () { if (lastPointer === 'touch') return; clearTimeout(linger); linger = setTimeout(function () { set(false); }, 2000); });
+  bar.addEventListener('focusin', function () { if (lastPointer === 'touch') return; clearTimeout(linger); set(true); });   // a tap's focus is the tap's, decided on its click
   bar.addEventListener('focusout', function (e) {
-    if (bar.contains(e.relatedTarget) || (bar.matches && bar.matches(':hover'))) return;   // a click on the bar keeps it
+    if (touchOpen || bar.contains(e.relatedTarget) || (bar.matches && bar.matches(':hover'))) return;   // a click on the bar keeps it; a tap-opened bar stays
     set(false);
   });
-  /* a touch screen has no hover: a tap on the bar (not on a link) opens or closes it, a tap elsewhere closes it */
-  bar.addEventListener('pointerup', function (e) {
-    if (e.pointerType !== 'touch' || (e.target.closest && e.target.closest('a'))) return;
-    clearTimeout(linger); set(!isOpen());
+  document.addEventListener('pointerdown', function (e) { lastPointer = e.pointerType || ''; }, { passive: true, capture: true });
+  /* a touch screen: a tap on the bar (not on one of its pages) opens it or, open, closes it. Decided on the tap's CLICK,
+     not its lift: opening on the lift drew the pages under the finger, and the tap's own click then opened one (measured
+     2026-10-17: a tap on Our Mission's bar opened Contact). For a moment after a tap opens it, a page ignores a click. */
+  var openedAt = 0;
+  bar.addEventListener('click', function (e) {
+    if (lastPointer !== 'touch') return;
+    var a = e.target.closest && e.target.closest('a');
+    if (a && !a.classList.contains('owbar-mark')) {
+      if (Date.now() - openedAt < 400) { e.preventDefault(); e.stopPropagation(); }
+      return;                                                       // a page: it opens, and the bar goes with the page
+    }
+    if (a) return;                                                   // the wordmark: decided on its own click, below
+    clearTimeout(linger); var was = isOpen(); set(!was, true); if (!was) openedAt = Date.now();
+  }, true);
+  /* the wordmark, tapped: shut, it opens the bar (the click goes nowhere); open, it takes the person home */
+  var mark = bar.querySelector('.owbar-mark');
+  if (mark) mark.addEventListener('click', function (e) {
+    if (lastPointer !== 'touch' || isOpen()) return;
+    e.preventDefault(); e.stopPropagation(); clearTimeout(linger); set(true, true); openedAt = Date.now();
   });
-  document.addEventListener('pointerdown', function (e) {
-    if (e.pointerType === 'touch' && isOpen() && !bar.contains(e.target)) set(false);
-  }, { passive: true });
 
   function grounded() {
     if (bar.classList.contains('owbar--solid')) return;
     bar.classList.toggle('owbar--scrolled', flight ? flight.docked() : window.scrollY > 16);
   }
   function onScroll() {
-    if (isOpen() && Math.abs(window.scrollY - openY) > 8) { clearTimeout(linger); set(false); }
+    if (isOpen() && !touchOpen && Math.abs(window.scrollY - openY) > 8) { clearTimeout(linger); set(false); }
     if (flight) flight.frame(); else grounded();
   }
   window.addEventListener('scroll', onScroll, { passive: true });
