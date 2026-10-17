@@ -1,0 +1,100 @@
+/* Shared landing-page fallbacks. Current browsers keep each page's own layout. */
+/* ONE TYPE SPACING, EVERY ROLE (founder/793: "all font spacing must be the same"; S26). One letter-spacing and one
+   line-height per type role, defined once, here, because this is the one sheet every landing page loads: landing.css
+   imports it (the landing, Our Mission and the map's pages) and so does oneway-legal.css (the legal pages).
+   site-page.css applies it to Our Mission and the map's pages; the landing (index.html) can take it as it stands.
+   Display and heading are the Our Mission page's top header, his reference: -.03em, no word squeeze, 1.13.
+   Lead, body and caption are the landing's own paragraph (.lp-p): no tracking, 1.5. A caption is sentence case.
+   for his eye: the headlines' -.04em word-spacing (ONEWAY_SANS.md v0.4) is dropped, because his reference header
+   carries none; if he wants the squeeze back it is one value, --lp-ws. */
+:root{--lp-ws:0;
+  --lp-ls-display:-.03em;--lp-lh-display:1.13;
+  --lp-ls-heading:-.03em;--lp-lh-heading:1.13;
+  --lp-ls-lead:0;--lp-lh-lead:1.5;
+  --lp-ls-body:0;--lp-lh-body:1.5;
+  --lp-ls-caption:0;--lp-lh-caption:1.5;
+  /* ONE SIZE PER ROLE, EVERY PAGE (the founder, 2026-10-17: "the subtext um, font spacing isn't even the same across
+     pages"; measured that night: body 16-19px in four weights, headings 24-34px, two eyebrow styles, the OS page's
+     words at 11-12.5px). The landing (index.html) is the canon; every landing page draws each role at these sizes. */
+  --lp-fs-display:clamp(40px,6vw,74px);     /* a page's opening headline */
+  --lp-fs-display-long:clamp(32px,4.6vw,56px); /* an opening that is a whole sentence */
+  --lp-fs-heading:clamp(30px,4.2vw,50px);   /* a section's headline */
+  --lp-fs-sub:clamp(22px,2.4vw,30px);       /* a column's or an item's head */
+  --lp-fs-mark:clamp(18px,1.85vw,24px);     /* a section's name above its headline (founder/793's top header) */
+  --lp-fs-lead:clamp(18px,1.9vw,22px);      /* the line under a headline */
+  --lp-fs-body:17px;                        /* an item's sentence */
+  --lp-fs-caption:15px}                     /* a note under an item: white, sentence case, never smaller */
+/* THE ROLES, as classes any landing page uses (the same face, weight, size and spacing on every page) */
+.t-display{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}
+.t-display-long{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display-long);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}
+.t-heading{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-heading);line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading)}
+.t-sub{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:850;font-size:var(--lp-fs-sub);line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading)}
+.t-mark{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-style:italic;font-weight:900;font-size:var(--lp-fs-mark);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}
+.t-lead{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:500;font-size:var(--lp-fs-lead);line-height:var(--lp-lh-lead);letter-spacing:var(--lp-ls-lead)}
+.t-body{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:500;font-size:var(--lp-fs-body);line-height:var(--lp-lh-body);letter-spacing:var(--lp-ls-body)}
+.t-caption{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:500;font-size:var(--lp-fs-caption);line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption)}
+/* THE ROOT FONT IS A LITERAL STACK ON EVERY LANDING PAGE (the Safari guard, 2026-10-17). A font-family that is only var()
+   becomes nothing when its token does not resolve, and the root then falls to the browser's own serif. So the root
+   names the face itself, and every var() in a font-family carries this stack as its fallback; a font shorthand never
+   carries var() (its longhands do). Held by api/oneway/platform/test_landing_fonts.py. */
+html{-webkit-text-size-adjust:100%;font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif}
+.side{overflow:hidden}
+.lp-two>*,.mission-split>*,.cards>*,.flow>*{min-width:0}
+.lp-p,.cards p,.flow p{overflow-wrap:break-word;word-wrap:break-word}
+a:focus,button:focus,input:focus,select:focus,textarea:focus{outline:2px solid currentColor;outline-offset:3px}
+@supports selector(:focus-visible){
+  a:focus:not(:focus-visible),button:focus:not(:focus-visible){outline:none}
+}
+@media(max-width:600px){input,select,textarea{font-size:16px}}
+@supports not (width:clamp(1px,2vw,3px)){
+  .lp{padding-top:72px}
+  .lp-wrap{padding-left:20px;padding-right:20px}
+  .lp-h2{font-size:34px}
+  .lp-h3{font-size:26px}
+  .lp-p,.open .lp-p{font-size:18px}
+  .lp-two{gap:36px}
+  .lp-two+.lp-two{margin-top:72px}
+  .lk img{height:20px}
+  .lk span{font-size:22px}
+  .open{padding-top:112px}
+  .open h1{font-size:40px}
+  .cards,.flow{margin-top:28px}
+  .mission-split,.mission-card-pair{gap:32px}
+  .mission-projection span:first-child{font-size:24px}
+  .mission-projection span:not(:first-child){font-size:14px}
+  .hero-h1{font-size:40px}
+  .hero-sub{font-size:18px}
+  .sec-h2{font-size:32px}
+  .sec-sub{font-size:16px}
+  .os-lock{gap:12px}
+  .os-lock img{height:40px}
+  .os-lock .mk{font-size:40px}
+  .hiw-stage,.bys-stage{height:380px}
+  .bys-center{width:126px;height:126px}
+  .bys-sys{width:74px;height:74px}
+  .cta-band h2{font-size:28px}
+}
+@supports not (width:min(100%,300px)){
+  .lp-phone{width:72vw;max-width:290px}
+  .mission-privacy-mark{width:65vw;max-width:330px}
+  .hiw-stage{width:96vw;max-width:1240px}
+  .cards{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+  .flow{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+  @media(max-width:600px){.cards,.cards--2,.flow{grid-template-columns:minmax(0,1fr)}}
+}
+@supports not (width:max(1px,2px)){
+  html .owbar{padding-left:28px;padding-right:28px}
+  .owbar.owbar--open .owbar-brand{left:28px}
+  @media(max-width:860px){.owbar .owbar-brand{left:28px}}
+  @media(max-width:680px){html .owbar{padding-left:20px;padding-right:20px}.owbar .owbar-brand,.owbar.owbar--open .owbar-brand{left:20px}}
+}
+@supports not (aspect-ratio:1 / 1){
+  .lp-phone::before{content:"";display:block;padding-top:204.4444%}
+}
+@supports not (inset:0){
+  #hero-canvas,.lp-phone>.fr{top:0;right:0;bottom:0;left:0}
+  .lp-acts{gap:0}
+  .lp-acts>*{margin-right:10px;margin-bottom:10px}
+  .lp-acts--c>*{margin-left:5px;margin-right:5px}
+  .pill>img,.pill>svg{margin-right:8px}
+}

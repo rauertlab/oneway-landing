@@ -1,3 +1,4 @@
+@import url('/frontend/landing/compat.css');
 /* THE LANDING PAGES' GRAMMAR — one set, shared by index.html and app.html
    (founder/534, 536): the section, its wrap, the headline sizes, the two-column
    row, the ONEWAY + word lockup with no rule between them, and one button
@@ -5,9 +6,9 @@
 /* ── the page grammar, one set ───────────────────────────────────────── */
 .lp{position:relative;padding:clamp(72px,11vw,128px) 0 0}
 .lp-wrap{max-width:1080px;margin:0 auto;padding:0 clamp(20px,5vw,48px)}
-.lp-h2{font-family:var(--font-display,var(--font));font-weight:900;letter-spacing:-.035em;line-height:1.04;
+.lp-h2{font-family:var(--font-display,var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif));font-weight:900;letter-spacing:-.035em;line-height:1.04;
   font-size:clamp(34px,5vw,60px);margin:0;color:#fff}
-.lp-h3{font-family:var(--font-display,var(--font));font-weight:850;letter-spacing:-.03em;line-height:1.08;
+.lp-h3{font-family:var(--font-display,var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif));font-weight:850;letter-spacing:-.03em;line-height:1.08;
   font-size:clamp(26px,3.4vw,40px);margin:0;color:#fff}
 /* WHITE, AND PART OF THE STATEMENT (the founder, 2026-10-09: "i want it to be all white rather then divided into
    smaller chunks of grey sidetext i wanna move away from that"). Was 16-18px at 74% white. */
@@ -18,21 +19,37 @@
 /* the lockup: the wordmark and the product's word, no rule between them (534) */
 .lk{display:inline-flex;align-items:baseline;gap:.34em;margin:0 0 18px}
 .lk img{height:clamp(20px,2.2vw,26px);width:auto;display:block;align-self:center}
-.lk span{font-family:var(--font-display,var(--font));font-style:italic;font-weight:900;letter-spacing:-.03em;
+.lk span{font-family:var(--font-display,var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif));font-style:italic;font-weight:900;letter-spacing:-.03em;
   font-size:clamp(22px,2.5vw,30px);line-height:1;color:rgba(255,255,255,.92)}
 /* ONE BUTTON SHAPE for the whole page: a rounded pill, small, sleek (534) */
 .lp-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .lp-acts--c{justify-content:center}
-/* THE SHAPE IS THE PAGE'S, THE MATERIAL IS THE APP'S. The quiet pill is `.ow-popit-btn` (oneway-popit.css, C-app
-   b6ec8b5d): its words in a hairline, its colour on hover (the founder, 2026-10-04: "no more ugly grey buttons ever,
-   transparent clean"; 2026-10-09: "make all clickable center buttons and popits look exactly like this as one unifed
-   color pallete styling"). It was a grey slab here (rgba(255,255,255,.08)). The white pill is the page's one call to act. */
-.pill{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:40px;padding:0 18px;
-  border-radius:999px;font:650 14px/1 var(--font);letter-spacing:-.005em;color:#fff;white-space:nowrap;
-  transition:background .2s,transform .2s var(--ease,cubic-bezier(.4,0,.2,1)),box-shadow .2s,opacity .2s}
-a.pill{display:inline-flex}   /* over a.ow-popit-btn's inline-block, so the words stay centred in the pill */
-.pill--solid{background:#fff;color:#0b0b14;box-shadow:0 8px 24px -10px rgba(255,255,255,.45)}
-.pill--solid:hover{background:#fff;opacity:.9;transform:translateY(-1px)}
+/* ONE OUTLINED BUTTON ON EVERY LANDING PAGE (S20's Outlined kind, amended 2026-10-16; founder/790: "they must have the
+   border around the button i dont want any buttons that are just loose text use the canonical button surfaces").
+   Every bordered button on the landing and its pages is the bar's Sign in (oneway-bar.css .owbar-signin), exactly: one
+   height, a pill, 14px at 600, no tracking, a 1px ring in the words' own colour, S20's soft wash on hover, no lift and
+   no glow. From the shared tokens (oneway-popit.css "ONE BUTTON LANGUAGE", --ow-b-*) where the page loads them, their
+   values where it does not. Written once, here, on the pill: `.pill pill--solid` (the landing's sections and plans, its
+   hero doors and its product buttons; Our Mission; the OS pages) and `.pill ow-popit-btn` (the map pages' second
+   command, which the shared language would draw as words on nothing, so it is held to `a.pill.ow-popit-btn`'s weight
+   over oneway-popit.css). It was 40px at 650 and -.005em with a ring at 70%, beside a 36px Sign in on the same page
+   (round 2, 2026-10-16); index.html's own copy of this rule and site-page.css's 40px `a.pill.ow-popit-btn` are gone. */
+html body :is(.pill,a.pill.ow-popit-btn){align-items:center;justify-content:center;gap:8px;box-sizing:border-box;
+  min-height:var(--ow-b-h,36px);padding:0 var(--ow-b-px,16px);border:1px solid currentColor!important;border-radius:var(--ow-b-r,999px)!important;
+  background:transparent;background-image:none;box-shadow:none;transform:none;text-decoration:none;text-shadow:none;
+  color:#fff;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:14px;font-weight:600;font-style:normal;line-height:1.2;letter-spacing:0;
+  cursor:pointer;transition:background .2s}
+/* where it shows and whether its words wrap stay at the pill's own weight, so a page can still put one away on a phone
+   (oneway-bar.css, app.html) or let a long one wrap (site-page.css); a.pill is over a.ow-popit-btn's inline-block */
+.pill,a.pill{display:inline-flex;white-space:nowrap}
+html body :is(.pill,a.pill.ow-popit-btn):hover:not(:disabled){background:rgba(255,255,255,.08);border-color:currentColor!important;
+  box-shadow:none;transform:none;filter:none;opacity:1}
+html body :is(.pill,a.pill.ow-popit-btn):focus-visible{outline:2px solid currentColor;outline-offset:2px}
+/* a button that carries the wordmark (the hero's doors, the product buttons): the logo image and its part, never a
+   coloured dot (the founder, 2026-10-10: "this should be replaced with the oneway wordmark wherever used and then their
+   respective parts"); the part's words are the button's own */
+.pill > img{height:12px;width:auto;display:block}
+.pill > span{font:inherit;letter-spacing:inherit;white-space:nowrap}
 @media(max-width:820px){
   .lp-two{grid-template-columns:minmax(0,1fr)}
   .lp-flip > :first-child{order:0}

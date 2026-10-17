@@ -9,7 +9,6 @@ We grant users and Centers absolute sovereignty over their data, what they displ
 
 ## What Oneway is
 
-- [About Oneway](https://oneway.center/about): the ecosystem, the App, Oneway OS and its three tiers
 - The Oneway App: your fully customizable social network. You see what your friends and the places you
   love are posting, and what is coming up at each of them.
 - Oneway OS: from managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
@@ -29,4 +28,4 @@ We grant users and Centers absolute sovereignty over their data, what they displ
 
 - [Every page, in words](https://oneway.center/llms-full.txt)
 
-Read from oneway.center's own pages on 2026-10-09 (tools/site_seo.py).
+Read from oneway.center's own pages on 2026-10-11 (tools/site_seo.py).

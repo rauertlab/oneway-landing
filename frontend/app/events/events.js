@@ -58,6 +58,8 @@
     if (missing.length) console.error('[app/events] OW._u is missing: ' + missing.join(', '));
   })();
 
+  var ATTENDEES_SHOWN = 24;          /* names drawn on the event for its organiser; the rest are counted */
+
   /* The three answers a person may give. Values, not a toggle — see `rsvp`. */
   var CHOICES = [
     { v: 'going', label: 'Going' },
@@ -387,6 +389,17 @@
                    counted it yet. */
                 paint(c.v, null);
                 count.textContent = 'Pending — this device only';
+                /* and the answer is put back, with the words, if the server refuses it later (PLAN G6); when it lands the count is the server's */
+                if (global.OW && OW.outbox) OW.outbox.watch(r.pending_id,
+                  function (d) {
+                    var j = (d && d.result) || {};
+                    paint(j.answer || c.v, j.counts && j.counts.going, j.counts && j.counts.maybe);
+                  },
+                  function (words) {
+                    paint(prev, null);
+                    count.textContent = prevCount;
+                    if (OW.toast) OW.toast('Your answer did not change. ' + words);
+                  });
                 return;
               }
               paint(prev, null);
@@ -424,6 +437,40 @@
         if (state === 'live') page.appendChild(mk('div', 'ow-ev__state ow-ev__state--live', 'Happening now.'));
         page.appendChild(acts);
         page.appendChild(count);
+        /* ── TICKETS, PAID ON ONEWAY (PLAN §5.0 unit 1; founder/744) ─────────────────────────────────────────────
+           An event that states its ticket price is sold on the Center's own Stripe: what is for sale, its price and
+           how many one order takes are the server's (payments/payable), asked only for an event that has a price.
+           Buy goes to Stripe's page in this tab; paid, Stripe brings the person back to the Center with the toast,
+           and a signed-in buyer is answered Going by the event itself. */
+        if (ev.ticket_price && ev.center_id) {
+          var tk = mk('div', 'ow-ev__acts', '');
+          page.appendChild(tk);
+          data.get('/api/oneway/places/' + encodeURIComponent(ev.center_id) + '/pay/event_ticket/' + encodeURIComponent(eventId), { fresh: true }).then(function (pr) {
+            var o = pr && pr.ok && pr.data;
+            if (!o || !o.pays_here) { if (pr && !pr.ok && pr.status === 409 && pr.error) tk.appendChild(mk('div', 'ow-ev__state', esc(pr.error))); return; }
+            var n = 1, most = Math.max(1, o.quantity_max || 1);
+            var less = mk('button', 'po-act', '\u2212'), more = mk('button', 'po-act', '+'), howMany = mk('span', 'ow-ev__count', '1 ticket');
+            var buy = mk('button', 'po-act', esc('Buy tickets \u00b7 ' + o.price));
+            [less, more, buy].forEach(function (x) { x.type = 'button'; });
+            less.setAttribute('aria-label', 'One ticket fewer'); more.setAttribute('aria-label', 'One ticket more');
+            buy.setAttribute('data-act', 'on');
+            var said = function () { howMany.textContent = n + (n === 1 ? ' ticket' : ' tickets'); less.disabled = n <= 1; more.disabled = n >= most; };
+            less.addEventListener('click', function () { if (n > 1) { n--; said(); } });
+            more.addEventListener('click', function () { if (n < most) { n++; said(); } });
+            buy.addEventListener('click', function () {
+              buy.disabled = true;
+              data.post('/api/oneway/places/' + encodeURIComponent(ev.center_id) + '/pay', { kind: 'event_ticket', ref: eventId, quantity: n }).then(function (r) {
+                var url = r && r.ok && r.data && r.data.url;
+                if (url && /^https?:\/\//i.test(url)) { global.location.assign(url); return; }
+                buy.disabled = false;
+                if (global.OW && OW.toast) OW.toast((r && r.error) || 'The checkout did not open. Nothing was charged.');
+              });
+            });
+            if (most > 1) { tk.appendChild(less); tk.appendChild(howMany); tk.appendChild(more); }
+            tk.appendChild(buy);
+            said();
+          });
+        }
       }
       /* THE VIEWER'S OWN ANSWER IS NOT ON A SESSIONLESS READ, and it is not
          invented. Nothing is shown as selected until they choose, which is
@@ -431,6 +478,24 @@
          "not going" for somebody who has not answered would be a fact the
          platform does not have. */
       paint(mine, (att.going != null) ? att.going : null);
+
+      /* ── WHO IS COMING, FOR THE PEOPLE WHO RUN IT (PLAN B2, the content loop's observe step) ──────────
+         The roster is the organiser's read and only theirs: the event read says whether this person organises it, and
+         /attendees refuses everyone else. Each by the name they go by (an address never leaves the server), drawn as
+         the line-up is. A guest sees the count above and nothing more. */
+      if (er.data && er.data.organiser === true) {
+        var whoBox = mk('div', 'ow-ev__perf');
+        page.appendChild(whoBox);
+        data.get('/api/oneway/events/' + encodeURIComponent(eventId) + '/attendees', { fresh: true }).then(function (ar) {
+          if (!ar || !ar.ok || !ar.data) return;              /* not this person's to read: nothing drawn */
+          var list = ar.data.attendees || [];
+          whoBox.appendChild(mk('span', 'ow-ev__perfw', 'Who is coming'));
+          if (!list.length) { whoBox.appendChild(mk('span', 'ow-ev__perfn', 'Nobody has said yet')); return; }
+          list.slice(0, ATTENDEES_SHOWN).forEach(function (a) { whoBox.appendChild(mk('span', 'ow-ev__perfn', esc(a.who || 'A guest'))); });
+          var rest = (ar.data.count || list.length) - Math.min(list.length, ATTENDEES_SHOWN);
+          if (rest > 0) whoBox.appendChild(mk('span', 'ow-ev__perfn', esc('and ' + rest + ' more')));
+        });
+      }
 
       if (ev.description) {
         page.appendChild(mk('p', 'ow-ev__d', esc(ev.description)));

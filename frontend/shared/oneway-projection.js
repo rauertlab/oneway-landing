@@ -27,7 +27,12 @@
  *   <link rel="stylesheet" href="/frontend/shared/oneway-popit.css">
  *   <script src="/frontend/shared/oneway-hue.js"></script>
  *   <script src="/frontend/shared/oneway-popit.js"></script>
- *   <script src="/frontend/app/popit-live.js"></script>      (the surfaces)
+ *   <script src="/frontend/app/popit-live.js"></script>      (the surfaces' shared code)
+ *   <script src="/frontend/app/pages/pages.js"></script>     (what a person's and a Center's page share)
+ *   <script src="/frontend/app/me/me.js"></script>           (a person, and who they follow)
+ *   <script src="/frontend/app/center/center.js"></script>   (a Center)
+ *   (index.html loads account.js and compose.js here too: the account pages and the composer)
+ *   <script src="/frontend/app/posts/posts.js"></script>     (a post)
  *   <script src="/frontend/shared/oneway-projection.js"></script>
  * and any element can open a Center: OW.project.open('center', 'caesars', el).
  * A page that carries `html.ow-in-center` rules (index.html does) steps its

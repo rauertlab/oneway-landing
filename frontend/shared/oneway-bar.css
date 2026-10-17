@@ -1,0 +1,176 @@
+/* ONEWAY — THE ONE TOP BAR (frontend/shared/oneway-bar.css, with oneway-bar.js)
+   Every public page wears this bar, the landing included. The founder, 2026-10-10: "unify into one great top bar that
+   proptizes the clean wordmark and smooth animations into the page menu"; before it the site had three bars (the
+   landing's, the map pages' with no pages in it, and the red pages' with an old link to /accounts.html), and "it doesnt
+   even have any of the enw pages we made this is what i mean with info getting lost".
+   - The wordmark leads: alone in the middle of a plain bar, crisp, no glow, no panel.
+   - Hover or focus anywhere on the bar (a tap on a touch screen): the wordmark glides to the left edge and the pages
+     come out of it one by one, in our font, plain words. Two seconds after the pointer leaves, or on any scroll, the
+     words fold back into the wordmark, the last first, and it glides home.
+   - The pages never run under Sign in: the row is measured against the right side and scrolls sideways (behind a fade)
+     only when it does not fit.
+   - A page whose wordmark flies in from its hero (the landing, the red pages) marks the bar .owbar--fly: the bar's own
+     mark is the invisible dock, and the page moves its one visible wordmark on the bar's `owbar:move` event. */
+.owbar{--owbar-ease:cubic-bezier(.45,0,.25,1);
+  position:fixed;top:0;left:0;right:0;z-index:100;box-sizing:border-box;
+  height:calc(56px + env(safe-area-inset-top,0px));
+  padding:env(safe-area-inset-top,0px) max(28px,env(safe-area-inset-right)) 0 max(28px,env(safe-area-inset-left));
+  display:flex;align-items:center;overflow:hidden;          /* the hidden row never widens a page (it made a phone 607 px) */
+  font-family:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  border-bottom:1px solid transparent;
+  transition:background .35s cubic-bezier(.4,0,.2,1),border-color .35s cubic-bezier(.4,0,.2,1)}
+.owbar--scrolled{background:rgba(0,0,0,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom-color:rgba(255,255,255,.08)}
+.owbar--solid{position:sticky;background:#000}
+.owbar a{text-decoration:none}
+.owbar-mark,.owbar-pages a{color:inherit}   /* a page's own pill on the right keeps its own colours (app.html's Claim was white on white) */
+
+/* the wordmark: in the middle at rest, at the left edge when open */
+.owbar-brand{position:absolute;top:env(safe-area-inset-top,0px);bottom:0;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;transition:left 1s var(--owbar-ease),transform 1s var(--owbar-ease)}
+.owbar--open .owbar-brand{left:max(28px,env(safe-area-inset-left));transform:translateX(0)}
+.owbar-mark{display:inline-flex;align-items:center}
+.owbar-mark img{height:19px;width:auto;display:block}
+/* the dock (and the words beside it) always glides, also where a wordmark flies to it: the flight follows the dock
+   frame by frame (oneway-bar.js). A dock that jumped took the visible words 568 px in one frame on every close. */
+.owbar--fly .owbar-mark img{opacity:0}
+/* the one visible wordmark in flight (oneway-bar.js): made at load, placed every frame, shown once it is placed */
+.owbar-fly{position:fixed;top:0;left:0;z-index:101;height:auto;max-width:none;pointer-events:none;
+  transform-origin:0 0;will-change:transform;opacity:0;transition:opacity .35s ease}   /* the fade is its first appearance only */
+.owbar-fly.on{opacity:1}
+.owbar-flying [data-owbar-hero]{visibility:hidden}               /* it holds the opening's room and the start */
+
+/* the pages, beside the wordmark */
+.owbar-pages{position:absolute;left:100%;top:50%;margin-left:22px;display:flex;align-items:center;gap:2px;
+  white-space:nowrap;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;
+  opacity:0;visibility:hidden;pointer-events:none;transform:translate(-8px,-50%);
+  transition:none}
+.owbar-pages::-webkit-scrollbar{display:none}
+/* a fade only on a side that hides more pages; the row scrolls by finger, wheel or drag (oneway-bar.js) */
+.owbar--more-right .owbar-pages{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
+.owbar--more-left .owbar-pages{-webkit-mask-image:linear-gradient(90deg,transparent,#000 18%);mask-image:linear-gradient(90deg,transparent,#000 18%)}
+.owbar--more-left.owbar--more-right .owbar-pages{-webkit-mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 16%,#000 84%,transparent)}
+.owbar-pages{touch-action:pan-x;overscroll-behavior-x:contain}
+.owbar--more-left .owbar-pages,.owbar--more-right .owbar-pages{cursor:grab}
+.owbar-pages.owbar-dragging{cursor:grabbing;user-select:none;-webkit-user-select:none}
+.owbar--open .owbar-pages{opacity:1;visibility:visible;pointer-events:auto;transform:translate(0,-50%)}
+/* the row fades only on the way IN. Closing is the words folding into the wordmark (below); when that is over the row
+   is put away at once. A fade-out of the row after the fold let every word come back at full strength for up to 0.6 s,
+   the moment its fold animation ended (the founder, 2026-10-10: "the text flashes briefly when moving back to the
+   center when stress testing"; measured: 160 rising frames in 12 open/close cycles, then 0) */
+.owbar--open .owbar-pages{transition:opacity .6s var(--owbar-ease),transform .6s var(--owbar-ease)}
+.owbar-pages a{flex:none;font-size:14px;font-weight:600;letter-spacing:-.005em;color:rgba(255,255,255,.72);
+  padding:7px 11px;transition:color .2s}
+.owbar-pages a:hover,.owbar-pages a:focus-visible,.owbar-pages a[aria-current="page"]{color:#fff}
+.owbar-pages a:focus-visible{outline:2px solid rgba(255,255,255,.7);outline-offset:-2px;border-radius:6px}
+/* opening: the words come out of the wordmark, first to last, after the wordmark has started its glide */
+.owbar--open .owbar-pages a{animation:owbarOut .45s var(--owbar-ease) both;animation-delay:calc(.55s + var(--i,0) * .05s)}
+.owbar--open.owbar--warm .owbar-pages a{animation-delay:calc(var(--i,0) * .03s)}   /* reopened mid-fold: continue at once */
+/* closing: they fold back into it, the last first, and the row stays up until they are home */
+.owbar--closing .owbar-pages{opacity:1!important;visibility:visible!important;transform:translate(0,-50%)}  /* folds in place */
+.owbar--closing .owbar-pages a{animation:owbarIn .5s var(--owbar-ease) both;animation-delay:calc((var(--n,8) - 1 - var(--i,0)) * .03s)}
+/* each word comes out and folds back from where it is drawn when the bar is touched (--fo, --fx: oneway-bar.js) */
+@keyframes owbarOut{from{opacity:var(--fo,0);transform:translateX(var(--fx,-10px))}to{opacity:1;transform:none}}
+@keyframes owbarIn{from{opacity:var(--fo,1);transform:translateX(var(--fx,0px))}to{opacity:0;transform:translateX(-28px)}}
+
+/* the right side. SIGN IN IS AN OUTLINED BUTTON, never loose words (S20 amended, founder/790, 2026-10-16: "they must have
+   the border around the button i dont want any buttons that are just loose text use the canonical button surfaces"):
+   S20's Outlined kind, its one height, pill, 14px at 600 and a 1px ring in the words' own colour, taken from the shared
+   tokens (--ow-b-*, oneway-popit.css "ONE BUTTON LANGUAGE") where the page loads them and their values where it does not
+   (the legal pages, Security, the 404 load only this). Drawn in the bar's own ink, not the page's: the bar is a dark room
+   on every site page, also in a light system theme where the page's --ow-ink is dark. The OS's "Open the App" is the
+   same kind, and so is every bordered button on the landing's pages (landing.css, "ONE OUTLINED BUTTON ON EVERY LANDING
+   PAGE"): one padding at every width, the token's, so a page's pills and Sign in measure the same on a phone too. */
+.owbar-right{margin-left:auto;display:flex;align-items:center;gap:8px;position:relative;z-index:1}
+.owbar-signin{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:none;
+  min-height:var(--ow-b-h,36px);padding:0 var(--ow-b-px,16px);border:1px solid currentColor;border-radius:var(--ow-b-r,999px);
+  background:transparent;color:#fff;font-family:inherit;font-size:14px;font-weight:600;line-height:1.2;letter-spacing:0;
+  white-space:nowrap;transition:background .2s,opacity .25s}
+.owbar-signin:hover{background:rgba(255,255,255,.08)}                  /* S20's soft wash, in the bar's ink */
+.owbar-signin:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+
+/* SIGNED IN, SIGN IN IS YOUR FACE (founder/790; oneway-bar.js, WHO IS HERE). A round button the size of every button,
+   the person's picture cut a circle (S14: every profile picture is a circle, everywhere), or with none their outline on
+   a wash of their own hue (the one face rule, as a card's face draws it). No ring of the button's own and no glow round
+   the face, ever (S14): a hairline highlight only, a little brighter under the pointer.
+   for his eye: 32px inside the 36px button, so the face sits on the bar's centre line beside the pages. */
+.owbar-signin.owbar-you{width:var(--ow-b-h,36px);min-width:var(--ow-b-h,36px);height:var(--ow-b-h,36px);padding:0;
+  border-color:transparent;border-radius:50%}
+.owbar-signin.owbar-you:hover{background:transparent}
+.owbar-face{position:relative;display:grid;place-items:center;width:32px;height:32px;border-radius:50%;overflow:hidden;
+  background:hsl(var(--ow-user-hue,265) 80% 58% / .24);color:#fff}   /* their hue (oneway-hue.js), as the App paints it */
+.owbar-face::after{content:"";position:absolute;inset:0;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);
+  pointer-events:none;transition:box-shadow .2s}
+.owbar-you:hover .owbar-face::after{box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)}
+.owbar-face img{width:100%;height:100%;object-fit:cover;display:block}
+.owbar-face .ow-facemark{width:62%;height:62%;display:block;margin:auto;opacity:.86}
+/* asking who is signed in: the slot keeps still (2.5 s at most) rather than show a Sign in that turns into a face.
+   for his eye: still and empty while it asks, never a placeholder face */
+.owbar--asking .owbar-signin{opacity:0;pointer-events:none}
+
+/* THE OS WEARS THIS BAR (oneway-os.html, the founder 2026-10-16: "give oneway os the same header bar that the landing
+   page has"). The site's pages are dark; the OS has a light room as well, chosen by the person (ow_theme). .owbar--room
+   keeps the bar exactly as it is in the dark and, in the light room, draws it in that room: the black wordmark file
+   (founder/519: a different file, never a filter, which the phone's safe floor strips), the room's ink for the words,
+   and the room's own ground once the page is under it. Only a page that marks its bar .owbar--room changes. */
+html[data-theme="light"] .owbar--room .owbar-mark img{content:url(/logo-black.png)}
+html[data-theme="light"] .owbar--room .owbar-pages a{color:rgba(20,19,31,.64)}
+html[data-theme="light"] .owbar--room .owbar-pages a:is(:hover,:focus-visible,[aria-current="page"]){color:rgba(20,19,31,.96)}
+html[data-theme="light"] .owbar--room .owbar-pages a:focus-visible{outline-color:rgba(20,19,31,.6)}
+html[data-theme="light"] .owbar--room .owbar-signin{color:var(--ow-ink,#14131f)}
+html[data-theme="light"] .owbar--room .owbar-signin:hover{background:rgba(20,19,31,.06)}
+html[data-theme="light"] .owbar--room .owbar-face{color:var(--ow-ink,#14131f)}
+html[data-theme="light"] .owbar--room .owbar-face::after{box-shadow:inset 0 0 0 1px rgba(20,19,31,.14)}
+html[data-theme="light"] .owbar--room.owbar--scrolled{background:color-mix(in srgb,var(--ow-ground,#eceaf3) 90%,transparent);
+  border-bottom-color:rgba(20,19,31,.08)}
+
+/* THE ONE FOOTER (founder/801, 2026-10-17: "put all pages at bottom with privacy terms data deltion and corporate
+   charter"). Every landing page ends with the same footer, the same markup on each (`footer.owfoot`): the wordmark
+   home, every page of the site, then Privacy, Terms, Data Deletion and the Corporate Charter, then the company's line
+   (founder/493: "2027, Oneway Technologies LLC"). It lives here because this is the one sheet every public page loads
+   with the bar. Plain links in the page's own ink, never a button, a slab or a box (S20): one hairline above it.
+   It reads in both rooms because its words are the page's ink (white on the landing's dark pages; the legal pages'
+   ink when the system is light, where oneway-legal.css swaps the wordmark for the black file, founder/519): the pages
+   at 80%, the legal links at 72%, the line at 62%, each measured at 4.5:1 or more on rendered pixels
+   (context/audits/landing-2026-10-17/). It replaced three footers: the landing's own, site-page.css's .foot and the
+   legal pages' row. */
+.owfoot{box-sizing:border-box;padding:40px max(24px,env(safe-area-inset-right)) calc(40px + env(safe-area-inset-bottom,0px)) max(24px,env(safe-area-inset-left));
+  border-top:1px solid rgba(128,128,128,.24);background:transparent;color:inherit;text-align:left;
+  font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-style:normal;font-weight:500;
+  font-size:13px;line-height:1.5;letter-spacing:0}
+@supports (color:color-mix(in srgb,currentColor 10%,transparent)){.owfoot{border-top-color:color-mix(in srgb,currentColor 14%,transparent)}}
+.owfoot-in{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px 32px}
+.owfoot-mark{grid-column:1 / -1;justify-self:start;display:inline-flex;padding:4px 0;opacity:.9}
+.owfoot-mark img{height:14px;width:auto;display:block}
+.owfoot-pages,.owfoot-legal{display:flex;flex-wrap:wrap;gap:2px 22px;min-width:0}
+.owfoot-pages{grid-column:1 / -1}
+.owfoot a{color:inherit;text-decoration:none;white-space:nowrap}
+.owfoot nav a{display:inline-block;padding:5px 0;transition:opacity .15s}
+.owfoot-pages a{font-size:14px;opacity:.8}
+.owfoot-legal a{opacity:.72}
+.owfoot nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
+.owfoot a:focus-visible{opacity:1;outline:2px solid currentColor;outline-offset:3px;border-radius:4px}
+.owfoot-line{font-size:12px;font-weight:400;opacity:.62;justify-self:end;white-space:nowrap}
+@media (max-width:640px){
+  .owfoot-in{grid-template-columns:minmax(0,1fr);gap:14px}
+  .owfoot-pages,.owfoot-legal{gap:2px 18px}
+  .owfoot-line{justify-self:start}
+}
+
+@media (max-width:1060px){.owbar-pages a{font-size:13px;padding:7px 7px}}
+@media (max-width:900px){.owbar-pages a{font-size:12.5px;padding:7px 5px}}
+/* a narrow window: the wordmark already sits at the left, so only the pages move */
+@media (max-width:860px){
+  .owbar-brand{left:max(28px,env(safe-area-inset-left));transform:none}
+  .owbar-pages{margin-left:12px}
+}
+@media (max-width:680px){
+  .owbar-right .pill{display:none}   /* a narrow bar keeps Sign in; the page pins its own Claim to the phone's edge */
+  .owbar{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
+  .owbar-brand,.owbar--open .owbar-brand{left:max(20px,env(safe-area-inset-left))}
+}
+@media (prefers-reduced-motion:reduce){
+  .owbar-brand,.owbar-pages{transition:none}
+  .owbar--open .owbar-pages a,.owbar--closing .owbar-pages a{animation:none}
+}

@@ -4,32 +4,59 @@
    card is `.ow-popit` and the chosen kind `.ow-popit-btn--fill`, both in oneway-popit.css (C-app, b6ec8b5d). Only the
    card's room and the switch's shape are set here. */
 .rsv{max-width:460px;margin:0 auto;padding:24px;text-align:left;color:#fff}
-.rsv-t{font-family:var(--font-display);font-weight:850;font-size:clamp(24px,3vw,30px);letter-spacing:-.03em;line-height:1.1;margin:0}
+.rsv-t{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:850;font-size:clamp(24px,3vw,30px);letter-spacing:-.03em;line-height:1.1;margin:0}
 .rsv form{display:flex;flex-direction:column;gap:12px;margin-top:18px}
 .rsv form[hidden],.rsv .rsv-done[hidden]{display:none}
-/* the kind of name — a segmented pill, the App's Feed / Scroll control */
-.rsv-types{display:grid;grid-template-columns:1fr 1fr;padding:4px;border-radius:999px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
-.rsv-type{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;padding:0 10px;border:0;border-radius:999px;cursor:pointer;
-  font:650 14px/1 var(--font);transition:background .3s,color .3s,box-shadow .3s}
-.rsv-type:not(.ow-popit-btn--fill){background:transparent;color:rgba(255,255,255,.7)}
-.rsv-type em{font-style:normal;font-weight:500;color:rgba(255,255,255,.45)}
-.rsv-type.on em{color:rgba(255,255,255,.85)}
+/* THE KIND OF NAME IS A CHOICE OF TWO, S20's QUIET KIND (round 2, 2026-10-16: the chosen one was a full hue pill, the
+   same fill as "Reserve your @name" under it, so the form showed two Primaries; both chips were 40px at 650, 13.5px on a
+   phone). A choice in a set is its words on nothing, the selected one a soft fill and the rest a soft wash under the
+   pointer, at the one button size (36px, 14px at 600, no tracking), as the App's Feed / Scroll and a setting's choices
+   draw it (oneway-popit.css "QUIET, the selected one of a set"). The submit stays the one Primary. No track behind them:
+   a gray box is not a surface (S20). reserve.js still marks the chosen one `.ow-popit-btn--fill`, which the shared
+   language fills in the hue, so the choice is held here by the form's id, over that rule. In the bar's ink (white at
+   12% and 8%), because the card is dark in every room.
+   for his eye: S20's shared selected fill also sets the words at 700; these keep 600, so the words do not move. */
+.rsv-types{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:0;border-radius:0;background:none;box-shadow:none}
+html body #rsv .rsv-type{display:flex;align-items:center;justify-content:center;gap:7px;box-sizing:border-box;min-height:var(--ow-b-h,36px);
+  padding:0 var(--ow-b-px,16px);border:0!important;border-radius:var(--ow-b-r,999px)!important;cursor:pointer;
+  background:transparent;background-image:none;box-shadow:none;text-shadow:none;filter:none;transform:none;
+  font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:14px;font-weight:600;line-height:1.2;letter-spacing:0;color:rgba(255,255,255,.72);
+  transition:background .2s,color .2s}
+html body #rsv .rsv-type:hover:not(:disabled){background:rgba(255,255,255,.08);color:#fff;filter:none}
+html body #rsv .rsv-type[aria-pressed="true"],html body #rsv .rsv-type[aria-pressed="true"]:hover:not(:disabled){background:rgba(255,255,255,.12);color:#fff}
+html body #rsv .rsv-type:focus-visible{outline:2px solid currentColor;outline-offset:2px}
+.rsv-type em{font-style:normal;font-weight:500;color:rgba(255,255,255,.5)}
+.rsv-type[aria-pressed="true"] em{color:rgba(255,255,255,.78)}
 .rsv-handle{display:flex;align-items:center;min-height:56px;border-radius:20px;background:rgba(0,0,0,.34);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);transition:box-shadow .25s}
 .rsv-handle:focus-within{box-shadow:inset 0 0 0 1.5px rgba(var(--h2),.8)}
-.rsv-glyph{flex:none;width:46px;text-align:center;font:800 22px/1 var(--font-display);color:rgb(var(--h2))}
-.rsv-handle input{flex:1;min-width:0;height:56px;padding:0 8px 0 0;font:650 18px/1 var(--font);background:transparent;border:0;outline:none;color:#fff}
+.rsv-glyph{flex:none;width:46px;text-align:center;font-style:normal;font-weight:800;font-size:22px;line-height:1;font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);color:rgb(var(--h2))}
+.rsv-handle input{flex:1;min-width:0;height:56px;padding:0 8px 0 0;font-style:normal;font-weight:650;font-size:18px;line-height:1;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);background:transparent;border:0;outline:none;color:#fff}
+/* ONE FOCUS RING ON THE NAME (round 3, 2026-10-16): the page's own input:focus-visible drew a 2px rectangle, offset 3px,
+   inside the field's rounded ring and past its right edge, whenever choosing a kind or a tap focused it. The field's
+   focus-within ring above is the indicator; the email field already has only its own. */
+.rsv-handle input:focus-visible{outline:none}
 .rsv-state{flex:none;margin-right:14px;display:none;align-items:center;gap:6px;font-size:12.5px;font-weight:650}
 .rsv-state::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
 .rsv[data-state="free"] .rsv-state{display:inline-flex;color:#7ce8ad}
 .rsv[data-state="taken"] .rsv-state{display:inline-flex;color:#ffb3a6}
-.rsv input[type=email]{height:50px;padding:0 18px;font:500 15px/1 var(--font);color:#fff;border:0;outline:none;border-radius:18px;
+.rsv input[type=email]{height:50px;padding:0 18px;font-style:normal;font-weight:500;font-size:15px;line-height:1;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);color:#fff;border:0;outline:none;border-radius:18px;
   background:rgba(0,0,0,.34);box-shadow:inset 0 0 0 1px rgba(255,255,255,.1)}
 .rsv input[type=email]:focus{box-shadow:inset 0 0 0 1.5px rgba(var(--h2),.8)}
 .rsv input::placeholder{color:rgba(255,255,255,.36)}
-.rsv-go{height:52px;border:0;border-radius:999px;cursor:pointer;font:750 15.5px/1 var(--font);color:#0b0b14;background:#fff;
+.rsv-go{height:52px;border:0;border-radius:999px;cursor:pointer;font-style:normal;font-weight:750;font-size:15.5px;line-height:1;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);color:#0b0b14;background:#fff;
   box-shadow:0 12px 30px -12px rgba(var(--h),.9);transition:transform .2s var(--ease),opacity .2s}
 .rsv-go:hover{transform:translateY(-1px)}
 .rsv-go:disabled{opacity:.55;cursor:default;transform:none}
+/* THE WORDS ON THE ONE PRIMARY FOLLOW THIS CARD'S OWN HUE (round 3, 2026-10-16: with Organization chosen, "Reserve your
+   .name" was white on rgb(236,168,58), 2.05:1). The shared language (oneway-popit.css, "THE WORDS ON THE HUE PILL")
+   chooses white or near-black words from the hue's lightness, but it computes --ow-on-h1 once, on :root, from the
+   root's hue, and reserve.js gives this card a hue of its own (--ow-h1 on #rsv), so the button inherited the root's
+   answer. The same rule, the same numbers, decided where this hue is set: the organization's hue now wears near-black
+   words (9.13:1 in rendered pixels, round3/fix-3-primary.json); the person's purple keeps white (4.14:1, the shared Primary's own reading, for his eye). A hold: it
+   goes when the shared rule decides on the button itself. */
+@supports (color: oklch(from red l c h)){
+  #rsv{--ow-on-h1:oklch(from rgb(var(--ow-h1)) calc(.18 + clamp(0, calc((.7 - l) * 1000), 1) * .82) 0 0)}
+}
 .rsv-note{font-size:13px;line-height:1.5;color:rgba(255,255,255,.62);text-align:center;margin:2px 0 0;min-height:0}
 .rsv-note:empty{display:none}
 .rsv-note.err{color:#ffb3a6}
@@ -38,5 +65,5 @@
 .rsv-done .rsv-ref{font-variant-numeric:tabular-nums}
 .rsv-again{margin-top:18px}
 /* a narrow phone: the kind reads by its word alone, so both fit on one row */
-@media(max-width:420px){.rsv{padding:20px 16px}.rsv-type{font-size:13.5px;padding:0 6px}.rsv-type em{display:none}}
+@media(max-width:420px){.rsv{padding:20px 16px}html body #rsv .rsv-type{padding:0 6px}.rsv-type em{display:none}}
 @media(max-width:360px){.rsv-type .sfx{display:none}}

@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8"/>
   <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
+  <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
-  <title>Oneway: your fully customizable social network and OS</title>
+  <title>Oneway - Social Media And AI Business Management Ecosystem</title>
   <meta name="description" content="Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <link rel="canonical" href="https://oneway.center/">
@@ -31,7 +32,8 @@
   <meta name="theme-color" content="#05050b">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
-  <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
+  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
+  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
   <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
   <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
   <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
@@ -40,7 +42,7 @@
   <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center. We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire website.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway: your fully customizable social network and OS","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-09"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#os"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center. Your identity and data stay under your control.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway: your fully customizable social network and OS","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-16"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#os"}]}</script>
   <!-- /SEO -->
   <!-- ═══ MOBILE RENDER SAFE-FLOOR + ON-DEVICE BISECTION (Priority Zero: the
        iPhone Safari renderer crash) ═══════════════════════════════════════
@@ -87,7 +89,7 @@
        The App's own Popit material is loaded here — the same stylesheet and the
        same constructors (OW.glance, OW.card) the App renders with — so a
        Center or an event on this page IS the App's row for it, not a copy. -->
-  <style id="ow-first-screen">html[data-fx="safe"] *, html[data-fx="safe"] ::before, html[data-fx="safe"] ::after { backdrop-filter: none !important; filter: none !important; mix-blend-mode: normal !important; will-change: auto !important; }
+<style id="ow-first-screen">html[data-fx="safe"] *, html[data-fx="safe"] ::before, html[data-fx="safe"] ::after { backdrop-filter: none !important; filter: none !important; mix-blend-mode: normal !important; will-change: auto !important; }
 *, ::before, ::after { box-sizing: border-box; }
 :root { --ow-ground: #000; --ow-ink: #fff; --ow-ink-2: rgba(255,255,255,.68); --ow-ink-3: rgba(255,255,255,.52); --ow-tile-base: rgba(48,50,92,.50); --ow-tile-mid: rgba(40,42,78,.44); --ow-plate: #1c2042; --ow-panel-1: rgba(40,39,70,.95); --ow-panel-2: rgba(24,25,48,.96); --ow-sheet-1: rgba(34,33,58,.9); --ow-sheet-2: rgba(14,14,28,.93); --ow-rim: rgba(255,255,255,.09); --ow-lift: rgba(255,255,255,.2); --ow-seam: rgba(255,255,255,.24); --ow-seam-bead: rgba(255,255,255,.46); --ow-weight: rgba(0,0,0,.4); --ow-drop: rgba(0,0,0,.66); --ow-chrome: rgba(4,5,12,.92); --ow-chrome-rgb: 4,5,12; --ow-scrim: rgba(4,5,14,.5); --ow-field: rgba(0,0,0,.26); --ow-field-edge: rgba(255,255,255,.08); --ow-grain: .14; --ow-stars: 1; }
 html[data-theme="light"][data-theme="light"] { --ow-tile-base: rgba(255,255,255,.62); --ow-ground: #eceaf3; --ow-ink: #14131f; --ow-ink-2: rgba(20,19,31,.86); --ow-ink-3: rgba(20,19,31,.64); --ow-panel-1: rgba(255,255,255,.9); --ow-panel-2: rgba(243,241,249,.94); --ow-sheet-1: rgba(255,255,255,.88); --ow-sheet-2: rgba(240,238,248,.93); --ow-rim: rgba(20,19,31,.09); --ow-lift: rgba(255,255,255,.9); --ow-seam: rgba(20,19,31,.2); --ow-seam-bead: rgba(255,255,255,.72); --ow-weight: rgba(60,52,96,.1); --ow-drop: rgba(48,40,80,.2); --ow-chrome: rgba(252,251,255,.9); --ow-chrome-rgb: 252,251,255; --ow-scrim: rgba(230,228,240,.6); --ow-field: rgba(20,19,31,.045); --ow-field-edge: rgba(20,19,31,.13); --ow-grain: .06; --ow-stars: 0; }
@@ -102,9 +104,9 @@ html[data-theme="light"][data-theme="light"] { --ow-h1-ink: color-mix(in srgb,rg
 :root { --ow-like: #ff0f2d; --ow-like-rgb: 255,15,45; --ow-font-display: 'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --ow-font: 'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --ow-font-atmos: 'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; --ow-ease: cubic-bezier(.4,0,.2,1); --ow-spring: cubic-bezier(.34,1.56,.64,1); --ow-settle: cubic-bezier(.16,.84,.28,1); --ow-gut: max(16px,env(safe-area-inset-left)); }
 :root { --ow-btn-r: 14px; }
 html[data-simple="1"] { --ow-btn-r: 999px; }
-html[data-simple="1"] .po-act { background: rgba(var(--h,var(--ow-h1)),.16); box-shadow: none; border: 0px; }
-html[data-simple="1"] .po-act[data-act="on"], html[data-simple="1"] .ow-popit-btn--fill { background: rgb(var(--h,var(--ow-h1))); color: rgb(7, 7, 12); box-shadow: none; }
-@media (hover: hover) and (pointer: fine){html[data-simple="1"] .po-act:hover:not(:disabled) { transform: none; background: rgba(var(--h,var(--ow-h1)),.24); box-shadow: none; }}
+html[data-simple="1"] .po-act, html[data-simple="1"] .ow-popit-btn--fill { background: transparent; box-shadow: none; border: 0px; }
+html[data-simple="1"] .po-act[data-act="on"], html[data-simple="1"] .ow-popit-btn--fill { background: transparent; color: rgb(var(--h,var(--ow-h1))); box-shadow: none; }
+@media (hover: hover) and (pointer: fine){html[data-simple="1"] .po-act:hover:not(:disabled), html[data-simple="1"] .ow-popit-btn--fill:hover:not(:disabled) { transform: none; background: color-mix(in srgb,var(--ow-ink) 8%,transparent); box-shadow: none; }}
 html[data-world="plain"] .ow-world { display: none; }
 html[data-world="plain"] body { background: var(--ow-ground); }
 html[data-world="plain"] .ow-cv-face, html[data-world="plain"] .po-card[data-blended] .po-card__face { background-color: color-mix(in srgb, var(--ow-ground) 78%, transparent); }
@@ -145,10 +147,6 @@ html[data-fx="safe"] .po-sheet__seam::after { display: none; }
   0% { background-position: 120% 0px; }
   100% { background-position: -20% 0px; }
 }
-@keyframes po-say { 
-  0% { opacity: 0; transform: translateY(-3px); }
-  100% { opacity: 1; transform: none; }
-}
 html[data-theme="light"][data-theme="light"] .ow-cv-t, html[data-theme="light"][data-theme="light"] .ow-upcoming { box-shadow: 0 0 26px -18px rgba(var(--ow-h1),.30); }
 @media (hover: hover) and (pointer: fine){html[data-theme="light"][data-theme="light"] .ow-cv-t:hover { box-shadow: 0 0 30px -16px rgba(var(--ow-h1),.42); }}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-t, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-upcoming { box-shadow: 0 0 26px -18px rgba(var(--ow-h1),.30); }}
@@ -160,6 +158,13 @@ html[data-theme="dark"] .ow-thread + .ow-thread::before { background: rgba(255, 
   0% { box-shadow: 0 0 0 2px rgba(var(--ow-h1),.85); }
   100% { box-shadow: 0 0 0 2px rgba(var(--ow-h1),0); }
 }
+html[data-theme="light"] .ow-prof[data-banner-style="framed"] .ow-prof__hero { --ow-ink: #17151e; --ow-ink-2: rgba(23,21,30,.82); --ow-ink-3: rgba(23,21,30,.65); }
+html[data-theme="light"] .ow-prof[data-banner-style="framed"] .ow-prof__banner-tools { border-bottom-color: rgba(23, 21, 30, 0.24); }
+html[data-theme="light"] .ow-prof[data-banner-style="framed"] :is(.ow-prof__banner-choice, .ow-prof__banner-depth) { color: rgb(23, 21, 30); }
+html[data-theme="light"] .ow-prof[data-banner-style="framed"] .ow-prof__banner-choice { border-color: rgba(23, 21, 30, 0.32); }
+html[data-theme="light"] .ow-prof[data-banner-style="framed"] .ow-prof__banner-choice[aria-pressed="true"] { background: rgba(23, 21, 30, 0.12); }
+html[data-theme="light"] .ow-prof[data-banner-style="framed"] .ow-prof__banner-depth input { accent-color: rgb(23, 21, 30); }
+@media (min-width: 900px){body:has(.ow-prof) .ow-nav { background: none; }}
 html[data-theme="light"][data-theme="light"] .ow-cpage__row[data-open="1"] .ow-cpage__v { color: rgb(15, 138, 77); }
 @keyframes owRec { 
   50% { opacity: 0.55; }
@@ -282,6 +287,21 @@ html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over) { display: none; }
 html[data-ow-view="immersive"] .ow-worlds { display: none; }
 html[data-motion="reduced"] * { animation: auto ease 0s 1 normal none running none !important; transition: none !important; }
 html[data-motion="reduced"] .ow-world__neb, html[data-motion="reduced"] .ow-world__stars { animation: auto ease 0s 1 normal none running none !important; }
+@keyframes ow-lit { 
+  0% { transform: scale(0.55) rotate(-18deg); }
+  42% { transform: scale(1.34) rotate(8deg); }
+  68% { transform: scale(0.93) rotate(-3deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+@keyframes ow-halo { 
+  0% { opacity: 0; }
+  35% { opacity: 0.55; }
+  100% { }
+}
+@keyframes ow-typing { 
+  0%, 60%, 100% { transform: translateY(0px); opacity: 0.45; }
+  30% { transform: translateY(-1.7px); opacity: 1; }
+}
 @keyframes ow-turn { 
   0% { opacity: 0.44; }
   4% { opacity: 1; }
@@ -447,13 +467,13 @@ html body:has(.ow-map[data-hour="day"]) .ow-nav, html[data-fx="safe"] body:has(.
 html body:has(.ow-map[data-hour="day"]) .ow-nav__b { color: rgba(20, 24, 40, 0.62); }
 html body:has(.ow-map[data-hour="day"]) .ow-nav__b[aria-current="page"] { color: rgb(20, 24, 40); }
 html[data-fx="safe"] .ow-map__route { background: rgba(7, 8, 18, 0.95); backdrop-filter: none; }
-html[data-theme="light"][data-theme="light"] .ow-cv-face, html[data-theme="light"][data-theme="light"] .ow-popit::before, html[data-theme="light"][data-theme="light"] .ow-cv-pick__row, html[data-theme="light"][data-theme="light"] .ow-reqs, html[data-theme="light"][data-theme="light"] .ow-msg:not([data-mine]), html[data-theme="light"][data-theme="light"] .po-sheet, html[data-theme="light"][data-theme="light"] .ow-cpage__ev, html[data-theme="light"][data-theme="light"] .ow-claims__row, html[data-theme="light"][data-theme="light"] .ow-map__tile, html[data-theme="light"][data-theme="light"] .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
-    radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.13), transparent 64%),
+html[data-theme="light"][data-theme="light"] .ow-cv-face, html[data-theme="light"][data-theme="light"] .ow-popit::before, html[data-theme="light"][data-theme="light"] .ow-cv-pick__row, html[data-theme="light"][data-theme="light"] .ow-reqs, html[data-theme="light"][data-theme="light"] .ow-msg:not([data-mine]), html[data-theme="light"][data-theme="light"] .po-sheet, html[data-theme="light"][data-theme="light"] .ow-cpage__ev, html[data-theme="light"][data-theme="light"] .ow-claims__row, html[data-theme="light"][data-theme="light"] .ow-map__tile, html[data-theme="light"][data-theme="light"] .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.32), transparent 62%),
+    radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.22), transparent 64%),
     linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97)); box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
     inset 0 -26px 46px rgba(76,66,120,.055),
     inset 0 0 0 1px rgba(20,19,31,.06),
     0 0 0 1px rgba(var(--h),.30),
-    0 10px 26px -14px rgba(48,40,80,.28); }
+    0 14px 28px -14px rgba(48,40,80,.38); }
 html[data-theme="light"][data-theme="light"] .po-card__face::before { border-color: rgba(var(--h),.34); }
 html[data-theme="light"][data-theme="light"] .po-card__face::after, html[data-theme="light"][data-theme="light"] html[data-theme="light"][data-theme="light"] .po-sheet.is-open::after { opacity: 0.04; }
 html[data-theme="light"][data-theme="light"] .po-card, html[data-theme="light"][data-theme="light"] .ow-popit { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }
@@ -485,13 +505,13 @@ html[data-theme="light"][data-theme="light"] .ow-sub { background: rgba(var(--ow
   0% { opacity: 0; transform: translate3d(0px, 4px, 0px) scale(0.94); }
   100% { opacity: 1; transform: none; }
 }
-@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-face, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-popit::before, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-pick__row, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-reqs, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-msg:not([data-mine]), html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet, html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.20), transparent 62%),
-      radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.13), transparent 64%),
+@media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-face, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-popit::before, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-cv-pick__row, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-reqs, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-msg:not([data-mine]), html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet, html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face { background: radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.32), transparent 62%),
+      radial-gradient(92% 62% at 50% 116%,  rgba(var(--h2),.22), transparent 64%),
       linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97)); box-shadow: inset 0 1px 0 rgba(255,255,255,.9),
       inset 0 -26px 46px rgba(76,66,120,.055),
       inset 0 0 0 1px rgba(20,19,31,.06),
       0 0 0 1px rgba(var(--h),.30),
-      0 10px 26px -14px rgba(48,40,80,.28); }}
+      0 14px 28px -14px rgba(48,40,80,.38); }}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face::before { border-color: rgba(var(--h),.34); }}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card__face::after, html:not([data-theme="dark"]):not([data-theme="light"]) html:not([data-theme="dark"]):not([data-theme="light"]) .po-sheet.is-open::after { opacity: 0.04; }}
 @media (prefers-color-scheme: light){html:not([data-theme="dark"]):not([data-theme="light"]) .po-card, html:not([data-theme="dark"]):not([data-theme="light"]) .ow-popit { box-shadow: 0 0 26px -18px rgba(var(--h),.30); }}
@@ -526,21 +546,48 @@ html[data-motion="reduced"] .ow-dd { transition: none; }
 }
 html[data-viewer="open"] { overflow: hidden; }
 html[data-motion="reduced"] .ow-openflip { display: none; }
-html[data-simple="1"] .po-river { gap: 0px; }
-html[data-simple="1"] .po-river > .po-card, html[data-simple="1"] .ow-fpos > .po-card { border-radius: 0px; box-shadow: none; background: none; border-bottom: 1px solid var(--ow-rim); padding: 14px 0px 10px; margin: 0px; }
-html[data-simple="1"] .po-river > .po-card:last-child { border-bottom: 0px; }
-html[data-simple="1"] .po-river > .po-card::before, html[data-simple="1"] .po-river > .po-card::after, html[data-simple="1"] .ow-fpos > .po-card::before, html[data-simple="1"] .ow-fpos > .po-card::after, html[data-simple="1"] .po-river > .po-card > .po-card__face, html[data-simple="1"] .ow-fpos > .po-card > .po-card__face { display: none; }
-html[data-simple="1"] .po-card__cover { border-radius: 0px; width: calc(100% + 32px); margin-left: -16px; margin-right: -16px; }
-html[data-simple="1"] .po-shots { border-radius: 0px; }
+html[data-simple="1"] .po-river { gap: 0px; border: 1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent); border-radius: 24px; box-sizing: border-box; background: color-mix(in srgb,var(--ow-ground) 97%,rgb(var(--ow-h1)) 3%); overflow: hidden; }
+html[data-simple="1"] .po-river > .ow-hlband { padding: 16px 16px 0px; margin-bottom: 8px; min-width: 0px; }
+html[data-simple="1"] .po-river > .po-card, html[data-simple="1"] .ow-fpos > .po-card { border-radius: 0px; box-shadow: none; background: none; border: 0px; padding: 0px; margin: 0px; }
+html[data-simple="1"] .po-river > .po-card { display: grid; grid-template-columns: 40px minmax(0px, 1fr); gap: 0px 12px; padding: 16px 24px; border-top: 1px solid color-mix(in srgb,var(--ow-ink) 8%,transparent); }
+html[data-simple="1"] .po-river > .po-card:first-child { border-top: 0px; }
+html[data-simple="1"] .po-river > .po-card > span { grid-column: 2; min-width: 0px; }
+html[data-simple="1"] .po-river > .po-card > .po-card__who { grid-area: 1 / 1 / auto / -1; margin: 0px 0px 4px; width: max-content; max-width: calc(100% - 24px); padding: 0px; gap: 12px; justify-self: start; }
+html[data-simple="1"] .po-river > .po-card .po-card__av { width: 40px; height: 40px; }
+html[data-simple="1"] .po-river > .po-card > .po-card__from { grid-area: 1 / 2; place-self: start end; position: static; }
+html[data-simple="1"] .po-river > .po-card > :is(.po-card__body, .po-card__media, .po-card__foot, .po-card__known) { grid-column: 2; margin: 0px; padding: 0px; min-width: 0px; }
+html[data-simple="1"] .po-river > .po-card > .po-card__foot { padding-top: 10px; }
+html[data-simple="1"] .po-river > .po-card .po-acts { justify-content: flex-start; gap: 14px; flex-wrap: wrap; }
+html[data-simple="1"] .po-river > .po-card .po-card__d { font: 400 16px/1.5 var(--ow-font); margin-top: 0px; }
+html[data-simple="1"] .po-river > .po-card .po-card__media { margin-top: 10px; }
+@media (max-width: 480px){html[data-simple="1"] .po-river > .po-card { grid-template-columns: 32px minmax(0px, 1fr); gap: 0px 8px; padding: 14px 12px; }}
+@media (max-width: 480px){html[data-simple="1"] .po-river > .po-card .po-card__av { width: 32px; height: 32px; }}
+@media (max-width: 480px){html[data-simple="1"] .po-river > .po-card > .po-card__who { gap: 8px; }}
+html[data-simple="1"] .ow-fpos > .po-card, html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card { border: 1px solid color-mix(in srgb,var(--ow-ink) 12%,transparent); border-radius: 8px; background: none; box-shadow: none; }
+html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card { transform: none; width: 100%; max-width: 100%; margin: 0px; }
+html[data-simple="1"] .po-river > .po-card::before, html[data-simple="1"] .po-river > .po-card::after, html[data-simple="1"] .ow-fpos > .po-card::before, html[data-simple="1"] .ow-fpos > .po-card::after, html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card::before, html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card::after, html[data-simple="1"] .po-river > .po-card > .po-card__face, html[data-simple="1"] .ow-fpos > .po-card > .po-card__face, html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card > .po-card__face { display: none; }
+html[data-simple="1"] :is(.po-river, .ow-fpos) .po-card__cover { border-radius: 8px; width: 100%; margin-left: 0px; margin-right: 0px; }
+html[data-simple="1"] :is(.po-river, .ow-fpos) .po-shots { border-radius: 8px; }
+html :is(.po-card__foot, .po-acts--rail) .po-act, html :is(.po-card__foot, .po-acts--rail) .po-act[data-act="on"], html :is(.po-card__foot, .po-acts--rail) .po-act:hover:not(:disabled) { background: transparent; border: 0px; box-shadow: none; transform: none; }
+html :is(.po-card__foot, .po-acts--rail) .po-act[data-po-respond="like"][aria-pressed="true"] { color: var(--ow-like); }
+html :is(.po-card__foot, .po-acts--rail) .po-act:focus-visible { outline: currentcolor solid 2px; outline-offset: 4px; }
 @media (hover: hover) and (pointer: fine){html[data-simple="1"] .po-river > .po-card:hover, html[data-simple="1"] .ow-fpos > .po-card:hover { transform: none; box-shadow: none; }}
 html[data-simple="1"] .po-river > .po-card .po-card__body { background: none; }
 html[data-simple="1"] .ow-cv-posts { padding: 0px; gap: 0px; }
 html[data-simple="1"] .ow-cv-posts__k { padding: 8px 12px 6px; }
-html[data-simple="1"] .ow-cv-posts__list { gap: 0px; }
-html[data-simple="1"] .ow-cv-posts .po-card { border-radius: 0px; box-shadow: none; padding: 14px 0px 10px; border-top: 1px solid var(--ow-hair,rgba(255,255,255,.10)); }
+html[data-simple="1"] .ow-cv-posts__list { gap: 8px; }
+html[data-simple="1"] .ow-cv-posts .po-card { border-radius: 0px; box-shadow: none; padding: 14px 0px 10px; border-top: 0px; }
 html[data-simple="1"] .ow-cv-posts .po-card:first-child { border-top: 0px; }
 html[data-simple="1"] .ow-cv-posts .po-card__face { display: none; }
 html[data-simple="1"] .ow-cv-posts .po-card__media, html[data-simple="1"] .ow-cv-posts .po-card__cover { border-radius: 0px; margin-left: 0px; margin-right: 0px; width: 100%; }
+html:not([data-simple="1"]) .po-river > .po-card { margin: 0px; }
+html:not([data-simple="1"]) .po-river { gap: 8px; }
+html[data-simple="1"] .ow-ocard--simple > .po-card__face { display: none; }
+html:not([data-simple="1"]) .ow-ocard.ow-ocard--simple { border-radius: 20px 17px 21px 18px; background: none; box-shadow: none; }
+html[data-simple="1"] .ow-ocard.ow-ocard--simple { border-radius: 16px; }
+html[data-theme="light"]:not([data-simple="1"]) .po-river .po-card > .po-card__face { background: radial-gradient(115% 70% at 20% 0%,rgba(var(--h),.24),transparent 75%),
+    radial-gradient(100% 80% at 95% 100%,rgba(var(--h2),.14),transparent 75%),var(--ow-ground); box-shadow: inset 0 1px 0 rgba(255,255,255,.55),inset 0 0 0 1px rgba(var(--h),.18),
+    0 6px 22px -14px rgba(var(--h),.3); }
 html[data-theme="light"] .ow-map__pin i[data-face="picture"] { background: rgb(227, 224, 236); }
 html.ow-viewer-open { overflow: hidden; }
 html[data-ow-thread] .ow-composer { position: fixed; left: 0px; right: 0px; bottom: 0px; z-index: 120; padding: 10px max(14px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom)); background: linear-gradient(0deg,var(--ow-chrome) 78%,transparent); }
@@ -565,6 +612,9 @@ html[data-ow-lens] .ow-compose__lens { background: radial-gradient(120% 70% at 5
              radial-gradient(90% 55% at 50% 112%,rgba(var(--h2,var(--h)),.42),transparent 64%),
              #07060c; box-shadow: none; }
 html[data-ow-lens] .ow-compose__lens video[data-mirror] { transform: scaleX(-1); }
+html[data-ow-lens] .ow-compose__lens[data-state="live"]::before, html[data-ow-lens] .ow-compose__lens[data-state="live"]::after { content: ""; position: absolute; left: 0px; right: 0px; z-index: 1; pointer-events: none; }
+html[data-ow-lens] .ow-compose__lens[data-state="live"]::after { bottom: 0px; height: 46%; background: linear-gradient(to top, rgba(0, 0, 0, 0.62) 0%, rgba(0, 0, 0, 0.38) 38%, rgba(0, 0, 0, 0.12) 70%, transparent 100%); }
+html[data-ow-lens] .ow-compose__lens[data-state="live"]::before { top: 0px; height: 18%; background: linear-gradient(rgba(0, 0, 0, 0.34), transparent); }
 html[data-ow-lens] .ow-compose__shutter { flex: 0 0 auto; width: 70px; height: 70px; border-width: 4px; }
 @media (max-width: 360px){html[data-ow-lens] .ow-compose__bar { gap: 18px; padding: 0px 12px; }}
 @media (min-width: 900px){html[data-ow-lens] .ow-compose__bar { bottom: calc(env(safe-area-inset-bottom) + 62px); }}
@@ -580,6 +630,12 @@ html[data-theme="dark"] .ow-set__row + .ow-set__row::before { background: rgba(2
   0% { opacity: 0; transform: translateX(18px); }
   100% { opacity: 1; transform: none; }
 }
+.ow-set :is(.ow-seg__b, .po-act, .ow-wpick__opt, .ow-set__row, .ow-toast__dismiss):focus-visible { outline: 2px solid var(--ow-ink); outline-offset: 3px; }
+.ow-set :is(.ow-set__row, .ow-switch, .ow-seg__b, .ow-choice .po-act, .ow-rulech__b):focus-visible { outline: 2px solid rgb(var(--ow-h1)); outline-offset: 2px; }
+@media (hover: hover) and (pointer: fine){html[data-simple="1"] :is(.po-river > .po-card, .ow-fpos > .po-card, .ow-cv-posts .po-card):hover { background: rgba(var(--ow-h1),.045); }}
+html[data-simple="1"] :is(.po-river, .ow-fpos) .ow-hlband__row > .po-card:not(.ow-ocard--simple) { background: none; box-shadow: none; border: 0px; }
+html[data-simple="1"] :is(.po-river, .ow-fpos) .ow-hlband__row > .po-card::before, html[data-simple="1"] :is(.po-river, .ow-fpos) .ow-hlband__row > .po-card::after, html[data-simple="1"] :is(.po-river, .ow-fpos) .ow-hlband__row > .po-card > .po-card__face { display: none; }
+html[data-simple="1"] :is(.ow-feedchoice, .ow-feeds__sec) { border: 0px; }
 html[data-ow-marks="color"] .ow-reach__mk[data-platform] { color: var(--mk, currentColor); }
 html[data-theme="dark"][data-ow-marks="color"] .ow-reach__mk[data-platform="x"], html[data-theme="dark"][data-ow-marks="color"] .ow-reach__mk[data-platform="threads"] { color: var(--ow-ink); }
 @keyframes ow-imp-pulse { 
@@ -623,6 +679,8 @@ html[data-theme="light"] .po-card__foot .po-acts .po-act[aria-pressed="true"], h
         clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)); }}}
 html[data-theme="dark"][data-ow-marks="color"] :is(.ow-linkbar__i, .po-card__from__i, .ow-lnked__i, .ow-reach__mk):is([data-platform="x"], [data-platform="threads"], [data-platform="github"]) { color: rgb(242, 242, 246); }
 @media (prefers-color-scheme: dark){html:not([data-theme="light"])[data-ow-marks="color"] :is(.ow-linkbar__i, .po-card__from__i, .ow-lnked__i, .ow-reach__mk):is([data-platform="x"], [data-platform="threads"], [data-platform="github"]) { color: rgb(242, 242, 246); }}
+html[data-ow-view="immersive"] :is(.ow-act__h, .ow-act__tabs, .ow-act__sub) { display: none; }
+html[data-theme="dark"] .ow-set__sec > :is(.ow-switch, .ow-rulech) + :is(.ow-switch, .ow-rulech)::before { background: rgba(255, 255, 255, 0.08); }
 html[data-ow-thread] .ow-top { display: none; }
 html[data-ow-thread] .ow-thread-head { position: sticky; top: 0px; z-index: 110; display: flex; align-items: center; gap: 10px; margin: 0 calc(-1 * var(--ow-gutter,18px)) 4px; padding: calc(env(safe-area-inset-top) + 8px) 8px 9px 6px; background: rgba(var(--ow-chrome-rgb),.74); backdrop-filter: blur(20px) saturate(1.25); box-shadow: rgba(255, 255, 255, 0.07) 0px 1px 0px; }
 html[data-fx="safe"][data-ow-thread] .ow-thread-head { background: rgba(var(--ow-chrome-rgb),.94); }
@@ -733,30 +791,43 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
   100% { transform: scale(1); filter: drop-shadow(transparent 0px 0px 0px); }
 }
 html[data-ow-motion="reduce"] .po-act[data-po-respond="like"].is-smash > svg { animation: auto ease 0s 1 normal none running none; }
-html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; }</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=3deb9ddd" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=3deb9ddd"></noscript>
-  <script defer src="/frontend/shared/oneway-hue.js?v=28eb408a"></script>
-  <script defer src="/frontend/shared/oneway-popit.js?v=742a9594"></script>
-  <script defer src="/frontend/shared/oneway-links.js?v=c3df779e"></script>
+html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; }
+html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=86d2cad8" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=86d2cad8"></noscript>
+  <script defer src="/frontend/shared/oneway-hue.js?v=459896eb"></script>
+  <script defer src="/frontend/shared/oneway-popit.js?v=29fed207"></script>
+  <script defer src="/frontend/shared/oneway-links.js?v=77fb7f61"></script>
+  <!-- ★ S21: a Center and a person are drawn by ONE renderer from ONE compact read (api/oneway/cards): this page composes
+       no display field itself. -->
+  <script defer src="/frontend/shared/oneway-cards.js?v=4e65926f"></script>
+  <script defer src="/frontend/landing/oneway-deck.js?v=8c82c7b8"></script>
   <!-- ★ FOUNDER/401: a Center opens RIGHT OVER this page — the App's own
        surface for it, projected, not a trip to the App. These are the App's
        surfaces and the one projection verb; a page anywhere can carry them. -->
-  <script defer src="/frontend/app/popit-live.js?v=17eeb9fc"></script>
+  <script defer src="/frontend/shared/oneway-data.js?v=cf5ca700"></script>
+  <script defer src="/frontend/app/popit-live.js?v=17007cdf"></script>
+  <script defer src="/frontend/app/pages/pages.js?v=6dc520a6"></script>
+  <script defer src="/frontend/app/me/me.js?v=82daa6ca"></script>
+  <script defer src="/frontend/app/center/center.js?v=0ef3c59f"></script>
+  <script defer src="/frontend/app/account/account.js?v=7a86ab94"></script>
+  <script defer src="/frontend/app/compose/compose.js?v=b63baf46"></script>
   <!-- A CENTER'S SITE, PROJECTED (B, founder/437): the pages Lightbulb wrote, natively in
        the site's own fonts and colours, and the company's own site exactly, as the
        Center's categories. After popit-live.js, whose Center surface asks OW.site for them. -->
-  <script defer src="/frontend/shared/oneway-site.js?v=a700d81d"></script>
-  <script defer src="/frontend/shared/oneway-feed.js?v=c4ea1b02"></script>
+  <script defer src="/frontend/shared/oneway-site.js?v=4215b326"></script>
+  <script defer src="/frontend/shared/oneway-feed.js?v=b70fe077"></script>
   <script defer src="/frontend/shared/ow-time.js?v=b4d77e6d"></script>
-  <script defer src="/frontend/app/posts/posts.js?v=2b3a444c"></script>
-  <script defer src="/frontend/app/events/events.js?v=e036f0d2"></script>
-  <script defer src="/frontend/app/messaging/messaging.js?v=85b7e02b"></script>
-  <script defer src="/frontend/shared/canvas.js?v=a92dd187"></script>
-  <script defer src="/frontend/shared/oneway-projection.js?v=7d765e5f"></script>
+  <script defer src="/frontend/app/posts/posts.js?v=2424507b"></script>
+  <script defer src="/frontend/app/events/events.js?v=d304a1ef"></script>
+  <script defer src="/frontend/app/messaging/messaging.js?v=2938bfef"></script>
+  <script defer src="/frontend/shared/canvas.js?v=6d97a246"></script>
+  <script defer src="/frontend/shared/oneway-projection.js?v=8c627fe2"></script>
   <script defer src="/frontend/landing/static/inline-01-b7399efeeb.js"></script>
   <script defer src="/frontend/shared/oneway-galaxy.js?v=224cb07e"></script>
+  <script defer src="/frontend/landing/static/inline-02-e399ce2ef7.js"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=c3d314d6"/>
-  <link rel="stylesheet" href="/frontend/landing/reserve.css?v=77707839"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=32f96c77"/>
+  <link rel="stylesheet" href="/frontend/landing/reserve.css?v=afa8ff6f"/>
+  <link rel="stylesheet" href="/frontend/landing/oneway-deck.css?v=603f582e"/>
   <!-- founder/530: "WE MOVED TO A ONEWAY FONT." The landing page draws in ONEWAY
        Sans alone, from /assets/fonts (S16). It still fetched Space Grotesk,
        Outfit and Inter from Google and Satoshi from Fontshare — four faces
@@ -796,111 +867,27 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       --ow-h2:93,226,255;   /* secondary (cyan)  */
     }
     /* hue transitions feel like the world responding to where you are */
-    .po-rest,.po-modal,.nav-center,.po-ic,.nl-ic{transition-property:transform,box-shadow,background,color,opacity}
+    .po-rest,.po-modal,.po-ic{transition-property:transform,box-shadow,background,color,opacity}
     html{scroll-behavior:smooth;overflow-x:hidden;background:var(--bg)}
-    body{font-family:var(--font);background:transparent;color:var(--white);-webkit-font-smoothing:antialiased;line-height:1.6}
+    /* THE ROOT FONT IS A LITERAL STACK (the Safari guard, 2026-10-17; api/oneway/platform/test_landing_fonts.py): never only
+       var(), so a token that does not resolve can never hand the page to the browser's serif */
+    body{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:transparent;color:var(--white);-webkit-font-smoothing:antialiased;line-height:1.6}
     /* Persistent atmosphere — no scene is ever flat black. A subtle, fixed,
        hue-tinted field behind every section; it is what remains once the hero's
        animated atmosphere fades past the first viewport. CSS-only, no perf cost,
        so every scene still feels like the same world (atmosphere is structural). */
     body::before{content:"";position:fixed;inset:0;z-index:-3;pointer-events:none;
       background:
-        radial-gradient(115% 75% at 16% 4%, rgba(74,66,138,.15), transparent 56%),
-        radial-gradient(115% 80% at 86% 20%, rgba(34,74,140,.12), transparent 56%),
-        radial-gradient(140% 95% at 52% 114%, rgba(40,96,116,.11), transparent 60%);}
+        radial-gradient(115% 75% at 16% 4%, rgba(var(--land-hue-0,6,182,212),.18), transparent 56%),
+        radial-gradient(115% 80% at 86% 20%, rgba(var(--land-hue-1,167,139,250),.16), transparent 56%),
+        radial-gradient(140% 95% at 52% 114%, rgba(var(--land-hue-2,245,158,11),.14), transparent 60%);}
     /* atmospheric type utility — dreamy, airy, wide-tracked. Swap the prototype face
        in --font-atmos to retune the whole world layer in one line. */
-    .ow-atmos{font-family:var(--font-atmos);font-weight:400;letter-spacing:.2em}
+    .ow-atmos{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:400;letter-spacing:.2em}
     a{color:inherit;text-decoration:none}
     ::-webkit-scrollbar{width:2px}
     ::-webkit-scrollbar-thumb{background:#1c1c1c;border-radius:2px}
 
-    /* ── NAV ──────────────────────────────────────────────── */
-    .nav{
-      position:fixed;top:0;left:0;right:0;z-index:100;
-      height:56px;display:flex;align-items:center;
-      padding:0 max(36px,env(safe-area-inset-right)) 0 max(36px,env(safe-area-inset-left));
-      transition:background .35s var(--ease),border-color .35s var(--ease);
-      border-bottom:1px solid transparent;
-    }
-    .nav.scrolled{
-      background:rgba(0,0,0,0.9);
-      backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
-      border-bottom-color:var(--border);
-    }
-    /* Centered brand: the ONEWAY wordmark lands here from the hero on scroll and
-       becomes the persistent navbar logo; hovering it reveals the directory. */
-    .nav-brand{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-      display:flex;flex-direction:column;align-items:center}
-    .nav-brand::after{content:"";position:absolute;top:100%;left:-20px;right:-20px;height:18px} /* hover bridge to menu */
-    .nav-logo{display:inline-flex;align-items:center;opacity:0;transition:opacity .4s var(--ease)}
-    .nav-logo img{height:19px;display:block;opacity:0}   /* hidden: #flyLogo is the one visible logo; this is the hover target + landing reference */
-    /* Directory becomes a clean rounded menu that drops down under the logo on hover */
-    /* The directory is a Popit side-menu (LBP material): translucent gel, thick rounded
-       rim (bright inner + soft outer halo), internal glow, with a selection ring on the
-       hovered item — exactly the Kart-Parts panel language, in ONEWAY's deep-space hue. */
-    .nav-center{
-      --h:var(--ow-h1);--h2:var(--ow-h2);
-      position:absolute;top:100%;left:50%;margin-top:14px;
-      transform:translateX(-50%) translateY(6px);
-      display:flex;flex-direction:column;align-items:stretch;gap:4px;
-      padding:12px;min-width:214px;
-      background:radial-gradient(120% 80% at 50% -12%, rgba(var(--h),.34), rgba(var(--h),.05) 60%),
-        linear-gradient(180deg, rgba(40,40,66,.86), rgba(16,16,32,.9));
-      backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);
-      border:0;border-radius:26px;
-      box-shadow:inset 0 2px 1px rgba(255,255,255,.22), inset 0 -16px 30px rgba(0,0,0,.4),
-        0 0 0 2px rgba(var(--h),.5), 0 0 0 6px rgba(var(--h),.12),
-        0 34px 72px -28px rgba(0,0,0,.8), 0 0 60px -18px rgba(var(--h),.55);
-      opacity:0;visibility:hidden;pointer-events:none;
-      transition:opacity .28s var(--ease),transform .28s var(--ease),visibility .28s;
-    }
-    .nav-brand:hover .nav-center{opacity:1;visibility:visible;pointer-events:auto;transform:translateX(-50%) translateY(0)}
-    .nav:not(.scrolled) .nav-center{display:none} /* directory available once the logo is in the bar */
-    .nav-link{
-      display:flex;align-items:center;gap:11px;
-      font-size:13.5px;font-weight:600;color:rgba(255,255,255,.8);
-      padding:8px 14px 8px 8px;border-radius:16px;white-space:nowrap;text-align:left;
-      box-shadow:0 0 0 1.5px rgba(var(--h),0);
-      transition:color .2s,background .2s,box-shadow .2s,transform .2s;
-    }
-    .nav-link:hover{color:#fff;background:rgba(var(--h),.14);
-      box-shadow:0 0 0 2px rgba(var(--h),.7);transform:translateX(2px)}
-    .nl-ic{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:11px;
-      background:radial-gradient(120% 120% at 50% 0,rgba(var(--h),.85),rgba(var(--h2),.4));
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 10px -3px rgba(var(--h),.7)}
-    .nl-ic svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .nav-right{margin-left:auto;display:flex;align-items:center;gap:8px}
-    .nav-signin{font-size:13px;color:var(--muted);padding:7px 14px;transition:color .2s;font-weight:500}
-    .nav-signin:hover{color:var(--white)}
-    .nav-cta{
-      font-size:13px;font-weight:700;color:#000;
-      background:var(--white);padding:8px 20px;border-radius:999px;
-      transition:opacity .2s,transform .2s;
-    }
-    .nav-cta:hover{opacity:.85;transform:translateY(-1px)}
-    /* ONEWAY OS entry — logo lockup pill that routes to the OS dashboard
-       (unauthenticated visitors are redirected to login.html). */
-    .nav-os{
-      display:inline-flex;align-items:center;gap:8px;
-      background:var(--white);color:#000;
-      padding:6px 16px 6px 14px;border-radius:999px;
-      transition:opacity .2s,transform .2s;
-    }
-    .nav-os:hover{opacity:.85;transform:translateY(-1px)}
-    .nav-os img{height:13px;display:block}
-    .nav-os .os{font-size:13px;font-weight:900;font-style:italic;letter-spacing:-.01em;
-      padding-left:0;line-height:1}
-    .nav-app{
-      display:inline-flex;align-items:center;gap:8px;
-      background:rgba(255,255,255,.08);color:var(--white);
-      border:1px solid rgba(255,255,255,.12);
-      padding:6px 14px;border-radius:999px;
-      font-size:13px;font-weight:700;
-      transition:background .2s,transform .2s,border-color .2s;
-    }
-    .nav-app:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.22);transform:translateY(-1px)}
-    .nav-app img{height:13px;display:block}
 
     /* ── HERO ─────────────────────────────────────────────── */
     .hero{
@@ -919,31 +906,15 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       height:auto;
       object-fit:contain;
       margin:0 auto 22px;   /* the promise sits high — the wordmark introduces it, never pushes it down */
-      visibility:hidden;   /* holds hero layout + start geometry; #flyLogo is the visible one */
     }
     @media (max-width:640px){ .hero-mark{ width:48vw; max-height:12vh; margin:0 auto 18px; } }
-    /* SINGLE-ELEMENT logo: the only visible wordmark. Starts over the hero mark, shrinks
-       and rises into the navbar slot on scroll, then stays as the navbar logo. */
-    #flyLogo{
-      position:fixed; top:0; left:0; z-index:200; pointer-events:none;
-      width:min(58vw, 680px); max-height:24vh; height:auto; object-fit:contain;
-      transform-origin:center center; will-change:transform;
-      filter:drop-shadow(0 8px 40px rgba(255,255,255,.06));
-      opacity:0; animation:flyFade .9s .15s var(--ease) forwards;
-    }
-    @keyframes flyFade{to{opacity:1}}
     /* MOBILE HERO — dense + alive, not a poster. Smaller logo + pills, less dead space,
        shorter hero so meaningful content reaches the fold sooner. */
     @media (max-width:640px){
-      #flyLogo{ width:48vw; max-height:12vh; }
       /* bottom padding reserves the scroll hint's lane (line+label ≈ 78px, sitting
          14px off the floor) — the hero's last flow element must never land on it */
       .hero{ min-height:70vh; padding:68px 18px 104px; }
       .hero-btns{ margin-bottom:14px; gap:8px; flex-wrap:nowrap; }
-      .h-btn-os, .h-btn-app{ padding:8px 13px; gap:7px; }
-      .h-btn-os img, .h-btn-app img{ height:11px; }
-      .h-btn-os .os{ font-size:12px; padding-left:0; }
-      .h-btn-app span{ font-size:12px; }
       .hero-scroll{ bottom:14px; }
     }
 
@@ -967,20 +938,9 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       display:flex;align-items:center;gap:8px;
     }
     .h-btn-ghost:hover{border-color:rgba(255,255,255,.35);color:#fff;transform:translateY(-2px)}
-    /* Hero CTAs mirror the top-right nav lockups exactly — the ONEWAY wordmark
-       is always the real logo image (logo-white / logo-black), never font text. */
-    .h-btn-os{display:inline-flex;align-items:center;gap:10px;background:var(--white);color:#000;
-      padding:12px 24px 12px 22px;border-radius:999px;transition:opacity .2s,transform .2s}
-    .h-btn-os:hover{opacity:.88;transform:translateY(-2px)}
-    .h-btn-os img{height:16px;display:block}
-    .h-btn-os .os{font-size:15px;font-weight:900;font-style:italic;letter-spacing:-.01em;
-      padding-left:0;line-height:1}   /* 534: no rule between ONEWAY and the word */
-    .h-btn-app{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);color:var(--white);
-      border:1px solid rgba(255,255,255,.14);padding:12px 22px;border-radius:999px;
-      transition:background .2s,transform .2s,border-color .2s}
-    .h-btn-app:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.24);transform:translateY(-2px)}
-    .h-btn-app img{height:16px;display:block}
-    .h-btn-app span{font-size:15px;font-weight:700;line-height:1}
+    /* The hero's two doors (.h-btn-app, .h-btn-os) carry the ONEWAY wordmark as the real logo image, never font text.
+       Their surface is the landing's one outlined button, `.pill pill--solid` in landing.css ("ONE OUTLINED BUTTON ON
+       EVERY LANDING PAGE"); they were a gray slab and a white slab (founder/790, S20). */
 
     /* mini stats */
     .hero-stats{
@@ -1001,7 +961,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       display:flex;flex-direction:column;align-items:center;gap:8px;
       opacity:0;animation:fadeIn 1s 1.2s forwards;pointer-events:none;
     }
-    .hero-scroll span{font-family:var(--font-atmos);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
+    .hero-scroll span{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:10px;letter-spacing:normal;text-transform:none;color:var(--dim)}
     .scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,rgba(255,255,255,.25),transparent);animation:scrollPulse 2s ease-in-out infinite}
     @keyframes scrollPulse{0%,100%{opacity:.4;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.1)}}
     @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
@@ -1068,12 +1028,12 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
 
     .sec-badge{
       display:inline-flex;align-items:center;gap:7px;
-      font-family:var(--font-atmos);
-      font-size:11px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+      font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);
+      font-size:11px;font-weight:700;letter-spacing:normal;text-transform:none;
       border:1px solid;padding:5px 12px;border-radius:999px;margin-bottom:22px;
     }
     .sec-h2{
-      font-family:var(--font-display);
+      font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);
       font-size:clamp(32px,3.8vw,52px);font-weight:900;
       letter-spacing:-.03em;line-height:1.08;margin-bottom:18px;
     }
@@ -1110,10 +1070,10 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     .glow{position:absolute;pointer-events:none;filter:blur(80px);opacity:.55;animation:glowBreathe 9s ease-in-out infinite}
     .glow-vend{animation-delay:-3s}
     .glow-soft{animation-delay:-6s}
-    .glow-ai{top:-5%;left:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(139,92,255,.1) 0%,transparent 70%)}
-    .glow-vend-pos{top:-5%;right:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(245,158,11,.09) 0%,transparent 70%)}
-    .glow-soft-pos{top:-5%;left:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(167,139,250,.09) 0%,transparent 70%)}
-    .glow-ice-pos{top:-5%;right:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(14,165,233,.08) 0%,transparent 70%)}
+    .glow-ai{top:-5%;left:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(var(--land-hue-1,139,92,255),.1) 0%,transparent 70%)}
+    .glow-vend-pos{top:-5%;right:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(var(--land-hue-3,245,158,11),.09) 0%,transparent 70%)}
+    .glow-soft-pos{top:-5%;left:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(var(--land-hue-2,167,139,250),.09) 0%,transparent 70%)}
+    .glow-ice-pos{top:-5%;right:-10%;width:55%;height:70%;background:radial-gradient(ellipse,rgba(var(--land-hue-0,14,165,233),.08) 0%,transparent 70%)}
 
     /* ── ICEBERG ACCENT ───────────────────────────────────── */
     --ice:#0ea5e9;
@@ -1128,10 +1088,10 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     .ice-result{padding:12px 16px;margin:0 16px 8px;border-radius:10px;background:rgba(14,165,233,.04);border:1px solid rgba(14,165,233,.08);transition:.15s}
     .ice-result:hover{background:rgba(14,165,233,.08);border-color:rgba(14,165,233,.2)}
     .ice-result-title{font-size:12px;font-weight:700;color:#e0f2fe;margin-bottom:3px}
-    .ice-result-src{font-size:10px;color:rgba(14,165,233,.5);margin-bottom:5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+    .ice-result-src{font-size:10px;color:rgba(14,165,233,.5);margin-bottom:5px;font-weight:600;letter-spacing:normal;text-transform:none}
     .ice-result-text{font-size:11.5px;color:rgba(224,242,254,.5);line-height:1.5}
     .ice-answer-box{margin:12px 16px 16px;padding:12px 14px;background:rgba(14,165,233,.07);border:1px solid rgba(14,165,233,.2);border-radius:12px}
-    .ice-answer-label{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#0ea5e9;margin-bottom:6px}
+    .ice-answer-label{font-size:9px;font-weight:800;letter-spacing:normal;text-transform:none;color:#0ea5e9;margin-bottom:6px}
     .ice-answer-text{font-size:12px;color:rgba(224,242,254,.8);line-height:1.65}
 
     /* ── BRAIN ACCENT (Center hue, not cyan) ───────────────── */
@@ -1159,7 +1119,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
        Popit on this page; the lit rim and the glow are the Popit. */
     .ai-vis > *{position:relative;z-index:1}
     .ai-vis-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:2px}
-    .ai-vis-label{font:700 12px/1 var(--font-atmos);color:#c2b1ff;letter-spacing:.18em;text-transform:uppercase}
+    .ai-vis-label{font-style:normal;font-weight:700;font-size:12px;line-height:1;font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);color:#c2b1ff;letter-spacing:normal;text-transform:none}
     /* (removed) .ai-live / .live-dot "Live" status pill — forbidden dashboard signifier (§16.1) */
     .ai-row{position:relative;display:flex;align-items:center;gap:13px;padding:14px 16px;border:0;
       border-radius:19px 14px 17px 15px;
@@ -1185,7 +1145,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     .ai-output{position:relative;margin-top:4px;padding:15px 16px;border-radius:18px 14px 16px 15px;
       background:linear-gradient(160deg,rgba(var(--bh),.12),rgba(255,255,255,.03));
       box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1.5px rgba(var(--bh),.22)}
-    .ai-out-label{font:700 11px/1 var(--font-atmos);letter-spacing:.18em;text-transform:uppercase;color:#b9a4ff;margin-bottom:8px}
+    .ai-out-label{font-style:normal;font-weight:700;font-size:11px;line-height:1;font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);letter-spacing:normal;text-transform:none;color:#b9a4ff;margin-bottom:8px}
     .ai-out-text{font-size:12.5px;color:rgba(255,255,255,.62);line-height:1.6}
 
     /* ── VEND ACCENT ─────────────────────────────────────── */
@@ -1217,13 +1177,13 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       border-bottom:1px solid rgba(245,158,11,.18);
       display:flex;align-items:center;justify-content:center;
     }
-    .vm-screen span{font-size:8px;font-weight:700;color:rgba(245,158,11,.75);letter-spacing:.07em;text-transform:uppercase}
+    .vm-screen span{font-size:8px;font-weight:700;color:rgba(245,158,11,.75);letter-spacing:normal;text-transform:none}
     .vm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:6px}
     .vi{aspect-ratio:1;background:rgba(245,158,11,.04);border-radius:3px;border:1px solid rgba(245,158,11,.09)}
     .vi.on{background:rgba(245,158,11,.16);border-color:rgba(245,158,11,.28);animation:vendOn 2.8s ease-in-out infinite}
     .vi.on.d2{animation-delay:.7s}.vi.on.d3{animation-delay:1.4s}.vi.on.d4{animation-delay:2s}
     @keyframes vendOn{0%,100%{background:rgba(245,158,11,.1)}50%{background:rgba(245,158,11,.28)}}
-    .vm-label{font-size:9px;font-weight:700;color:rgba(245,158,11,.4);letter-spacing:.12em;text-transform:uppercase}
+    .vm-label{font-size:9px;font-weight:700;color:rgba(245,158,11,.4);letter-spacing:normal;text-transform:none}
     .vend-stat{
       font-size:11.5px;color:rgba(245,158,11,.5);
       border:1px solid rgba(245,158,11,.13);padding:7px 16px;border-radius:999px;
@@ -1293,9 +1253,9 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     .ds-dot{width:3px;height:3px;border-radius:50%;flex-shrink:0}
     .ds-body{flex:1}
     .demo-strip-label{
-      font-family:var(--font-atmos);
+      font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);
       font-size:10px;font-weight:700;color:rgba(255,255,255,.2);
-      letter-spacing:.16em;text-transform:uppercase;
+      letter-spacing:normal;text-transform:none;
       display:flex;align-items:center;padding:0 18px 12px;
       gap:8px;
     }
@@ -1313,8 +1273,8 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     }
     .final-cta-inner{position:relative;z-index:2;max-width:640px;margin:0 auto}
     .final-cta-eyebrow{
-      font-family:var(--font-atmos);
-      font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+      font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);
+      font-size:12px;font-weight:700;letter-spacing:normal;text-transform:none;
       color:rgba(255,255,255,.25);margin-bottom:20px;
     }
     .final-cta-h{
@@ -1351,21 +1311,9 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     .pl-item:hover{color:var(--white)}
     .pl-dot{width:6px;height:6px;border-radius:50%;margin-bottom:2px}
 
-    /* ── FOOTER ───────────────────────────────────────────── */
-    footer{
-      padding:40px 36px 32px;
-      border-top:1px solid var(--border);
-    }
-    .footer-inner{
-      max-width:1100px;margin:0 auto;
-      display:flex;align-items:center;justify-content:space-between;
-    }
-    .footer-left{display:flex;align-items:center;gap:28px}
-    .footer-logo{opacity:.4;height:12px}
-    .footer-links{display:flex;gap:20px}
-    .footer-links a{font-size:12px;color:var(--dim);transition:color .15s}
-    .footer-links a:hover{color:var(--off)}
-    .footer-right{font-size:12px;color:var(--dim)}
+    /* ── FOOTER: the one footer of every landing page, `.owfoot`, written once in oneway-bar.css ("THE ONE FOOTER",
+       founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"). Its page-local
+       rules (.footer-inner, .footer-links, .footer-right) are gone with its old markup. ── */
 
     /* ── REVEAL ANIMATIONS ────────────────────────────────── */
     .rv{opacity:0;transform:translateY(26px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
@@ -1386,12 +1334,8 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       .sec-vis,.ai-vis,.ice-vis,.vend-vis{max-width:100%;min-width:0}
       .sec-wrap{padding:0 28px}
       .product-sec{padding:88px 0}
-      .footer-inner{flex-direction:column;gap:20px;text-align:center}
-      .footer-left{flex-direction:column;gap:14px}
     }
     @media(max-width:680px){
-      .nav{padding:0 20px}
-      .nav-center{display:none}
       .hero-stats{flex-direction:column;border-radius:12px;gap:0}
       .h-stat{border-right:none;border-bottom:1px solid var(--border)}
       .h-stat:last-child{border-bottom:none}
@@ -1405,32 +1349,6 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       .ai-vis, .vend-vis{transform:scale(0.9);transform-origin:top center}
       .sec-grid{gap:32px}
     }
-    /* ── RESPONSIVE NAV ──────────────────────────────────────────────
-       The wordmark is absolutely centered (it's where #flyLogo docks). Below
-       ~860px that centered mark collides with the right cluster (Sign in + App
-       + OS pills, ~332px). Fix: left-align the brand so the logo docks top-left,
-       and slim the product pills (hide the redundant inner ONEWAY wordmark + OS
-       divider; keep the distinct App=ghost / OS=solid fills). One clean row at
-       iPad portrait, half-window desktop, and phone widths — no overlap.
-       #flyLogo follows automatically: measureLogo() re-runs on resize. */
-    @media (max-width:860px){
-      .nav-brand{position:static;left:auto;top:auto;transform:none;
-        flex-direction:row;align-items:center;margin-right:auto}
-      .nav-center{left:0;transform:translateY(6px)}
-      .nav-brand:hover .nav-center{transform:translateY(0)}
-      .nav-right{gap:6px}
-      .nav-app img,.nav-os img{display:none}
-      .nav-os{padding:6px 13px}
-      .nav-os .os{padding-left:0;border-left:none}
-      .nav-app{padding:6px 13px}
-      .nav-signin{padding:7px 10px}
-    }
-    @media (max-width:360px){
-      .nav-right{gap:4px}
-      .nav-signin{padding:7px 6px}
-      .nav-app,.nav-os{padding:6px 11px}
-    }
-
     /* ══ MOBILE SCROLL-CRASH HARDENING ══════════════════════════════════
        iOS kills tabs under compositor pressure while scrolling. The three
        biggest costs on this page: backdrop-filter layers scrolled over a
@@ -1450,8 +1368,31 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
         0 0 0 3px rgba(var(--h),.58), 0 22px 44px -26px rgba(0,0,0,.78) !important }
       .po-modal{ box-shadow:0 30px 60px -24px rgba(0,0,0,.8), inset 0 1px 0 rgba(255,255,255,.3) !important }
     }
+    /* ── ONE TYPE SPACING, EVERY ROLE (founder/793: "all font spacing must be the same"; S26) ─────────────────────
+       The landing reads the one letter-spacing, word-spacing and line-height per role that compat.css defines and Our
+       Mission reads (site-page.css): display and heading -.03em / no word squeeze / 1.13; lead, body and caption 0 / 1.5.
+       These three classes are landing.css's, so they are pointed at the tokens here, as site-page.css points them for
+       its pages; the page's own rules read the tokens where they are written. For the website session: these three
+       lines belong in landing.css, once, for every page that loads it. */
+    .lp-h2,.lp-h3{letter-spacing:var(--lp-ls-heading);word-spacing:var(--lp-ws);line-height:var(--lp-lh-heading)}
+    .lk span{letter-spacing:var(--lp-ls-display);word-spacing:var(--lp-ws);line-height:var(--lp-lh-display)}
+    .lp-p{letter-spacing:var(--lp-ls-lead);word-spacing:var(--lp-ws);line-height:var(--lp-lh-lead)}
+    .rsv-t{letter-spacing:var(--lp-ls-heading);line-height:var(--lp-lh-heading)}   /* reserve.css's title, a heading */
+    /* Reserve's submit is S20's Primary (.ow-btn, oneway-popit.css), which sets its height as a minimum: reserve.css's
+       fixed 52px and the old .ow-btn's top margin are let go here. For the website session: app.html loads the same
+       form, so reserve.css's .rsv-go is the one place to say it for both. */
+    #rsv .rsv-go{height:auto;margin-top:0}
   </style>
-<style>/* static copy: what needs the backend, or shows test accounts, is not shown */#ecoRun,#ecosystem .lp-acts,#account .deck-wrap,#account .lp-acts,#account .cn-wrap,#app .lp-acts,#os .lp-acts,.nav-signin{display:none!important}#account .lp-two{grid-template-columns:1fr!important}</style>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=d980df85"/>
+<style>
+  /* founder/806: "Invitation Only NYC Beta", plainly, by the map; a label, not a button. Literal font stack (Safari guard). */
+  /* the section's name, in the mark role (.t-mark) as every lockup's word: the outlined label and its green dot are gone
+     (the blank slate, 2026-10-17) */
+  .launch-beta{margin:0 0 18px;color:#fff}
+  /* centred under the centred heading (it sat flush left under it at 1366) */
+  .plans-today{margin:20px auto 0;max-width:46ch;text-align:center}
+  </style>
+<style>/* static copy: what needs the backend, or shows test accounts, is not shown */#ecoRun,#account .deck-wrap,#account .cn-wrap{display:none!important}#account .lp-two{grid-template-columns:1fr!important}</style>
 </head>
 <body>
 
@@ -1459,31 +1400,29 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
 <canvas id="hero-canvas"></canvas>
 
 <!-- NAV -->
-<nav class="nav" id="mainNav">
-  <div class="nav-brand">
-    <a href="/" class="nav-logo" aria-label="Oneway">
-      <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/>
-    </a>
-    <div class="nav-center">
-      <a href="#account" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg></span>Ecosystem</a>
-      <a href="#app" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 17c.8-2.2 2.5-3.2 4.5-3.2s3.7 1 4.5 3.2"/></svg></span>Oneway App</a>
-      <a href="#os" class="nav-link"><span class="nl-ic"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="3" width="7.5" height="7.5" rx="2"/><rect x="3" y="13.5" width="7.5" height="7.5" rx="2"/><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2"/></svg></span>Oneway OS</a>
+<!-- THE ONE TOP BAR (frontend/shared/oneway-bar.css + .js), the same on every page of the site (the founder, 2026-10-10:
+     "unify into one great top bar that proptizes the clean wordmark and smooth animations into the page menu"). Here its
+     mark is where the hero's wordmark (data-owbar-hero) flies to as the page scrolls; oneway-bar.js flies it. -->
+<nav class="owbar owbar--fly" id="mainNav" aria-label="Oneway">
+  <div class="owbar-brand">
+    <a href="/" class="owbar-mark" aria-label="Oneway home"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/></a>
+    <div class="owbar-pages">
+      <a href="/mission">Our Mission</a>
+      <a href="#app">App</a>
+      <a href="#os">OS</a>
+      <a href="/contact">Contact</a>
     </div>
   </div>
-  <div class="nav-right">
-    <!-- ★ FOUNDER/493: *"Remove the random oneway app and os buttons."*
-         Two pills in the top-right that went to the same two pages the nav
-         beside them already links to — the same door twice, in two shapes,
-         one of them inverted. The nav keeps the doors; the corner keeps the
-         one thing only the corner can do, which is sign you in. -->
+  <div class="owbar-right">
+    <a href="/beta" class="owbar-signin">Sign in</a>
   </div>
 </nav>
+<script defer src="/frontend/shared/oneway-bar.js?v=4e69f7cd"></script>
 
 <!-- HERO — Center-connected diagram over the black geometric canvas. -->
 <style>
-  .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-atmos);font-size:12px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#a9b0ff;margin-bottom:18px}
+  .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:12px;font-weight:700;letter-spacing:normal;text-transform:none;color:#a9b0ff;margin-bottom:18px}
   /* handcrafted world marker — a tiny tilted gummy bead, NOT a glowing status LED */
-  .hero-h1{font-family:var(--font-display);font-size:clamp(40px,7vw,76px);line-height:1.0;font-weight:900;letter-spacing:-.035em;margin:0;color:#fff}
   .hero-h1 .accent{background:linear-gradient(120deg,#a78bfa,#8b5cff 60%,#5b9dff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
   .hero-tagline{font-size:clamp(15px,2.2vw,19px);color:rgba(255,255,255,.66);max-width:600px;margin:20px auto 26px;line-height:1.55;text-align:center}
   /* Architecture section — the canonical Brain bled into the page background */
@@ -1498,8 +1437,8 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .ow-lm-floatcap .ow-lm-title{font:600 12.5px/1 'ONEWAY Sans',system-ui,sans-serif;color:rgba(223,243,255,.8);letter-spacing:.02em}
   .ow-lm-floatcap .ow-lm-sub{font:500 11px/1.3 'ONEWAY Sans',system-ui,sans-serif;color:rgba(180,220,255,.45);margin-top:4px}
   .ow-arch-head{position:relative;z-index:2;max-width:680px;margin:0 auto 8px;text-align:center}
-  .ow-arch-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-atmos);font-size:12px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:rgba(169,176,255,.85);margin-bottom:16px}
-  .ow-arch-h2{font-family:var(--font-display);font-size:clamp(25px,3.5vw,36px);font-weight:900;letter-spacing:-.03em;line-height:1.14;margin:0;color:#fff}
+  .ow-arch-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:12px;font-weight:700;letter-spacing:normal;text-transform:none;color:rgba(169,176,255,.85);margin-bottom:16px}
+  .ow-arch-h2{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:clamp(25px,3.5vw,36px);font-weight:900;letter-spacing:-.03em;line-height:1.14;margin:0;color:#fff}
   .ow-arch-sub{font-size:13.5px;line-height:1.55;color:rgba(255,255,255,.5);margin:14px auto 0;max-width:440px}
   /* The ACTUAL OS Brain "Living map" stage (matches dashboard.html #ow-bn-map-stage) */
   .ow-lm-stage{position:relative;max-width:900px;margin:38px auto 0;border-radius:24px;overflow:hidden;
@@ -1537,25 +1476,23 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .ow-cd-line{stroke:url(#cdline);stroke-width:1.6;fill:none}
   .ow-cd-flow{stroke:#a9b0ff;stroke-width:2;stroke-linecap:round;stroke-dasharray:2 120;opacity:.8;animation:cdflow 3.4s linear infinite}
   @keyframes cdflow{to{stroke-dashoffset:-122}}
-  .ow-cd-hub text{fill:#fff;font-family:var(--font-display);font-weight:900;letter-spacing:-.01em}
+  .ow-cd-hub text{fill:#fff;font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:900;letter-spacing:-.01em}
   @media(max-width:560px){ .ow-centerdiagram{margin-top:34px} .ow-cd-node text{font-size:15px} }
 </style>
-<img style="aspect-ratio:400/86" id="flyLogo" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" aria-hidden="true"/>
 <style>
   /* 2026-07 hero — the first impression: three answers in ten seconds; organization leads */
   #hero{position:relative}
-  #heroGlobe{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);
-    width:min(92vmin,920px);height:min(92vmin,920px);z-index:1;opacity:.32;pointer-events:none}
   /* THE PROMISE — three statements, tight as one block of type, each ARRIVING on
      its own beat. Not a fade: each line is masked by its own edge and rises out
      from behind it, the way a sign is unveiled. Tight leading holds them as one
      voice; the reveal is what gives each line its moment — spacing never has to. */
   /* ★ FOUNDER/411 §1: "Minimal. Large typography. Strong visual. No
      explanation." — the opening line is the largest type on the page */
-  .hero-h1{font-family:var(--font-display);font-size:clamp(38px,6.4vw,86px);font-weight:900;
-    letter-spacing:-.04em;line-height:1.02;color:#fff;text-align:center;margin:0;
-    text-shadow:0 2px 40px rgba(0,0,0,.5)}
-  .hero-h1{word-spacing:-.04em}   /* founder/532: the display word space, as landing.css */
+  /* the display role's one spacing (founder/793, S26; the tokens are compat.css's --lp-*): it was -.04em letters,
+     -.04em words and 1.02 */
+  /* its face, size, weight and spacing are the display role's (.t-display, compat.css; bound at the page's foot): it was
+     clamp(38px,6.4vw,86px), 2px under and 12px over the role */
+  .hero-h1{color:#fff;text-align:center;margin:0;text-shadow:0 2px 40px rgba(0,0,0,.5)}
   .hero-h1 span{display:block;overflow:hidden;padding-bottom:.06em;margin-bottom:-.06em}
   .vh{position:absolute!important;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap;border:0}
   .hero-h1 span > i{display:block;font-style:inherit}
@@ -1567,35 +1504,33 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     .hero-h1 span:nth-of-type(3) > i{animation-delay:.44s}
   }
   @keyframes heroLine{to{transform:none;opacity:1}}
-  .hero-sub{font-family:var(--font);font-size:clamp(15px,1.7vw,18.5px);font-weight:500;
+  .hero-sub{font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:clamp(15px,1.7vw,18.5px);font-weight:500;
     color:rgba(255,255,255,.86);max-width:58ch;line-height:1.62;margin:18px auto 26px;text-align:center}
   .hero-sub em{font-style:italic;color:rgba(255,255,255,.68)}
   .hero-sub strong{color:#cfd3ff;font-weight:800}
-  @media (max-width:640px){ .hero-sub{max-width:34ch} #heroGlobe{opacity:.26} }
+  @media (max-width:640px){ .hero-sub{max-width:34ch} }
 </style>
 <header class="hero" id="hero">
-  <canvas id="heroGlobe" aria-hidden="true"></canvas>
   <div class="hero-inner">
-    <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" class="hero-mark"/>
+    <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" class="hero-mark" data-owbar-hero data-owbar-span="0.62"/>
     <!-- ★ FOUNDER/383 (2026-09-14): the person arriving is being INTRODUCED TO
          THE BRAND; "Your gateway…" *"goes further down for app"* and "Connect
          your x in one place" is *"for os"*. So the hero carries the brand's own
          belief — his sentence, from the belief section below — and each
          product's line sits on that product. Spacious by law: type and air. -->
     <!-- ★ FOUNDER/411 §1 OPENING: *"We build experiences people want to return to." Minimal. Large typography. Strong visual. No explanation.* -->
-    <!-- THE BRAND IN THE H1 (lane B, 2026-10-09, SEO): the wordmark on screen is an image (#flyLogo), so the heading
+    <!-- THE BRAND IN THE H1 (lane B, 2026-10-09, SEO): the wordmark on screen is an image (the flying wordmark), so the heading
          carries its word for search engines and screen readers. It is the word the reader already sees just above, not
          hidden copy. -->
-    <h1 class="hero-h1"><b class="vh">Oneway. </b><span><i>We build &amp; elevate experiences</i></span><span><i>people want to return&nbsp;to.</i></span></h1>
+    <h1 class="hero-h1 t-display"><b class="vh">Oneway. </b><span><i>We build &amp; elevate experiences</i></span><span><i>people want to return&nbsp;to.</i></span></h1>
     <div class="hero-btns">
-      <a href="#app" class="h-btn-app" aria-label="Download the Oneway app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Download App</span></a>
-      <a href="#os" class="h-btn-os" aria-label="Explore Oneway OS"><img style="aspect-ratio:800/173" src="logo-black.png" alt="Oneway"/><span class="os">Explore Oneway OS</span></a>
+      <a href="#app" class="pill pill--solid h-btn-app" aria-label="Download the Oneway app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Download App</span></a>
+      <a href="#os" class="pill pill--solid h-btn-os" aria-label="Explore Oneway OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span class="os">Explore Oneway OS</span></a>
     </div>
     <!-- ★ FOUNDER/412: no "early access", no gemstone — the words are the line -->
-    <div class="hero-beta">Selective server beta — open when accessible</div>
   </div>
 </header>
-<script defer src="/frontend/landing/static/inline-02-4713a01560.js"></script>
+<!-- the hero globe is gone (the founder, 2026-10-10: "remove the faint circle behind we build and elevate it makes it look cleaner") -->
 
 
 
@@ -1655,7 +1590,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     background:radial-gradient(70% 55% at 36% 20%,rgba(255,255,255,.72),transparent 70%),linear-gradient(150deg,rgb(var(--h)),rgb(var(--h2)));
     box-shadow:inset 0 1px 0 rgba(255,255,255,.6),inset 0 -6px 12px rgba(0,0,0,.25),0 0 16px -2px rgb(var(--h))}
   .ow-glass .gh .gt{font-weight:800;color:#fff;font-size:16px;letter-spacing:-.01em}
-  .ow-glass .gh .gs{font-family:var(--font-atmos);font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.62);margin-top:3px}
+  .ow-glass .gh .gs{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:12px;letter-spacing:.06em;color:rgba(255,255,255,.62);margin-top:3px}
   .ow-glass .gchips{display:flex;flex-wrap:wrap;gap:7px}
   /* chips → small gummy objects living inside the panel (same family as .owc-sys) */
   .ow-glass .gchips span{position:relative;font-size:11.5px;font-weight:650;color:#fff;padding:7px 12px;border-radius:13px 9px 12px 10px;
@@ -1688,7 +1623,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     transition:transform 1.2s cubic-bezier(.3,.9,.3,1)}
   /* the dashed seam is gone — founder/493 */
   .evo-core svg{width:44px;height:44px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 7px rgba(0,0,0,.45))}
-  .evo-core .ecn{font-family:var(--font-display);font-weight:800;font-size:12.5px;letter-spacing:.05em;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+  .evo-core .ecn{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:800;font-size:12.5px;letter-spacing:.05em;text-shadow:0 1px 3px rgba(0,0,0,.45)}
   .ow-evo[data-stage="2"] .evo-core{transform:scale(1.04)}
   .ow-evo[data-stage="3"] .evo-core{transform:scale(1.08)}
   .ow-evo[data-stage="4"] .evo-core{transform:scale(1.1)}
@@ -1704,7 +1639,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       inset 0 0 0 1.5px rgba(255,255,255,.25),0 0 0 2px rgba(var(--eh),.55),
       0 12px 26px -8px rgba(0,0,0,.5),0 0 44px 2px rgba(var(--eh),.5)}
   .evo-sat .esb svg{width:26px;height:26px;stroke:#fff;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 4px rgba(0,0,0,.4))}
-  .evo-sat .esl{font-family:var(--font-atmos);font-size:10.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+  .evo-sat .esl{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:10.5px;font-weight:700;letter-spacing:normal;text-transform:none;color:rgba(255,255,255,.72)}
   .evo-sat.gold .esb{--eh:236,168,58;--eh2:255,138,66}
   .evo-sat.cyan .esb{--eh:93,226,255;--eh2:139,92,255}
   .evo-sat.mini .esb{width:44px;height:56px}
@@ -1726,7 +1661,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .ow-evo[data-stage="4"] .el-c2,.ow-evo[data-stage="4"] .el-c3{opacity:1}
   /* the stage line — indicators, not tabs (non-interactive) */
   .evo-stages{display:flex;gap:clamp(14px,4vw,34px);justify-content:center;margin-top:26px}
-  .evo-stages span{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  .evo-stages span{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:11px;font-weight:700;letter-spacing:normal;text-transform:none;
     color:rgba(255,255,255,.3);transition:color .6s ease,text-shadow .6s ease}
   .evo-stages span.on{color:#cfd3ff;text-shadow:0 0 14px rgba(139,92,255,.8)}
   .evo-cap{margin-top:12px;font-size:14.5px;color:rgba(255,255,255,.62);min-height:22px;transition:opacity .45s ease}
@@ -1782,10 +1717,10 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   /* ── STATEMENTS (2, 3) — one sentence, large, air around it ─────────────── */
   .st .sec-wrap{max-width:820px;text-align:center}
   .st-line{font-size:clamp(28px,4.2vw,58px);line-height:1.06;margin:0 auto;max-width:20ch}
-  .st-sub{font-family:var(--font-display);font-weight:700;letter-spacing:-.01em;
+  .st-sub{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:700;letter-spacing:-.01em;
     font-size:clamp(15px,1.6vw,19px);line-height:1.5;color:rgba(255,255,255,.5);margin:26px auto 0;max-width:34ch}
   /* the beta line under the hero buttons — words, no ornament (412: no gemstones) */
-  .hero-beta{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  .hero-beta{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:11px;font-weight:700;letter-spacing:normal;text-transform:none;
     color:rgba(169,176,255,.72);margin:18px 0 0;opacity:0;animation:fadeUp .9s .62s var(--ease) forwards}
 
   /* ── THE SIGNATURE SCROLL (4) — a Profile, a Center, its inside, its OS ── */
@@ -1796,7 +1731,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .story-step:last-child::before{display:none}
   .story-step::after{content:"";position:absolute;left:2px;top:7px;width:9px;height:9px;border-radius:50%;
     background:rgb(var(--ow-h1));box-shadow:0 0 11px rgba(var(--ow-h1),.85)}
-  .story-cap{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  .story-cap{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:11px;font-weight:700;letter-spacing:normal;text-transform:none;
     color:rgba(255,255,255,.5);margin:0 0 12px;line-height:1.3}
   .story .po-list{display:flex;flex-direction:column;gap:10px}
   .story .po-glance{width:100%;text-align:left}
@@ -1809,43 +1744,12 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
      where it is, its own sentence, the people who run it, and EVENTS as a
      subcategory inside it — only when it has any; a Center with none stays a
      row. Pressing anything on it opens the real thing over the galaxy. */
-  /* ONE SOURCE (the founder, 2026-10-09: "make all clickable center buttons and popits look exactly like this as one
-     unifed color pallete styling"): the card is the App's Post popit, `.ow-popit` in oneway-popit.css (C-app,
-     b6ec8b5d), wearing the Center's own pair. It keeps only its room here; its ground, grain, light and shape are
-     the popit's. */
-  .flag-card{padding:16px 16px 14px;color:#fff;text-align:left}
-  .flag-id{display:flex;align-items:center;gap:14px;cursor:pointer;border:0;background:none;color:#fff;padding:0;width:100%;text-align:left;font-family:var(--font)}
-  .flag-face{flex:none;width:60px;height:60px;overflow:hidden;border-radius:18px 14px 17px 15px;
-    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.85),rgba(var(--h2),.55) 70%);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 18px -4px rgba(var(--h),.7);display:grid;place-items:center}
-  .flag-face[data-shape="round"]{border-radius:50%}.flag-face[data-shape="square"]{border-radius:8px}
-  .flag-face img{width:100%;height:100%;object-fit:cover;display:block}
-  .flag-face i{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:20px;color:#fff}
-  .flag-name{font-family:var(--font-display);font-weight:800;font-size:20px;letter-spacing:-.02em;line-height:1.15}
-  .flag-sig{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px}
-  .flag-bio{font-size:14.5px;line-height:1.55;color:rgba(255,255,255,.82);margin:14px 2px 0}
-  .flag-people{display:flex;align-items:center;gap:8px;margin:14px 2px 0;flex-wrap:wrap}
-  /* a person who runs the place is the App's button, `.ow-popit-btn` (words in a hairline, their colour on hover);
-     only the room for the face is set here. One with no @name is not a link, so it is the same shape, never pressable */
-  .flag-people .ow-popit-btn,.flag-people>span{display:inline-flex;align-items:center;gap:8px;padding:5px 11px 5px 5px;border-radius:999px}
-  .flag-people>span{font:560 12.5px var(--ow-font,var(--font));color:#fff;cursor:default;
-    box-shadow:0 0 0 1px rgba(255,255,255,.3)}
-  .flag-people .fp{width:24px;height:24px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
-    background:linear-gradient(150deg,rgb(var(--h)),rgba(var(--h2),.75));font:800 10px var(--font-display)}
-  .flag-people .fp[data-shape="rounded"]{border-radius:8px 6px 7px 6px}.flag-people .fp[data-shape="square"]{border-radius:4px}
-  .flag-people .fp img{width:100%;height:100%;object-fit:cover}
-  .flag-sub{display:flex;align-items:baseline;gap:8px;margin:18px 2px 10px;
-    font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:-.01em}
-  .flag-sub b{font-weight:800}.flag-sub span{font-size:12px;color:rgba(255,255,255,.5);font-weight:700}
-  .flag-evs{display:flex;flex-direction:column;gap:8px}
-  .flag-evs .po-glance{width:100%;min-height:54px;padding:10px 14px}
   /* the same Center, from the inside — founder/411: *"the interface
      transitions from public Oneway → private Oneway OS."* The card turns to
      its operating side: the OS's own sections for this Center. */
   .flag-os{margin-top:0;--h:38,150,222;--h2:139,92,255}
-  .flag-os .flag-sig{color:#8fdbe6}
   .os-nav{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:16px 2px 0}
-  .os-nav span{display:block;text-align:center;font:700 12px var(--font);padding:12px 6px;border-radius:14px 11px 13px 12px;
+  .os-nav span{display:block;text-align:center;font-style:normal;font-weight:700;font-size:12px;line-height:normal;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);padding:12px 6px;border-radius:14px 11px 13px 12px;
     background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(var(--h),.28);color:rgba(255,255,255,.86)}
   .os-nav span.on{background:linear-gradient(150deg,rgba(var(--h),.55),rgba(var(--h2),.35));box-shadow:inset 0 1px 0 rgba(255,255,255,.3)}
   @media(max-width:520px){.os-nav{grid-template-columns:repeat(2,1fr)}}
@@ -1854,7 +1758,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .jn{list-style:none;margin:22px 0 0;padding:0 0 0 26px;position:relative}
   .jn::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1.5px;
     background:linear-gradient(180deg,rgba(var(--ow-h1),.55),rgba(var(--ow-h2),.25))}
-  .jn li{position:relative;font-family:var(--font-display);font-weight:800;font-size:clamp(17px,1.9vw,22px);letter-spacing:-.02em;
+  .jn li{position:relative;font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:800;font-size:clamp(17px,1.9vw,22px);letter-spacing:-.02em;
     padding:5px 0;color:rgba(255,255,255,.92)}
   .jn li::before{content:"";position:absolute;left:-24px;top:50%;margin-top:-4px;width:8px;height:8px;border-radius:50%;
     background:rgb(var(--ow-h1));box-shadow:0 0 10px rgba(var(--ow-h1),.8)}
@@ -1879,12 +1783,11 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .ph-wrap{display:grid;grid-template-columns:1.05fr 1fr;align-items:center;gap:clamp(18px,4vw,56px);max-width:980px;margin:0 auto;text-align:left}
   .ph-lock{display:inline-flex;align-items:center;gap:clamp(12px,1.8vw,22px)}
   .ph-lock img{height:clamp(34px,5.4vw,66px);display:block;filter:drop-shadow(0 8px 40px rgba(167,139,250,.16))}
-  .ph-lock .mk{font-family:var(--font-display);font-style:italic;font-weight:900;font-size:clamp(32px,5.2vw,64px);line-height:.8;letter-spacing:-.03em;color:#fff;padding-left:0}
+  .ph-lock .mk{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-style:italic;font-weight:900;font-size:clamp(32px,5.2vw,64px);line-height:.8;letter-spacing:-.03em;color:#fff;padding-left:0}
   @media(max-width:760px){.ph-wrap{grid-template-columns:1fr;text-align:center}.ph-lock{justify-content:center}.jn{display:inline-block;text-align:left}
     .ph-wrap .pd-links{justify-content:center!important}
     .ph-stage{perspective-origin:50% 50%;margin-top:26px}.ph-real{width:min(260px,64vw)}}
-  /* the two hero doors never wrap their own words; the beta line tightens on a phone */
-  .h-btn-os span,.h-btn-app span{white-space:nowrap}
+  /* the beta line tightens on a phone (the hero doors' words never wrap: landing.css, .pill > span) */
   @media(max-width:640px){.hero-beta{letter-spacing:.12em;font-size:10px}}
 
   /* ── THE OS (6): the real thing, public beside private, the wordmark ──── */
@@ -1902,10 +1805,10 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
       linear-gradient(158deg,rgba(var(--h),.12),rgba(var(--h2),.08) 62%,rgba(14,16,30,.5)),linear-gradient(0deg,#0b0d18,#0b0d18);
     box-shadow:inset 0 2px 1px rgba(255,255,255,.22),inset 0 0 0 1.5px rgba(var(--h),.28),0 0 40px -12px rgba(var(--h),.5)}
   .pp .col.priv{--h:38,150,222;--h2:139,92,255}
-  .pp .k{font-family:var(--font-atmos);font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-  .pp .n{font-family:var(--font-display);font-weight:800;font-size:18px;letter-spacing:-.02em;margin-top:4px}
+  .pp .k{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:10.5px;font-weight:700;letter-spacing:normal;text-transform:none;color:rgba(255,255,255,.5)}
+  .pp .n{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:800;font-size:18px;letter-spacing:-.02em;margin-top:4px}
   .pp ul{list-style:none;margin:12px 0 0;padding:0}
-  .pp li{font:700 14px/1.9 var(--font);color:rgba(255,255,255,.86)}
+  .pp li{font-style:normal;font-weight:700;font-size:14px;line-height:1.9;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);color:rgba(255,255,255,.86)}
   @media(max-width:520px){.pp{grid-template-columns:1fr}}
   /* THE WORDMARK — "Connect your ___ in one place." ★ FOUNDER/412: *"i want
      that connect your x word mark to look just as smooth as it did when it
@@ -1913,9 +1816,8 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
      unwrapped line at its own size and the sentence closed around each word;
      in a wrapping .sec-h2 the width change moved the line breaks. It is that
      line again: nowrap, its own scale, the width breathing to the next word. */
-  .os-connect{font-family:var(--font-display);font-weight:900;letter-spacing:-.025em;
-    font-size:clamp(17px,3.2vw,40px);color:rgba(255,255,255,.94);text-align:center;
-    margin:40px auto 0;line-height:1.2;white-space:nowrap}
+  /* the sub role's type (.t-sub); it was 17-40px at 900 in 94% white */
+  .os-connect{color:#fff;text-align:center;margin:40px auto 0;white-space:nowrap}
   .rot-word{display:inline-block;text-align:center;white-space:nowrap;vertical-align:baseline;
     background:linear-gradient(120deg,#a78bfa,#8b5cff 60%,#5b9dff);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
@@ -1923,10 +1825,22 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .rot-word.sw{opacity:0;transform:translateY(5px)}
   .rot-measure{position:absolute;visibility:hidden;white-space:nowrap;pointer-events:none;left:-9999px}
   .os-lock .mk{font-style:italic}
+  /* under the heading the changing line sits close, and "Go anywhere. Connect everywhere." closes it in plain white */
+  .os-connect--top{margin-top:22px}
+  .os-go{margin-top:4px}
+  /* the launch map: the App's ground, its edges fading into the landing's dark room (for his eye). The fade is an
+     ellipse, so the picture has no corners: with a 14% straight fade its near-black water read as a darker box beside
+     the lit room at 390 px. The words in it are the App's map labels, as the App draws them (for his eye: a capture
+     with the water labels off would take out its spaced capitals). */
+  .launch{width:min(820px,100%);margin:40px auto 0}
+  .launch img{display:block;width:100%;height:auto;
+    -webkit-mask-image:radial-gradient(50% 50% at 50% 50%,#000 60%,rgba(0,0,0,.55) 80%,transparent 100%);
+    mask-image:radial-gradient(50% 50% at 50% 50%,#000 60%,rgba(0,0,0,.55) 80%,transparent 100%)}
+  .launch figcaption{margin-top:14px}
 
   /* ── OS+ / OS MAX (7): the ladder, compact ────────────────────────────── */
   .ladder{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin:30px auto 0;
-    font-family:var(--font-display);font-weight:800;font-size:15px;letter-spacing:-.01em;color:rgba(255,255,255,.88)}
+    font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:800;font-size:15px;letter-spacing:-.01em;color:rgba(255,255,255,.88)}
   .ladder i{font-style:normal;color:rgba(255,255,255,.3)}
   .tiers2{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px;margin:30px auto 0;text-align:left}
   .tiers2 .ow-glass{margin:0}
@@ -1939,8 +1853,8 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .xp .po-glance{width:100%}
   .xp .po-glance__sig{display:block}
   .rsv-wrap{max-width:560px;margin:56px auto 0}
-  .rsv-h{font-family:var(--font-display);font-weight:800;font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;text-align:center;margin:0 0 6px}
-  .rsv-l{font-family:var(--font-atmos);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.45);text-align:center;margin:0 0 18px}
+  .rsv-h{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:800;font-size:clamp(20px,2.4vw,26px);letter-spacing:-.02em;text-align:center;margin:0 0 6px}
+  .rsv-l{font-family:var(--font-atmos,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:11px;font-weight:700;letter-spacing:normal;text-transform:none;color:rgba(255,255,255,.45);text-align:center;margin:0 0 18px}
 </style>
 
 <!-- ═══════════════════════════════════════════════════════════════════════
@@ -1966,11 +1880,11 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
      ═══════════════════════════════════════════════════════════════════════ -->
 <style>
   /* ── 2 · 3 THE TWO LINES — one on each side, each typing in ─────────── */
-  .side{padding-top:clamp(56px,9vw,110px)}
+  /* the two lines keep the page's one rhythm between sections (.lp's padding): they were 56-110px against 72-128px */
   .side .lp-h2{max-width:17ch}
   .side--l{text-align:left}
   .side--r{text-align:right}
-  .side--r .lp-h2{margin-left:auto;max-width:19ch;font-size:clamp(28px,3.9vw,50px)}
+  .side--r .lp-h2{margin-left:auto;max-width:19ch}
   .side--r .lp-acts{justify-content:flex-end}
   .ty-w{display:inline-block;white-space:nowrap}
   .ty-c{opacity:0;transition:opacity .09s linear}
@@ -1992,82 +1906,18 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .eco-run:hover .eco-track{animation-play-state:paused}
   @keyframes ecoDrift{to{transform:translateX(-50%)}}
   @media(prefers-reduced-motion:reduce){.eco-track{animation:none}}
-  .eco-it{display:flex;flex-direction:column;align-items:center;gap:8px;width:76px;border:0;background:none;padding:0;cursor:pointer;color:#fff;font:inherit}
-  .eco-it .f{position:relative;width:62px;height:62px;overflow:hidden;display:grid;place-items:center;border-radius:20px;
-    --h:var(--ow-h1);--h2:var(--ow-h2);
-    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.9),rgba(var(--h2),.55) 72%);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 24px -8px rgba(var(--h),.8);transition:transform .25s var(--ease)}
-  .eco-it[data-kind="person"] .f{border-radius:50%}
-  .eco-it .f img{width:100%;height:100%;object-fit:cover;display:block}
-  .eco-it .f i{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:19px}
-  .eco-it:hover .f{transform:translateY(-3px) scale(1.05)}
-  .eco-it b{font-weight:600;font-size:12px;line-height:1.2;color:rgba(255,255,255,.7);max-width:76px;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* S21: the strip's items are cards (oneway-cards.js, `.ow-ocard--chip`); this page only lifts one on hover and keeps
+     the Centers' faces round here, as the founder asked of this page (2026-10-10, "why are they not circle") */
+  .eco-it .ow-ocard__face{border-radius:50%}
+  .eco-it .ow-ocard__face{transition:transform .25s var(--ease)}
+  .eco-it:hover .ow-ocard__face{transform:translateY(-3px) scale(1.05)}
+  .eco-it .ow-ocard__name{color:rgba(255,255,255,.7)}
 
-  /* ── 4 · THE ACCOUNT — people as they are, right now ─────────────────── */
-  .deck-wrap{display:flex;flex-direction:column;align-items:center;min-width:0}
-  .deck{position:relative;width:min(380px,100%);height:var(--deck-h,340px);margin:0 auto;transition:height .35s var(--ease)}
-  .pcard{position:absolute;left:0;right:0;top:0;padding:20px 20px 18px;border-radius:28px;color:#fff;text-align:left;cursor:pointer;
-    --h:139,92,255;--h2:93,226,255;
-    background:linear-gradient(180deg,rgba(var(--h),.30),rgba(var(--h),.07) 46%,rgba(var(--h2),.07)),linear-gradient(0deg,#0e0f1d,#0e0f1d);
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.22),inset 0 0 0 1px rgba(255,255,255,.07),0 28px 60px -30px rgba(0,0,0,.9),0 0 70px -26px rgba(var(--h),.7);
-    display:flex;flex-direction:column;
-    transform-origin:50% 0;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .5s ease,filter .5s ease}
-  .pcard[data-at="0"]{z-index:3}
-  .pcard[data-at="1"]{z-index:2;transform:translateY(-14px) scale(.94);opacity:.55;filter:saturate(.7)}
-  .pcard[data-at="2"]{z-index:1;transform:translateY(-26px) scale(.88);opacity:.28;filter:saturate(.5)}
-  .pcard[data-at="3"],.pcard[data-at="out"]{z-index:0;transform:translateY(-34px) scale(.84);opacity:0;pointer-events:none}
-  .pcard:not([data-at="0"]) *{pointer-events:none}
-  .pc-top{display:flex;align-items:center;gap:13px}
-  .pc-face{position:relative;flex:none;width:56px;height:56px}
-  .pc-face .in{width:100%;height:100%;overflow:hidden;display:grid;place-items:center;border-radius:50%;
-    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.95),rgba(var(--h2),.6) 72%);box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
-  .pc-face[data-shape="rounded"] .in{border-radius:18px}.pc-face[data-shape="square"] .in{border-radius:10px}
-  .pc-face img{width:100%;height:100%;object-fit:cover;display:block}
-  .pc-face i{font-style:normal;font-family:var(--font-display);font-weight:800;font-size:20px}
-  .pc-face::after{content:"";position:absolute;right:-1px;bottom:-1px;width:15px;height:15px;border-radius:50%;
-    background:#35d07f;box-shadow:0 0 0 3px #10111f,0 0 12px rgba(53,208,127,.7)}
-  .pc-id{min-width:0;flex:1}
-  .pc-name{display:block;font-family:var(--font-display);font-weight:800;font-size:19px;letter-spacing:-.02em;line-height:1.15;
-    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .pc-handle{display:block;font-size:13.5px;color:rgba(255,255,255,.56);margin-top:2px}
-  .pc-on{flex:none;font-size:12px;font-weight:650;color:#7ce8ad;padding:5px 10px;border-radius:999px;background:rgba(53,208,127,.12)}
-  /* the live status — what they are doing, where, and for how long */
-  .pc-live{display:flex;align-items:center;gap:12px;margin-top:16px;padding:11px 12px;border-radius:18px;
-    background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07)}
-  .pc-mark{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;overflow:hidden;background:rgba(0,0,0,.35);color:#fff}
-  .pc-mark svg{width:22px;height:22px}
-  .pc-mark img{width:100%;height:100%;object-fit:cover}
-  .pc-live-t{font-size:14px;line-height:1.35;color:rgba(255,255,255,.8)}
-  .pc-live-t b{color:#fff;font-weight:700}
-  .pc-live-s{font-size:12.5px;color:rgba(255,255,255,.5);margin-top:2px;font-variant-numeric:tabular-nums}
-  .pc-bio{margin:14px 0 0;font-size:14.5px;line-height:1.5;color:rgba(255,255,255,.86)}
-  .pc-links{display:flex;gap:12px;margin-top:14px}
-  .pc-sp{flex:1 1 auto;min-height:16px}
-  .pc-links a{display:grid;place-items:center;width:28px;height:28px;color:#fff}
-  .pc-links svg{width:21px;height:21px}
-  .pc-stats{display:flex;gap:18px;margin-top:0;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);font-size:13.5px;color:rgba(255,255,255,.6)}
-  .pc-stats b{color:#fff;font-weight:700;margin-right:4px;font-variant-numeric:tabular-nums}
-  /* the people in the deck, as faces you can press (493: "the clickable
-     profile pictures that is fantastic") */
-  .deck-faces{display:flex;gap:10px;margin-top:22px}
-  .deck-faces button{width:40px;height:40px;padding:0;border:0;border-radius:50%;overflow:hidden;cursor:pointer;display:grid;place-items:center;
-    --h:139,92,255;--h2:93,226,255;color:#fff;font:800 14px var(--font-display);
-    background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.95),rgba(var(--h2),.6) 72%);
-    box-shadow:0 0 0 2px rgba(255,255,255,.0);opacity:.55;transition:opacity .25s,box-shadow .25s,transform .25s}
-  .deck-faces button img{width:100%;height:100%;object-fit:cover}
-  .deck-faces button i,.pc-face i,.pc-mark i,.eco-it .f i,.flag-people .fp i{font-style:normal}
-  .deck-faces button.on{opacity:1;box-shadow:0 0 0 2px #fff,0 0 18px -2px rgba(var(--h),.9)}
-  .deck-faces button:hover{transform:translateY(-2px);opacity:1}
 
   /* THE FOUNDER'S LINES, 2026-10-08 (context/requirements-660/19-founder-note-to-B.md): the App's
      "Introducing" sits above its line, and the sovereignty sentence is the second block's whole text */
-  .lp-lead{font-size:clamp(19px,2.1vw,24px);line-height:1.4;font-weight:700;letter-spacing:-.01em;color:#fff;max-width:36ch;margin:0}
+  .lp-lead{max-width:36ch;margin:0}   /* the lead role's type (.t-lead); it was 19-24px at 700 */
 
-  /* the Centers, inside Account (534) */
-  .cn-wrap{min-width:0;width:100%;max-width:460px;margin:0 auto;text-align:left}
-  .cn-wrap .po-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-  .cn-wrap .po-glance{width:100%;text-align:left}
 
   /* ── 5 · THE APP — the phones, nothing to read beside them ──────────── */
   .phones{position:relative;display:flex;justify-content:center;align-items:flex-end;min-width:0;padding:10px 0}
@@ -2079,24 +1929,13 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   @media(prefers-reduced-motion:reduce){.phones .ph-real{animation:none}}
 
   /* ── 6 · THE OS — an all-in-one desktop, the Brain on its screen ────── */
-  /* HIS SENTENCE, LEFT AND RIGHT OF EACH OTHER ABOVE THE SCREEN, LINED UP (the founder, 2026-10-09: "to the left and
-     right of each other above the screen ... should start with to running. find a way to make it flow", then "no line
-     them up that looks misspaced"). Two columns, top-aligned, the left half ending right-aligned against the centre and
-     the right half starting at the same top line. The column widths follow the two halves' lengths, so both run the
-     same number of lines and start and end together where they were measured (390, 430, 1280 and 1440 px); at the
-     widths between, the script after the Brain moves the split until the line counts match. */
-  .os-flow{--lh:1.34;display:grid;grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);align-items:start;
-    column-gap:clamp(12px,2.2vw,28px);max-width:860px;margin:26px auto 0;text-align:left;
-    font-size:clamp(17px,2.15vw,26px);line-height:var(--lh);font-weight:650;color:#fff;letter-spacing:-.012em}
-  .os-flow p{margin:0;text-wrap:balance}
-  /* a phone: widths that give both halves the same five lines (measured at 390 px) */
-  @media (max-width:640px){ .os-flow{grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);font-size:16px} }
-  .os-flow__a{grid-column:1;text-align:right}
-  .os-flow__b{grid-column:2;text-align:left}
+  /* HIS SENTENCE AS ONE LINE (the founder, 2026-10-10: "fix that line under os header just make it one line cause the 2
+     line idea didnt work"): one centred sentence above the screen, balanced, in the size it had */
+  .os-line{max-width:46ch;margin:26px auto 0;text-align:center;text-wrap:balance}   /* the lead role's type (.t-lead); it was 17-26px at 650 */
   /* Apple's credit for the iMac and the iPhone the page shows, right under the iMac and as small as type renders
      (the founder, 2026-10-09: "put this under the imac and add the iphone aswell and make it as small as phyiscally
      possible"). Once per site, as Apple's guidelines ask; no association with Apple is claimed. */
-  .aio-tm{max-width:820px;margin:8px auto 0;font-size:7px;line-height:1.3;letter-spacing:.01em;color:rgba(255,255,255,.55);text-align:center}
+  .aio-tm{max-width:820px;margin:8px auto 0;font-size:7px;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:rgba(255,255,255,.55);text-align:center}
   /* A REAL iMac (the founder, 2026-10-09: "have the computer reflect the real mold of an apple imac, not a random ai
      generated computer model"). The Silver iMac (M4, 2024), photographed by AzureSaturn and released CC0 on Wikimedia
      Commons, straightened from its screen's four corners to face front and cut out of the store. Apple's own bezels
@@ -2111,7 +1950,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .aio-ui{position:absolute;inset:0;display:grid;grid-template-columns:clamp(34px,6%,54px) minmax(0,1fr);grid-template-rows:clamp(24px,7%,40px) minmax(0,1fr)}
   .aio-bar{grid-column:1/-1;display:flex;align-items:center;gap:8px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.06);background:rgba(10,10,18,.9)}
   .aio-bar img{height:clamp(7px,1vw,11px);opacity:.9}
-  .aio-bar b{font-family:var(--font-display);font-style:italic;font-weight:900;font-size:clamp(8px,1.1vw,12px);color:#fff}
+  .aio-bar b{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-style:italic;font-weight:900;font-size:clamp(8px,1.1vw,12px);color:#fff}
   .aio-bar em{margin-left:auto;font-style:normal;font-size:clamp(8px,1vw,11.5px);font-weight:600;color:rgba(255,255,255,.55)}
   .aio-rail{display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.4vw,14px);padding-top:clamp(8px,1.6vw,16px);
     border-right:1px solid rgba(255,255,255,.06);background:rgba(10,10,18,.9)}
@@ -2125,21 +1964,14 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   .aio-brain .cap b{display:block;font-size:clamp(9px,1.3vw,14px);font-weight:700;color:#fff}
   .aio-brain .cap span{display:block;font-size:clamp(7px,.95vw,11px);color:rgba(255,255,255,.5);margin-top:2px}
 
-  /* ── THE LAST ROW — the ladder, as small rounded link buttons (534) ─── */
-  .end{padding:clamp(96px,13vw,150px) 0 clamp(80px,10vw,110px);text-align:center}
-  .end .lp-h2{font-size:clamp(30px,5vw,56px)}
-  .ladder2{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:34px auto 0;max-width:640px}
-  .ladder2 a{display:inline-flex;align-items:center;gap:8px;height:36px;padding:0 15px 0 11px;border-radius:999px;
-    font:650 13.5px/1 var(--font);color:#fff;white-space:nowrap;--h:139,92,255;
-    background:rgba(255,255,255,.07);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 0 0 1px rgba(255,255,255,.1);
-    transition:background .2s,transform .2s var(--ease)}
-  .ladder2 a::before{content:"";width:9px;height:9px;border-radius:50%;background:rgb(var(--h));box-shadow:0 0 10px rgba(var(--h),.9)}
-  .ladder2 a:hover{background:rgba(255,255,255,.13);transform:translateY(-1px)}
-  .ladder2 i{font-style:normal;color:rgba(255,255,255,.28);font-size:13px}
-  @media(max-width:520px){.ladder2 i{display:none}.ladder2{max-width:320px}}
-  /* the footer's links wrap as whole names, never "ONEWAY / App" (534) */
-  .footer-links{flex-wrap:wrap;justify-content:center;gap:10px 20px}
-  .footer-links a{white-space:nowrap}
+  /* The hero's two doors and the sections' and plans' pills are the landing's one outlined button, `.pill pill--solid`,
+     written once in landing.css ("ONE OUTLINED BUTTON ON EVERY LANDING PAGE"): the bar's Sign in exactly, on this page
+     and on every page beside it (founder/790, S20's Outlined kind).
+     for his eye: both hero doors are outlined (790: every button with its border); the other reading is S20's Primary,
+     filled in the hue, for one of them.
+     THE PRODUCT BUTTONS THAT CLOSED THE PAGE ARE GONE (founder/801: "these buttons are no longer needed at bottom"; it
+     replaces 792's "move those to the absolute bottom"): their links are the top of the plans now, and the footer
+     names every page. */
   /* the hero's buttons stand clear of the line above them at every width (534) */
   .hero-btns{margin-top:clamp(26px,4.5vh,44px)}
 </style>
@@ -2147,17 +1979,20 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
 <!-- ═══ 2 · MISSION — left ══════════════════════════════════════════════ -->
 <section class="lp side side--l" id="mission">
   <div class="lp-wrap">
-    <h2 class="lp-h2 ty ty-slide">Making entertainment, connection, and the Internet better for all&nbsp;sides.</h2>
+    <h2 class="lp-h2 t-heading ty ty-slide">Making entertainment, connection, and the Internet better for all&nbsp;sides.</h2>
   </div>
 </section>
 
 <!-- ═══ 3 · ECOSYSTEM — right, and the faces in it ═════════════════════ -->
 <section class="lp side side--r" id="ecosystem">
   <div class="lp-wrap">
-    <h2 class="lp-h2 ty ty-slide">A modern ecosystem for people to easily and conveniently connect with cities, communities, and&nbsp;businesses.</h2>
+    <h2 class="lp-h2 t-heading ty ty-slide">A modern ecosystem for people to easily and conveniently connect with cities, communities, and&nbsp;businesses.</h2>
   </div>
   <div class="eco-run" id="ecoRun" hidden><div class="eco-track" id="ecoStrip"></div></div>
-  
+  <!-- EVERY BUTTON WEARS ITS BORDER (founder/790: "they must have the border around the button i dont want any buttons
+       that are just loose text"): the landing's bordered pill (.pill--solid, landing.css), the one surface for every
+       button-like link on this page -->
+  <div class="lp-wrap"><div class="lp-acts"><a class="pill pill--solid" href="/mission">Our mission</a></div></div>
 </section>
 
 <!-- ═══ 4 · ECOSYSTEM — the person, and a Center for every city, business and organization ═══════ -->
@@ -2165,8 +2000,9 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   <div class="lp-wrap lp-two">
     <div class="rv d2">
       <div class="lk"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Ecosystem</span></div>
-      <h2 class="lp-h2" style="max-width:17ch">We give every person one profile and every community or business a&nbsp;Center.</h2>
-      
+      <h2 class="lp-h2 t-heading" style="max-width:17ch">We give every person one profile and every community or business a&nbsp;Center.</h2>
+      <!-- "Oneway Ecosystem" is gone: it and Our mission are one page now (founder/790), and Our mission stays above -->
+      <div class="lp-acts"><a class="pill pill--solid" href="/beta">Create your account</a></div>
     </div>
     <div class="deck-wrap rv d3">
       <div class="deck" id="deck" aria-label="People on Oneway, right now"></div>
@@ -2175,21 +2011,40 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   </div>
   <div class="lp-wrap lp-two lp-flip">
     <div class="rv d2">
-      <p class="lp-lead">We grant users and Centers absolute sovereignty over their data, what they display, and how they interact, whether hosting a simple photo gallery or a business's entire&nbsp;website.</p>
-      
+      <!-- The long sovereignty line went to the security section below as its condensed header (founder/791). The Center
+           card keeps a line of its own: Our Mission's line for a Center, word for word (for his eye). -->
+      <p class="lp-lead t-lead">Find a place, follow its updates or build a space for a&nbsp;community.</p>
+      <div class="lp-acts"><a class="pill pill--solid" href="/mission#centers">What a Center is</a></div>
     </div>
     <div class="cn-wrap rv d3"><div id="cnCard"></div><div class="po-list" id="cnRows"></div></div>
   </div>
 </section>
+
+<!-- ═══ 4b · SECURITY — the condensed line as its header, and the locked globe (founder/791: "this line needs to go
+     for a condesne secuity line similar to one we already have on mission and font needs to match THE OTHER TEXT ...
+     make this the header of secuity and bring over the globe with a lock on it"). The line and its short line are Our
+     Mission's (#privacy), word for word; the header is the landing's own .lp-h2 and the short line its .lp-p, so it
+     wears the same face, size and spacing as every other heading and line here. ═══ -->
+<style>
+  /* THE LOCKED GLOBE, as Our Mission draws it (frontend/landing/site-page.css .mission-privacy-mark, copied here
+     because the landing does not load that sheet; one mark, so the class keeps its name) */
+  .mission-privacy-mark{position:relative;width:min(340px,100%);aspect-ratio:1;margin:auto;display:grid;place-items:center}
+  .mission-privacy-mark img{width:82%;height:82%;display:block}
+  .mission-privacy-mark svg{position:absolute;right:6%;bottom:7%;width:32%;height:32%;padding:17px;overflow:visible;
+    color:#fff;fill:#0e0d1a;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;
+    border:1px solid rgba(255,255,255,.78);border-radius:24px;background:#0e0d1a}
+  #security .lp-h2{max-width:17ch}
+  @media(max-width:820px){.mission-privacy-mark{width:min(230px,65vw)}}
+</style>
 
 <!-- ═══ 5 · THE APP ═════════════════════════════════════════════════════ -->
 <section class="lp" id="app">
   <div class="lp-wrap lp-two">
     <div class="rv d2">
       <div class="lk"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>App</span></div>
-      <h2 class="lp-h2" style="max-width:14ch">Introducing <br>Your fully customizable social&nbsp;network.</h2>
-      <p class="lp-p">See what your friends and the places you love are posting, and what is coming up at each of them.</p>
-      
+      <h2 class="lp-h2 t-heading" style="max-width:14ch">Introducing <br>Your fully customizable social&nbsp;network.</h2>
+      <p class="lp-p t-lead">See what your friends and the places you love are posting, and what is coming up at each of them.</p>
+      <div class="lp-acts"><a class="pill pill--solid" href="/beta">Open the App</a><a class="pill pill--solid" href="#app">The Oneway App</a></div>
     </div>
     <div class="phones rv d3">
       <div class="ph-real">
@@ -2208,13 +2063,21 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
 <section class="lp" id="os">
   <div class="lp-wrap" style="text-align:center">
     <div class="lk rv d2"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>OS</span></div>
-    <h2 class="lp-h2 rv d2" style="margin:0 auto;max-width:17ch">See how deep it&nbsp;goes.</h2>
-    <!-- HIS SENTENCE, LEFT AND RIGHT ABOVE THE SCREEN, LINED UP: both halves start on the same row and end on the same
-         row ("no line them up that looks misspaced"); the script after the Brain keeps it so at every width -->
-    <div class="os-flow rv d2">
-      <p class="os-flow__a">From managing online communities, developing custom&nbsp;tools,</p>
-      <p class="os-flow__b">to running full businesses and zooming in on the operations of specific locations with the click of a button, within&nbsp;seconds.</p>
-    </div>
+    <!-- THE OS OPENS ON HOW CUSTOMIZABLE A CENTER IS (founder/805: "needs to start by talking about how cutomiszeable the
+         center is using similar BUT NOT EXACT LINES ... that fit good for seo"). PROPOSED lines, for his eye. -->
+    <!-- THE CENTER IS A CANVAS (the founder, 2026-10-17: "it has to talk about the canvas, how the center is a canvas"). True
+         of the running platform: a Center's page is its canvas (GET /api/canvas/center:{id}), its operator arranges it
+         (may_arrange, through may_operate) with the Popits a Center can hold (the catalog: posts, events, links, website,
+         countdown, clock), and a visitor reads the same placements. PROPOSED line, for his eye. -->
+    <h2 class="lp-h2 t-heading rv d2 os-center-h">A Center you make entirely your&nbsp;own.</h2>
+    <p class="lp-p t-lead rv d2 os-center-p">A Center is a canvas: place its posts, events, links and website where you want them, and everyone who opens it sees it your way. Oneway OS is the AI business management side of the same social network, so the place people follow and the place you run are&nbsp;one.</p>
+    <h2 class="lp-h2 t-heading rv d2 os-deep-h">See how deep it&nbsp;goes.</h2>
+    <!-- THE CHANGING LINE UNDER THE HEADING, then "Go anywhere. Connect everywhere." (founder/791: "put this changing line
+         under see how deep it goes Connect your brand in one place. Go anywhere. Connect everywhere."); both were lower
+         on the page (the line under the iMac, the other the last row's heading) -->
+    <p class="os-connect os-connect--top t-sub rv d2">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</p>
+    <p class="os-connect os-go t-sub rv d2">Go anywhere. Connect everywhere.</p>
+    <p class="os-line t-lead rv d2">From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within&nbsp;seconds.</p>
     <div class="aio rv d3" role="img" aria-label="Oneway OS on an iMac, its Brain open">
       <img class="aio-photo" src="/frontend/site/imac-m4-silver-1720.webp" srcset="/frontend/site/imac-m4-silver-1100.webp 1100w, /frontend/site/imac-m4-silver-1720.webp 1720w" sizes="(max-width: 860px) 100vw, 820px" width="1720" height="1470" alt="" loading="lazy" decoding="async"/>
         <div class="aio-screen">
@@ -2236,8 +2099,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
         </div>
     </div>
     <p class="aio-tm">iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.</p>
-    <p class="os-connect rv d3">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</p>
-    
+    <div class="lp-acts lp-acts--c rv d4"><a class="pill pill--solid" href="/beta">Open Oneway OS</a><a class="pill pill--solid" href="/os">Oneway OS</a></div>
   </div>
 </section>
 
@@ -2262,48 +2124,188 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
   </div>
 </section>
 
-<!-- ═══ THE LAST ROW — the line, then the ladder ═══════════════════════
-     ★ FOUNDER, 2026-10-08: the tiers are ONEWAY OS · Business OS (the former OS+ and OS Max) ·
-       Developer OS ("these terms are leaving").
-     ★ FOUNDER/534: the App → OS → OS+ → OS Max ladder "could be at the
-     bottom and buttons should appear more rounded smaller and sleaker but
-     these are good link buttons." -->
-<section class="end" id="return" aria-label="Oneway">
+<!-- ═══ 8 · PLANS — the rates and each plan's perks (founder/792: "move the rates that we decided upon onto the landing page
+     and the individual subscription perks for oneway +, oneway os (free and then core and business"). This replaces
+     founder/778's "Business OS has no public subscription yet. Public rates are coming soon.", which these rates
+     contradict; its contact sentence is now Business OS's own line. The figures are PLAN.md's (Oneway+'s from records
+     230 and 293; Oneway OS free; Core's, proposed in PLAN §5.2's package contract; a comment never names a pending one,
+     because the public copy carries comments) and founder/795's (Business $330 a month for one Center, several Business
+     Centers by contact). Oneway+ and Core are confirmed with him before
+     they are shown: their figures sit in [data-price-pending], which the public copy leaves out (tools/landing_static.py);
+     Oneway OS's Free (his word in 792) and Business's $330 (795) are not pending. The perks are PLAN's words for each
+     package (§3.6 and the Core / Business contract). The heading, each plan's "for" line and the pills' places are my
+     reading (for his eye). No table, no boxes (S20): four columns on the page, the landing's bordered pills. Each plan's
+     lockup is a link to its product's page, under a row of the products (founder/801, PROPOSED, for his eye). ═══ -->
+<style>
+    .plans .lp-h2{text-align:center;margin:0 auto;max-width:18ch}
+  .plans-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(28px,2.6vw,36px);margin:clamp(40px,5vw,60px) auto 0;
+    max-width:1080px;text-align:left}
+  .plan{min-width:0;display:flex;flex-direction:column}
+  .plan .lk{margin:0;white-space:nowrap;align-self:flex-start}
+  /* the products, one link each, under the heading; the plans' lockups below are links to the same pages */
+  .plans-products{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 40px;margin:clamp(24px,3vw,32px) auto 0;max-width:960px}
+  .plans-products .lk{margin:0;white-space:nowrap}
+  @media(max-width:560px){.plans-products{gap:12px 28px}}
+  /* a lockup that is a link: its word underlines under the pointer and on focus; never a button, never loose text */
+  a.lk{color:inherit;text-decoration:none;padding:4px 0}
+  a.lk span{text-decoration-line:underline;text-decoration-color:transparent;text-decoration-thickness:1px;text-underline-offset:6px;transition:text-decoration-color .2s}
+  a.lk:hover span,a.lk:focus-visible span{text-decoration-color:currentColor}
+  a.lk:focus-visible{outline:2px solid currentColor;outline-offset:4px;border-radius:6px}
+  /* each line in its role's one spacing (founder/793): the "for" line, the perks and the note are body, the figure a heading */
+  .plan-for{margin:10px 0 0}
+  /* the figure large, its period small beside it, as pricing pages set it */
+  .plan-price{margin:16px 0 0;white-space:nowrap}
+  .plan-perks{list-style:none;margin:16px 0 0;padding:0;display:grid;gap:8px}
+  /* each plan's name is its lockup (the mark role), its rate the sub role, its "for" line and perks the body role, its
+     note the caption role, all white (the founder, 2026-10-09: "all white rather then divided into smaller chunks of grey
+     sidetext"); they were 15-16px in two greys and the figure 28-34px, bound at the page's foot */
+  .plan-note{margin:16px 0 0}
+  .plan .lp-acts{margin-top:auto;padding-top:24px}
+  @media(max-width:1000px){.plans-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media(max-width:560px){.plans-grid{grid-template-columns:minmax(0,1fr)}}
+</style>
+<section class="lp plans" id="plans" aria-labelledby="plansH">
   <div class="lp-wrap">
-    <h2 class="lp-h2">Go anywhere. Connect everywhere.</h2>
-    <nav class="ladder2" aria-label="Oneway, from the App to Developer OS">
-      <a href="#app" style="--h:139,92,255">Oneway App</a><i>›</i>
-      <a href="#os" style="--h:38,150,222">Oneway OS</a><i>›</i>
-      <a href="#os" style="--h:93,226,255">Business OS</a><i>›</i>
-      <a href="#os" style="--h:255,168,58">Developer OS</a>
+    <h2 class="lp-h2 t-heading rv d2" id="plansH">Plans and pricing.</h2>
+    <!-- one line under the heading; how to buy is the Business plan's and the next section's (it said "contact us" and
+         "by contact" here, under Business OS and again in Get Oneway OS today). PROPOSED, for his eye. -->
+    <p class="lp-p t-lead rv d2 plans-today">Every person and every Center starts&nbsp;free.</p>
+    <!-- THE TOP OF THE PLANS, WITH A LINK TO EACH PRODUCT (founder/801: "these buttons are no longer needed at bottom and
+         make top pricing area better with links to each product"). PROPOSED, for his eye: the four products under the
+         heading, each in the landing's own lockup (the wordmark and its word) and each a link to its page, where the
+         product buttons at the page's foot were; and each plan's lockup below is a link to its product's page too
+         (Oneway+ the App's, Oneway OS and Core Oneway OS's, Business OS its own). Developer OS has no plan here: it
+         is free (founder/775) and its page says what it is. The other reading is the four outlined product buttons
+         moved here as they were. -->
+    <nav class="plans-products rv d2" aria-label="Oneway's products">
+      <a class="lk plans-product" href="#app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>App</span></a>
+      <a class="lk plans-product" href="/os"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>OS</span></a>
     </nav>
+    <div class="plans-grid">
+      <article class="plan rv d2" id="plus">
+        <a class="lk plan-go" href="#app" aria-label="Oneway+, in the Oneway App"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>+</span></a>
+        <p class="plan-for">For people</p>
+        
+        <ul class="plan-perks">
+          <li>The App's own private Brain</li>
+          <li>Your own map</li>
+          <li>Deeper recommendations</li>
+          <li>More control over what it remembers</li>
+        </ul>
+        <div class="lp-acts"><a class="pill pill--solid" href="/beta">Create your account</a></div>
+      </article>
+      <article class="plan rv d2" id="os-free">
+        <a class="lk plan-go" href="/os" aria-label="Oneway OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>OS</span></a>
+        <p class="plan-for">For every Center</p>
+        <p class="plan-price"><!-- his word (founder/792: "oneway os (free and then core and business"): shown, never pending --><span><b>Free</b></span></p>
+        <ul class="plan-perks">
+          <li>A Center's public side</li>
+          <li>Its community</li>
+          <li>The tools to run it</li>
+        </ul>
+        <div class="lp-acts"><a class="pill pill--solid" href="/beta">Create your Center</a></div>
+      </article>
+      <article class="plan rv d3" id="core">
+        <a class="lk plan-go" href="/os" aria-label="Core, in Oneway OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Core</span></a>
+        <p class="plan-for">For one Center's team</p>
+        
+        <ul class="plan-perks">
+          <li>One Center's staff, customers, assets and commitments</li>
+          <li>Direct acts, reports and configured rules</li>
+          <li>Industry-specific work</li>
+        </ul>
+        <div class="lp-acts"><a class="pill pill--solid" href="mailto:williamrau78@gmail.com?subject=Oneway%20Core">Contact us</a></div>
+      </article>
+      <article class="plan rv d3" id="business">
+        <!-- founder/795: "buisness 330, multiple business cneters contact": $330 a month for one Center, several Business
+             Centers by contact, as the Terms say it (§17: one Center, set up with you by contact). The "for" line is my reading (for his eye). -->
+        <p class="plan-for">For one business Center</p>
+        <p class="plan-price"><!-- confirmed by founder/795 ("buisness 330"): shown, never pending; a copy of the landing still publishes only on his go (739) --><span><b>$330</b> a month</span></p>
+        <ul class="plan-perks">
+          <li class="plan-all">Everything in Core, plus</li>
+          <li>Coordinated decisions and delegated execution</li>
+          <li>Organization-wide control</li>
+          <li>The Brain, Systems, Agents and Cross Projection</li>
+        </ul>
+        <!-- founder/778's three lines ("we reply almost instantly", "adapt to any use case", "build this model of the
+             internet with us") are said once, in Get Oneway OS today below; this keeps the plan's own fact -->
+        <p class="plan-note">Several Business Centers under one organization are by&nbsp;contact.</p>
+        <div class="lp-acts"><a class="pill pill--solid" href="/contact#business">Buy Business OS today</a></div>
+      </article>
+    </div>
   </div>
 </section>
 
-<script defer src="/frontend/shared/brainmap.js?v=9c3fa9cb"></script>
-<script defer src="/frontend/landing/static/inline-03-da8892856b.js"></script>
-<script defer src="/frontend/landing/static/inline-04-a503692068.js"></script>
-<script defer src="/frontend/landing/static/inline-05-b8bd236ef4.js"></script>
-<script defer src="/frontend/landing/static/inline-06-635bb08594.js"></script>
-<script defer src="/frontend/landing/static/inline-07-ced288bedf.js"></script>
+<!-- ═══ THE LAUNCH (founder/806: "have it clear near the map area that its a Invatnation Only NYC Beta"; founder, 2026-10-17:
+     "launch and contact areas well below the imac and os area") ═════════ -->
+<section class="lp" id="launch">
+  <div class="lp-wrap" style="text-align:center">
+    <!-- OUR MAP OVER NYC (founder/791: "and then under it should be our map over NYC saying our first launch is NYC and
+         Long island"): the App's own Discovery map, MapLibre over the platform's ground tiles, captured on :3050 signed in
+         as a fresh test account (context/audits/landing-2026-10-16/landing-nycmap.js). Its edges fade into the room, and
+         the OS line and the iMac follow it (for his eye). -->
+    <!-- the section reads as every other one: its name (his words, founder/806, plainly: no pill, no dot), its line as
+         the headline (his words, founder/791), then the picture -->
+    <p class="launch-beta t-mark rv d2">Invitation Only NYC Beta</p>
+    <h2 class="lp-h2 t-heading rv d2 launch-h">Our first launch is NYC and Long&nbsp;Island.</h2>
+    <figure class="launch rv d3">
+      <img src="/frontend/site/launch-nyc-1720.webp" srcset="/frontend/site/launch-nyc-1100.webp 1100w, /frontend/site/launch-nyc-1720.webp 1720w" sizes="(max-width: 860px) 100vw, 820px" width="1720" height="860" alt="Oneway's map over New York City and Long Island" loading="lazy" decoding="async"/>
+    </figure>
+  </div>
+</section>
 
-<footer>
-  <div class="footer-inner">
-    <div class="footer-left">
-      <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" class="footer-logo"/>
-      <div class="footer-links">
-        <a href="#app">Oneway App</a>
-        <a href="#os">Oneway OS</a>
-        <a href="/about">About</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
-      </div>
+<!-- ═══ GET ONEWAY OS TODAY (founder/806: "businesses could buy oneway os today via contact"); the inquiry is on /contact.html ═══ -->
+<section class="lp" id="get-os">
+  <div class="lp-wrap" style="text-align:center">
+    <div class="lk rv d2"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Contact</span></div>
+    <h2 class="lp-h2 t-heading rv d2 getos-h">Get Oneway OS&nbsp;today.</h2>
+    <!-- founder/778's words, said once on the page: "we reply almost instantly to any business inquiries. And adapt to any
+         use case. Help us build this model of the internet with us." -->
+    <p class="lp-p t-lead rv d2 getos-p">Tell us what you run or what you want to build, and we set it up with you. We reply almost instantly to any business inquiry and adapt Oneway to any use case. Build this model of the internet with&nbsp;us.</p>
+    <div class="lp-acts lp-acts--c rv d3"><a class="pill pill--solid" href="/contact#business">Buy Business OS today</a><a class="pill pill--solid" href="/contact#developers">Start on Developer OS</a></div>
+  </div>
+</section>
+
+<!-- ═══ SECURITY, ONE OF THE LAST (founder/805: "secuity area is one of last") ═══ -->
+<section class="lp" id="security">
+  <div class="lp-wrap lp-two">
+    <div class="rv d2">
+      <!-- SECURITY HAS ITS HEADER (founder/801: "secuity doesnt have the header"): the same lockup the Ecosystem, App and OS
+           sections open with, the ONEWAY wordmark and the section's word -->
+      <div class="lk"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Security</span></div>
+      <h2 class="lp-h2 t-heading">Your identity and data stay under your&nbsp;control.</h2>
+      <p class="lp-p t-lead">Choose what your profile shows and keep personal and workplace activity separate. Access to organizational work follows permissions, not a public profile.</p>
+      
     </div>
-    <!-- ★ FOUNDER/493: *"Put 2027, Oneway Technologies LLC"* -->
-    <div class="footer-right">2027, Oneway Technologies LLC</div>
+    <div class="mission-privacy-mark rv d3" role="img" aria-label="Oneway globe with a lock"><img src="/oneway-globe.svg" alt="" width="100" height="100" loading="lazy" decoding="async"/><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></div>
+  </div>
+</section>
+
+<script defer src="/frontend/shared/brainmap.js?v=6a651abb"></script>
+<script defer src="/frontend/landing/static/inline-03-da8892856b.js"></script>
+<script defer src="/frontend/landing/static/inline-04-b8bd236ef4.js"></script>
+<script defer src="/frontend/landing/static/inline-05-761e605579.js"></script>
+<script defer src="/frontend/landing/static/inline-06-ced288bedf.js"></script>
+
+<!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/oneway/platform/test_landing_fonts.py -->
+<footer class="owfoot">
+  <div class="owfoot-in">
+    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <nav class="owfoot-pages" aria-label="Oneway's pages">
+      <a href="/mission">Our Mission</a>
+      <a href="#app">App</a>
+      <a href="#os">OS</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <nav class="owfoot-legal" aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/data-deletion">Data Deletion</a>
+    </nav>
+    <small class="owfoot-line">2027, Oneway Technologies LLC</small>
   </div>
 </footer>
-<script defer src="/frontend/landing/static/inline-08-9b71b0007e.js"></script>
+<script defer src="/frontend/landing/static/inline-07-c92cf52815.js"></script>
 
 
 
@@ -2345,7 +2347,7 @@ html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; 
     letter-spacing:0!important;font-size:13px!important;font-weight:500!important}
 
 </style>
-<script defer src="/frontend/landing/static/inline-09-298e53feb7.js"></script>
+<script defer src="/frontend/landing/static/inline-08-20828a88be.js"></script>
 
 
 

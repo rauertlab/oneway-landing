@@ -2,48 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark light" />
   <meta name="robots" content="noindex" />
   <title>Not here — Oneway</title>
   <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a">
-  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=774e1cf5">
+  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=80c34e7d">
   <!-- The page GitHub Pages serves for an address oneway.center does not have, in the legal pages' own layout
        (founder/493), so a mistyped address lands on ONEWAY instead of GitHub's page. Every link is absolute:
        this page is served at whatever address was asked for. -->
   </script>
   <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only) */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e9c47574"/>
 </head>
 <body>
 
-<div class="top-bar">
-  <a href="/" class="logo" aria-label="Oneway"><img class="slot" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" /></a>
-  <nav class="top-nav"><a href="/">Home</a></nav>
-</div>
+<nav class="owbar owbar--solid owbar--fly" aria-label="Oneway">
+  <div class="owbar-brand">
+    <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+    <div class="owbar-pages">
+      <a href="/mission">Our Mission</a>
+      <a href="/#app">App</a>
+      <a href="/#os">OS</a>
+      <a href="/contact">Contact</a>
+    </div>
+  </div>
+  <div class="owbar-right">
+    <a href="/beta" class="owbar-signin">Sign in</a>
+  </div>
+</nav>
+<script src="/frontend/shared/oneway-bar.js?v=5030702d"></script>
 
 <div class="hero">
-  <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" />
-  <div class="hero-eyebrow">Not found</div>
-  <h1>Not<br>here</h1>
-  <p class="hero-sub">There is no page at this address.</p>
+  <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" data-owbar-hero />
+  <h1 class="hero-eyebrow">Not found</h1>
 </div>
 
 <div class="wrap">
-  <p class="scope"><strong>Oneway is at oneway.center.</strong> Go to the <a href="/">home page</a>, or read <a href="/about">about Oneway</a>.</p>
+  <p class="scope"><strong>Oneway is at oneway.center.</strong> Go to the <a href="/">home page</a>, or read <a href="/mission">our mission</a>.</p>
 </div>
 
-<footer>
-  <div>2027, Oneway Technologies LLC</div>
-  <div style="display:flex;gap:24px;">
-    <a href="/about">About</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/terms">Terms</a>
-    <a href="/">← Back to site</a>
+<!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/oneway/platform/test_landing_fonts.py -->
+<footer class="owfoot">
+  <div class="owfoot-in">
+    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <nav class="owfoot-pages" aria-label="Oneway's pages">
+      <a href="/mission">Our Mission</a>
+      <a href="/#app">App</a>
+      <a href="/#os">OS</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <nav class="owfoot-legal" aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/data-deletion">Data Deletion</a>
+    </nav>
+    <small class="owfoot-line">2027, Oneway Technologies LLC</small>
   </div>
 </footer>
 
-<img id="flyLogo" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" />
-<script src="/frontend/shared/oneway-legal.js?v=f865b48c"></script>
 </body>
 </html>

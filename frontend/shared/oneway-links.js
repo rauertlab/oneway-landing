@@ -394,6 +394,7 @@
      on the platform went blank and the editor labelled every link "Link".
      One object, built once, at the point the guard is designed for. */
   OW.links = {
+    fromKind: fromKind,
     platformOf: platformOf,
     icon: svg,
     bar: bar,
