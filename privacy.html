@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
+  <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l)})(window,document,null)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"></noscript>
+  <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
   <title>Privacy Policy · Oneway</title>
@@ -31,11 +35,6 @@
   <meta name="theme-color" content="#05050b">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
-  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
-  <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
-  <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
-  <link rel="icon" href="/assets/icons/oneway-globe-512.png" sizes="512x512" type="image/png">
   <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
@@ -54,8 +53,8 @@
     <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
     <div class="owbar-pages">
       <a href="/mission">Our Mission</a>
-      <a href="/#app">App</a>
-      <a href="/#os">OS</a>
+      <a href="/app">App</a>
+      <a href="/os">OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
     </div>
@@ -315,8 +314,8 @@
     <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
     <nav class="owfoot-pages" aria-label="Oneway's pages">
       <a href="/mission">Our Mission</a>
-      <a href="/#app">App</a>
-      <a href="/#os">OS</a>
+      <a href="/app">App</a>
+      <a href="/os">OS</a>
       <a href="/os-business">Business OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>

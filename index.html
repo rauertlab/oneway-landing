@@ -2,8 +2,50 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
-  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script><script>window.owStrip="/frontend/landing/strip-centers.json?v=c7615dba";</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
+  <script id="ow-look">
+  /* THE LOOK THIS LOAD, CHOSEN ONCE, FIRST (founder/829: "the icon doesnt sync to the landing pages color"). The page's
+     palette and its tab globe read this one choice: the head's tab script (tools/site_seo.py TAB_GLOBE_JS, right below)
+     names the globe in this look's hue while the head is read, and the palette script further down paints it. */
+  (function () {
+    /* MORE COLOURS ON EACH LOAD (founder/790: "introduce more variety for color options of the landing page. when
+       randomlly loading on"). Each look is a base hue and the two offsets of its other glows; the three glows keep the
+       landing's own lightnesses (deep, light, middle) on its black, so every look is still the landing's room. The
+       eight added looks are my reading of his "more variety" (for his eye). */
+    var looks = [
+      [188.7, 66.4, 209], // The familiar teal, violet and amber combination.
+      [218, 90, 215],     // Deep blue with violet and warm light.
+      [310, 120, 225],    // Pink with green and blue.
+      [145, 90, 225],     // Green with blue and warm light.
+      [38, 185, 95],      // Gold with deep blue and green.
+      [350, 40, 250],     // Crimson with peach light and blue.
+      [200, 330, 80],     // Azure with aqua light and violet.
+      [160, 120, 40],     // Emerald with lavender light and sky.
+      [330, 75, 270],     // Rose with gold light and blue.
+      [250, 200, 70],     // Indigo with lime light and magenta.
+      [12, 300, 180],     // Ember with orchid light and cyan.
+      [180, 150, 60],     // Lagoon teal with pink light and blue.
+      [275, 245, 120]     // Violet with sea-green light and coral.
+    ];
+    var turn = Math.floor(Math.random() * looks.length);
+    /* the first load of a visit is the random one; each reload in the same tab then steps to the next look. The saved
+       turn was read as Number(null) = 0 when nothing was saved yet, so every first load drew look 0 (measured
+       2026-10-16: 14 of 14 fresh loads were the teal look); only a turn actually saved is followed now */
+    try {
+      var saved = sessionStorage.getItem('ow_landing_palette_turn');
+      var savedTurn = saved === null ? NaN : Number(saved);
+      if (Number.isFinite(savedTurn) && savedTurn >= 0) turn = savedTurn % looks.length;
+      sessionStorage.setItem('ow_landing_palette_turn', String(turn + 1));
+    } catch (_) {}
+    window.__owLook = { turn: turn, look: looks[turn] };
+    window.__owPageHue = looks[turn][0];
+  })();
+  </script>
+  <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l)})(window,document,188.7)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"></noscript>
+  <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
   <title>Oneway - Social Media And AI Business Management Ecosystem</title>
@@ -32,15 +74,10 @@
   <meta name="theme-color" content="#05050b">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
-  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
-  <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
-  <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
-  <link rel="icon" href="/assets/icons/oneway-globe-512.png" sizes="512x512" type="image/png">
   <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway - Social Media And AI Business Management Ecosystem","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-17"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/#os"}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/#webpage","url":"https://oneway.center/","name":"Oneway","headline":"Oneway - Social Media And AI Business Management Ecosystem","description":"Oneway gives every person one profile and every community or business a Center: a fully customizable social network, and Oneway OS to run it.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-17"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"Your fully customizable social network. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/os"}]}</script>
   <!-- /SEO -->
   <!-- ═══ MOBILE RENDER SAFE-FLOOR + ON-DEVICE BISECTION (Priority Zero: the
        iPhone Safari renderer crash) ═══════════════════════════════════════
@@ -791,8 +828,8 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
 html[data-ow-motion="reduce"] .po-act[data-po-respond="like"].is-smash > svg { animation: auto ease 0s 1 normal none running none; }
 html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; }
 html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=987e198f" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=987e198f"></noscript>
-  <script defer src="/frontend/shared/oneway-hue.js?v=c93c1020"></script>
-  <script defer src="/frontend/shared/oneway-popit.js?v=1d2969e9"></script>
+  <script defer src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
+  <script defer src="/frontend/shared/oneway-popit.js?v=0578971f"></script>
   <script defer src="/frontend/shared/oneway-links.js?v=77fb7f61"></script>
   <!-- ★ S21: a Center and a person are drawn by ONE renderer from ONE compact read (api/oneway/cards): this page composes
        no display field itself. -->
@@ -823,7 +860,7 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
   <script defer src="/frontend/shared/oneway-projection.js?v=8c627fe2"></script>
   <script defer src="/frontend/landing/static/inline-01-b7399efeeb.js"></script>
   <script defer src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
-  <script defer src="/frontend/landing/static/inline-02-e399ce2ef7.js"></script>
+  <script defer src="/frontend/landing/static/inline-02-ae5f66e5cc.js"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
   <link rel="stylesheet" href="/frontend/landing/landing.css?v=32f96c77"/>
   <link rel="stylesheet" href="/frontend/landing/reserve.css?v=afa8ff6f"/>
@@ -1394,7 +1431,6 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
   /* centred under the centred heading (it sat flush left under it at 1366) */
   .plans-today{margin:20px auto 0;max-width:46ch;text-align:center}
   </style>
-<style>/* static copy: what needs the backend, or shows test accounts, is not shown */#ecoRun{display:none!important}</style>
 </head>
 <body>
 
@@ -1410,8 +1446,8 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
     <a href="/" class="owbar-mark" aria-label="Oneway home"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/></a>
     <div class="owbar-pages">
       <a href="/mission">Our Mission</a>
-      <a href="#app">App</a>
-      <a href="#os">OS</a>
+      <a href="/app">App</a>
+      <a href="/os">OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
     </div>
@@ -1535,8 +1571,8 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
          what it is; search and a first visitor weigh this line most) -->
     <p class="hero-sub t-lead">One profile for every person, a Center for every place, and Oneway&nbsp;OS to run&nbsp;it.</p>
     <div class="hero-btns">
-      <a href="#app" class="pill pill--solid h-btn-app" aria-label="Download the Oneway app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Download App</span></a>
-      <a href="#os" class="pill pill--solid h-btn-os" aria-label="Explore Oneway OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span class="os">Explore Oneway OS</span></a>
+      <a href="/app" class="pill pill--solid h-btn-app" aria-label="Download the Oneway app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Download App</span></a>
+      <a href="/os" class="pill pill--solid h-btn-os" aria-label="Explore Oneway OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span class="os">Explore Oneway OS</span></a>
     </div>
     <!-- ★ FOUNDER/412: no "early access", no gemstone — the words are the line -->
   </div>
@@ -2046,7 +2082,7 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
       <div class="lk"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>App</span></div>
       <h2 class="lp-h2 t-heading" style="max-width:14ch">Introducing <br>Your fully customizable social&nbsp;network.</h2>
       <p class="lp-p t-lead">See what your friends and the places you love are posting, and what is coming up at each of them.</p>
-      <div class="lp-acts"><a class="pill pill--solid" href="/beta">Open the App</a><a class="pill pill--solid" href="#app">The Oneway App</a></div>
+      <div class="lp-acts"><a class="pill pill--solid" href="/beta">Open the App</a><a class="pill pill--solid" href="/app">The Oneway App</a></div>
     </div>
     <div class="phones rv d3">
       <div class="ph-real">
@@ -2214,13 +2250,13 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
          is free (founder/775) and its page says what it is. The other reading is the four outlined product buttons
          moved here as they were. -->
     <nav class="plans-products rv d2" aria-label="Oneway's products">
-      <a class="lk plans-product" href="#app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>App</span></a>
+      <a class="lk plans-product" href="/app"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>App</span></a>
       <a class="lk plans-product" href="/os"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>OS</span></a>
       <a class="lk plans-product" href="/os-business"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Business OS</span></a>
     </nav>
     <div class="plans-grid">
       <article class="plan rv d2" id="plus">
-        <a class="lk plan-go" href="#app" aria-label="Oneway+, in the Oneway App"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>+</span></a>
+        <a class="lk plan-go" href="/app" aria-label="Oneway+, in the Oneway App"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>+</span></a>
         <p class="plan-for">For people</p>
         
         <ul class="plan-perks">
@@ -2378,7 +2414,7 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
 <script defer src="/frontend/shared/brainmap.js?v=6a651abb"></script>
 <script defer src="/frontend/landing/static/inline-03-da8892856b.js"></script>
 <script defer src="/frontend/landing/static/inline-04-b8bd236ef4.js"></script>
-<script defer src="/frontend/landing/static/inline-05-8f01f5d43c.js"></script>
+<script defer src="/frontend/landing/static/inline-05-07b920e839.js"></script>
 <script defer src="/frontend/landing/static/inline-06-ced288bedf.js"></script>
 
 <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
@@ -2413,8 +2449,8 @@ html .ow-fpos[data-kin</style><link rel="preload" as="style" href="/frontend/sha
     <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
     <nav class="owfoot-pages" aria-label="Oneway's pages">
       <a href="/mission">Our Mission</a>
-      <a href="#app">App</a>
-      <a href="#os">OS</a>
+      <a href="/app">App</a>
+      <a href="/os">OS</a>
       <a href="/os-business">Business OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>

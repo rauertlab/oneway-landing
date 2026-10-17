@@ -3,6 +3,29 @@
 <head>
   <meta charset="UTF-8"/>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
+  <script id="ow-look">
+  /* THE LOOK THIS LOAD, CHOSEN ONCE, FIRST (founder/829: "the icon doesnt sync to the landing pages color"). The page's
+     palette and its tab globe read this one choice: the head's tab script (tools/site_seo.py TAB_GLOBE_JS, right below)
+     names the globe in this look's hue while the head is read, and the palette script further down paints it. */
+  (function () {
+    var looks = [
+      [188.7, 66.4, 209], [218, 90, 215], [310, 120, 225],
+      [145, 90, 225], [38, 185, 95]
+    ];
+    var turn = Math.floor(Math.random() * looks.length);
+    try {
+      var savedTurn = Number(sessionStorage.getItem('ow_landing_palette_turn'));
+      if (Number.isFinite(savedTurn) && savedTurn >= 0) turn = savedTurn % looks.length;
+      sessionStorage.setItem('ow_landing_palette_turn', String(turn + 1));
+    } catch (_) {}
+    window.__owLook = { turn: turn, look: looks[turn] };
+    window.__owPageHue = looks[turn][0];
+  })();
+  </script>
+  <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l)})(window,document,188.7)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"></noscript>
+  <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
   <title>Oneway OS: run your Center | Oneway</title>
@@ -31,11 +54,6 @@
   <meta name="theme-color" content="#05050b">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
-  <link rel="icon" href="/assets/icons/oneway-globe-32.png" sizes="32x32" type="image/png">
-  <link rel="icon" href="/oneway-globe.svg" type="image/svg+xml">
-  <link rel="icon" href="/assets/icons/oneway-globe-48.png" sizes="48x48" type="image/png">
-  <link rel="icon" href="/assets/icons/oneway-globe-192.png" sizes="192x192" type="image/png">
-  <link rel="icon" href="/assets/icons/oneway-globe-512.png" sizes="512x512" type="image/png">
   <link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
@@ -44,21 +62,12 @@
   <!-- THE GALAXY, UNDER THE SHARED RULES: one safe-floor question (touch,
        not width), one hue resolved from the ACCOUNT, one triad. -->
   <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
-  <script src="/frontend/shared/oneway-hue.js?v=c93c1020"></script>
+  <script src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
   <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
   <script>
   (function () {
-    var looks = [
-      [188.7, 66.4, 209], [218, 90, 215], [310, 120, 225],
-      [145, 90, 225], [38, 185, 95]
-    ];
-    var turn = Math.floor(Math.random() * looks.length);
-    try {
-      var savedTurn = Number(sessionStorage.getItem('ow_landing_palette_turn'));
-      if (Number.isFinite(savedTurn) && savedTurn >= 0) turn = savedTurn % looks.length;
-      sessionStorage.setItem('ow_landing_palette_turn', String(turn + 1));
-    } catch (_) {}
-    var look = looks[turn];
+    /* the look this load is the one the head chose (<script id="ow-look">), so the page and its tab globe wear one hue */
+    var turn = window.__owLook.turn, look = window.__owLook.look;
     function rgb(h, s, l) {
       h = ((h % 360) + 360) % 360; s /= 100; l /= 100;
       var a = s * Math.min(l, 1 - l);
@@ -303,8 +312,8 @@
       <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
       <div class="owbar-pages">
         <a href="/mission">Our Mission</a>
-        <a href="/#app">App</a>
-        <a href="/#os">OS</a>
+        <a href="/app">App</a>
+        <a href="/os">OS</a>
         <a href="/security">Security</a>
         <a href="/contact">Contact</a>
       </div>
@@ -567,8 +576,8 @@
     <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
     <nav class="owfoot-pages" aria-label="Oneway's pages">
       <a href="/mission">Our Mission</a>
-      <a href="/#app">App</a>
-      <a href="/#os">OS</a>
+      <a href="/app">App</a>
+      <a href="/os">OS</a>
       <a href="/os-business">Business OS</a>
       <a href="/contact#developers">Developer OS</a>
       <a href="/security">Security</a>
@@ -708,6 +717,10 @@
   .nav-os img{height:var(--lk)!important;width:auto;position:relative;top:calc(var(--lk) * .093)}
   .nav-os .os{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:calc(var(--lk) * 1.169)!important;line-height:1!important;letter-spacing:-.02em;padding-right:.06em}
   @media(max-width:420px){ .nav-os{--lk:11px} }
+  /* A NARROW BAR KEEPS SIGN IN ALONE, as oneway-bar.css does for a page's own pill (founder/829: "Dude, why are the actual app
+     and OS pages not navigatable?"): measured at 390, this pill left the bar's pages 72 px, so App and OS sat under Sign in
+     and a tap on App opened the beta gate. The page's own close (#cta) is where it pointed. */
+  @media(max-width:680px){ .owbar-right .nav-os{display:none} }
 
   .sys-list{max-width:none;columns:2;column-gap:40px}
   .sys-list li{break-inside:avoid}

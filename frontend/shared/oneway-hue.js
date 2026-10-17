@@ -28,26 +28,42 @@
     } catch(_){}
   }
 
-  /* ★ FOUNDER/471 §12: ONEWAY's icon is the loading globe, vibrant blue, and
-     it takes the signed-in person's hue in every view — the browser tab too.
-     The tab's icon is /oneway-globe.svg; its three strokes are #1f8fff. The
-     same drawing is recoloured in the person's hue and set as the icon;
-     signed out (no hue) it is the vibrant blue it was drawn in. All pages
-     use this one browser icon; install/touch icons remain separate. */
-  var GLOBE_BLUE = '#1f8fff', globeSvg = null, globeWant, pageHue = null;
-  /* THE TAB'S GLOBE IN THE PAGE'S OWN COLOUR (the founder, 2026-10-17: "why is the browser icon not the same transparent one
-     used in the app? And when a user signed in, it should obviously sync to their hue ... If they're a random user, it
-     should sync with whatever predominant color the page's hue is ... calculated every time"). Signed in, the person's hue
-     wins; signed out, a page that chooses its colours on each load says which hue it chose (window.owTabHue(h)); with
-     neither, the globe's own blue. It is drawn as a PNG (the transparent globe, recoloured, through a canvas), because
-     Safari does not take an SVG tab icon; an engine that cannot make the PNG keeps the SVG. */
+  /* ★ FOUNDER/471 §12: ONEWAY's icon is the loading globe, and it takes the signed-in person's hue in every view — the
+     browser tab too. THE TAB'S GLOBE IN THE PAGE'S OWN COLOUR (the founder, 2026-10-17: "when a user signed in, it should
+     obviously sync to their hue ... If they're a random user, it should sync with whatever predominant color the page's
+     hue is ... calculated every time"; founder/829: "the icon isnt even right on safari wtf").
+     THE GLOBE IS A FILE, NAMED WHILE THE HEAD IS READ. It was drawn here, after load, through a canvas into a data: PNG;
+     Chromium followed, Safari never did (it draws no SVG tab icon and does not take one a script swaps in after load), so
+     its tab kept the first static PNG, the blue globe. Now the transparent globe is pre-drawn in every hue at 10-degree
+     steps (assets/icons/globe/, tools/make_tab_globes.cjs: oneway-globe.svg with its strokes #1f8fff as hsl(h 92% 58%)),
+     the head's first script writes the one icon link to the file of the hue the page is about to paint
+     (tools/site_seo.py TAB_GLOBE_JS, which leaves what it decided in window.__owTabGlobe), and this keeps THAT link in
+     step afterwards, pointing it at the same files: the account's answer, a colour the page chooses, a Center the App
+     stands in. The order is the sync rule's: a context the surface stands in (owTabHue.context, oneway-popit.js), the
+     person's hue, the colour the page chose this load (owTabHue(h)), its ground's (owTabHue(h, true) from the galaxy; the
+     head's ground), its world's (--ow-user-hue), else the globe as drawn, blue. */
+  var GLOBE_DIR = '/assets/icons/globe/', GLOBE_STEP = 10, globeWant = null, pageHue = null, ctxHue = null;
+  var headGlobe = window.__owTabGlobe || null;
+  function norm(h){ if (h == null || h === '') return null; h = Number(h); return isFinite(h) ? ((h % 360) + 360) % 360 : null; }
+  function globeFile(h){
+    if (h == null) return GLOBE_DIR + 'globe-blue-32.png';
+    var k = Math.round(norm(h) / GLOBE_STEP) * GLOBE_STEP % 360;
+    return GLOBE_DIR + 'globe-' + ('00' + k).slice(-3) + '-32.png';
+  }
+  /* the colour the page chose in its head (window.__owPageHue, the landing's and the OS page's look) is its choice from
+     the first moment, so nothing paints the tab another colour before the page's own script says so again */
+  if (headGlobe && headGlobe.page != null && norm(headGlobe.page) != null) pageHue = norm(headGlobe.page);
   /* A page that chooses its colours says so (owTabHue(h)); the page's ground (the galaxy) says its hue too
-     (owTabHue(h, true)), but never over a page that has chosen. With neither, the page's brand hue, then the blue. */
+     (owTabHue(h, true)), but never over a page that has chosen. */
   window.owTabHue = function(h, ground){
-    if (ground && window.owTabHue.chosen) return;
+    if (ground && (window.owTabHue.chosen || (headGlobe && headGlobe.page != null))) return;
     if (!ground) window.owTabHue.chosen = true;
-    h = Number(h); pageHue = isFinite(h) ? ((h % 360) + 360) % 360 : null; tabIcon(globeWant);
+    pageHue = norm(h); tabIcon(globeWant);
   };
+  /* THE IDENTITY THE SURFACE STANDS IN (oneway-popit.js OW.paintIcon: a Center's light while the App is in it, null when
+     it is back in the person's own): it wins while it lasts, and null hands the tab back to the rule above */
+  window.owTabHue.context = function(h){ ctxHue = (h == null) ? null : norm(h); tabIcon(globeWant); };
+  window.owTabHue.file = globeFile;
   function brandHue(){
     /* the hue the page is showing: its world's (--ow-user-hue, the App's purple for a visitor), else its brand's */
     try {
@@ -58,55 +74,36 @@
     return null;
   }
   function tabIcon(h){
-    globeWant = h;
+    globeWant = (h == null) ? null : norm(h);
     try {
-      if (document.readyState === 'loading') {
-        if (!tabIcon.waiting) {
-          tabIcon.waiting = true;
-          document.addEventListener('DOMContentLoaded', function(){ tabIcon.waiting = false; tabIcon(globeWant); });
-        }
-        return;
-      }
-      var link = document.querySelector('link[rel="icon"][data-ow-globe]') ||
-                 document.querySelector('link[rel="icon"][href*="oneway-globe.svg"]');
+      var link = document.querySelector('link[rel="icon"][data-ow-globe]');
       if (!link) {
+        /* a page whose head does not write the globe (not projected by tools/site_seo.py): once it is read, it gets one */
+        if (document.readyState === 'loading') {
+          if (!tabIcon.waiting) {
+            tabIcon.waiting = true;
+            document.addEventListener('DOMContentLoaded', function(){ tabIcon.waiting = false; tabIcon(globeWant); });
+          }
+          return;
+        }
         link = document.createElement('link');
         link.setAttribute('rel', 'icon');
-        link.setAttribute('href', '/oneway-globe.svg');
+        link.setAttribute('data-ow-globe', '1');
         document.head.appendChild(link);
       }
+      /* the one tab icon: any other a browser could prefer goes (the touch icon and the manifest are a home screen's) */
       document.querySelectorAll('link[rel="icon"],link[rel="shortcut icon"]').forEach(function(other){
         if (other !== link) other.remove();
       });
-      link.setAttribute('type', 'image/svg+xml');
-      link.setAttribute('sizes', 'any');
-      link.setAttribute('data-ow-globe', '1');
-      var draw = function(){
-        if (globeSvg == null) return;
-        var hue = (globeWant != null) ? globeWant : (pageHue != null ? pageHue : brandHue());
-        var col = (hue == null) ? GLOBE_BLUE : 'hsl(' + hue + ' 92% 58%)';
-        var svgUrl = 'data:image/svg+xml,' + encodeURIComponent(globeSvg.split(GLOBE_BLUE).join(col));
-        var seq = (tabIcon.seq = (tabIcon.seq || 0) + 1);
-        try {
-          var im = new Image();
-          im.onload = function(){
-            if (seq !== tabIcon.seq) return;   /* a newer colour was asked for meanwhile */
-            try {
-              var cv = document.createElement('canvas'); cv.width = cv.height = 64;
-              cv.getContext('2d').drawImage(im, 0, 0, 64, 64);
-              link.setAttribute('type', 'image/png');
-              link.setAttribute('href', cv.toDataURL('image/png'));
-            } catch (_) { link.setAttribute('type', 'image/svg+xml'); link.setAttribute('href', svgUrl); }
-          };
-          im.onerror = function(){ link.setAttribute('type', 'image/svg+xml'); link.setAttribute('href', svgUrl); };
-          im.src = svgUrl;
-        } catch (_) { link.setAttribute('type', 'image/svg+xml'); link.setAttribute('href', svgUrl); }
-      };
-      if (globeSvg != null) { draw(); return; }
-      if (!window.fetch) return;
-      fetch('/oneway-globe.svg').then(function(r){ return r.ok ? r.text() : ''; })
-        .then(function(t){ if (t && t.indexOf(GLOBE_BLUE) >= 0) { globeSvg = t; draw(); } })
-        .catch(function(){});
+      var hue = ctxHue != null ? ctxHue
+              : globeWant != null ? globeWant
+              : pageHue != null ? pageHue
+              : (headGlobe && headGlobe.ground != null) ? norm(headGlobe.ground)
+              : brandHue();
+      var href = globeFile(hue);
+      if (link.getAttribute('type') !== 'image/png') link.setAttribute('type', 'image/png');
+      if (link.getAttribute('sizes') !== '32x32') link.setAttribute('sizes', '32x32');
+      if (link.getAttribute('href') !== href) link.setAttribute('href', href);   /* the same file is never asked for twice */
     } catch(_){}
   }
 

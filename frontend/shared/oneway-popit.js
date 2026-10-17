@@ -1035,39 +1035,14 @@
      Founder (2026-08-02): the app and web icon should correspond to the
      user's — or the viewed Center's — hue.
 
-     The tab icon is therefore DERIVED, not a file: the same globe geometry,
-     painted in whatever `--ow-h1` currently is, written into the <link> as an
-     SVG data URI. So entering a Center re-colours the world AND the tab, and a
-     person's own hue follows them across every surface.
-
-     It is one geometry with the built file: tools/make_icon.py emits the same
-     cage into oneway-globe.svg and the PNGs. The PNG sizes stay ONEWAY purple
-     on purpose — an installed home-screen icon is baked at install time and a
-     phone will not repaint it, so promising a per-person app icon there would
-     be a promise the platform cannot keep. The tab, which IS repaintable, keeps
-     its promise. */
-  var ICON_PAR = [[33.06,9.92,20.96],[41.54,12.46,35.48],[44,13.2,50],
-                  [41.54,12.46,64.52],[33.06,9.92,79.04]];
-  var ICON_MER = [44, 40.8, 32.7, 22, 10.64];
+     The tab icon follows the identity the surface stands in: entering a Center
+     re-colours the world AND the tab, and a person's own hue follows them
+     across every surface. Since founder/829 the tab is the transparent globe
+     as a file, pre-drawn in every hue (assets/icons/globe/), named by the
+     page's head and kept in step by oneway-hue.js; this tells it the context.
+     The home-screen PNGs stay as drawn on purpose: an installed icon is baked
+     at install time and a phone will not repaint it. */
   var lastIcon = '';
-
-  function iconSVG(rgb) {
-    var lines = '<circle cx="50" cy="50" r="44"/>';
-    ICON_PAR.forEach(function (p) {
-      lines += '<ellipse cx="50" cy="' + p[2] + '" rx="' + p[0] + '" ry="' + p[1] + '"/>';
-    });
-    ICON_MER.forEach(function (r) {
-      lines += '<ellipse cx="50" cy="50" rx="' + r + '" ry="44"/>';
-    });
-    lines += '<line x1="50" y1="6" x2="50" y2="94"/>';
-    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">'
-      + '<g fill="none" stroke="rgb(' + rgb + ')" stroke-width="7" opacity=".26">'
-      + lines + '</g>'
-      + '<g fill="none" stroke="rgb(' + rgb + ')" stroke-width="2.6" opacity=".8">'
-      + lines + '</g>'
-      + '<circle cx="50" cy="50" r="44" fill="none" stroke="rgb(' + rgb + ')"'
-      + ' stroke-width="3"/></svg>';
-  }
 
   /* Repaint the tab icon in the current surface hue. Cheap and idempotent —
      it does nothing when the hue has not actually changed, so it can be called
@@ -1086,42 +1061,15 @@
     if (!rgb || rgb === lastIcon) return;
     lastIcon = rgb;
     var icon = rgb.replace(/\s+/g, '') === PLATFORM_HUE ? ICON_BLUE : rgb;
-    var href = 'data:image/svg+xml,' + encodeURIComponent(iconSVG(icon));
-    var link = doc.querySelector('link[rel="icon"][data-ow-dynamic]');
-    if (!link) {
-      link = doc.createElement('link');
-      link.rel = 'icon'; link.type = 'image/svg+xml';
-      link.setAttribute('data-ow-dynamic', '1');
-      doc.head.appendChild(link);
-    }
-    link.href = href;
-
-    /* ★ THE STATIC ICONS MUST GO, OR THE HUE NEVER REACHES THE TAB.
-       Founder, 2026-08-30: *"that OW browser icon is severely dated and we have
-       the globe icon that should auto sync with users set hue."*
-
-       THE DYNAMIC MARK WAS ALREADY BEING GENERATED CORRECTLY — measured on the
-       live document, a data-URI globe in `rgb(160,92,255)`, the viewer's own
-       hue, appended last. It just was not what the browser drew. The page also
-       ships `<link rel="icon" href="/oneway-globe.svg">` and a 32x32 PNG, and a
-       browser picks the icon whose declared SIZE fits the slot it needs — a
-       sized raster beats an unsized SVG almost everywhere. So the tab showed a
-       FIXED PURPLE globe on every surface, in every Center, whatever colour the
-       person had chosen. The right geometry in the wrong, frozen colour.
-
-       Removing them is what makes the remaining one authoritative. The mark is
-       identical — same generator, same geometry — so nothing about the identity
-       changes except that it now follows the light like everything else does.
-
-       APPLE-TOUCH AND MANIFEST ARE LEFT ALONE, deliberately: an installed icon
-       is fetched once by the OS and no script can repaint it, which is exactly
-       why `setLink` below points those at the server-side renderer in the
-       person's own colour instead. */
-    var stale = doc.querySelectorAll('link[rel~="icon"]:not([data-ow-dynamic])');
-    for (var i = 0; i < stale.length; i++) {
-      if (/apple-touch/i.test(stale[i].getAttribute('rel') || '')) continue;
-      stale[i].parentNode.removeChild(stale[i]);
-    }
+    /* THE TAB HAS ONE WRITER (founder/829, 2026-10-17: "the icon isnt even right on safari wtf"). This drew its own SVG
+       globe (an older cage) into a second icon link and removed every other, while oneway-hue.js drew the transparent
+       globe into its own: two writers of one tab, and whichever ran last won. The tab is now the transparent globe the
+       head names as a file in the page's hue (tools/site_seo.py TAB_GLOBE_JS), kept in step by oneway-hue.js; what
+       this adds is the identity the surface stands in: a Center's or another person's light while the App wears it,
+       and null when it is back in the viewer's own (the rule then gives the person's hue, or the page's). */
+    try {
+      if (global.owTabHue && global.owTabHue.context) global.owTabHue.context(inContext ? hue.angleOf(rgb) : null);
+    } catch (_) {}
 
     /* THE BROWSER CHROME TAKES THE SAME LIGHT — and it is the HUE, not the
        ground. Setting theme-color to the near-black ground meant the status bar
