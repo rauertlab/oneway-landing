@@ -47,12 +47,12 @@
        C (web) wires the build, the search header, the sitemap and the nav, and publishes on his go. -->
   <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
   <script src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
-  <script src="/frontend/shared/oneway-galaxy.js?v=224cb07e"></script>
+  <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=f67d7f09">
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=b916e6c3"/>
-  <link rel="stylesheet" href="/frontend/landing/site-page.css?v=c6a6ad63"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=a827bee7"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=36c79733">
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=4d976ea9"/>
+  <link rel="stylesheet" href="/frontend/landing/site-page.css?v=45daf489"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=ee9eef51"/>
 </head>
 <body>
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
@@ -72,7 +72,7 @@
       <a href="/beta" class="owbar-signin">Sign in</a>
     </div>
   </nav>
-  <script src="/frontend/shared/oneway-bar.js?v=4e69f7cd"></script>
+  <script src="/frontend/shared/oneway-bar.js?v=0a2852dc"></script>
 
   <main>
     <!-- CONTACT, THE INQUIRY (founder/806, 2026-10-17: "businesses could buy oneway os today via contact and see the rates";
@@ -99,14 +99,14 @@
             <p class="ct-for t-caption">For businesses</p>
             <h3 class="t-sub">Business OS.</h3>
             <p class="t-body">Run your business, venue or community on Oneway OS: your Center and its website, bookings and reservations, customers, staff schedules, inventory and online sales, with the AI that works alongside your team.</p>
-            <p class="ct-price t-body">The rates are in the <a href="/index.html#plans">plans</a>. For several Centers under one organization, write to&nbsp;us.</p>
+            <p class="ct-price ow-pricebox t-body">The rates are in the <a href="/index.html#plans">plans</a>. For several Centers under one organization, write to&nbsp;us.</p>
             <div class="lp-acts"><a class="pill pill--solid" href="#inquiry" data-kind="business">Buy Business OS today</a></div>
           </div>
           <div class="ct-way" id="developers">
             <p class="ct-for t-caption">For developers</p>
             <h3 class="t-sub">Developer OS.</h3>
             <p class="t-body">Build Systems and modules on Oneway's platform, from your own code or from a description in plain words, and offer them to the Centers that run on Oneway.</p>
-            <p class="ct-price t-body"><b>Free</b> for developers.</p>
+            <p class="ct-price ow-pricebox t-body"><b>Free</b> for developers.</p>
             <div class="lp-acts"><a class="pill pill--solid" href="#inquiry" data-kind="developer">Start on Developer OS</a></div>
           </div>
           <div class="ct-way" id="app">
@@ -176,6 +176,7 @@
   .ct-way .t-sub{margin-top:8px}
   .ct-way .t-body{margin-top:12px;max-width:38ch}
   .ct-way .ct-price{margin-top:14px}
+  .ct-way .ct-price.ow-pricebox{margin-top:20px}   /* a price line wears the pricing box (founder/829), a little more room above it */
   .ct-price b{font-weight:800}
   .ct-way .lp-acts{margin-top:auto;padding-top:24px}   /* the three buttons stand on one line on a wide screen */
   .ct-form{display:flex;flex-direction:column;gap:16px;margin-top:clamp(24px,3vw,32px);max-width:640px}

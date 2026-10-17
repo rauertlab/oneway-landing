@@ -53,13 +53,13 @@
   <script src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
   <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=32f96c77"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=4d976ea9"/>
   <link rel="stylesheet" href="/frontend/landing/reserve.css?v=afa8ff6f"/>
   <!-- THE APP'S OWN STYLESHEET, for the reserve box's popit and the App Post it becomes (the founder, 2026-10-09:
        "EXACTlY, not a recreation"). Not blocking: nothing on the first screen uses it (measured at 390: the heading,
        the line and the bar keep their place, size and face when it arrives), the way the landing's build loads it. -->
-  <link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=f67d7f09" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=f67d7f09"></noscript>
+  <link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=36c79733" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=36c79733"></noscript>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--font:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--font-display:var(--font);
@@ -121,6 +121,7 @@
     #rsv.ow-popit::before,#rsv.ow-popit::after{display:none}
     #rsv .rsv-t{font-size:var(--lp-fs-sub);font-weight:850;line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading)}
     #rsv form{margin-top:16px}
+    #rsv .rsv-t + .po-card{margin-top:16px}   /* the Post the claim becomes keeps the form's room under the heading (it sat on it, founder/829) */
     #rsv .rsv-go{height:auto;align-self:flex-start;margin-top:4px}
     #rsv .rsv-note{font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:#fff;text-align:left}
     #rsv .rsv-state{font-size:var(--lp-fs-caption);font-weight:500;letter-spacing:var(--lp-ls-caption)}

@@ -461,7 +461,7 @@
 
   /* The kinds that answer to the hand. Mirrors FREEFORM_KINDS on the server;
      one rule, stated in both places rather than a client that disagrees. */
-  var FREEFORM = ['sticker'];
+  var FREEFORM = ['sticker', 'text', 'shape'];   /* text boxes and shapes (founder/831) are freeform, as the server says */
 
   var COLS = 12;               /* replaced by whatever the server reports */
   var ROW = 44;                /* px per grid row; the one visual constant */
@@ -1125,6 +1125,9 @@
 
   Canvas.prototype.render = function () {
     var self = this;
+    /* A TEXT BOX BEING WRITTEN IN IS NOT REDRAWN UNDER THE HAND (founder/831): a save's answer re-renders every tile, which
+       replaced the field and lost the words being typed; the redraw waits and runs when the writing ends (`editText`). */
+    if (this._typing) { this._renderLater = true; return; }
     warmCatalog();
     /* ── A SELECTION SURVIVES A RE-RENDER ──────────────────────────────────
        Saving invalidates the canvas read, the surface redraws, and every tile
@@ -1576,6 +1579,33 @@
         fr.readAsDataURL(f);
       });
       list.appendChild(up);
+
+      /* A TEXT BOX AND A SHAPE (founder/831): made here, not chosen from the catalog; a text box opens for writing at once */
+      [{ kind: 'text', name: 'Text box', blurb: 'Your own words on the canvas: a title, a heading, a line, a quote.',
+         w: 6, h: 1, config: { text: '', style: 'heading', align: 'left', color: 'ink', ground: 'none' } },
+       { kind: 'shape', name: 'Shape', blurb: 'A block of colour to group things on the page: square, rounded, pill or circle.',
+         w: 4, h: 2, config: { form: 'round', fill: 'soft' } }].forEach(function (mk0) {
+        var b0 = doc.createElement('button');
+        b0.type = 'button';
+        b0.className = 'ow-cv-pick__row ow-cv-pick__row--make';
+        b0.setAttribute('data-make', mk0.kind);
+        b0.innerHTML = '<span class="ow-cv-pick__name">' + esc(mk0.name) + '</span><span class="ow-cv-pick__blurb">' + esc(mk0.blurb) + '</span>';
+        b0.addEventListener('click', function () {
+          self.add({ place: mk0.kind, ref: mk0.kind, w: mk0.w, h: mk0.h, config: JSON.parse(JSON.stringify(mk0.config)) });
+          close();
+          var made = self.items[self.items.length - 1];
+          if (!made) return;
+          self.setEditing(true);
+          global.setTimeout(function () {
+            var grid0 = self.grid, tile0 = grid0 && grid0.querySelector('.ow-cv-t[data-id="' + made.id + '"]');
+            if (!tile0) return;
+            self.select(grid0, tile0, made);
+            if (made.kind === 'text') self.editText(tile0, made);
+            try { tile0.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (_) {}
+          }, 60);
+        });
+        list.appendChild(b0);
+      });
 
       function row(entry) {
         var b = doc.createElement('button');
@@ -4373,6 +4403,38 @@
       return n;
     }
 
+    /* ── A TEXT BOX AND A SHAPE (founder/831, 2026-10-17: "make the center canvases more customizable than just simply
+       being pop-it blocks with placeable stickers. I also want text boxes and things like that") ──────────────────────
+       Words of the canvas's own, set in one of five styles (title, heading, body, caption, quote), aligned, coloured from
+       the canvas's palette (ink, its hue, muted, white) on a ground (none, a soft wash, the Popit material, solid hue);
+       and a shape (rect, round, pill, circle) in a fill (hue, soft, ink, glass) to group things on a page. Both are
+       placed, sized and turned by the hand like a sticker. Their words are edited in place while arranging. */
+    if (it.kind === 'text' || it.kind === 'shape') {
+      var cf = it.config || {};
+      n.classList.add('ow-cv-t--' + it.kind);
+      if (it.kind === 'shape') {
+        var sh = doc.createElement('span');
+        sh.className = 'ow-cv-shape';
+        sh.setAttribute('data-form', cf.form || 'round');
+        sh.setAttribute('data-fill', cf.fill || 'soft');
+        n.appendChild(sh);
+        return n;
+      }
+      var tx = doc.createElement('div');
+      tx.className = 'ow-cv-text';
+      paintText(tx, cf, this.mayArrange);
+      n.appendChild(tx);
+      if (this.mayArrange) {
+        var selfT = this;
+        n.addEventListener('dblclick', function (e) {
+          if (!selfT.editing) return;
+          e.preventDefault(); e.stopPropagation();
+          selfT.editText(n, it);
+        });
+      }
+      return n;
+    }
+
     if (it.kind === 'collection') {
       /* ── A HIGHLIGHT OR A PLAYLIST, ON THE SAME PLANE ─────────────────
          ★ FOUNDER, 2026-08-30: *"highlights and playlists should feel like
@@ -6933,6 +6995,105 @@
     return best;
   }
 
+  /* A TEXT BOX'S LOOK, PAINTED FROM ITS CONFIG (the server keeps each value in its closed set) */
+  var TEXT_LOOKS = {
+    style: [['title', 'Title'], ['heading', 'Heading'], ['body', 'Body'], ['caption', 'Caption'], ['quote', 'Quote']],
+    align: [['left', 'Left'], ['center', 'Centre'], ['right', 'Right']],
+    color: [['ink', 'Ink'], ['hue', 'Hue'], ['muted', 'Muted'], ['white', 'White']],
+    ground: [['none', 'Clear'], ['soft', 'Soft'], ['popit', 'Popit'], ['solid', 'Solid']]
+  };
+  var SHAPE_LOOKS = {
+    form: [['rect', 'Square'], ['round', 'Rounded'], ['pill', 'Pill'], ['circle', 'Circle']],
+    fill: [['hue', 'Hue'], ['soft', 'Soft'], ['ink', 'Ink'], ['glass', 'Glass']]
+  };
+  var TEXT_MAX = 600;     /* canvas.py TEXT_BOX_MAX: past it the server refuses in words */
+  function paintText(tx, cf, mine) {
+    tx.setAttribute('data-style', cf.style || 'body');
+    tx.setAttribute('data-align', cf.align || 'left');
+    tx.setAttribute('data-color', cf.color || 'ink');
+    tx.setAttribute('data-ground', cf.ground || 'none');
+    tx.textContent = cf.text || '';
+    if (!cf.text) { tx.setAttribute('data-empty', ''); tx.setAttribute('data-ph', mine ? 'Write something' : ''); }
+    else tx.removeAttribute('data-empty');
+  }
+
+  /* EDIT THE WORDS IN PLACE: the box becomes a field (plain text, line breaks kept); Escape or a tap elsewhere keeps them,
+     and the canvas saves as any arrangement does. A drag never starts inside a box being written in. */
+  Canvas.prototype.editText = function (tile, it) {
+    var tx = tile && tile.querySelector('.ow-cv-text');
+    if (!tx || tx.isContentEditable) return;
+    var self = this;
+    tx.removeAttribute('data-empty');
+    try { tx.contentEditable = 'plaintext-only'; } catch (_) { tx.contentEditable = 'true'; }
+    if (!tx.isContentEditable) tx.contentEditable = 'true';
+    tx.setAttribute('role', 'textbox'); tx.setAttribute('aria-multiline', 'true');
+    tx.setAttribute('aria-label', 'Text box');
+    self._typing = it.id;
+    tx.focus();
+    try { var rg = doc.createRange(); rg.selectNodeContents(tx); var sl = global.getSelection(); sl.removeAllRanges(); sl.addRange(rg); } catch (_) {}
+    function finish() {
+      tx.removeEventListener('blur', finish); tx.removeEventListener('keydown', key);
+      tx.contentEditable = 'false'; tx.removeAttribute('role');
+      var words = String(tx.innerText || '').replace(/\u00a0/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+      if (words.length > TEXT_MAX) { words = words.slice(0, TEXT_MAX); self.note('A text box holds ' + TEXT_MAX + ' characters; the rest was not kept.', true); }
+      /* the item as the canvas holds it NOW: a save's answer replaces every item with the server's copy (`self.items =
+         r.data.placements`), so the object this edit began with may no longer be the one that is saved */
+      var cur = (self.items || []).filter(function (x) { return x.id === it.id; })[0] || it;
+      cur.config = Object.assign({}, cur.config || {}, { text: words });
+      paintText(tx, cur.config, true);
+      self._typing = null;
+      self.dirty = true;
+      self.save();
+      if (self._renderLater) { self._renderLater = false; self.render(); }
+    }
+    function key(e) {
+      e.stopPropagation();
+      if (e.key === 'Escape' || (e.key === 'Enter' && (e.metaKey || e.ctrlKey))) { e.preventDefault(); tx.blur(); }
+      else if (String(tx.innerText || '').length >= TEXT_MAX && e.key.length === 1 && !e.metaKey && !e.ctrlKey) e.preventDefault();
+    }
+    tx.addEventListener('blur', finish);
+    tx.addEventListener('keydown', key);
+  };
+
+  /* THE LOOK OF A SELECTED TEXT BOX OR SHAPE: one row of the posts' own quiet chips under it, each set a choice of the closed
+     set; a choice changes the box at once and saves. "Edit text" opens the words for a finger as well as a double click. */
+  Canvas.prototype.styleBar = function (box, tile, item) {
+    var self = this, looks = item.kind === 'text' ? TEXT_LOOKS : SHAPE_LOOKS;
+    var bar = doc.createElement('div');
+    bar.className = 'ow-cv-style';
+    bar.addEventListener('pointerdown', function (e) { e.stopPropagation(); });
+    bar.addEventListener('click', function (e) { e.stopPropagation(); });
+    if (item.kind === 'text') {
+      var ed = doc.createElement('button');
+      ed.type = 'button'; ed.className = 'ow-cv-style__b ow-cv-style__edit'; ed.textContent = 'Edit text';
+      ed.addEventListener('click', function () { self.editText(tile, item); });
+      bar.appendChild(ed);
+    }
+    Object.keys(looks).forEach(function (k) {
+      var g = doc.createElement('span');
+      g.className = 'ow-cv-style__g'; g.setAttribute('role', 'group'); g.setAttribute('aria-label', k);
+      looks[k].forEach(function (o) {
+        var b = doc.createElement('button');
+        b.type = 'button'; b.className = 'ow-cv-style__b'; b.textContent = o[1];
+        b.setAttribute('data-k', k); b.setAttribute('data-v', o[0]);
+        var cur = (item.config || {})[k] || looks[k][item.kind === 'text' && k === 'style' ? 2 : (k === 'form' ? 1 : (k === 'fill' ? 1 : 0))][0];
+        b.setAttribute('aria-pressed', cur === o[0] ? 'true' : 'false');
+        b.addEventListener('click', function () {
+          var c = {}; c[k] = o[0];
+          item = (self.items || []).filter(function (x) { return x.id === item.id; })[0] || item;   /* the canvas's copy now */
+          item.config = Object.assign({}, item.config || {}, c);
+          [].forEach.call(g.children, function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+          if (item.kind === 'text') { var tx = tile.querySelector('.ow-cv-text'); if (tx && !tx.isContentEditable) paintText(tx, item.config, true); else if (tx) tx.setAttribute('data-' + k, o[0]); }
+          else { var sh = tile.querySelector('.ow-cv-shape'); if (sh) sh.setAttribute('data-' + k, o[0]); }
+          self.dirty = true; self.save();
+        });
+        g.appendChild(b);
+      });
+      bar.appendChild(g);
+    });
+    box.appendChild(bar);
+  };
+
   Canvas.prototype.select = function (grid, tile, item) {
     var self = this;
     this.deselect();
@@ -6961,6 +7122,7 @@
        `resize`. Rotation likewise appears only for a kind that declares it,
        which on this platform is a sticker, and never for a grid Popit that
        would only snap back. */
+    if (item.kind === 'text' || item.kind === 'shape') this.styleBar(box, tile, item);
     var dirs = mayResize(item) ? ['se'] : [];
     dirs.forEach(function (dir) {
       var h = doc.createElement('b');
@@ -7955,6 +8117,7 @@
        before a single listener was attached, so the handle simply did nothing.
        The drag works without capture; it is only smoother with it. */
     try { this._box.setPointerCapture(e.pointerId); } catch (_) {}
+    this._gesture = true;
 
     /* A POPIT'S SIZE IS ITS FAMILY (founder/788, 830). In the flow a resize changes the family, never the place in the
        order: the handle's travel in SLOTS picks small (1x1), medium (2x1), large (2x2) or, where four slots fit, extra
@@ -8060,6 +8223,7 @@
       self.guides(grid, vhit, hhit);
     }
     function up() {
+      self._gesture = false;
       try { self._box.releasePointerCapture(e.pointerId); } catch (_) {}
       grid.removeEventListener('pointermove', move);
       grid.removeEventListener('pointerup', up);
@@ -8585,6 +8749,9 @@
       try {
         doc.addEventListener('keydown', function (e) {
           if (e.key !== 'Escape') return;
+          /* Escape inside a text box being written ends the writing, not the arranging (founder/831) */
+          var ae = doc.activeElement;
+          if (ae && ae.isContentEditable && ae.classList && ae.classList.contains('ow-cv-text')) return;
           for (var i = live.length - 1; i >= 0; i--) {
             var c = live[i];
             /* a canvas whose host has left the document is no longer anyone's
@@ -8687,11 +8854,13 @@
       startDrag(e);
     });
     function startDrag(e) {
+      if (e.target.closest && e.target.closest('[contenteditable="true"],[contenteditable="plaintext-only"],.ow-cv-style')) return;
       var t = e.target.closest ? e.target.closest('.ow-cv-t') : null;
       if (!t || !self.mayArrange || !self.editing) return;
       var id = t.getAttribute('data-id');
       var it = self.items.filter(function (x) { return x.id === id; })[0];
       if (!it) return;
+      self._gesture = true;
 
       var rect = grid.getBoundingClientRect();
       var cw = (rect.width - GAP * (self.cols - 1)) / self.cols;
@@ -8794,12 +8963,18 @@
         }
 
         if (free) {
-          /* a sticker keeps its own model — continuous, unrounded, unsnapped */
-          var fx = ox + dx / (cw + GAP), fy = oy + dy / (rowh + GAP);
-          it.x = Math.max(0, Math.min(self.cols, Math.round(fx * 1000) / 1000));
+          /* a sticker keeps its own model — continuous, unrounded, unsnapped. ITS UNITS ARE THE STORED TWELVE: a freeform
+             tile is drawn at x/12 of the plane, so the hand's pixels are divided by a twelfth of the plane (they were divided
+             by a VIEW column, from a rounded start: on a desktop a sticker moved a third as far as the hand, and a text box
+             near the left edge snapped back to 0) */
+          var fx = (it.__fx0 !== undefined ? it.__fx0 : (it.__fx0 = +it.x || 0)) + dx / (grid.getBoundingClientRect().width / COLS),
+              fy = (it.__fy0 !== undefined ? it.__fy0 : (it.__fy0 = +it.y || 0)) + dy / (rowh + GAP);
+          it.x = Math.max(0, Math.min(COLS, Math.round(fx * 1000) / 1000));
           it.y = Math.max(0, Math.round(fy * 1000) / 1000);
           t.style.setProperty('--x', it.x);
           t.style.setProperty('--y', it.y);
+          t.style.setProperty('--fx', (it.x / COLS * 100) + '%');     /* a freeform tile is drawn from these */
+          t.style.setProperty('--fy', it.y);
           self.dirty = true;
           return;
         }
@@ -8836,6 +9011,8 @@
 
       function up() {
         self.clearGuides();
+        self._gesture = false;
+        delete it.__fx0; delete it.__fy0;
         try { t.releasePointerCapture(e.pointerId); } catch (_) {}
         grid.removeEventListener('pointermove', move);
         grid.removeEventListener('pointerup', up);
@@ -8848,10 +9025,14 @@
         /* RELEASE COMMITS WHAT THE GHOST PROMISED. The layout the person has
            been looking at for the whole gesture is the one that is written —
            nothing is recomputed at the last moment, so nothing jumps. */
+        /* THE CANVAS'S OWN COPIES: a save's answer that lands mid-gesture replaces every item with the server's copy, so the
+           gesture commits to the items the canvas holds now, found by id, never to the objects it started with */
+        var now = function (o) { return (self.items || []).filter(function (x) { return x.id === o.id; })[0] || o; };
+        if (moved && free) { var cur0 = now(it); if (cur0 !== it) { cur0.x = it.x; cur0.y = it.y; it = cur0; } }
         if (moved && !free && liveLayout) {
           /* RELEASE COMMITS WHAT THE FLOW SHOWED: the new order, written into the stored twelve by the same flow rule, so
              the next pack (here and on every other device) draws exactly what the hand left. Each Popit keeps its size. */
-          self.commitOrder(liveOrder);
+          self.commitOrder(liveOrder.map(now));
           self._pack = liveLayout;
           self.render();
           self.placeBox();
@@ -8878,11 +9059,19 @@
   Canvas.prototype.save = function () {
     var self = this;
     clearTimeout(this.saveTimer);
+    /* AN ANSWER OLDER THAN THE LAST CHANGE IS NOT APPLIED. A save in flight that answers after the person changed more (a
+       drag, a word typed, a style picked) replaced every item with what it had sent, undoing the newer change locally and
+       then in the save that followed (measured 2026-10-17: a text box dragged right after adding a shape went back to 0).
+       Each save is numbered; an answer applies only if no newer save was asked for since; the newer one carries it all. */
+    var gen = this._saveGen = (this._saveGen || 0) + 1;
     this.saveTimer = setTimeout(function () {
       req('/api/canvas/' + encodeURIComponent(self.surface),
           { method: 'PUT', body: { placements: self.items }, queueable: true,
             label: 'Your arrangement', invalidate: '/api/canvas/' })
         .then(function (r) {
+          /* nor while a hand is on the canvas: applying it redraws the grid, which took the gesture's own listeners with it
+             and the drag silently ended; the gesture's own save follows and carries everything */
+          if (gen !== self._saveGen || self._gesture) return;
           if (r && r.ok && r.data && r.data.placements) {
             /* THE SERVER'S ARRANGEMENT WINS. Geometry is repaired on the way in
                — a width clamped, a tile pushed back onto the grid — so keeping
@@ -9064,7 +9253,7 @@
          `id` blindly would turn a sticker's asset path into whatever the row
          happened to call itself. */
       kind: pkind,
-      ref: (pkind === 'sticker' ? entry.ref : (entry.id || entry.ref)),
+      ref: (pkind === 'sticker' || pkind === 'text' || pkind === 'shape' ? entry.ref : (entry.id || entry.ref)),
       x: 0, y: maxY, w: entry.w || 3, h: entry.h || 2, z: 0,
       /* ── A PLACEMENT DOES NOT STORE THE THING'S NAME ────────────────────
          This seeded `label` with `entry.name` — the catalog's own title for
@@ -10950,6 +11139,47 @@
        predicting. Quiet, because it is a promise rather than an object: an
        outline and a wash of the surface hue, no material, no shadow, nothing
        that competes with the Popit actually under the finger. */
+    /* ── A TEXT BOX AND A SHAPE (founder/831) ── */
+    '.ow-cv-t--text,.ow-cv-t--shape{background:none;box-shadow:none;overflow:visible}',
+    '.ow-cv-text{position:absolute;inset:0;box-sizing:border-box;padding:6px 10px;overflow:hidden;white-space:pre-wrap;',
+    '  overflow-wrap:anywhere;color:var(--ow-ink);font-family:var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);',
+    '  outline:none;border-radius:14px;display:flex;flex-direction:column;justify-content:center}',
+    '.ow-cv-text[data-style="title"]{font-family:var(--ow-font-display,var(--ow-font,"ONEWAY Sans",system-ui,sans-serif));font-weight:700;font-size:clamp(24px,3vw,40px);line-height:1.08;letter-spacing:-.02em}',
+    '.ow-cv-text[data-style="heading"]{font-weight:650;font-size:clamp(18px,2.1vw,24px);line-height:1.15;letter-spacing:-.01em}',
+    '.ow-cv-text[data-style="body"]{font-weight:400;font-size:15px;line-height:1.45}',
+    '.ow-cv-text[data-style="caption"]{font-weight:600;font-size:12px;line-height:1.35;letter-spacing:.02em;opacity:.78}',
+    '.ow-cv-text[data-style="quote"]{font-style:italic;font-weight:500;font-size:18px;line-height:1.4;',
+    '  border-left:3px solid rgb(var(--ow-h1));border-radius:0 14px 14px 0;padding-left:16px}',
+    '.ow-cv-text[data-align="center"]{text-align:center}.ow-cv-text[data-align="right"]{text-align:right}',
+    '.ow-cv-text[data-color="hue"]{color:rgb(var(--ow-h1))}.ow-cv-text[data-color="muted"]{color:var(--ow-ink-3)}',
+    '.ow-cv-text[data-color="white"]{color:#fff}',
+    '.ow-cv-text[data-ground="soft"]{background:color-mix(in srgb,var(--ow-ink) 7%,transparent)}',
+    '.ow-cv-text[data-ground="popit"]{background:linear-gradient(152deg,var(--ow-sheet-1,rgba(255,255,255,.12)),var(--ow-sheet-2,rgba(255,255,255,.04)));',
+    '  border:1px solid var(--ow-rim,rgba(255,255,255,.18));border-radius:18px 15px 19px 16px}',
+    '.ow-cv-text[data-ground="solid"]{background:rgb(var(--ow-h1));color:var(--ow-on-h1,#fff)}',
+    '.ow-cv-text[data-empty]::before{content:attr(data-ph);color:var(--ow-ink-3);font-style:normal}',
+    '.ow-cv-text[contenteditable="true"],.ow-cv-text[contenteditable="plaintext-only"]{cursor:text;user-select:text;-webkit-user-select:text;',
+    '  box-shadow:inset 0 0 0 1.5px rgba(var(--ow-h1),.7);overflow:auto}',
+    '.ow-cv-shape{position:absolute;inset:0;display:block;border-radius:22px;pointer-events:none}',
+    '.ow-cv-shape[data-form="rect"]{border-radius:6px}.ow-cv-shape[data-form="pill"]{border-radius:999px}.ow-cv-shape[data-form="circle"]{border-radius:50%}',
+    '.ow-cv-shape[data-fill="hue"]{background:rgb(var(--ow-h1))}',
+    '.ow-cv-shape[data-fill="soft"]{background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}',
+    '.ow-cv-shape[data-fill="ink"]{background:var(--ow-ink)}',
+    '.ow-cv-shape[data-fill="glass"]{background:linear-gradient(152deg,var(--ow-sheet-1,rgba(255,255,255,.14)),var(--ow-sheet-2,rgba(255,255,255,.05)));',
+    '  border:1px solid var(--ow-rim,rgba(255,255,255,.2));-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}',
+    '.ow-cv-t--shape{z-index:1}',
+    /* the look bar under a selected text box or shape: the quiet chips of the one button language, in one scrolling row */
+    '.ow-cv-style{position:absolute;left:0;top:calc(100% + 10px);display:flex;gap:6px;align-items:center;max-width:min(92vw,720px);',
+    '  overflow-x:auto;scrollbar-width:none;padding:6px;border-radius:999px;pointer-events:auto;z-index:30;',
+    '  background:color-mix(in srgb,var(--ow-ground,#0b0b16) 86%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);',
+    '  border:1px solid color-mix(in srgb,var(--ow-ink) 14%,transparent)}',
+    '.ow-cv-style::-webkit-scrollbar{display:none}',
+    '.ow-cv-style__g{display:inline-flex;gap:2px;padding-left:6px;border-left:1px solid color-mix(in srgb,var(--ow-ink) 14%,transparent)}',
+    '.ow-cv-style__b{flex:none;min-height:32px;padding:5px 11px;border:0;border-radius:999px;background:transparent;color:var(--ow-ink-2);',
+    '  font:600 12.5px/1.2 var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);cursor:pointer;white-space:nowrap}',
+    '.ow-cv-style__b:hover{background:color-mix(in srgb,var(--ow-ink) 8%,transparent);color:var(--ow-ink)}',
+    '.ow-cv-style__b[aria-pressed="true"]{background:color-mix(in srgb,var(--ow-ink) 14%,transparent);color:var(--ow-ink);font-weight:700}',
+    '.ow-cv-style__edit{background:rgb(var(--ow-h1));color:var(--ow-on-h1,#fff)}',
     '.ow-cv-ghost{position:absolute;pointer-events:none;z-index:1;',
     '  left:calc((var(--x) / var(--cv-cols)) * (100% + var(--cv-gap)));',
     '  width:calc((var(--w) / var(--cv-cols)) * (100% + var(--cv-gap)) - var(--cv-gap));',

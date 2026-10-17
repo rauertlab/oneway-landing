@@ -14173,3 +14173,13 @@ html body .ow-w[data-mode="card"]:is([data-family="large"],[data-family="extra_l
   width:clamp(64px,34cqmin,128px);height:clamp(64px,34cqmin,128px)}
 html body .ow-w[data-mode="card"]:is([data-family="large"],[data-family="extra_large"]) .ow-w__cards[data-n="1"] > .ow-ocard--chip .ow-ocard__name{
   font-size:clamp(14px,6.4cqmin,19px);font-weight:650;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* A CHIP'S NAME WRAPS, TO TWO LINES AT MOST, INSIDE ITS 76px (the 829 cold judge, 2026-10-17: on the published landing 17 of
+   the strip's 30 names ended in an ellipsis, "ONEW…", "Las V…", because the header type scale's :is() above names every
+   projection's name, a chip's too, nowrap in the header's size, at 0,4,0 over the chip's own 0,2,0). The same rule the
+   App's screens at :3050 already draw (the shared copy's chip rule, 2026-10-16: one line of 13px held "New York City" 6px
+   past its chip and "Dominican Republic" 40px), so the published strip is the same wheel. A word wider than the chip breaks
+   rather than spill; a name past two lines keeps its whole self in its title. A widget's large single chip keeps its own
+   one-line name (its rule above outranks this one). */
+.ow-ocard.ow-ocard--chip[data-projection]:not(.ow-ocard--tile) .ow-ocard__name{font-size:13px;line-height:1.3;text-align:center;
+  inline-size:auto;max-inline-size:76px;white-space:normal;overflow-wrap:break-word;text-overflow:clip;overflow:hidden;
+  display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}

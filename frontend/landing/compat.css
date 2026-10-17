@@ -38,6 +38,31 @@
    names the face itself, and every var() in a font-family carries this stack as its fallback; a font shorthand never
    carries var() (its longhands do). Held by api/oneway/platform/test_landing_fonts.py. */
 html{-webkit-text-size-adjust:100%;font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif}
+/* THE PRICING BOX (founder/829, 2026-10-17: "add boxes around the pricing areas"; an exception to the blank slate,
+   founder/813, for pricing only). Every place the site shows a plan or a price wears it, and nothing else does: the
+   landing's plans and its comparison of them, the OS page's price note and its stack calculator, Business OS's close,
+   Contact's price lines.
+   It is THE ONE POPIT SURFACE (founder/822, at the end of frontend/shared/oneway-popit.css), its dark ground written here
+   value for value, because this is the one sheet every landing page loads and the OS page does not load the App's
+   sheet; each var() carries the App's own :root value as its fallback. The platform's pair (--ow-h1, --ow-h2), the
+   Popit's own corners, one padding on every side so the words sit evenly. Held equal to the App's recipe, and to the
+   places that wear it, by api/oneway/platform/test_site_pricebox.py. PROPOSED, for his eye (founder/264). */
+.ow-pricebox{--h:var(--ow-h1,139,92,255);--h2:var(--ow-h2,93,226,255);--h3:var(--h2);
+  position:relative;box-sizing:border-box;border-radius:22px 19px 23px 20px;padding:var(--ow-pricebox-pad,clamp(20px,2.6vw,28px));
+  background-image:
+    radial-gradient(130% 80% at 18% -6%, rgba(var(--h),.46), transparent 64%),
+    radial-gradient(120% 90% at 92% 108%, rgba(var(--h2),.30), transparent 60%),
+    linear-gradient(158deg, rgba(var(--h),.18), rgba(var(--h3,var(--ow-h3,var(--h2))),.12) 46%,
+                            rgba(var(--h2),.10) 70%, var(--ow-tile-base,rgba(48,50,92,.50)));
+  box-shadow:
+    inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),
+    inset 0 0 0 1px rgba(var(--h),.18),
+    inset 0 0 16px -6px rgba(var(--h),.38),
+    0 0 34px -10px rgba(var(--h),.50),
+    0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+@media(max-width:560px){.ow-pricebox{--ow-pricebox-pad:20px}}
+/* a price said in a line of words: the box is as wide as the words, never the column */
+p.ow-pricebox{width:fit-content;max-width:100%}
 .side{overflow:hidden}
 .lp-two>*,.mission-split>*,.cards>*,.flow>*{min-width:0}
 .lp-p,.cards p,.flow p{overflow-wrap:break-word;word-wrap:break-word}

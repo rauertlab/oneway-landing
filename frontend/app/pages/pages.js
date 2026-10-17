@@ -1232,6 +1232,31 @@
         });
         mine.unshift(edit, share);
       }
+      /* A CENTER HAS ITS "…" TOO (a cold judge: a person's header had one and a Center's did not), holding the acts that apply
+         to a place: share it and copy its link. Block and Mute are a person's (a block needs two people; a mute hides a
+         person's posts by their author), so a Center's menu does not offer them. */
+      if (o.kind === 'center' && typeof o.onBannerChange !== 'function' && !mine.some(function (b) { return /^more$/i.test((b.textContent || '').trim()); })) {
+        var cmore = mk('button', 'po-act', 'More'); cmore.type = 'button'; cmore.setAttribute('aria-expanded', 'false');
+        var at0 = global.location.origin + '/c/' + encodeURIComponent(o.cardRef || '');   /* its public page: opens for anyone, signed in or not */
+        cmore.addEventListener('click', function () {
+          var open = acts.querySelector('.po-acts__more');
+          if (open) { open.remove(); cmore.setAttribute('aria-expanded', 'false'); return; }
+          var row = mk('div', 'po-acts__more');
+          var sh = mk('button', 'po-act', 'Share'); sh.type = 'button';
+          sh.addEventListener('click', function () {
+            if (global.navigator.share) global.navigator.share({ title: c.title || '', url: at0 }).catch(function () {});
+            else cp.click();
+          });
+          var cp = mk('button', 'po-act', 'Copy link'); cp.type = 'button';
+          cp.addEventListener('click', function () {
+            if (global.navigator.clipboard) global.navigator.clipboard.writeText(at0).then(function () { if (OW.toast) OW.toast('Its link is copied.', { tone: 'ok' }); },
+              function () { if (OW.toast) OW.toast('The link could not be copied here.'); });
+          });
+          row.appendChild(sh); row.appendChild(cp);
+          acts.appendChild(row); cmore.setAttribute('aria-expanded', 'true');
+        });
+        mine.push(cmore);
+      }
       mine.forEach(function (b) {
         acts.appendChild(b);
         if (/^more$/i.test((b.textContent || '').trim())) { b.classList.add('ow-ph__more'); b.setAttribute('aria-label', 'More'); }
@@ -1245,6 +1270,21 @@
         acts.firstChild.classList.add('ow-ph__lead');       /* Follow, or Edit profile: the one filled button */
       } else acts.remove();
       if (o.live) el.querySelector('.ow-ph__about').appendChild(o.live);
+      /* A MENU OPENED BY A MOVED BUTTON OPENS HERE. A person's More (me.js) opens its row in the shell's header, where its
+         button used to stand and which is hidden now: the row is brought under the buttons it belongs to, and a second press
+         closes it here rather than opening another there. */
+      [].forEach.call(acts.querySelectorAll('.ow-ph__more'), function (b) {
+        b.addEventListener('click', function (e) {
+          var here = acts.querySelector(':scope > .po-acts__more');
+          if (here && !here.__owOwn) { here.remove(); b.setAttribute('aria-expanded', 'false'); e.stopImmediatePropagation(); }
+        }, true);
+      });
+      var shell = root.querySelector('.ow-prof__id');
+      if (shell && global.MutationObserver) new global.MutationObserver(function (list) {
+        list.forEach(function (m) { [].forEach.call(m.addedNodes, function (n) {
+          if (n.nodeType === 1 && n.classList.contains('po-acts__more') && acts.isConnected) acts.appendChild(n);
+        }); });
+      }).observe(shell, { childList: true, subtree: true });
       var hero = root.querySelector('.ow-prof__hero');
       var old = root.querySelector('.ow-ph'); if (old) old.remove();
       hero.parentNode.insertBefore(el, hero.nextSibling);

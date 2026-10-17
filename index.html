@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
-  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script><script>window.owStrip="/frontend/landing/strip-centers.json?v=755b2f0e";</script>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script><script>window.owStrip="/frontend/landing/strip-centers.json?v=37757693";</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <script id="ow-look">
   /* THE LOOK THIS LOAD, CHOSEN ONCE, FIRST (founder/829: "the icon doesnt sync to the landing pages color"). The page's
@@ -826,7 +826,7 @@ html[data-ow-thread] .ow-thread__foot .ow-props { position: fixed; left: 0px; ri
 }
 html[data-ow-motion="reduce"] .po-act[data-po-respond="like"].is-smash > svg { animation: auto ease 0s 1 normal none running none; }
 html[data-ow-likes="facebook"] { --ow-like: #2d88ff; --ow-like-rgb: 45,136,255; }
-html[data-theme="light</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=f67d7f09" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=f67d7f09"></noscript>
+html[data-theme="light</style><link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=36c79733" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=36c79733"></noscript>
   <script defer src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
   <script defer src="/frontend/shared/oneway-popit.js?v=cd8b5d8e"></script>
   <script defer src="/frontend/shared/oneway-links.js?v=77fb7f61"></script>
@@ -841,7 +841,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
        surfaces and the one projection verb; a page anywhere can carry them. -->
   <script defer src="/frontend/shared/oneway-data.js?v=cf5ca700"></script>
   <script defer src="/frontend/app/popit-live.js?v=17007cdf"></script>
-  <script defer src="/frontend/app/pages/pages.js?v=2e9d9698"></script>
+  <script defer src="/frontend/app/pages/pages.js?v=5efd2f4c"></script>
   <script defer src="/frontend/app/me/me.js?v=ca8cf2c0"></script>
   <script defer src="/frontend/app/center/center.js?v=ff291771"></script>
   <script defer src="/frontend/app/account/account.js?v=7a86ab94"></script>
@@ -855,13 +855,13 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
   <script defer src="/frontend/app/posts/posts.js?v=2424507b"></script>
   <script defer src="/frontend/app/events/events.js?v=d304a1ef"></script>
   <script defer src="/frontend/app/messaging/messaging.js?v=2938bfef"></script>
-  <script defer src="/frontend/shared/canvas.js?v=867285c2"></script>
+  <script defer src="/frontend/shared/canvas.js?v=6785d983"></script>
   <script defer src="/frontend/shared/oneway-projection.js?v=8c627fe2"></script>
-  <script defer src="/frontend/landing/static/inline-01-b7399efeeb.js"></script>
+  <script defer src="/frontend/landing/static/inline-01-b7399efeeb.js?v=b7399efe"></script>
   <script defer src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
-  <script defer src="/frontend/landing/static/inline-02-ae5f66e5cc.js"></script>
+  <script defer src="/frontend/landing/static/inline-02-ae5f66e5cc.js?v=ae5f66e5"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=32f96c77"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=4d976ea9"/>
   <link rel="stylesheet" href="/frontend/landing/reserve.css?v=afa8ff6f"/>
   <link rel="stylesheet" href="/frontend/landing/oneway-deck.css?v=bdaa0ddf"/>
   <link rel="stylesheet" href="/frontend/landing/landing-cards.css?v=8e39e6cd"/>
@@ -1874,6 +1874,19 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
   /* under the heading the changing line sits close, and "Go anywhere. Connect everywhere." closes it in plain white */
   .os-connect--top{margin-top:22px}
   .os-go{margin-top:4px}
+  /* ON A PHONE THE LINE NEVER LEAVES THE SCREEN (founder/829: "needs to be cleaned and spaced out on mobile devices").
+     Unwrapped at the sub role's 22px, the sentence ran past the right edge for nine of its sixteen words at 360 (by up to
+     92px, "convention center") and five at 390; "Go anywhere. Connect everywhere." ran 3px past at 360 and scrolled the
+     page sideways. On a phone the changing word takes its own line between "Connect your" and "in one place.", so the
+     sentence stays put while only the word's line breathes (founder/412's smoothness kept), and the closing line breaks
+     between its two sentences, never inside one. PROPOSED, for his eye. */
+  @media(max-width:560px){
+    .os-connect--top{white-space:normal}
+    .os-connect--top .rot-word{display:block;margin:2px auto}
+    .os-go{white-space:normal}
+    .os-go span{display:inline-block}
+    #os .os-go{margin-top:14px}
+  }
   /* the launch map: the App's ground, its edges fading into the landing's dark room (for his eye). The fade is an
      ellipse, so the picture has no corners: with a 14% straight fade its near-black water read as a darker box beside
      the lit room at 390 px. The words in it are the App's map labels, as the App draws them (for his eye: a capture
@@ -2132,7 +2145,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
          under see how deep it goes Connect your brand in one place. Go anywhere. Connect everywhere."); both were lower
          on the page (the line under the iMac, the other the last row's heading) -->
     <p class="os-connect os-connect--top t-sub rv d2">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</p>
-    <p class="os-connect os-go t-sub rv d2">Go anywhere. Connect everywhere.</p>
+    <p class="os-connect os-go t-sub rv d2"><span>Go anywhere.</span> <span>Connect everywhere.</span></p>
     <!-- HOW ONEWAY OS WORKS, IN THREE STEPS (founder, 2026-10-17: "add things that explain parts of the product better and have a
          genuinely good explantion for os"). Each step is what the running OS does today (Website > Write it from your words,
          09429b1a; bookings, events, the shop, customers, staff and roles, the inbox; the System Store; the Brain's web on
@@ -2199,13 +2212,18 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
      they are shown: their figures sit in [data-price-pending], which the public copy leaves out (tools/landing_static.py);
      Oneway OS's Free (his word in 792) and Business's $330 (795) are not pending. The perks are PLAN's words for each
      package (§3.6 and the Core / Business contract). The heading, each plan's "for" line and the pills' places are my
-     reading (for his eye). No table, no boxes (S20): four columns on the page, the landing's bordered pills. Each plan's
-     lockup is a link to its product's page, under a row of the products (founder/801, PROPOSED, for his eye). ═══ -->
+     reading (for his eye). No table: four columns, the landing's bordered pills. Each plan's lockup is a link to its
+     product's page, under a row of the products (founder/801, PROPOSED, for his eye). EACH PLAN IS BOXED (founder/829:
+     "add boxes around the pricing areas", the one exception to the blank slate, founder/813): it wears .ow-pricebox,
+     the one Popit surface (frontend/landing/compat.css), and so does the comparison below. ═══ -->
 <style>
     .plans .lp-h2{text-align:center;margin:0 auto;max-width:18ch}
-  .plans-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(28px,2.6vw,36px);margin:clamp(40px,5vw,60px) auto 0;
+  .plans-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(16px,1.8vw,24px);margin:clamp(40px,5vw,60px) auto 0;
     max-width:1080px;text-align:left}
   .plan{min-width:0;display:flex;flex-direction:column}
+  /* each plan in its pricing box (founder/829): the boxes part the plans, so the gap between them is a box's own margin and
+     the words keep the room inside (four boxes at 1366 left 162px of words with the open grid's gaps) */
+  .plan.ow-pricebox{--ow-pricebox-pad:clamp(20px,2vw,24px)}
   /* a plan's lockup never runs past its column: its word keeps whole (nowrap) and moves under the wordmark when the
      column is too narrow for both; side by side (two or four columns) every plan's word sits under its wordmark, as in
      the table's heads below, so the four "for" lines start on one line (Business OS's lockup was 291px in a 219px
@@ -2254,7 +2272,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
       <a class="lk plans-product" href="/os-business"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Business OS</span></a>
     </nav>
     <div class="plans-grid">
-      <article class="plan rv d2" id="plus">
+      <article class="plan ow-pricebox rv d2" id="plus">
         <a class="lk plan-go" href="/app" aria-label="Oneway+, in the Oneway App"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>+</span></a>
         <p class="plan-for">For people</p>
         
@@ -2266,7 +2284,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
         </ul>
         <div class="lp-acts"><a class="pill pill--solid" href="/beta">Create your account</a></div>
       </article>
-      <article class="plan rv d2" id="os-free">
+      <article class="plan ow-pricebox rv d2" id="os-free">
         <a class="lk plan-go" href="/os" aria-label="Oneway OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>OS</span></a>
         <p class="plan-for">For every Center</p>
         <p class="plan-price"><!-- his word (founder/792: "oneway os (free and then core and business"): shown, never pending --><span><b>Free</b></span></p>
@@ -2277,7 +2295,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
         </ul>
         <div class="lp-acts"><a class="pill pill--solid" href="/beta">Create your Center</a></div>
       </article>
-      <article class="plan rv d3" id="core">
+      <article class="plan ow-pricebox rv d3" id="core">
         <a class="lk plan-go" href="/os" aria-label="Core, in Oneway OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Core</span></a>
         <p class="plan-for">For one Center's team</p>
         
@@ -2288,7 +2306,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
         </ul>
         <div class="lp-acts"><a class="pill pill--solid" href="mailto:williamrau78@gmail.com?subject=Oneway%20Core">Contact us</a></div>
       </article>
-      <article class="plan rv d3" id="business">
+      <article class="plan ow-pricebox rv d3" id="business">
         <a class="lk plan-go" href="/os-business" aria-label="Business OS"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><span>Business OS</span></a>
         <!-- founder/795: "buisness 330, multiple business cneters contact": $330 a month for one Center, several Business
              Centers by contact, as the Terms say it (§17: one Center, set up with you by contact). The "for" line is my reading (for his eye). -->
@@ -2317,19 +2335,21 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
          (seo/domains); a module installs only where its tier runs (modules/service.install). Developer OS sits beside
          Business OS (founder/775), so its column carries the free Center and modules, not the business rows. The shop is
          left out: a free Center lists its products, but making one is Lightbulb's, which is Business OS's.
-         An open grid on hairlines, no boxes, no filled cells (founder/813); at 390 each row's marks carry their plan's
-         short name, so a row reads without the heads. -->
+         Hairlines between the rows, no filled cells, the whole comparison in the pricing box (founder/829: "add boxes
+         around the pricing areas"; the blank slate of founder/813 keeps everything else open); at 390 each row's marks
+         carry their plan's short name, so a row reads without the heads, and a head's name may take two lines, its
+         wordmark on one top line and its price on one bottom line across the three. -->
     <style>
       .plans-cmp-h{margin:clamp(72px,9vw,112px) auto 0;max-width:30ch;text-align:center;color:#fff}
       .plans-cmp{max-width:1080px;margin:clamp(28px,3.4vw,40px) auto 0;text-align:left}
       .pc-row{display:grid;grid-template-columns:minmax(0,1.6fr) repeat(3,minmax(0,1fr));column-gap:clamp(12px,2vw,24px);
         align-items:center;padding:16px 0;border-top:1px solid rgba(255,255,255,.12)}
-      .pc-row:last-child{border-bottom:1px solid rgba(255,255,255,.12)}
+      .pc-row:last-child{padding-bottom:0}   /* the box's own edge closes the last row */
       .pc-head{border-top:0;padding:0 0 20px;align-items:end}
       .pc-plan{display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0;color:#fff}
       .pc-plan img{height:16px;width:auto;display:block}
-      .pc-plan b{display:block}
-      .pc-what{color:#fff;min-width:0}
+      .pc-plan b{display:block;white-space:nowrap}
+      .pc-what{color:#fff;min-width:0;text-wrap:pretty}
       /* a quiet mark: a drawn check where the plan carries it, a short dash where it does not */
       .pc-c{display:flex;align-items:center;justify-content:center;gap:8px;min-width:0;color:#fff}
       .pc-c i{flex:none;display:block;width:20px;height:20px;background:currentColor;
@@ -2341,23 +2361,31 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
       .pc-w{display:none}
       .plans-cmp-note{margin:20px auto 0;text-align:center;color:#fff}
       @media(max-width:560px){
-        .pc-row{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:12px;row-gap:10px;padding:14px 0}
+        /* the box keeps 16px inside on a phone, its edges on the plans' own, and each plan's column is as wide as its
+           longest word needs (OS, Business, Developer), so at 360 no mark runs into the box's edge (it ran 7px in) */
+        .plans-cmp.ow-pricebox{--ow-pricebox-pad:16px}
+        .pc-row{grid-template-columns:minmax(0,.8fr) minmax(0,1.05fr) minmax(0,1.15fr);column-gap:8px;row-gap:10px;padding:14px 0}
         .pc-head{padding:0 0 16px}
         .pc-corner{display:none}
         .pc-what{grid-column:1/-1}
         .pc-plan{align-items:flex-start;text-align:left}
         .pc-plan img{height:14px}
-        .pc-c{justify-content:flex-start}
+        /* three heads in a phone's third each: a long name takes two lines, its price stays on the one bottom line */
+        .pc-head{align-items:stretch}
+        .pc-plan b{white-space:normal}
+        .pc-plan .t-caption{margin-top:auto}
+        .pc-c{justify-content:flex-start;gap:6px}
+        .pc-c i{width:18px;height:18px;-webkit-mask-size:18px 18px;mask-size:18px 18px}
         .pc-w{display:inline}
       }
     </style>
     <h3 class="t-sub plans-cmp-h rv d2" id="plansCmpH">What a Center gets on each&nbsp;plan.</h3>
-    <div class="plans-cmp rv d2" role="table" aria-labelledby="plansCmpH">
+    <div class="plans-cmp ow-pricebox rv d2" role="table" aria-labelledby="plansCmpH">
       <div class="pc-row pc-head" role="row">
         <span class="pc-corner" role="columnheader"><span class="vh">What a Center gets</span></span>
         <span class="pc-plan" role="columnheader"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><b class="t-mark">OS</b><span class="t-caption">Free</span></span>
-        <span class="pc-plan" role="columnheader"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><b class="t-mark">Business&nbsp;OS</b><span class="t-caption">$330 a month</span></span>
-        <span class="pc-plan" role="columnheader"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><b class="t-mark">Developer&nbsp;OS</b><span class="t-caption">Free</span></span>
+        <span class="pc-plan" role="columnheader"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><b class="t-mark">Business OS</b><span class="t-caption">$330 a month</span></span>
+        <span class="pc-plan" role="columnheader"><img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway"/><b class="t-mark">Developer OS</b><span class="t-caption">Free</span></span>
       </div>
       <div class="pc-row" role="row"><span class="pc-what t-body" role="rowheader">A public page and its community</span><span class="pc-c pc-y" role="cell"><i aria-hidden="true"></i><span class="pc-w t-caption" aria-hidden="true">OS</span><span class="vh">Included</span></span><span class="pc-c pc-y" role="cell"><i aria-hidden="true"></i><span class="pc-w t-caption" aria-hidden="true">Business</span><span class="vh">Included</span></span><span class="pc-c pc-y" role="cell"><i aria-hidden="true"></i><span class="pc-w t-caption" aria-hidden="true">Developer</span><span class="vh">Included</span></span></div>
       <div class="pc-row" role="row"><span class="pc-what t-body" role="rowheader">Posts and events</span><span class="pc-c pc-y" role="cell"><i aria-hidden="true"></i><span class="pc-w t-caption" aria-hidden="true">OS</span><span class="vh">Included</span></span><span class="pc-c pc-y" role="cell"><i aria-hidden="true"></i><span class="pc-w t-caption" aria-hidden="true">Business</span><span class="vh">Included</span></span><span class="pc-c pc-y" role="cell"><i aria-hidden="true"></i><span class="pc-w t-caption" aria-hidden="true">Developer</span><span class="vh">Included</span></span></div>
@@ -2411,10 +2439,10 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
 
 
 <script defer src="/frontend/shared/brainmap.js?v=6a651abb"></script>
-<script defer src="/frontend/landing/static/inline-03-da8892856b.js"></script>
-<script defer src="/frontend/landing/static/inline-04-b8bd236ef4.js"></script>
-<script defer src="/frontend/landing/static/inline-05-07b920e839.js"></script>
-<script defer src="/frontend/landing/static/inline-06-ced288bedf.js"></script>
+<script defer src="/frontend/landing/static/inline-03-da8892856b.js?v=da889285"></script>
+<script defer src="/frontend/landing/static/inline-04-b8bd236ef4.js?v=b8bd236e"></script>
+<script defer src="/frontend/landing/static/inline-05-07b920e839.js?v=07b920e8"></script>
+<script defer src="/frontend/landing/static/inline-06-ced288bedf.js?v=ced288be"></script>
 
 <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
 <!-- ═══ QUESTIONS, ANSWERED (founder, 2026-10-17: "do a full creative and SEO aduit and try to add things that explain parts of
@@ -2424,6 +2452,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
      owner hands a Center over before deleting the account (api/oneway/identity/departure.py delete_account). What Oneway
      OS is: the free layer and what Business OS adds, as api/oneway/capabilities name them and learn.html defines them. ═══ -->
 <style>
+  #faq .t-mark{margin:0 0 18px}   /* its name stands over its headline at the gap every other section keeps (it sat on it, 0px) */
   #faq .faq-list{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:34px 48px;margin-top:40px;text-align:left}
   #faq .faq-q .t-sub{font-size:clamp(19px,2vw,24px)}
   #faq .faq-q .t-body{margin-top:10px;color:rgba(255,255,255,.88);max-width:52ch}
@@ -2469,7 +2498,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
     <small class="owfoot-line">2027, Oneway Technologies LLC</small>
   </div>
 </footer>
-<script defer src="/frontend/landing/static/inline-07-c92cf52815.js"></script>
+<script defer src="/frontend/landing/static/inline-07-c92cf52815.js?v=c92cf528"></script>
 
 
 
@@ -2511,7 +2540,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
     letter-spacing:0!important;font-size:13px!important;font-weight:500!important}
 
 </style>
-<script defer src="/frontend/landing/static/inline-08-20828a88be.js"></script>
+<script defer src="/frontend/landing/static/inline-08-20828a88be.js?v=20828a88"></script>
 
 
 
