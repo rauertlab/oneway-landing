@@ -1,318 +1,3 @@
-/* ONEWAY · WIDGETS — the one renderer for a Popit's projection, at a family.
- *
- * ★ FOUNDER/781 (S25): *"its exactly the type of interpeted projections we want to 100% remove from the
- *   platform"*. ★ FOUNDER/782: widgets for iPhone, iPad and Mac home screens, Simple mode's own design.
- * ★ FOUNDER/783: *"these types have got to be redone or removed entirely they should be clean and visual."*
- *
- * WHAT THIS DRAWS, AND WHAT IT NEVER DOES
- *   One anatomy for every type: a FOCAL visual (a photo, faces, a date, a clock face, a number, marks), a
- *   small LABEL (the type's mark and name) and at most two short LINES. It draws only what the registry's
- *   projection carries (`api/popits`): the words for a state that is not `available` are the server's
- *   (`say`), and a missing fact is left out, never written in. The native renderers (WidgetKit, watchOS,
- *   tvOS) draw the same anatomy from the same answer (`GET /api/canvas/{surface}/widgets`).
- *
- *   The FAMILY decides the arrangement, never the content: small is the focal alone, medium puts the lines
- *   beside it, large under it, extra_large gives the lines half the tile. Popit and Simple mode share this
- *   markup; only the material differs (oneway-popit.css, "THE WIDGETS").
- *
- *   OW.widget.has(ref)                      -> true: every Popit is drawn here
- *   OW.widget.draw(host, w, opts)           -> fills `host`; w = {ref, name, state, say, anatomy, family}
- *                                              opts = {glyph: Node|null}
- *   OW.widget.forms                         -> the forms it draws (api/popits FORMS must all be here)
- */
-(function (global) {
-  'use strict';
-  var OW = global.OW = global.OW || {};
-  var doc = global.document;
-
-  function esc(v) {
-    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-    });
-  }
-
-  /* A PICTURE OF A PERSON OR A CENTER IS ALWAYS A CIRCLE (S14). An absent picture is the initial on the
-     face's own hue, which is a real answer, not a placeholder. */
-  function face(f, name) {
-    f = f || {};
-    var nm = f.name || name || '';
-    var hue = (f.hue != null && f.hue !== '') ? parseInt(f.hue, 10) : null;
-    var style = hue != null ? ' style="--wf-h:' + hue + '"' : '';
-    if (f.url) {
-      return '<span class="ow-w-face"' + style + '><img src="' + esc(f.url) + '" alt="" loading="lazy" decoding="async"></span>';
-    }
-    return '<span class="ow-w-face ow-w-face--i"' + style + '>' + esc(nm.charAt(0).toUpperCase()) + '</span>';
-  }
-
-  function faces(list, max) {
-    var out = '';
-    (list || []).slice(0, max).forEach(function (p) { out += face(p.face, p.name || p.who); });
-    return out;
-  }
-
-  function photo(url) {
-    return '<span class="ow-w-photo"><img src="' + esc(url) + '" alt="" loading="lazy" decoding="async"></span>';
-  }
-
-  /* ── WHEN: a calendar's date, never a sentence about one ─────────────────── */
-  function parseDay(date, time) {
-    if (!date) { return null; }
-    var d = new Date(String(date).slice(0, 10) + 'T' + (time && /^\d{1,2}:\d{2}/.test(time) ? time.slice(0, 5) : '12:00'));
-    return isNaN(d.getTime()) ? null : d;
-  }
-  function dateBlock(d) {
-    var wd = d.toLocaleDateString(undefined, { weekday: 'short' });
-    var mo = d.toLocaleDateString(undefined, { month: 'short' });
-    return '<span class="ow-w-date"><span class="ow-w-date__wd">' + esc(wd) + '</span>' +
-      '<span class="ow-w-date__d">' + d.getDate() + '</span><span class="ow-w-date__m">' + esc(mo) + '</span></span>';
-  }
-
-  /* ── THE CLOCK: a face, never "TIME / 11:43 PM" (POPIT_REQUIREMENTS §2) ──── */
-  function zoneNow(tz) {
-    try {
-      var parts = new Intl.DateTimeFormat('en-US', { timeZone: tz || undefined, hour: 'numeric', minute: 'numeric', hour12: false })
-        .formatToParts(new Date());
-      var h = 0, m = 0;
-      parts.forEach(function (x) { if (x.type === 'hour') { h = parseInt(x.value, 10) % 24; } if (x.type === 'minute') { m = parseInt(x.value, 10); } });
-      return { h: h, m: m };
-    } catch (e) {
-      var n = new Date();
-      return { h: n.getHours(), m: n.getMinutes() };
-    }
-  }
-  function setHands(node) {
-    var t = zoneNow(node.getAttribute('data-tz') || '');
-    var hh = node.querySelector('.ow-w-clock__h'), mm = node.querySelector('.ow-w-clock__m');
-    if (hh) { hh.setAttribute('transform', 'rotate(' + ((t.h % 12) * 30 + t.m * 0.5) + ' 50 50)'); }
-    if (mm) { mm.setAttribute('transform', 'rotate(' + (t.m * 6) + ' 50 50)'); }
-    node.setAttribute('data-night', (t.h < 6 || t.h >= 19) ? '1' : '0');
-    var w = node.closest ? node.closest('.ow-w') : null;
-    var said = w && w.querySelector('.ow-w__s');
-    if (said) { said.textContent = (t.h % 12 || 12) + ':' + (t.m < 10 ? '0' : '') + t.m + (t.h < 12 ? ' AM' : ' PM'); }
-  }
-  var ticking = false;
-  function tick() {
-    var all = doc.querySelectorAll('.ow-w-clock[data-tz]');
-    for (var i = 0; i < all.length; i++) { setHands(all[i]); }
-    if (!all.length) { ticking = false; return; }
-    setTimeout(tick, 20000);
-  }
-  function clockFace(tz) {
-    var ticks = '';
-    for (var i = 0; i < 12; i++) {
-      ticks += '<line x1="50" y1="' + (i % 3 ? 9 : 7) + '" x2="50" y2="' + (i % 3 ? 13 : 15) + '" transform="rotate(' + (i * 30) + ' 50 50)"/>';
-    }
-    return '<span class="ow-w-clock" data-tz="' + esc(tz || '') + '"><svg viewBox="0 0 100 100" aria-hidden="true">' +
-      '<circle class="ow-w-clock__dial" cx="50" cy="50" r="46"/><g class="ow-w-clock__ticks">' + ticks + '</g>' +
-      '<line class="ow-w-clock__h" x1="50" y1="50" x2="50" y2="27"/><line class="ow-w-clock__m" x1="50" y1="50" x2="50" y2="15"/>' +
-      '<circle class="ow-w-clock__pin" cx="50" cy="50" r="3.2"/></svg></span>';
-  }
-
-  /* ── COUNTDOWN: one number and its unit ──────────────────────────────── */
-  function untilParts(iso) {
-    var t = Date.parse(iso || '');
-    if (isNaN(t)) { return null; }
-    var s = Math.max(0, (t - Date.now()) / 1000);
-    if (s >= 86400 * 2) { return { n: Math.floor(s / 86400), u: 'days' }; }
-    if (s >= 3600 * 2) { return { n: Math.floor(s / 3600), u: 'hours' }; }
-    if (s >= 60) { return { n: Math.ceil(s / 60), u: 'minutes' }; }
-    return null;
-  }
-
-  /* ── ONE DRAWING PER FORM, NEVER PER TYPE (founder/784) ─────────────────
-     The registry composes each answer into an ANATOMY (api/popits: FORMS): a form, its data, two lines. This draws
-     forms only, so a new or redone type reaches the App, the OS and every Apple device with no client change. */
-  var FORMS = {
-    clock: function (a) {
-      return { focal: clockFace(a.tz || ''), lines: [a.lines[0], ' '], mode: 'center' };
-    },
-    face: function (a) {
-      var f = face(a.face, a.face && a.face.name);
-      return { focal: a.status ? '<span class="ow-w-status" data-status="' + esc(a.status) + '">' + f + '<i></i></span>' : f,
-               lines: a.lines, mode: 'center' };
-    },
-    faces: function (a) {
-      var list = (a.faces || []).map(function (f) { return { face: f, name: f.name }; });
-      return { focal: '<span class="ow-w-faces" data-n="' + Math.min(4, list.length || 1) + '">' + faces(list, 4) + '</span>',
-               lines: a.lines, mode: 'center' };
-    },
-    photo: function (a) { return { focal: photo(a.url), lines: a.lines, mode: 'photo' }; },
-    quote: function (a) { return { focal: '<span class="ow-w-quote">' + esc(a.text) + '</span>', lines: a.lines, mode: 'quote' }; },
-    date: function (a) {
-      var d = parseDay(a.date, a.time);
-      return d ? { focal: dateBlock(d), lines: a.lines, mode: 'side' } : null;
-    },
-    until: function (a) {
-      var p = untilParts(a.at);
-      return { focal: p ? '<span class="ow-w-num"><b>' + p.n + '</b><span>' + p.u + '</span></span>'
-                        : '<span class="ow-w-num"><b>Now</b></span>', lines: a.lines, mode: 'side' };
-    },
-    marks: function (a) {
-      var marks = '', links = a.links || [];
-      links.slice(0, 8).forEach(function (l) {
-        var plat = (OW.links && OW.links.platformOf) ? OW.links.platformOf(l.url) : null;
-        var inner = (plat && OW.links.icon) ? OW.links.icon(plat.key, plat.href || l.url) : '';
-        marks += '<a class="ow-w-mark" href="' + esc(l.url) + '" target="_blank" rel="noopener noreferrer" aria-label="' +
-          esc(l.label || (plat && plat.key) || l.url) + '">' + inner + '</a>';
-      });
-      return links.length ? { focal: '<span class="ow-w-marks" data-n="' + Math.min(8, links.length) + '">' + marks + '</span>',
-                              lines: ['', ''], mode: 'fill' } : null;
-    }
-  };
-
-  /* ── A WIDGET IS THE APP'S CARD, CONDENSED ────────────────────────────────────────────────────────────────
-     ★ FOUNDER/797: *"these widgets need to look exactly like condensed versions of the cards in the app. They must
-       contain the exact same information and styling."* When the registry names the cards a Popit shows, the canvas
-       attaches them from the App's own card read (`card_data`), and they are drawn HERE by the App's own card
-       renderer (OW.cards, S21), never by a layout of this file: small is the card's chip, medium its mini row,
-       large up to four mini rows, or the standard card for one subject (Now). A status the card does not carry
-       (Now's) is the registry's own line under it. */
-  var CARDS_AT = { small: 1, medium: 1, large: 4, extra_large: 4 };
-  var ROWS_AT = { small: 1, medium: 2, large: 4, extra_large: 4 };
-  /* AN EVENT IS THE APP'S EVENT ROW, LINKS ARE THE PROFILE'S LINK BAR (founder/797). Events: the glance rows a
-     Center's Events tab draws (OW.glance: the date on the mark, the title, "hour · venue"), from the registry's own
-     rows. Links: the bar under a profile's name (OW.links.bar, each platform's own mark) on a small widget, and the
-     Links tab's list (the same bar stood on end: the mark, the name, who they are there) on a larger one. */
-  function appRowsInto(root, a, family) {
-    if (!a) return false;
-    var box = doc.createElement('div');
-    if (a.form === 'date' && a.rows && a.rows.length && OW.glance) {
-      box.className = 'ow-w__focal ow-w__cards ow-w__rows';
-      a.rows.slice(0, ROWS_AT[family] || 1).forEach(function (r) {
-        box.appendChild(OW.glance({ id: r.id || '', label: r.title || '', signal: r.signal || '', icon: 'event',
-                                    when: r.day ? { mon: r.mon || '', day: r.day } : null }, { open: false }));
-      });
-      root.setAttribute('data-card', 'events');
-    } else if (a.form === 'marks' && a.links && a.links.length && OW.links && OW.links.bar) {
-      var bar = OW.links.bar(a.links, [], family === 'small' ? {} : { layout: 'list' });
-      if (!bar) return false;
-      box.className = 'ow-w__focal ow-w__cards ow-w__links';
-      box.appendChild(bar);
-      root.setAttribute('data-card', 'links');
-    } else {
-      return false;
-    }
-    root.setAttribute('data-mode', 'card');
-    root.appendChild(box);
-    return true;
-  }
-
-  function cardsInto(root, a, family) {
-    if (appRowsInto(root, a, family)) return true;
-    if (!a || !a.card_data || !a.card_data.length || !OW.cards || !OW.cards.node) return false;
-    var one = a.form === 'face';
-    var list = a.card_data.slice(0, CARDS_AT[family] || 1);
-    /* A POST IS THE APP'S POST CARD (OW.card, the river's own), the family choosing which of its parts show */
-    if (list[0] && list[0].author && list[0].id && /^post:/.test((a.cards || [])[0] || '')) {
-      if (!OW.card || !OW.riverRow) return false;
-      var pc = null;
-      try { pc = OW.card(OW.riverRow(list[0])); } catch (e) { pc = null; }
-      if (!pc) return false;
-      var pbox = doc.createElement('div');
-      pbox.className = 'ow-w__focal ow-w__cards';
-      pbox.appendChild(pc);
-      root.setAttribute('data-mode', 'card');
-      root.setAttribute('data-card', 'post');
-      root.appendChild(pbox);
-      /* THE INTERACTIONS SHOW, AND LIVE (founder/799): the card's own response row, filled and kept current by the
-         App's one filler, exactly as a feed's card is */
-      if (OW.mountResponses) { try { OW.mountResponses(pbox, OW.riverRow(list[0])); } catch (e) {} }
-      return true;
-    }
-    var mode = family === 'small' ? '' : (one && (family === 'large' || family === 'extra_large')) ? 'standard' : 'mini';
-    var box = doc.createElement('div');
-    box.className = 'ow-w__focal ow-w__cards';
-    box.setAttribute('data-n', String(list.length));
-    list.forEach(function (card) {
-      box.appendChild(OW.cards.node(card, mode ? { mode: mode } : { as: 'chip' }));
-    });
-    root.setAttribute('data-mode', 'card');
-    root.appendChild(box);
-    var status = one ? (a.lines || [])[1] : '';
-    if (status) {
-      var cap = doc.createElement('div'), sp = doc.createElement('span');
-      cap.className = 'ow-w__cap';
-      sp.className = 'ow-w__s';
-      sp.textContent = status;
-      cap.appendChild(sp);
-      root.appendChild(cap);
-    }
-    return true;
-  }
-
-  /* every Popit is drawn here: its anatomy, or its mark with the registry's sentence */
-  function has(ref) { return !!ref; }
-
-  function draw(host, w, opts) {
-    opts = opts || {};
-    var ref = w.ref, a = w.anatomy, drawn = null;
-    var root0 = doc.createElement('div');
-    root0.className = 'ow-w';
-    root0.setAttribute('data-w', ref);
-    root0.setAttribute('data-family', w.family || 'large');
-    if (cardsInto(root0, a, w.family || 'large')) {
-      var lb = doc.createElement('div');
-      lb.className = 'ow-w__k';
-      if (opts.glyph) { lb.appendChild(opts.glyph.cloneNode(true)); }
-      var ln = doc.createElement('span');
-      ln.textContent = w.name || '';
-      lb.appendChild(ln);
-      root0.insertBefore(lb, root0.firstChild);
-      host.innerHTML = '';
-      host.appendChild(root0);
-      return root0;
-    }
-    if (a && FORMS[a.form]) {
-      a.lines = a.lines || ['', ''];
-      drawn = FORMS[a.form](a);
-    }
-    var root = doc.createElement('div');
-    root.className = 'ow-w';
-    root.setAttribute('data-w', ref);
-    root.setAttribute('data-family', w.family || 'large');
-    if (drawn) {
-      root.setAttribute('data-mode', drawn.mode || 'center');
-      root.innerHTML = '<div class="ow-w__focal">' + (drawn.focal || '') + '</div>' +
-        '<div class="ow-w__cap">' +
-          (drawn.lines[0] ? '<span class="ow-w__t">' + esc(drawn.lines[0]) + '</span>' : '') +
-          (drawn.lines[1] ? '<span class="ow-w__s">' + esc(drawn.lines[1]) + '</span>' : '') +
-        '</div>';
-    } else {
-      /* NOT AVAILABLE: the type's mark, large, and the registry's sentence. Nothing else. */
-      root.setAttribute('data-mode', 'absent');
-      var mk = doc.createElement('div');
-      mk.className = 'ow-w__focal ow-w__focal--mark';
-      if (opts.glyph) { mk.appendChild(opts.glyph.cloneNode(true)); }
-      root.appendChild(mk);
-      if (w.say) {
-        var cp = doc.createElement('div'), sp = doc.createElement('span');
-        cp.className = 'ow-w__cap';
-        sp.className = 'ow-w__s';
-        sp.textContent = w.say;
-        cp.appendChild(sp);
-        root.appendChild(cp);
-      }
-    }
-    var label = doc.createElement('div');
-    label.className = 'ow-w__k';
-    if (opts.glyph && drawn) { label.appendChild(opts.glyph.cloneNode(true)); }
-    var nm = doc.createElement('span');
-    nm.textContent = w.name || '';
-    label.appendChild(nm);
-    if (root.firstChild) { root.insertBefore(label, root.firstChild); } else { root.appendChild(label); }
-    host.innerHTML = '';
-    host.appendChild(root);
-    if (ref === 'clock' && root.querySelector) {
-      var ck = root.querySelector('.ow-w-clock');
-      if (ck) { setHands(ck); }
-      if (!ticking) { ticking = true; setTimeout(tick, 20000); }
-    }
-    return root;
-  }
-
-  OW.widget = { has: has, draw: draw, forms: Object.keys(FORMS) };
-})(typeof window !== 'undefined' ? window : this);
-
 /* ONEWAY — THE CANVAS.  What you put on your own surface, and how you move it.
 
    ★ FOUNDER, PRODUCT_RESET §19: Popits *"should not remain shallow decorative
@@ -701,23 +386,6 @@
      four columns cannot express twelfths — so the conversion rounds ONCE, at
      the edit, rather than compounding on every render. */
   var BASE_COLS = 12;
-  var APPLE_WIDE = 600;         /* px — narrower is a phone's two slots, wider a tablet's or a Mac's four */
-
-  /* A PLACEMENT'S APPLE SLOTS, from its family (the four footprints are WidgetKit's four system families, api/popits
-     FAMILIES): small 1x1, medium 2x1, large 2x2, extra large 4x2 where four slots fit and a phone's largest, 2x2,
-     where they do not (an iPhone has no extra large). */
-  function appleBox(it, cols) {
-    var w = it.w || 3, h = it.h || 3;
-    var fam = (w <= 3 && h <= 3) ? 'small' : (w >= 12 ? 'extra_large' : (h <= 3 ? 'medium' : 'large'));
-    if (fam === 'extra_large' && cols < 4) fam = 'large';
-    var b = { small: [1, 1], medium: [2, 1], large: [2, 2], extra_large: [4, 2] }[fam];
-    return { w: Math.min(cols, b[0]), h: b[1], family: fam };
-  }
-
-  /* APPLE'S GUTTER: about an eighth of a slot's pitch, 22px between two widgets on a phone, as on its home screen. */
-  function appleGap(width, cols) {
-    return Math.max(14, Math.min(30, Math.round((width / Math.max(1, cols)) * 0.125)));
-  }
 
   Canvas.prototype.viewCols = function () {
     var w = (this.grid && this.grid.clientWidth)
@@ -771,16 +439,7 @@
 
        The row height already scales with the column (ROW_RATIO), so a tile
        keeps its aspect as well as its proportion. */
-    /* ═══ AND THEN HE CHOSE APPLE'S (founder/788, 2026-10-16) ═══════════════
-       ★ FOUNDER: *"abide to apple itll look the best anyways and try to have mini widgets on our app that just reflect
-         as apples sizing on home screen but by default on our app apples spacing"* — over the plane above, asked as a
-         choice between the two.
-       So a Popit is drawn at its APPLE size: the grid is Apple's widget slots, two across a phone (a small is half the
-       width, as on an iPhone's home screen) and four across anything wider (iPad, Mac). Its family decides its slots
-       (`appleBox`), and `packed()` flows them in reading order without back-filling, so the order a person arranged is
-       the order every device shows: what the 09-03 ruling protected still holds. The stored arrangement is the
-       canonical twelve, untouched. */
-    return w < APPLE_WIDE ? 2 : 4;
+    return BASE_COLS;
   };
 
   Canvas.prototype.toView = function (n) {
@@ -1056,7 +715,7 @@
        `row + gap`. Setting them equal is what makes the cell square — and it
        has to be read off the same number the CSS divides by, or the two drift
        by a gap and every footprint is a little wrong. */
-    var pitch = (w + GAP) / cols;
+    var pitch = w / cols;
     var row = Math.max(1, Math.round(pitch - GAP));
     h.style.setProperty('--cv-row', row + 'px');
     /* THE TYPE SCALES WITH THE PLANE BELOW A PHONE'S WIDTH. The plane is one
@@ -1153,9 +812,7 @@
        (capped at PLANE_MAX), so the row is known now; `fitRows` then confirms
        it and changes nothing. ROW stays only for a host not laid out yet. */
     var hostW = Math.min((this.host && this.host.clientWidth) || 0, PLANE_MAX);
-    /* Apple's gutter for this box (founder/788); every gesture below reads the same GAP */
-    if (hostW) GAP = appleGap(hostW, this.cols);
-    h.style.setProperty('--cv-row', (hostW ? Math.max(1, Math.round((hostW + GAP) / this.cols - GAP)) : ROW) + 'px');
+    h.style.setProperty('--cv-row', (hostW ? Math.max(1, Math.round(hostW / this.cols - GAP)) : ROW) + 'px');
     h.classList.add('is-booting');                  /* no slide on the first frames */
     /* where there are no frames (a renderer driven outside a browser, as
        tools/canvas_render_check.cjs does) a timeout stands in for two */
@@ -1303,22 +960,13 @@
        actually has something in it, and only for a signed-in person who has a
        surface of their own to paste onto. An offer that would refuse is worse
        than no offer. */
-    /* THE ARRANGEMENT CONTROLS ARE THEIR OWN TOOLBAR (founder, 2026-10-15: "make the popit arrangement buttons separately
-       entirely"): Add, Arrange, Cancel and the layout offers live in one row that belongs to the canvas, never loose
-       beside the feed's own controls. Created only when there is something to put in it. */
-    var _tools = null, _host = this.host;
-    function tools() {
-      if (!_tools) { _tools = doc.createElement('div'); _tools.className = 'ow-cv-tools'; _tools.setAttribute('role', 'toolbar');
-        _tools.setAttribute('aria-label', 'Arrange this space'); _host.appendChild(_tools); }
-      return _tools;
-    }
     if (!this.mayArrange && this.items.length && this.canAdopt()) {
       var copy = doc.createElement('button');
       copy.type = 'button';
       copy.className = 'ow-cv-add ow-cv-copy';
       copy.textContent = 'Copy this layout';
       copy.addEventListener('click', function () { self.offerCopy(); });
-      tools().appendChild(copy);
+      this.host.appendChild(copy);
     }
     if (this.mayArrange) {
       this.arm(h);
@@ -1331,7 +979,7 @@
         more.className = 'ow-cv-add';
         more.textContent = 'Add';
         more.addEventListener('click', function () { self.pick(); });
-        tools().appendChild(more);
+        this.host.appendChild(more);
 
         /* the permanent door to re-publishing — see offerRepublish. Only on
            your OWN profile: it is meaningless anywhere else, and an offer that
@@ -1342,7 +990,7 @@
           pubAgain.className = 'ow-cv-add';
           pubAgain.textContent = 'Use my Home layout';
           pubAgain.addEventListener('click', function () { self.offerRepublish(); });
-          tools().appendChild(pubAgain);
+          this.host.appendChild(pubAgain);
         }
 
         /* ── A DOOR INTO ARRANGEMENT THAT IS NOT A SECRET ─────────────────
@@ -1362,7 +1010,7 @@
           ev.stopPropagation();
           self.setEditing(!self.editing);
         });
-        tools().appendChild(done);
+        this.host.appendChild(done);
 
         /* ONLY WHILE ARRANGING. Offering "Cancel" to somebody who is browsing
            asks them what they would be cancelling. */
@@ -1376,7 +1024,7 @@
             self.revert();
             self.setEditing(false);
           });
-          tools().appendChild(undo);
+          this.host.appendChild(undo);
         }
       }
     }
@@ -4583,37 +4231,6 @@
       return n;
     }
 
-    /* ── EVERY TYPE IS DRAWN BY THE ONE WIDGET RENDERER ───────────────────
-       ★ FOUNDER/783, 2026-10-16: *"these types have got to be redone or removed entirely they should be clean
-         and visual."* ★ FOUNDER/781 (S25): no interpreted projections.
-       The per-type branches below drew each kind's own sentences (five for one empty state) and the catalog's
-       blurb as if it were content. `OW.widget` (the top of this file) draws the projection only: its focal
-       visual, its name, two short lines, or the registry's sentence. The branches below stay for a type it
-       does not draw. The family is the server's; a kind the registry does not answer (the clock) takes its
-       footprint's. */
-    if (it.kind === 'popit' && OW.widget && OW.widget.has(it.ref)) {
-      var fam = (box && box.family) || it.family || ({ '3x3': 'small', '6x3': 'medium', '6x6': 'large', '12x6': 'extra_large' })[
-        (it.w || 3) + 'x' + (it.h || 3)] || ((it.w || 3) >= 12 ? 'extra_large' : (it.h || 3) <= 3
-          ? ((it.w || 3) <= 3 ? 'small' : 'medium') : 'large');
-      /* A WIDGET THAT CANNOT DRAW COSTS ITSELF, NEVER THE CANVAS: it falls through to the old drawing. */
-      var drawnW = false;
-      try {
-        OW.widget.draw(face, {
-          ref: it.ref, name: (meta0 && meta0.name) || it.label || '', state: it.state, say: it.say,
-          anatomy: it.anatomy || null, family: fam
-        }, { glyph: glyph(it.ref) });
-        drawnW = true;
-      } catch (eW) {
-        face.innerHTML = '';
-      }
-      if (drawnW) {
-        face.className += ' ow-cv-face--w';
-        n.setAttribute('data-family', fam);
-        n.appendChild(face);
-        return n;
-      }
-    }
-
     /* ── ONE PLACE THAT KNOWS EACH PROJECTION'S SHAPE ────────────────────
        The `popits` domain shapes each kind's content for the size it was
        asked at — `now` answers {status,label}, `next` answers {next,items},
@@ -4874,21 +4491,6 @@
         return { sig: ml.name,
                  detail: 'you signed',
                  sub: mn ? (mn === 1 ? '1 wall' : mn + ' walls') : '' };
-      }
-      /* ── THE SAVED POPIT HAD NO READING AT ALL ────────────────────────────────────────────────────────────────
-         ★ FOUNDER, 2026-10-10: *"when i save a post why doesnt my favorites popit on my home menu update instantly"*.
-         This file draws a kind called `favourite` (one post, {body, who}); the registry's kind for what a person saved is
-         `saved` and answers {count, latest:{who, body}, items}. Nothing here read it, so the tile fell through to
-         "Nothing right now" whatever the server held (measured: the canvas read said available, count 1, the tile said
-         nothing): the read side and the draw side had drifted apart by one name. Both are drawn now. */
-      if (ref === 'saved') {
-        var sl = c.latest || {};
-        var sn = c.count || 0;
-        var sb = (sl.body || '').trim();
-        if (!sb && !sn) { return null; }
-        return { sig: sb || (sn === 1 ? '1 post saved' : sn + ' posts saved'),
-                 detail: sb ? (sn === 1 ? '1 saved' : sn + ' saved') : '',
-                 sub: sl.who ? ('by ' + sl.who) : '' };
       }
       if (ref === 'favourite') {
         var fb = (c.body || '').trim();
@@ -5177,10 +4779,7 @@
               var mk0 = doc.createElement('span');
               mk0.className = 'ow-cv-own__linkm';
               mk0.setAttribute('data-platform', plat.key);
-              /* the link's own mark ALWAYS (founder, 2026-10-16: "it should always show the icon of the social platform or
-                 platform the link is from"): a known platform's mark, and for any other site that site's own icon, which
-                 OW.links.icon draws when it is handed the address (it was handed only the key, so every site drew the globe) */
-              mk0.innerHTML = OW.links.icon(plat.key, plat.href || l.url);
+              mk0.innerHTML = OW.links.icon(plat.key);
               a.appendChild(mk0);
             }
             var nm = doc.createElement('span');
@@ -7649,24 +7248,44 @@
       return ((a.y || 0) - (b.y || 0)) || ((a.x || 0) - (b.x || 0));
     });
 
-    /* APPLE'S FLOW (founder/788): each Popit takes its family's slots at the first place AFTER the one before it,
-       row by row, so a later Popit never jumps ahead of an earlier one to fill a gap: the arranged order is the
-       drawn order on every device. */
-    var cx = 0, cy = 0;
     order.forEach(function (it) {
-      var ab = appleBox(it, cols), y0, x0, done = false;
-      for (y0 = cy; y0 < cy + 400 && !done; y0++) {
-        for (x0 = (y0 === cy ? cx : 0); x0 <= cols - ab.w; x0++) {
-          if (free(x0, y0, ab.w, ab.h)) {
-            out[it.id] = { x: x0, y: y0, w: ab.w, h: ab.h, family: ab.family };
-            occupy(x0, y0, ab.w, ab.h);
-            cx = x0 + ab.w; cy = y0;
-            if (cx >= cols) { cx = 0; cy = y0 + 1; }
-            done = true;
-            break;
-          }
+      /* ── THE DECLARED MINIMUM IS ENFORCED HERE, OR IT IS DECORATION ──────
+         ★ FOUNDER, 2026-08-30, on the capability contract: *"individual widgets
+           declare what they are capable of."*
+
+         Every kind declares a `min` in `KIND_SPECS` — `posts` says four columns
+         by two rows, because a Post is a wide object. NOTHING READ IT. The
+         floor here was the literal number 1, so on a narrow phone a canonical
+         6-wide Latest projected to a SINGLE column: measured 2026-09-02, a 98px
+         tile holding a 78px card whose name column was 30px, wrapping "Loop
+         Test Center 370201" into a six-line stack. Every CSS repair for that is
+         a repair to a situation that should not arise.
+
+         So the projection floors at the declared minimum, and only the screen
+         itself may override it — `Math.min(cols, ...)` because a two-column
+         phone cannot give four, and a Popit that takes the whole row there is
+         the correct answer rather than a violated contract. A kind that
+         declares nothing keeps the old floor of one. */
+      var _sp = specOf(it);
+      var _minW = (_sp && _sp.min && _sp.min.length) ? (_sp.min[0] || 1) : 1;
+      var floorW = Math.max(1, Math.min(cols, _minW));
+      var vw = Math.max(floorW, Math.min(cols, Math.round(self.toView(it.w || 3))));
+      var _minH = (_sp && _sp.min && _sp.min.length > 1) ? (_sp.min[1] || 1) : 1;
+      var vh = Math.max(1, _minH, it.h || 2);
+      var want = Math.max(0, Math.min(cols - vw, Math.round(self.toView(it.x || 0))));
+      var y = 0, placed = false;
+      /* THE AUTHORED COLUMN FIRST — a tile that still fits where it was put
+         stays where it was put, which is what keeps a wide screen looking like
+         the arrangement somebody actually made. */
+      for (y = 0; y < 400 && !placed; y++) {
+        if (free(want, y, vw, vh)) { out[it.id] = { x: want, y: y, w: vw, h: vh }; placed = true; break; }
+        for (var x = 0; x <= cols - vw; x++) {
+          if (free(x, y, vw, vh)) { out[it.id] = { x: x, y: y, w: vw, h: vh }; placed = true; break; }
         }
       }
+      if (!placed) out[it.id] = { x: 0, y: rows.length, w: vw, h: vh };
+      var b = out[it.id];
+      occupy(b.x, b.y, b.w, b.h);
     });
     return out;
   };
@@ -9106,42 +8725,6 @@
      carrying the App's dark fallbacks into it would be a parallel palette. The
      `--os` variant maps the OS's own variables onto the ones this file already
      uses, so there is one stylesheet and not two. */
-  /* ── A CANVAS THAT SHOWS WHAT THE PERSON JUST DID ─────────────────────────────────────────────────────
-     ★ FOUNDER, 2026-10-10: *"when i save a post why doesnt my favorites popit on my home menu update instantly"*.
-
-     The Saved popit (and Reposts) is read from the canvas, and the canvas was read once, when Home opened. Saving a post
-     wrote to the right place, the server's next read of the canvas already said "1 saved" (measured: state empty ->
-     available), and nothing asked again, so the tile kept what it had read until the next visit. The save handler only
-     invalidated the feed's reads.
-
-     Any write now announces `ow:changed` (popit-live.js, and from the server for another tab or device); a canvas
-     mounted on this page re-reads itself. One read, after a short beat so a burst is one read, and not while the person
-     is arranging (a re-draw there would take the tile out of their hand). Which writes matter to which tile is not
-     asked: that map is what was forgotten. */
-  var liveCanvases = [], freshWired = false, freshTimer = 0;
-  function keepFresh(c) {
-    liveCanvases.push(c);
-    if (freshWired) return;
-    freshWired = true;
-    doc.addEventListener('ow:changed', function (e) {
-      var path = (e && e.detail && e.detail.path) || '';
-      /* the canvas's own arranging is not news to the canvas (and a re-read mid-drag takes the tile out of a hand) */
-      if (/^\/api\/canvas\//.test(path)) return;
-      /* ITS OWN PRIVATE CACHES DO NOT OUTLIVE A CHANGE. The Posts tile reads through `socialFeed`'s cache (120 s), the
-         happening and where tiles through theirs: the data layer clearing its own did not reach them, and
-         `forgetSocial` had existed since the Saved note above it with nothing calling it. */
-      forgetSocial(); _events = {}; _where = {};
-      global.clearTimeout(freshTimer);
-      freshTimer = global.setTimeout(function () {
-        liveCanvases = liveCanvases.filter(function (x) { return x && x.host && x.host.isConnected; });
-        liveCanvases.forEach(function (x) {
-          if (x.editing || x.dirty) return;
-          try { x.load(); } catch (err) {}
-        });
-      }, 250);
-    });
-  }
-
   OW.canvas = {
     place: place,
     mount: function (host, surface, opts) {
@@ -9166,7 +8749,6 @@
          people, so the surface is recorded here at mount. */
       OW._cvSurface = surface;
       var c = new Canvas(host, surface);
-      keepFresh(c);
       /* Explicit when given; otherwise inferred from which shell is present.
          The App publishes `OW.data`; the OS does not. */
       c.shell = opts.shell || ((OW.data && OW.data.get) ? 'app' : 'os');
@@ -9556,12 +9138,9 @@
     '.ow-cv-guides u{position:absolute;left:-8px;right:-8px;height:1px;',
     '  background:rgba(var(--ow-h2),.9);box-shadow:0 0 8px rgba(var(--ow-h2),.9)}',
     '@media (pointer:coarse){.ow-cv-h{width:17px;height:17px;margin:-9px 0 0 -9px}}',
-    /* THE PITCH SPANS THE PLANE PLUS ONE GUTTER, so the last tile ends exactly at the plane's right edge and the margins
-       match on both sides, as on a home screen (founder/788). The drag math (cw = (W - gap*(cols-1)) / cols) is the
-       same geometry. */
     '.ow-cv-t{position:absolute;--rot:0deg;',
-    '  left:calc((var(--x) / var(--cv-cols)) * (100% + var(--cv-gap)));',
-    '  width:calc((var(--w) / var(--cv-cols)) * (100% + var(--cv-gap)) - var(--cv-gap));',
+    '  left:calc((var(--x) / var(--cv-cols)) * 100%);',
+    '  width:calc((var(--w) / var(--cv-cols)) * 100% - var(--cv-gap));',
     '  top:calc(var(--y) * (var(--cv-row) + var(--cv-gap)));',
     '  height:calc(var(--h) * var(--cv-row) + (var(--h) - 1) * var(--cv-gap));',
     '  transition:left .18s var(--ow-ease,ease),top .18s var(--ow-ease,ease)}',

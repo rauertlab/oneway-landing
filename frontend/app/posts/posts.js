@@ -51,7 +51,7 @@
 
      THE SERVER'S ANSWER IS WHAT IS DRAWN AFTERWARDS. Both acts re-read the Post
      rather than patching the page, so what the person sees is what was stored.
-     A Post holds a bounded number of photos (`MEDIA_MAX`, 20); one that did not
+     A Post holds a bounded number of photos (`MEDIA_MAX`, 12); one that did not
      fit is SAID, never dropped in silence (founder/657). */
   function draftBand(host, id, p, opts) {
     var band = mk('div', 'ow-post__draft');
@@ -116,91 +116,7 @@
       });
     });
     row.appendChild(add); row.appendChild(share);
-    /* ── SCHEDULE IT, AS INSTAGRAM DOES (register row 28; C-parity, 2026-10-11). The post's own state door takes
-       `scheduled` with its time, and main's sixty-second tick publishes it when the time comes (social.publish_due).
-       A scheduled post says when it goes out, and can go back to being a draft. For his eye: the field and its words. */
-    function setState(state, at, done) {
-      why.textContent = '';
-      return data.put('/api/oneway/social/posts/' + encodeURIComponent(id) + '/state',
-                      { state: state, publish_at: at || '' }).then(function (r) {
-        if (!r || !r.ok) { why.textContent = (r && r.error) || 'That did not save. Nothing has been changed.'; return; }
-        return again(done);
-      });
-    }
-    if (p.state === 'scheduled' && p.publish_at) {
-      var when = new Date(p.publish_at);
-      why.textContent = 'Goes out ' + (isNaN(when) ? p.publish_at : when.toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '.';
-      var back = mk('button', 'po-act', 'Keep as a draft'); back.type = 'button';
-      back.addEventListener('click', function () { setState('draft', '', 'It is a draft again, not scheduled.'); });
-      row.appendChild(back);
-    } else if (p.state === 'draft' || !p.state) {
-      var sched = mk('button', 'po-act', 'Schedule'); sched.type = 'button';
-      var pick = mk('div', 'ow-post__schedule'); pick.style.cssText = 'display:none;gap:8px;align-items:center;flex-wrap:wrap;padding-top:8px';
-      var at = doc.createElement('input'); at.type = 'datetime-local'; at.setAttribute('aria-label', 'When it goes out');
-      var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-      var local = function (d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + 'T' + pad(d.getHours()) + ':' + pad(d.getMinutes()); };
-      var soon = new Date(Date.now() + 20 * 60000), later = new Date(Date.now() + 75 * 86400000);
-      at.min = local(soon); at.max = local(later); at.value = local(new Date(Date.now() + 60 * 60000));
-      var go = mk('button', 'po-act', 'Schedule it'); go.type = 'button';
-      go.addEventListener('click', function () {
-        var d = new Date(at.value);
-        if (isNaN(d) || d < soon || d > later) { why.textContent = 'Choose a time from 20 minutes to 75 days from now.'; return; }
-        go.disabled = true;
-        setState('scheduled', d.toISOString(), '').then(function () { go.disabled = false; });
-      });
-      sched.addEventListener('click', function () { pick.style.display = pick.style.display === 'none' ? 'flex' : 'none'; });
-      pick.appendChild(at); pick.appendChild(go);
-      row.appendChild(sched);
-      var schedPick = pick;
-    }
     band.appendChild(row); band.appendChild(why);
-    if (schedPick) band.appendChild(schedPick);
-    /* ── ARRANGE THE PHOTOS: MOVE ONE EARLIER, OR REMOVE ONE (register row 28, drafts vs Instagram and TikTok;
-       C-parity, 2026-10-11). The post's own edit door takes the whole list, so the new order is saved there and the
-       post is read again: what is drawn afterwards is what was stored. For his eye: the strip and its two acts. */
-    var media = (p.media || []).filter(function (m) { return m && (m.url || m.src); });
-    if (media.length > 1 || (media.length === 1 && (p.body || p.title))) {
-      var strip = mk('div', 'ow-post__arrange');
-      strip.style.cssText = 'display:flex;gap:10px;overflow-x:auto;padding:10px 0 4px';
-      var save = function (next, what) {
-        strip.setAttribute('aria-busy', 'true');
-        return data.patch('/api/oneway/social/posts/' + encodeURIComponent(id), { media: next }).then(function (r) {
-          strip.removeAttribute('aria-busy');
-          if (!r || !r.ok) { why.textContent = (r && r.error) || 'That did not save. Nothing has been changed.'; return; }
-          return again(what);
-        });
-      };
-      media.forEach(function (m, i) {
-        var cell = mk('div', 'ow-post__arrange-cell');
-        cell.setAttribute('data-i', String(i));
-        cell.style.cssText = 'flex:none;width:96px;display:flex;flex-direction:column;gap:6px';
-        var pic = doc.createElement('img');
-        pic.alt = m.alt || ('Photo ' + (i + 1)); pic.loading = 'lazy';
-        var src = m.thumb || ((String(m.kind || '').toLowerCase() === 'video') ? '' : (m.url || m.src));
-        if (src) pic.src = OW.imageUrl ? OW.imageUrl(src) : src;
-        pic.style.cssText = 'width:96px;height:96px;object-fit:cover;border-radius:12px;display:block';
-        cell.appendChild(pic);
-        var acts = mk('div'); acts.style.cssText = 'display:flex;gap:6px';
-        if (i > 0) {
-          var up = mk('button', 'po-act', 'Earlier'); up.type = 'button';
-          up.setAttribute('aria-label', 'Move photo ' + (i + 1) + ' earlier');
-          up.addEventListener('click', function () {
-            var next = media.slice(); var t = next[i - 1]; next[i - 1] = next[i]; next[i] = t;
-            save(next, 'Photo ' + (i + 1) + ' moved earlier.');
-          });
-          acts.appendChild(up);
-        }
-        var rm = mk('button', 'po-act', 'Remove'); rm.type = 'button';
-        rm.setAttribute('aria-label', 'Remove photo ' + (i + 1));
-        rm.addEventListener('click', function () {
-          save(media.filter(function (_, j) { return j !== i; }), 'Photo ' + (i + 1) + ' removed.');
-        });
-        acts.appendChild(rm);
-        cell.appendChild(acts);
-        strip.appendChild(cell);
-      });
-      band.appendChild(strip);
-    }
     return band;
   }
 
@@ -253,8 +169,11 @@
       var av = mk('button', 'ow-post__av');
       av.type = 'button';
       av.setAttribute('aria-label', 'Open ' + (p.author && p.author.name || 'this person'));
-      /* founder/495 — the outline, not initials (the one face rule, S21) */
-      OW.cards.fill(av, { kind: 'person', name: (p.author && p.author.name) || '', picture: p.author && p.author.image });
+      var img = OW.imageUrl(p.author && p.author.image);
+      if (img) { var im = doc.createElement('img'); im.src = img; im.alt = ''; av.appendChild(im); }
+      /* founder/495 — the outline, not initials */
+      else if (OW.faceMark) av.innerHTML = OW.faceMark();
+      else av.appendChild(mk('i', '', esc(OW.initials((p.author && p.author.name) || ''))));
       var nm = mk('div', 'ow-post__nm');
       /* ── THE NAME IS TAPPABLE, NOT JUST THE PICTURE ────────────────────
          The avatar has opened the author since the founder's *"if I click
@@ -279,10 +198,7 @@
       var elsewhere = p.destination_name
         && String(p.destination || '') !== String(p.center_id || '');
       nm.appendChild(mk('span', '', esc(OW.when(p.created_at))
-        + (elsewhere ? (' · in ' + esc(p.destination_name)) : '')
-        /* a story the Center published says who wrote it when they chose to be named, and the place it is about (PLAN B8) */
-        + (p.byline ? (' · by ' + esc(p.byline)) : '')
-        + ((p.place && p.place.name) ? (' · ' + esc(p.place.name)) : '')));    /* a name is text (lane B) */
+        + (elsewhere ? (' · in ' + esc(p.destination_name)) : '')));    /* a name is text (lane B) */
       function openAuthor() {
         var em = (p.author || {}).ref || (p.author || {}).email || '';
         if (em && typeof opts.onPerson === 'function') opts.onPerson(em);
@@ -407,9 +323,6 @@
            its interactions where a feed row carries them */
         try { OW.mountResponses(host, { post: p, interactions: p.interactions || null }); }
         catch (e) { try { console.warn('[app/posts] responses did not mount:', e && e.message); } catch (_) {} }
-        /* THE CONVERSATION IS OPEN HERE: the post's own page carries its comments, so its comment bubble is lit and
-           its three dots type (oneway-popit.css, ".ow-dot") */
-        try { Array.prototype.forEach.call(host.querySelectorAll('[data-po-comment]'), function (b) { b.setAttribute('aria-expanded', 'true'); }); } catch (_) {}
       }
 
       /* ══ THE AUTHOR'S OWN CONTROLS ══════════════════════════════════════
@@ -506,21 +419,6 @@
         };
         doc.addEventListener('ow:syndication', onSyn);
         if (OW.realtime) OW.realtime.watchTopics('post-page', ['post:' + id]);
-      }
-
-      /* ══ WHAT IT DREW (PLAN B2, the content loop's observe step; lightbulb/performance) ═══════════
-         For the people who run the Center it was posted as: what this post drew, against the Center's own usual (the
-         median of its other recent posts, with how many), or that there are too few to say. Nothing is ranked against
-         another Center, and a refusal (someone who does not run it, a Center without Lightbulb) draws nothing. */
-      if ((p.you || {}).may_edit && p.center_id && id && !unpublished) {
-        var drew = mk('div', 'ow-post__reach');
-        host.appendChild(drew);
-        data.get('/api/oneway/places/' + encodeURIComponent(p.center_id) + '/lightbulb/performance/' + encodeURIComponent(id), { fresh: true })
-          .then(function (r) {
-            if (!r || !r.ok || !r.data || !r.data.words || !drew.isConnected) return;
-            drew.appendChild(mk('h3', 'ow-group', 'What it drew'));
-            drew.appendChild(mk('p', 'ow-post__ewhy', esc(r.data.words)));
-          });
       }
 
       if (unpublished) host.appendChild(draftBand(host, id, p, opts));
@@ -937,7 +835,15 @@
         /* NOT `aim`: a `var` of that name here shadowed the `aim()` that
            Reply calls, in this whole function — so every Reply threw "aim is
            not a function" and did nothing (founder/502 crawl). */
-        OW.cards.fill(av, { kind: 'person', name: name, picture: au.image }, { img: ' loading="lazy" decoding="async"' });   /* founder/495 */
+        var faceUrl = au.image ? (OW.imageUrl ? OW.imageUrl(au.image) : au.image) : '';
+        if (faceUrl) {
+          var ai = doc.createElement('img');
+          ai.src = faceUrl; ai.alt = ''; ai.loading = 'lazy'; ai.decoding = 'async';
+          av.appendChild(ai);
+        } else {
+          if (OW.faceMark) av.innerHTML = OW.faceMark();     /* founder/495 */
+          else av.textContent = OW.initials ? OW.initials(name) : (name || '?').slice(0, 1).toUpperCase();
+        }
         if (who) {
           av.setAttribute('data-po-who', who);
           av.setAttribute('title', name || who);
@@ -1019,8 +925,7 @@
         like.setAttribute('aria-label', 'Like this comment');
         like.setAttribute('aria-pressed',
                           (c.you && c.you.liked) ? 'true' : 'false');
-        /* the like the person chose (OW.likes, Settings > Appearance): a heart, or a thumbs up */
-        like.innerHTML = (OW.glyph ? OW.glyph((OW.likes && OW.likes.glyph()) || 'heart') : '&hearts;');
+        like.innerHTML = (OW.glyph ? OW.glyph('heart') : '&hearts;');
         var nLike = (c.actions && c.actions.like) || 0;
         /* ABSENT AT ZERO, exactly as the Popit's own tally is — a "0" beside
            every comment is noise about nothing having happened. */
@@ -1298,13 +1203,8 @@
         var rwho = (rc.author && (rc.author.ref || rc.author.email)) || rc.author_email || '';
         var rname = (rc.author && rc.author.name) || rc.author_name || 'Someone';
 
-        /* THE PERSON'S OWN FACE, AS ON THEIR COMMENTS (2026-10-10: a reply drew a letter where the comment above
-           it drew loop.ada's picture): their picture, or the outline a person without one wears (founder/495) */
-        var rau = rc.author || {};
         var av = mk('span', 'ow-rep__av');
-        var rshape = String(rau.shape || (rau.kind === 'center' ? 'rounded' : 'round')).toLowerCase();
-        if (/^(round|rounded|square)$/.test(rshape)) av.setAttribute('data-shape', rshape);
-        OW.cards.fill(av, { kind: 'person', name: rname, picture: rau.image }, { img: ' loading="lazy" decoding="async"' });
+        av.textContent = (rname || '?').slice(0, 1).toUpperCase();
         if (rwho) {
           av.setAttribute('data-po-who', rwho);
           av.setAttribute('title', rwho);
@@ -1320,17 +1220,19 @@
            words on their own line and undo the condensation the founder asked
            for — the name and the sentence have to read as one line that wraps. */
         t.appendChild(doc.createTextNode(' ' + (rc.body || '')));
-        /* TIME AND CONTROLS ARE ONE ROW OF THEIR OWN, UNDER THE WORDS (the founder, 2026-10-10: "comments should
-           never have text go to bottom bar like my reply under loop adas comment just did"). They had ridden the
-           end of the sentence, so its last word could sit in the row with "1m ago Reply Delete". */
+        /* TIME AND CONTROLS ARE ONE TRAILING RUN, kept together so a wrap
+           never leaves "2h" alone on a line above "Reply". */
         var meta = mk('span', 'ow-rep__meta');
         meta.appendChild(mk('span', 'ow-rep__when',
                             esc(OW.when(rc.created_at || rc.at))));
         t.appendChild(meta);
 
-        /* THE CONTROLS SIT IN THAT ROW, AFTER THE TIME. They once rode the text flow to save the row's 15px (a
-           371px viewport, 2026-08), which is how a reply's last word came to share their line; the row is the
-           founder's rule now, and the name still runs into the sentence (the condensation). */
+        /* THE CONTROLS RIDE THE TEXT FLOW, THEY DO NOT GET A LINE.
+           Measured on a 371px viewport before this change: a block action row
+           cost 15px on every reply, and five replies paid it — 75px of chrome
+           to show the word "Reply" five times. Inline after the time, they cost
+           nothing when the last line has room and wrap only when it does not.
+           This is the difference between a line of talk and a small post. */
         var acts = mk('span', 'ow-rep__acts');
         var rep = mk('button', 'ow-rep__reply', 'Reply');
         rep.type = 'button';
@@ -1377,7 +1279,7 @@
         like.setAttribute('data-obj', rc.id || '');
         like.setAttribute('aria-label', 'Like this reply');
         like.setAttribute('aria-pressed', (rc.you && rc.you.liked) ? 'true' : 'false');
-        like.innerHTML = (OW.glyph ? OW.glyph((OW.likes && OW.likes.glyph()) || 'heart') : '&hearts;');
+        like.innerHTML = (OW.glyph ? OW.glyph('heart') : '&hearts;');
         var n = (rc.actions && rc.actions.like) || 0;
         if (n) like.appendChild(mk('b', '', String(n)));
         el.appendChild(like);
@@ -1699,8 +1601,16 @@
         send.disabled = true;
         if (OW.realtime) OW.realtime.stopTyping(TOPIC);
         var to = aimId;
-        /* WHAT HAPPENS WHEN THE COMMENT HAS LANDED: whether the server answered now or the outbox delivered it later (PLAN G6) */
-        function landed(res, late) {
+        data.post('/api/posts/' + encodeURIComponent(id) + '/comments',
+                  to ? { body: t, reply_to: to } : { body: t })
+          .then(function (res) {
+          if (!res.ok) {
+            OW.say(send, res.status === 422 ? 'that did not pass the screen'
+                                            : (res.error || 'it did not send'));
+            send.disabled = false; return;
+          }
+          ta.value = '';
+          aim('');
           /* THE SERVER'S NEW COUNT, TAKEN FROM THE WRITE. Measured on :3050:
              post a comment and the heading stayed on the number it was
              rendered with — the thread grew and the sentence above it did not
@@ -1719,7 +1629,7 @@
              "comments are gone" report, arrived at from the writing side. */
           if (to && branches[to]) {
             branches[to].took(null);
-            if (!late) send.disabled = false;
+            send.disabled = false;
             return;
           }
           /* NOT A FULL RE-RENDER. This used to call `OW.live.post` again,
@@ -1738,38 +1648,6 @@
               });
               retitle();
             }).catch(function () {});
-        }
-        data.post('/api/posts/' + encodeURIComponent(id) + '/comments',
-                  to ? { body: t, reply_to: to } : { body: t }, { queueable: true })
-          .then(function (res) {
-          if (res.queued) {
-            /* ── WRITTEN DOWN, NOT YET SENT (PLAN G6) ──────────────────────────
-               The comment shows in the thread at once, marked as waiting, and the box is free for the next one. When the
-               outbox delivers it the waiting line gives way to the real comment (read from the server, once); if the server
-               refuses it, the line says so and the words are put back in the box, never lost. */
-            var wait = place({ id: 'waiting_' + (res.pending_id || Date.now()), seq: 1e12, mine: true, body: t, created_at: new Date().toISOString(),
-                               author: { email: (data.me && data.me()) || '', name: 'You' } });
-            if (wait) wait.setAttribute('data-pending', '1');
-            ta.value = ''; aim(''); send.disabled = true;
-            OW.outbox.watch(res.pending_id,
-              function (d) { if (wait && wait.parentNode) wait.parentNode.removeChild(wait); landed({ ok: true, data: d.result }, true); },
-              function (words) {
-                if (wait && wait.parentNode) wait.parentNode.removeChild(wait);
-                ta.value = t; send.disabled = false;
-                OW.say(send, words);
-              });
-            if (OW.toast) OW.toast('Saved on this device. It will send when you are back online.', { tone: 'ok' });
-            return;
-          }
-          if (!res.ok) {
-            OW.say(send, res.status === 422 ? 'that did not pass the screen'
-                                            : (res.error || 'it did not send'));
-            send.disabled = false; return;
-          }
-          ta.value = '';
-          aim('');
-          send.disabled = !ta.value.trim();
-          landed(res);
         });
       });
       host.appendChild(fld); host.appendChild(send);
@@ -1829,7 +1707,7 @@
     if (v) q.push('v=' + encodeURIComponent(v));
     fr.src = '/canvas-doc.html' + (q.length ? ('?' + q.join('&')) : '');
     fr.style.cssText = 'width:100%;height:100%;border:0;display:block';
-    fr.setAttribute('title', 'Oneway canvas');
+    fr.setAttribute('title', 'ONEWAY canvas');
     host.appendChild(fr);
 
     /* THE WAY OUT IS ALWAYS VISIBLE. An overlay with no exit is a trap, and the
@@ -1913,6 +1791,7 @@
                       || (body && body.required_label ? 'that needs ' + body.required_label
                           : 'this Center’s plan does not include that'))
                   : (err || 'could not begin');
+        OW.say(btn, said);
         /* the press may have come from a sheet that has already folded away —
            the bar says it where the person is looking (founder/502 sweep) */
         if (OW.toast) OW.toast(String(said).replace(/^./, function (c) { return c.toUpperCase(); }));
@@ -1937,10 +1816,11 @@
          builder". */
       var opens = (type === 'document' || type === 'note' || type === 'presentation');
       if (opens && c.id && typeof global.owDocEditorOpen === 'function') {
-        OW.say(btn, 'Opening\u2026', { tone: 'ok' });
+        OW.say(btn, 'opening');
         global.owDocEditorOpen(c.id);
       } else {
         /* say where it went — a person should never wonder where a thing landed */
+        OW.say(btn, 'draft in your Workspace');
         if (OW.toast) OW.toast('Started ' + (String(label).toLowerCase() || 'a draft') + ' — it is a draft in your Workspace.', { tone: 'ok' });
       }
       doc.dispatchEvent(new CustomEvent('ow:created', {

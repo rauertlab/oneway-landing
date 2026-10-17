@@ -32,60 +32,27 @@
      it takes the signed-in person's hue in every view — the browser tab too.
      The tab's icon is /oneway-globe.svg; its three strokes are #1f8fff. The
      same drawing is recoloured in the person's hue and set as the icon;
-     signed out (no hue) it is the vibrant blue it was drawn in. All pages
-     use this one browser icon; install/touch icons remain separate. */
-  var GLOBE_BLUE = '#1f8fff', globeSvg = null, globeWant, pageHue = null;
-  /* THE TAB'S GLOBE IN THE PAGE'S OWN COLOUR (the founder, 2026-10-17: "why is the browser icon not the same transparent one
-     used in the app? And when a user signed in, it should obviously sync to their hue ... If they're a random user, it
-     should sync with whatever predominant color the page's hue is ... calculated every time"). Signed in, the person's hue
-     wins; signed out, a page that chooses its colours on each load says which hue it chose (window.owTabHue(h)); with
-     neither, the globe's own blue. It is drawn as a PNG (the transparent globe, recoloured, through a canvas), because
-     Safari does not take an SVG tab icon; an engine that cannot make the PNG keeps the SVG. */
-  window.owTabHue = function(h){ h = Number(h); pageHue = isFinite(h) ? ((h % 360) + 360) % 360 : null; tabIcon(globeWant); };
+     signed out (no hue) it is the vibrant blue it was drawn in. Only a page
+     that links the globe as its icon is touched. */
+  var GLOBE_BLUE = '#1f8fff', globeSvg = null, globeWant;
   function tabIcon(h){
     globeWant = h;
     try {
-      if (document.readyState === 'loading') {
-        if (!tabIcon.waiting) {
+      var link = document.querySelector('link[rel="icon"][data-ow-globe]') ||
+                 document.querySelector('link[rel="icon"][href*="oneway-globe.svg"]');
+      if (!link) {
+        /* this script runs in <head>, sometimes above the icon's own <link> */
+        if (document.readyState === 'loading' && !tabIcon.waiting) {
           tabIcon.waiting = true;
           document.addEventListener('DOMContentLoaded', function(){ tabIcon.waiting = false; tabIcon(globeWant); });
         }
         return;
       }
-      var link = document.querySelector('link[rel="icon"][data-ow-globe]') ||
-                 document.querySelector('link[rel="icon"][href*="oneway-globe.svg"]');
-      if (!link) {
-        link = document.createElement('link');
-        link.setAttribute('rel', 'icon');
-        link.setAttribute('href', '/oneway-globe.svg');
-        document.head.appendChild(link);
-      }
-      document.querySelectorAll('link[rel="icon"],link[rel="shortcut icon"]').forEach(function(other){
-        if (other !== link) other.remove();
-      });
-      link.setAttribute('type', 'image/svg+xml');
-      link.setAttribute('sizes', 'any');
       link.setAttribute('data-ow-globe', '1');
       var draw = function(){
         if (globeSvg == null) return;
-        var hue = (globeWant != null) ? globeWant : pageHue;
-        var col = (hue == null) ? GLOBE_BLUE : 'hsl(' + hue + ' 92% 58%)';
-        var svgUrl = 'data:image/svg+xml,' + encodeURIComponent(globeSvg.split(GLOBE_BLUE).join(col));
-        var seq = (tabIcon.seq = (tabIcon.seq || 0) + 1);
-        try {
-          var im = new Image();
-          im.onload = function(){
-            if (seq !== tabIcon.seq) return;   /* a newer colour was asked for meanwhile */
-            try {
-              var cv = document.createElement('canvas'); cv.width = cv.height = 64;
-              cv.getContext('2d').drawImage(im, 0, 0, 64, 64);
-              link.setAttribute('type', 'image/png');
-              link.setAttribute('href', cv.toDataURL('image/png'));
-            } catch (_) { link.setAttribute('type', 'image/svg+xml'); link.setAttribute('href', svgUrl); }
-          };
-          im.onerror = function(){ link.setAttribute('type', 'image/svg+xml'); link.setAttribute('href', svgUrl); };
-          im.src = svgUrl;
-        } catch (_) { link.setAttribute('type', 'image/svg+xml'); link.setAttribute('href', svgUrl); }
+        var col = (globeWant == null) ? GLOBE_BLUE : 'hsl(' + globeWant + ' 92% 58%)';
+        link.setAttribute('href', 'data:image/svg+xml,' + encodeURIComponent(globeSvg.split(GLOBE_BLUE).join(col)));
       };
       if (globeSvg != null) { draw(); return; }
       if (!window.fetch) return;
@@ -149,14 +116,12 @@
      Signed out, there is no account to ask and the cache is the whole truth —
      which is right: the landing page should still look like you if you have
      been here before. */
-  /* THE SESSION IS THE ONE READER'S (frontend/shared/oneway-data.js; PLAN §3.1, finish list 5.0 item 9, C-app line 3).
-     This read three storage keys itself, one of them a copy B removed on 2026-10-09. A token goes only where the writer
-     would send one (a dev ?api= origin); everywhere else the HttpOnly cookie is the session, and on a page with no App
-     on it there is nothing to ask. */
   function tok(){
     try {
-      var D = window.OW && window.OW.data;
-      return (D && D.token && (!D.sendsHeader || D.sendsHeader()) && D.token()) || '';
+      return localStorage.getItem('ow_session_token')
+          || (JSON.parse(localStorage.getItem('ow_tokens') || '{}').access)
+          || (JSON.parse(localStorage.getItem('ow_session') || '{}').token)
+          || '';
     } catch(_){ return ''; }
   }
   /* SIGNED IN BY THE COOKIE (lane B, 2026-10-09): no token is kept any more; the HttpOnly cookie is the
@@ -190,11 +155,7 @@
     var t = tok();
     if (!signedIn() || typeof fetch !== 'function') return Promise.resolve(null);
     var base = (window._OW_API || '');
-    var asked = fetch(base + '/api/auth/me', { headers: t ? { 'X-Session-Token': t } : {}, credentials: 'same-origin' });
-    /* The App reads this same door a moment later (OW.data.get('/api/auth/me')); it takes this answer instead of asking again
-       (popit-live.js `__owEarly`, consumed once, only on the same origin). A second copy of the response is kept for it. */
-    try { if (!base) { window.__owEarly = window.__owEarly || {}; if (!window.__owEarly['/api/auth/me']) window.__owEarly['/api/auth/me'] = asked.then(function(r){ return r.clone(); }); } } catch(_){}
-    return asked
+    return fetch(base + '/api/auth/me', { headers: t ? { 'X-Session-Token': t } : {}, credentials: 'same-origin' })
       .then(function(r){ return r.ok ? r.json() : null; })
       .then(function(j){
         if (!j) return null;                 /* unreachable: keep the cache */
@@ -210,9 +171,32 @@
   }
   try { sync(); } catch(_){}
 
-  /* 3 · CHANGING IT is the App's: its Settings writes the hue through the one writer (frontend/app/popit-live.js,
-     PUT /api/oneway/people/me/appearance), and every page paints what the account says (sync, above). A second writer
-     of the same door lived here, called by nothing; removed (finish list 5.0 item 9, C-app line 2). */
+  /* 3 · The way to CHANGE it. Every picker should call this instead of writing
+     localStorage, which is what made the hue device-local in the first place.
+     Pass null to clear. Paints immediately, then records it on the account. */
+  function set(hue){
+    var clearing = (hue === null || hue === '' || hue === undefined);
+    apply(clearing ? null : hue);
+    cache(clearing ? null : hue);
+    var t = tok();
+    if (!signedIn() || typeof fetch !== 'function') {
+      /* NOT SAVED, AND SAY SO TO WHOEVER ASKED. Signed out, this device is the
+         only place it can live; that is a real limit, not a silent success. */
+      return Promise.resolve({ ok: false, reason: 'signed_out', local: true });
+    }
+    var base = (window._OW_API || '');
+    /* THE CANONICAL DOOR (2026-10-01): people/appearance has owned a person's
+       hue for a while; /api/oneway/people/me/appearance is its route, and -1
+       still means "no chosen colour". The legacy /api/profile is not called. */
+    return fetch(base + '/api/oneway/people/me/appearance', {
+      method: 'PUT',
+      headers: t ? { 'Content-Type': 'application/json', 'X-Session-Token': t } : { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ hue: clearing ? -1 : Math.max(0, Math.min(360, parseInt(hue, 10) || 0)) })
+    }).then(function(r){
+      return r.ok ? { ok: true } : { ok: false, status: r.status };
+    }).catch(function(){ return { ok: false, reason: 'unreachable' }; });
+  }
   // Listen for changes in OTHER tabs (Settings hue picker writes via
   // localStorage.setItem; the originating tab fires no storage event so
   // a same-tab listener isn't needed — dashboard.html updates inline).
@@ -221,6 +205,7 @@
       if (e && e.key === 'ow_user_hue') apply(e.newValue);
     });
   } catch(_){}
-  // Expose the painter for pages that draw the hue themselves.
-  window.OnewayHue = { apply: apply, sync: sync };
+  // Expose a tiny API for pages that want to drive the hue themselves
+  // (e.g. an embedded picker on brain.html).
+  window.OnewayHue = { apply: apply, set: set, sync: sync };
 })();

@@ -1,22 +1,18 @@
 # Oneway, every page in words
 
-> The words of every page on oneway.center, read on 2026-10-10 from the pages themselves (tools/site_seo.py).
+> The words of every page on oneway.center, read on 2026-10-09 from the pages themselves (tools/site_seo.py).
 
 ---
 
 ## Oneway
 
-Source: https://oneway.center/ (last changed 2026-10-10)
+Source: https://oneway.center/ (last changed 2026-10-09)
 
 >
 
 Ecosystem
-Our Approach
-App
-OS
-Security
-About
-Contact
+Oneway App
+Oneway OS
 
 Sign in
 
@@ -31,7 +27,7 @@ Making entertainment, connection, and the Internet better for all sides.
 
 A modern ecosystem for people to easily and conveniently connect with cities, communities, and businesses.
 
-About Oneway
+Explore the ecosystem
 
 Ecosystem
 
@@ -83,16 +79,20 @@ Reserve another name
 
 Go anywhere. Connect everywhere.
 
-App ›
-OS ›
+Oneway App ›
+Oneway OS ›
 Business OS ›
 Developer OS
 
-Business OS
-Developer OS
+Ecosystem
+Our Approach
+Oneway App
+Oneway OS
+About
+Security
+Contact
 Privacy
 Terms
-Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
@@ -101,21 +101,21 @@ Corporate Charter
 
 ## About Oneway
 
-Source: https://oneway.center/about (last changed 2026-10-10)
+Source: https://oneway.center/about (last changed 2026-10-09)
 
 >
 
 Ecosystem
-Our Approach
 App
 OS
-Security
-About
-Contact
-
 Sign in
 
-About us
+About
+
+About
+Oneway
+
+Making entertainment, connection, and the Internet better for all sides.
 
 Oneway is at oneway.center. It is made by Oneway Technologies LLC, a New York limited liability company, and it is in closed beta. Oneway is not affiliated with other services that use the name Oneway.
 
@@ -148,32 +148,32 @@ williamrau78@gmail.com
 
 2027, Oneway Technologies LLC
 
-Business OS
-Developer OS
+About
 Privacy
 Terms
-Data Deletion
 Corporate Charter
+Data Deletion
+← Back to site
 
 ---
 
 ## Privacy Policy
 
-Source: https://oneway.center/privacy (last changed 2026-10-10)
+Source: https://oneway.center/privacy (last changed 2026-10-09)
 
 >
 
 Ecosystem
-Our Approach
 App
 OS
-Security
-About
-Contact
-
 Sign in
 
-Privacy Policy
+Legal
+
+Privacy
+Policy
+
+What we collect, why, who sees it, and how to have it removed.
 
 This is the Privacy Policy for the Oneway ecosystem: the Oneway App, the Oneway OS, Sign in with Oneway on any site, oneway.center, and any other or future Oneway service. It is published by Oneway Technologies LLC, a New York limited liability company. Oneway is in closed beta. Last updated October 5, 2026.
 
@@ -455,32 +455,32 @@ williamrau78@gmail.com
 
 2027, Oneway Technologies LLC
 
-Business OS
-Developer OS
 Privacy
 Terms
-Data Deletion
 Corporate Charter
+Data Deletion
+Delete Account
+← Back to site
 
 ---
 
 ## Terms of Service
 
-Source: https://oneway.center/terms (last changed 2026-10-10)
+Source: https://oneway.center/terms (last changed 2026-10-09)
 
 >
 
 Ecosystem
-Our Approach
 App
 OS
-Security
-About
-Contact
-
 Sign in
 
-Terms of Service
+Legal
+
+Terms of
+Service
+
+The rules for using Oneway.
 
 This is the Terms of Service for the Oneway ecosystem: the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in closed beta. Last updated October 5, 2026.
 
@@ -693,32 +693,29 @@ williamrau78@gmail.com
 
 2027, Oneway Technologies LLC
 
-Business OS
-Developer OS
 Privacy
 Terms
-Data Deletion
 Corporate Charter
+Data Deletion
+Delete Account
+← Back to site
 
 ---
 
 ## Data Deletion
 
-Source: https://oneway.center/data-deletion (last changed 2026-10-10)
+Source: https://oneway.center/data-deletion (last changed 2026-10-09)
 
 >
 
-Ecosystem
-Our Approach
-App
-OS
-Security
-About
-Contact
+← Privacy Policy
 
-Sign in
+Data & Privacy
 
-Data Deletion
+Data
+Deletion
+
+What we hold when you connect an account, and how to remove it.
 
 What We Hold
 
@@ -769,13 +766,4 @@ To have anything else removed, email us. We answer within 30 days.
 williamrau78@gmail.com
 
 Oneway Technologies LLC
-
-2027, Oneway Technologies LLC
-
-Business OS
-Developer OS
-Privacy
-Terms
-Data Deletion
-Corporate Charter
 

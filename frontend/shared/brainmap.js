@@ -17,7 +17,6 @@
   'use strict';
 
   function readHue(explicit){
-    if (typeof explicit === 'function') explicit = explicit();
     if (explicit != null && !isNaN(explicit)) return parseInt(explicit, 10);
     var h = NaN;
     try { h = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--ow-user-hue'), 10); } catch(_){}
@@ -36,9 +35,7 @@
     var W = 0, H = 0, frame = 0, raf = 0, stopped = false;
     var pal = { h: readHue(config.hue) };
 
-    /* `light` (opt-in): the Brain drawn straight onto a light page rather than a dark screen (the OS's Brain web, founder/787:
-       "built into page itself not a box"): every colour 30 points darker and the words in the room's ink. Off, nothing changes. */
-    function hsla(h, s, l, a){ if (config.light) l = Math.max(18, l - 30); return 'hsla(' + ((h%360+360)%360) + ',' + s + '%,' + l + '%,' + a + ')'; }
+    function hsla(h, s, l, a){ return 'hsla(' + ((h%360+360)%360) + ',' + s + '%,' + l + '%,' + a + ')'; }
 
     function neighborsOf(n){
       var out = [];
@@ -73,35 +70,16 @@
       var hub = nodes[0]; if (hub){ hub.bx = cx; hub.by = cy; }
       var t1 = nodes.filter(function(n){ return n.tier === 1; });
       var Rx = Math.max(168, W*0.33), Ry = Math.max(84, H*0.29);
-      /* `inset` (opt-in, px): every node and its label stays that far inside the canvas. The ring's 168px floor put the
-         outer labels past the edges of a phone-wide canvas (the OS's Brain web at 375, founder/787); without it nothing
-         changes for the landing or anyone else. */
-      if (config.inset != null){ Rx = Math.min(Rx, W/2 - config.inset); Ry = Math.min(Ry, H/2 - config.inset*0.6); }
-      /* with `inset` and only one ring (a phone, where the safe floor draws no outer ring), the ring is as wide as the
-         canvas allows and leaves the hub's own name below it clear, so no branch lands on the Center's name */
-      var lone = config.inset != null && !nodes.some(function(n){ return n.tier >= 2; });
-      if (lone) Rx = W/2 - config.inset;
       t1.forEach(function(n, i){
-        var a = lone ? (125 + (i + 0.5)*290/Math.max(1, t1.length))*Math.PI/180
-                     : (i/Math.max(1,t1.length))*Math.PI*2 - Math.PI/2 + 0.45;
+        var a = (i/Math.max(1,t1.length))*Math.PI*2 - Math.PI/2 + 0.45;
         n._ang = a; n.bx = cx + Math.cos(a)*Rx; n.by = cy + Math.sin(a)*Ry;
       });
       var Rx2 = Rx*1.74, Ry2 = Ry*1.74;
-      /* with `inset`, the outer ring stays inside the canvas too, and the inner ring keeps its proportion to it */
-      if (config.inset != null && nodes.some(function(n){ return n.tier >= 2; })){
-        Rx2 = Math.min(Rx2, W/2 - config.inset); Ry2 = Math.min(Ry2, H/2 - config.inset*0.6);
-        Rx = Math.min(Rx, Rx2*0.56); Ry = Math.min(Ry, Ry2*0.56);
-        t1.forEach(function(n){ n.bx = cx + Math.cos(n._ang)*Rx; n.by = cy + Math.sin(n._ang)*Ry; });
-      }
       t1.forEach(function(p){
         var kids = p._kids || [], m = kids.length;
         kids.forEach(function(k, j){
-          /* `maxModules` (opt-in): many of one's own share its sector rather than spill into the next */
-          var step = config.maxModules != null ? Math.min(0.30, (Math.PI*2/Math.max(1, t1.length))*0.82/Math.max(1, m)) : 0.30;
-          var a = p._ang + (j - (m-1)/2) * step;
-          /* and where they are close, every other one sits on a ring inside, so a word never lands on a neighbour's dot */
-          var ring = config.maxModules != null && step < 0.2 ? (j % 2 ? 0.82 : 1) : 1;
-          k.bx = cx + Math.cos(a)*Rx2*ring; k.by = cy + Math.sin(a)*Ry2*ring;
+          var a = p._ang + (j - (m-1)/2) * 0.30;
+          k.bx = cx + Math.cos(a)*Rx2; k.by = cy + Math.sin(a)*Ry2;
         });
       });
       if (W > 10) nodes.forEach(function(n){ if (!n.placed){ n.x = n.bx; n.y = n.by; n.placed = true; } });
@@ -109,8 +87,8 @@
     function resize(){
       pal = { h: readHue(config.hue) };
       var r = canvas.getBoundingClientRect();
-      W = Math.max(config.coreOnly ? 1 : 280, r.width || 600);
-      H = Math.max(config.coreOnly ? 1 : 220, r.height || 340);
+      W = Math.max(280, r.width || 600);
+      H = Math.max(220, r.height || 340);
       canvas.width = Math.round(W*DPR); canvas.height = Math.round(H*DPR);
       ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
       layout();
@@ -125,17 +103,15 @@
     function drawCore(cx, cy, R, f){
       var t0 = f*0.021, H2 = pal.h, i;
       var r0=R, r1=R*0.70, r2=R*0.46, r3=R*0.26;
-      if (!config.coreOnly){
-        var gl = ctx.createRadialGradient(cx, cy, 2, cx, cy, R*2.4);
-        gl.addColorStop(0, hsla(H2, 90, 56, (0.16+Math.sin(f*0.05)*0.03).toFixed(3))); gl.addColorStop(1, 'rgba(0,0,0,0)');
-        ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(cx, cy, R*2.4, 0, Math.PI*2); ctx.fill();
-      }
-      gPoly(cx, cy, r0, 8,  t0*0.32, hsla(H2,    78, 60, config.coreOnly ? 0.55 : 0.16), 1);
-      gPoly(cx, cy, r1, 6, -t0*0.55, hsla(H2+24, 78, 62, config.coreOnly ? 0.62 : 0.22), 1.2);
-      gPoly(cx, cy, r2, 3,  t0*1.05, hsla(H2-24, 80, 66, config.coreOnly ? 0.72 : 0.30), 1.3);
-      gPoly(cx, cy, r2, 3, -t0*1.05+Math.PI, hsla(H2+40, 82, 66, config.coreOnly ? 0.72 : 0.30), 1.3);
-      gPoly(cx, cy, r3, 4,  t0*1.7+Math.PI/4, hsla(H2+50, 85, 70, config.coreOnly ? 0.68 : 0.26), 1.1);
-      ctx.strokeStyle = hsla(H2, 80, 60, config.coreOnly ? 0.62 : (0.20+Math.sin(f*0.05)*0.06).toFixed(3)); ctx.lineWidth = 1.4;
+      var gl = ctx.createRadialGradient(cx, cy, 2, cx, cy, R*2.4);
+      gl.addColorStop(0, hsla(H2, 90, 56, (0.16+Math.sin(f*0.05)*0.03).toFixed(3))); gl.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(cx, cy, R*2.4, 0, Math.PI*2); ctx.fill();
+      gPoly(cx, cy, r0, 8,  t0*0.32, hsla(H2,    78, 60, 0.16), 1);
+      gPoly(cx, cy, r1, 6, -t0*0.55, hsla(H2+24, 78, 62, 0.22), 1.2);
+      gPoly(cx, cy, r2, 3,  t0*1.05, hsla(H2-24, 80, 66, 0.30), 1.3);
+      gPoly(cx, cy, r2, 3, -t0*1.05+Math.PI, hsla(H2+40, 82, 66, 0.30), 1.3);
+      gPoly(cx, cy, r3, 4,  t0*1.7+Math.PI/4, hsla(H2+50, 85, 70, 0.26), 1.1);
+      ctx.strokeStyle = hsla(H2, 80, 60, (0.20+Math.sin(f*0.05)*0.06).toFixed(3)); ctx.lineWidth = 1.4;
       ctx.beginPath(); ctx.arc(cx, cy, r0, 0, Math.PI*2); ctx.stroke();
       ctx.save(); ctx.translate(cx, cy);
       for (i=0;i<6;i++){ var a=-t0*0.55+i*Math.PI/3, vx=r1*Math.cos(a), vy=r1*Math.sin(a); ctx.fillStyle=hsla(H2+24,85,66,(0.45+Math.sin(f*0.1+i)*0.12).toFixed(3)); ctx.beginPath(); ctx.arc(vx, vy, 1.7, 0, Math.PI*2); ctx.fill(); }
@@ -208,18 +184,14 @@
       nodes.forEach(function(n){
         var pr = n.r * (n.pulse > 1 ? n.pulse : 1); n.pulse += (1 - n.pulse)*0.07;
         if (n.hub){
-          drawCore(n.dx, n.dy, Math.min(W, H)*(config.coreOnly ? 0.39 : 0.135), frame);
-          if (!config.coreOnly){
-            ctx.font = (config.big ? "650 15px" : "600 12px") + " 'ONEWAY Sans', system-ui, sans-serif"; ctx.fillStyle = config.light ? 'rgba(20,19,31,0.92)' : 'rgba(226,242,255,0.92)'; ctx.textAlign = 'center';
-            ctx.fillText(n.label, n.dx, n.dy + Math.min(W, H)*0.135 + 18);
-          }
-          return;
+          drawCore(n.dx, n.dy, Math.min(W, H)*0.135, frame);
+          ctx.font = "600 12px 'ONEWAY Sans', system-ui, sans-serif"; ctx.fillStyle = 'rgba(226,242,255,0.92)'; ctx.textAlign = 'center';
+          ctx.fillText(n.label, n.dx, n.dy + Math.min(W, H)*0.135 + 18); return;
         }
         drawMiniCore(n.dx, n.dy, pr, frame, n.kind, n.highlight);
         if (n.label){
-          /* `big` (opt-in): the words at the size a page's own labels are, for a Brain that is the page */
-          ctx.font = (n.tier >= 2 ? (config.big ? '500 11px' : '500 9.5px') : (config.big ? '600 13px' : '500 10.5px')) + ' \'ONEWAY Sans\', system-ui, sans-serif';
-          ctx.fillStyle = config.light ? 'rgba(20,19,31,0.80)' : 'rgba(214,238,255,0.82)'; ctx.textAlign = 'center';
+          ctx.font = (n.tier >= 2 ? '500 9.5px' : '500 10.5px') + ' \'ONEWAY Sans\', system-ui, sans-serif';
+          ctx.fillStyle = 'rgba(214,238,255,0.82)'; ctx.textAlign = 'center';
           var lab = n.label.length > 18 ? n.label.slice(0, 17) + '…' : n.label;
           ctx.fillText(lab, n.dx, n.dy + pr + 15);
         }
@@ -238,7 +210,7 @@
         highlight: !!s.highlight, meta: s.meta || null
       });
       if (s.meta && s.meta.id) byId[s.meta.id] = sysNode;
-      (s.modules || []).slice(0, config.maxModules != null ? config.maxModules : 6).forEach(function(m){
+      (s.modules || []).slice(0, 6).forEach(function(m){
         var modNode = addNode(m.label || 'Module', {
           tier: 2, parent: sysNode, kind: m.kind || 'system',
           r: m.r != null ? m.r : undefined,

@@ -156,9 +156,7 @@
      same-origin path, which OW.imageUrl already admits */
   function fontUrl(u) {
     u = String(u || '');
-    /* a brand face Oneway hosts itself (site_writer.OWN_FACES, founder/749) is a file of this origin's /assets/fonts */
-    return (/^\/api\/oneway\/centers\/[^\/]+\/website\/asset\?u=/.test(u) || /^https:\/\//i.test(u)
-            || /^\/assets\/fonts\/[\w.-]+\.woff2$/.test(u)) ? u : '';
+    return (/^\/api\/oneway\/centers\/[^\/]+\/website\/asset\?u=/.test(u) || /^https:\/\//i.test(u)) ? u : '';
   }
 
   /* ── THE FACE FIRST, ITS OWN FALLBACKS AFTER ─────────────────────────────
@@ -333,24 +331,6 @@
         g.appendChild(c);
       });
       el.appendChild(g);
-    } else if (k === 'list') {
-      /* A LIST OF THINGS SAID ONE LINE EACH (lightbulb/areas.py: the News, Feed and Places tabs): its title, when and
-         where ("from Broad Channel", a post carried from a place inside, founder/758), its words; an item that opens a
-         page of this site opens it here. This kind drew nothing but its title in the App until 2026-10-12, so an
-         areas-layout Center's tabs were empty in the App while its written site listed them. Empty, its own words. */
-      var LI = mk('div', 'ows-list');
-      items.forEach(function (i) {
-        var to = String(i.goes || ''), opens = to && /^[a-z]/i.test(to);
-        var c = mk(opens ? 'button' : 'div', 'ows-card' + (opens ? ' ows-card--goes' : ''));
-        if (opens) { c.type = 'button'; c.addEventListener('click', function () { showTab(c, 'site:' + to); }); }
-        c.appendChild(mk('h3', '', esc(i.title)));
-        var lm = [i.when, i.where].filter(function (x) { return x != null && String(x) !== ''; }).map(String).join(' · ');
-        if (lm) c.appendChild(mk('div', 'ows-meta', esc(lm)));
-        if (i.text) c.appendChild(mk('p', 'ows-line', esc(i.text)));
-        LI.appendChild(c);
-      });
-      if (!items.length && s.empty) LI.appendChild(mk('p', 'ows-line', esc(s.empty)));
-      el.appendChild(LI);
     } else if (k === 'chips') {
       el.appendChild(mk('div', 'ows-chips', items.map(function (i) { return '<span>' + esc(i.label) + '</span>'; }).join('')));
     } else if (k === 'hours') {
@@ -412,53 +392,20 @@
            "everything below that is horrible"): the brand's black ink at 62%
            arrived on the App's dark pane — invisible — because an inline
            token outranks the world rule. The four are dropped here. */
-        /* and the brand's quiet words and its small-text accent (PLAN B8), chosen against the brand's own white:
-           over a dark theme they would not read, so the App's ink and the accent stand */
-        vars = vars.split(';').filter(function (d) { return !/^\s*--ows-(bg|panel|fg|heading|muted|accent-ink)\s*:/.test(d); }).join(';');
+        vars = vars.split(';').filter(function (d) { return !/^\s*--ows-(bg|panel|fg|heading)\s*:/.test(d); }).join(';');
       }
       if (vars) root0.setAttribute('style', vars);
       root0.innerHTML = String(pg.html).replace(/<script[\s\S]*?<\/script>/gi, '');
       /* a card that names a pillar opens that tab; an anchor scrolls */
-      Array.prototype.forEach.call(root0.querySelectorAll('a.ows-card, a.ows-act, .ows-nav__links a, .ows-split__body h2 a'), function (a) {
+      Array.prototype.forEach.call(root0.querySelectorAll('a.ows-card, a.ows-act, .ows-nav__links a'), function (a) {
         var href = a.getAttribute('href') || '';
         if (href.charAt(0) !== '#') return;
         a.addEventListener('click', function (ev) {
           ev.preventDefault();
           var id = href.slice(1);
-          /* A STORY (PLAN B8) is a post: in the App it opens as the post it is, with its likes and comments; where
-             nothing opens posts (the OS's preview of the site) its own page is drawn here, as the website draws it */
-          if (/^news:post_/.test(id)) {
-            var sp = ((spec && spec.pages) || []).filter(function (x) { return x && x.id === id; })[0];
-            var host = false;
-            for (var n = el; n; n = n.parentElement) { if (typeof n.__owShowTab === 'function') { host = true; break; } }
-            if (host) { doc.dispatchEvent(new CustomEvent('ow:open-post', { detail: { id: id.slice(5) } })); return; }
-            if (sp) { page(el, spec, sp, cid, opts); try { el.scrollIntoView({ block: 'start' }); } catch (_) {} }
-            return;
-          }
           var t = root0.querySelector('#' + CSS.escape(id));
           if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
           showTab(el, 'site:' + id);
-        });
-      });
-      /* BUY, PAID ON ONEWAY (founder/744): on the website it is a form posted to this origin; inside the App the same
-         card pays through the App's own writer and goes to Stripe's page in this tab, and a refusal is the toast */
-      root0.addEventListener('submit', function (ev) {
-        var f = ev.target && ev.target.closest && ev.target.closest('form.ows-product__form');
-        if (!f) return;
-        ev.preventDefault();
-        var m = /^\/api\/oneway\/places\/([^\/]+)\/checkout\/form$/.exec(f.getAttribute('action') || '');
-        if (!m || !OW.data) return;
-        var choices = {}, pid = '';
-        Array.prototype.forEach.call(f.elements, function (x) {
-          if (x.name === 'product_id') pid = x.value;
-          else if (/^choice\./.test(x.name || '')) choices[x.name.slice(7)] = x.value;
-        });
-        var btn = f.querySelector('button'); if (btn) btn.disabled = true;
-        OW.data.post('/api/oneway/places/' + m[1] + '/checkout', { product_id: pid, quantity: 1, choices: choices }).then(function (r) {
-          var url = r && r.ok && r.data && r.data.url;
-          if (url && /^https?:\/\//i.test(url)) { global.location.assign(url); return; }
-          if (btn) btn.disabled = false;
-          if (OW.toast) OW.toast((r && r.error) || 'The checkout did not open. Nothing was charged.');
         });
       });
       el.innerHTML = '';
@@ -526,7 +473,8 @@
         /* always FRESH: the answer carries the owner's latest edits and
            whether THIS viewer may edit — a remembered answer showed the page
            without a saved edit, and offered the last viewer's editor */
-        var got = OW.data ? OW.data.get(door, { fresh: true }) : Promise.resolve({ ok: false });
+        var got = (OW.data && OW.data.get) ? OW.data.get(door, { fresh: true })
+          : global.fetch(door, { credentials: 'same-origin' }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); });
         got.then(function (r) {
           if (mine !== openSeq) return;                      // another page was asked for since
           var bundle = r && r.ok && r.data && r.data.bundle;
@@ -693,7 +641,8 @@
     var cats = null;
     function catsDoor() { return String(cur.door).replace(/\/projection\?.*$/, '/categories'); }
     function loadCats() {
-      var got = OW.data ? OW.data.get(catsDoor(), { fresh: true }) : Promise.resolve({ ok: false });
+      var got = (OW.data && OW.data.get) ? OW.data.get(catsDoor(), { fresh: true })
+        : global.fetch(catsDoor(), { credentials: 'same-origin' }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); });
       got.then(function (r) {
         if (!r || !r.ok || !r.data || !r.data.pages) { if (OW.toast) OW.toast('The categories could not be read.'); return; }
         cats = { display: r.data.display || 'categories', paths: (r.data.paths || []).slice(), pages: r.data.pages,
@@ -769,11 +718,11 @@
     }
     function saveCats() {
       var body = cats.reset ? { display: cats.display, reset: true } : { display: cats.display, paths: cats.paths, order: cats.order };
-      /* THE ONE WRITER (frontend/shared/oneway-data.js), on every page that loads this file; a refusal says the door's
-         own sentence (`error`), which the raw fallback this replaced read as `detail` and the writer never carries */
-      var req = OW.data ? OW.data.put(catsDoor(), body) : Promise.resolve({ ok: false });
+      var req = (OW.data && OW.data.put) ? OW.data.put(catsDoor(), body)
+        : global.fetch(catsDoor(), { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); });
       req.then(function (r) {
-        if (!r || !r.ok) { if (OW.toast) OW.toast('Not saved.' + (r && r.error ? ' ' + r.error : '')); return; }
+        if (!r || !r.ok) { if (OW.toast) OW.toast('Not saved' + (r && r.data && r.data.detail ? ': ' + r.data.detail : '') + '.'); return; }
         /* the strip is built when the Center's page is: drawn again, whole */
         global.location.reload();
       }).catch(function () { if (OW.toast) OW.toast('Not saved.'); });
@@ -796,10 +745,12 @@
       if (pick) { pick.textContent = 'Adding…'; pick.disabled = true; }
       var rd = new global.FileReader();
       rd.onload = function () {
-        var post = OW.data ? OW.data.post('/api/oneway/media', { data: rd.result, origin: 'uploaded' }) : Promise.resolve({ ok: false });
+        var post = (OW.data && OW.data.post) ? OW.data.post('/api/oneway/media', { data: rd.result, origin: 'uploaded' })
+          : global.fetch('/api/oneway/media', { method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ data: rd.result, origin: 'uploaded' }) })
+              .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); });
         post.then(function (r) {
           var item = r && r.ok && r.data && r.data.media;
-          if (!item || !item.url) { if (OW.toast) OW.toast('That photo could not be added.' + (r && r.error ? ' ' + r.error : '')); if (pick) { pick.textContent = 'Choose a photo'; pick.disabled = false; } return; }
+          if (!item || !item.url) { if (OW.toast) OW.toast('That photo could not be added' + (r && r.data && r.data.detail ? ': ' + r.data.detail : '') + '.'); if (pick) { pick.textContent = 'Choose a photo'; pick.disabled = false; } return; }
           target.setAttribute('src', item.url); target.removeAttribute('srcset');
           record('src', target, item.url);
         }).catch(function () { if (OW.toast) OW.toast('That photo could not be added.'); });
@@ -834,10 +785,12 @@
       var body = { path: cur.data.path, host: cur.data.host || '', edits: cur.edits };
       var finish = function (ok, why) {
         if (ok) { cur.saved = cur.edits.slice(); stop(); if (OW.toast) OW.toast('Saved. Your website shows it now.', { tone: 'ok' }); }
-        else if (OW.toast) OW.toast('Not saved.' + (why ? ' ' + why : ''));
+        else if (OW.toast) OW.toast('Not saved' + (why ? ': ' + why : '') + '.');
       };
-      var req = OW.data ? OW.data.put(url, body) : Promise.resolve({ ok: false });
-      req.then(function (r) { finish(r && r.ok, r && r.error); }).catch(function () { finish(false); });
+      var req = (OW.data && OW.data.put) ? OW.data.put(url, body)
+        : global.fetch(url, { method: 'PUT', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+            .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, data: d }; }); });
+      req.then(function (r) { finish(r && r.ok, r && r.data && r.data.detail); }).catch(function () { finish(false); });
     }
     function start() { if (!cur) return; editing = true; sel = null; redraw(); paintBar(); editBtn.hidden = true; }
     function stop(quiet) { editing = false; sel = null; cats = null; paintBar(); if (!quiet) redraw(); editBtn.hidden = !(cur && cur.data && cur.data.may_edit); }
@@ -1781,8 +1734,6 @@
       var href = a.getAttribute('href') || '';
       if (href.charAt(0) === '#') return;
       e.preventDefault();
-      /* one of the page's own pages, by its query (a design worn in the App: its areas, months and kinds) */
-      if (href.charAt(0) === '?' && typeof opts.onQuery === 'function') { opts.onQuery(href.replace(/#.*$/, '').slice(1)); return; }
       var same = false;
       try { same = new URL(href).hostname.replace(/^www\./, '') === site; } catch (eH) {}
       if (same && typeof opts.onPage === 'function') { opts.onPage(href); return; }
@@ -1985,57 +1936,13 @@
     return tabs.map(function (t, i) { return [t, t && at[t.id] != null ? at[t.id] : 100000 + i]; })
       .sort(function (a, b) { return a[1] - b[1]; }).map(function (x) { return x[0]; });
   }
-  /* ── A DESIGN, WORN BY THE CENTER (founder, 2026-10-12: "the branding match the site ... smooth translated over the
-     center") ── a Center whose site is in one of the design book's layouts wears that design in each tab: its own
-     classes and sheet, re-pointed at this column (lightbulb/designs/projection.py), under the Center's own top, which
-     stands for the page's first screen as the tab strip stands for its tabs. A choice inside it (an area, a month, a
-     kind) is the same tab drawn again for it (GET …/site/in-app); the area chosen stays as the visitor changes tabs. */
-  var designArea = {}, modulesP = null;
-  function modules() {
-    if (OW.siteModules) return Promise.resolve();
-    if (!modulesP) modulesP = new Promise(function (res) {
-      var sc = doc.createElement('script'); sc.src = '/frontend/shared/oneway-site-modules.js'; sc.onload = res; sc.onerror = res;
-      doc.head.appendChild(sc);
-    });
-    return modulesP;
-  }
-  function designPane(el, site, pg, cid) {
-    var d = site.design || {};
-    function wear(html) {
-      project(el, { html: html, css: d.css || '', font_faces: d.font_faces || '', ground: d.ground || '#ffffff',
-                    requested: global.location.href }, { adapt: true, onQuery: go });
-      /* its modules answer in place here too (R8): the same script the site runs, bound to this pane's own root */
-      var host = el.querySelector('.ow-proj');
-      if (host && host.shadowRoot) modules().then(function () { if (OW.siteModules) OW.siteModules.bind(host.shadowRoot); });
-    }
-    function go(q) {
-      var p = {}; String(q || '').split('&').forEach(function (kv) { var i = kv.indexOf('='); if (i > 0) p[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1).replace(/\+/g, ' ')); });
-      if (/^news:post_/.test(p.page || '')) { doc.dispatchEvent(new CustomEvent('ow:open-post', { detail: { id: p.page.slice(5) } })); return; }
-      designArea[cid] = p.area || '';
-      if (p.page && p.page !== pg.id) { showTab(el, 'site:' + p.page); return; }
-      load(q);
-    }
-    function load(q) {
-      if (!OW.data) return;
-      OW.data.get('/api/oneway/centers/' + encodeURIComponent(cid) + '/site/in-app?' + q).then(function (r) {
-        if (r && r.ok && r.data && typeof r.data.html === 'string') wear(r.data.html);
-      });
-    }
-    var area = designArea[cid] || '';
-    if (area) { wear(pg.html || ''); load('page=' + encodeURIComponent(pg.id) + '&area=' + encodeURIComponent(area)); }
-    else wear(pg.html || '');
-  }
-
   function tabsFor(app, cid) {
     var out = [];
     var site = app && app.site, web = app && app.website;
     if (site && (site.pages || []).length) {
       site.pages.forEach(function (pg) {
-        if (pg.nav === false) return;             /* a story's own page is opened from its card, never a tab (PLAN B8) */
-        /* a tab the Center has nothing for is not drawn (founder/767; the server says so: `has`) */
-        out.push({ id: 'site:' + pg.id, label: pg.label || pg.id, has: ('has' in pg) ? !!pg.has : (pg.sections || []).length > 0,
-                   hidden: ('has' in pg) && !pg.has,
-                   render: function (pane) { if (site.design && site.design.css) designPane(pane, site, pg, cid); else page(pane, site, pg, cid); } });
+        out.push({ id: 'site:' + pg.id, label: pg.label || pg.id, has: (pg.sections || []).length > 0,
+                   render: function (pane) { page(pane, site, pg, cid); } });
       });
     } else if (app && (app.pages || []).length) {
       /* no site published yet: the Center's own pages are still its
