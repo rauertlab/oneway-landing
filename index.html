@@ -2373,7 +2373,22 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
   .plan-note{margin:16px 0 0}
   .plan .lp-acts{margin-top:auto;padding-top:24px}
   @media(max-width:1000px){.plans-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media(max-width:560px){.plans-grid{grid-template-columns:minmax(0,1fr)}}
+  /* A PHONE KEEPS THE COMPUTER'S CARDS (the founder, 2026-10-19: "the landing page needs to be impressive. the phone design
+     needs to be more space aware and shape cards just like the computer ver."). Stacked one under another, the four plans
+     became a 4,600 px column of full-width text. On a phone they stay what they are on the computer, a row of four
+     portrait cards of one height, at about the computer's own card width: the row slides sideways, the next card shows
+     at the edge and the edge fades, so it reads as more to see. */
+  @media(max-width:560px){
+    .plans-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:min(78%,288px);
+      overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;
+      scroll-snap-type:x mandatory;scrollbar-width:none;
+      margin-left:calc(-1 * clamp(20px,5vw,48px));margin-right:calc(-1 * clamp(20px,5vw,48px));
+      padding:6px clamp(20px,5vw,48px) 16px;scroll-padding:0 clamp(20px,5vw,48px);
+      -webkit-mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 36px),transparent);
+      mask-image:linear-gradient(90deg,transparent,#000 14px,#000 calc(100% - 36px),transparent)}
+    .plans-grid::-webkit-scrollbar{display:none}
+    .plans-grid > .plan{scroll-snap-align:start}
+  }
   /* Enterprise OS, a band across the four plans' width: who it is for and its floor, what it adds, and its one button */
   .plan-ent.ow-pricebox{--ow-pricebox-pad:clamp(20px,2vw,24px);max-width:1080px;margin:clamp(16px,1.8vw,24px) auto 0;text-align:left;
     display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) auto;column-gap:clamp(20px,3vw,40px);align-items:center}
