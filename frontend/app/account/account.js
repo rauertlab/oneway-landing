@@ -1961,6 +1961,104 @@
     rowIcon.appendChild(icons);
     box.appendChild(rowIcon);
 
+    /* ── THE PROFILE PICTURE — theirs, uploaded, placed in its circle (founder/831) ─────────────────────────────
+       Settings' "Add a profile picture" (GET /api/oneway/people/me/missing, page "appearance") pointed here and
+       there was nothing here to add one with. The picture opens in the editor in the circle every face on Oneway is
+       drawn in, leaves at 1080 by 1080, goes through the one media writer (POST /api/oneway/media) and becomes the
+       face through the one person door (PATCH /api/oneway/people/me, which holds it to the person's own upload and
+       320 by 320 at least). Every face of theirs on the page is drawn again at once. */
+    (function pictureRow() {
+      var row = mk('div', 'ow-cust__row');
+      row.setAttribute('data-row', 'picture');
+      row.appendChild(mk('span', 'ow-cust__lbl', 'Profile picture'));
+      var line = mk('div', 'ow-cust__face');
+      line.style.cssText = 'display:flex;align-items:center;gap:12px;flex-wrap:wrap';
+      var face = mk('span', 'ow-dest__face');
+      face.setAttribute('data-shape', 'round');
+      line.appendChild(face);
+      var pup = mk('label', 'ow-upload', '<span></span>');
+      pup.style.alignSelf = 'center';
+      var pin = doc.createElement('input');
+      pin.type = 'file'; pin.accept = 'image/*';
+      pup.appendChild(pin);
+      line.appendChild(pup);
+      var drop = mk('button', 'po-act', 'Remove');
+      drop.type = 'button';
+      line.appendChild(drop);
+      var said = mk('span', 'ow-setting-progress', '');
+      said.setAttribute('role', 'status');
+      row.appendChild(line);
+      row.appendChild(said);
+      row.appendChild(mk('p', 'ow-door__why',
+        'Shown in a circle everywhere on Oneway. You place it in the circle before it is saved.'));
+      function paintFace() {
+        var pic = style.personPicture || '';
+        if (OW.cards && OW.cards.fill) OW.cards.fill(face, { kind: 'person', name: style.personName || '', picture: pic });
+        pup.firstChild.textContent = pic ? 'Change picture' : 'Upload a picture';
+        drop.hidden = !pic;
+        drop.textContent = 'Remove';
+        drop.removeAttribute('data-armed');
+      }
+      function everywhere(url) {
+        style.personPicture = url;
+        paintFace();
+        data.invalidate('/api/oneway/people/');
+        ['/api/oneway/cards', '/api/oneway/home', '/api/oneway/social/'].forEach(function (p) { data.invalidate(p); });
+        try { doc.dispatchEvent(new CustomEvent('ow:profile-changed', { detail: { email: email, picture: url } })); } catch (_) {}
+      }
+      function wear(dataUrl) {
+        return data.post('/api/oneway/media', { data: dataUrl, origin: 'uploaded' }).then(function (u) {
+          var item = u && u.ok && u.data && u.data.media;
+          if (!item || !item.url) return { ok: false, error: (u && u.error) || 'That picture did not upload. Try again.' };
+          return data.patch('/api/oneway/people/me', { picture: item.url }).then(function (r) {
+            if (!r || !r.ok) return { ok: false, error: (r && r.error) || 'That picture did not save to your profile. Try again.' };
+            return { ok: true, url: item.url };
+          });
+        });
+      }
+      pin.addEventListener('change', function () {
+        var f = pin.files && pin.files[0]; pin.value = ''; if (!f) return;
+        said.textContent = '';
+        if (typeof OW.editMedia !== 'function') {
+          /* a page without the editor sends the picture as it is; the person door still holds it to 320 by 320 */
+          var fr = new FileReader();
+          said.textContent = 'Uploading\u2026';
+          fr.onload = function () {
+            wear(String(fr.result || '')).then(function (r) {
+              if (!r.ok) { said.textContent = r.error; return; }
+              everywhere(r.url); said.textContent = 'Saved. This is your face everywhere on Oneway now.';
+            });
+          };
+          fr.readAsDataURL(f);
+          return;
+        }
+        OW.editMedia(f, { frame: 'profile', kinds: ['image'], save: function (res) { return wear(res.dataUrl); } })
+          .then(function (res) {
+            if (!res || !res.saved || !res.saved.url) return;
+            everywhere(res.saved.url);
+            said.textContent = 'Saved. This is your face everywhere on Oneway now.';
+          });
+      });
+      /* TAKEN BACK IN TWO PRESSES, as a Center's picture is in the OS: the first says what the second will do */
+      drop.addEventListener('click', function () {
+        if (!drop.hasAttribute('data-armed')) {
+          drop.setAttribute('data-armed', '1'); drop.textContent = 'Tap again to remove it';
+          clearTimeout(drop.__t); drop.__t = setTimeout(paintFace, 4000);
+          return;
+        }
+        clearTimeout(drop.__t);
+        drop.disabled = true; drop.textContent = 'Removing…';
+        data.patch('/api/oneway/people/me', { picture: '' }).then(function (r) {
+          drop.disabled = false;
+          if (!r || !r.ok) { paintFace(); said.textContent = (r && r.error) || 'That did not change. Try again.'; return; }
+          everywhere('');
+          said.textContent = 'Removed. Your initials show in your colour.';
+        });
+      });
+      paintFace();
+      box.appendChild(row);
+    })();
+
     /* THE BANNER — theirs, uploaded. Previously used banners stay pickable, so
        changing back is one tap and nothing is lost. */
     var row2 = mk('div', 'ow-cust__row');
@@ -1988,36 +2086,50 @@
     var up = mk('label', 'ow-upload', '<span>Upload a banner</span>');
     var inp = doc.createElement('input');
     inp.type = 'file'; inp.accept = 'image/png,image/jpeg,image/webp';
+    function tookBanner(url) {
+      /* THE SERVER KEEPS TWELVE AND SAYS SO (founder/660): this trimmed to 12 here, so a 13th banner
+         let the oldest go before the server saw it, and its words never reached the toast */
+      style.banner_urls = [url].concat(style.banner_urls || []);
+      style.banner_url = url; style.banner_customized = true;
+      /* drawn at once, then drawn again from what the server kept, so the row never shows a 13th */
+      paintPicks(); save({ banner_url: url, banner_customized: true }).then(function () { paintPicks(); });
+      var live = doc.querySelector('.ow-banner img');
+      if (live) { live.src = imageUrl(url); }
+      else {
+        var ban = doc.querySelector('.ow-banner');
+        if (ban) {
+          var n = doc.createElement('img'); n.src = imageUrl(url); n.alt = '';
+          ban.insertBefore(n, ban.firstChild);
+          ban.insertBefore(mk('span', 'ow-banner__hue'), ban.lastChild);
+        }
+      }
+    }
+    function postBanner(dataUrl) {
+      return data.post('/api/me/profile-banner', { data: dataUrl, kind: 'banner' }).then(function (r) {
+        if (!r.ok || !(r.data || {}).url) return { ok: false, error: (r && r.error) || 'That banner did not upload. Try again.' };
+        return { ok: true, url: r.data.url };
+      });
+    }
     inp.addEventListener('change', function () {
-      var f = inp.files && inp.files[0]; if (!f) return;
+      var f = inp.files && inp.files[0]; inp.value = ''; if (!f) return;
+      /* THE EDITOR OPENS AT THE UPLOAD (founder/831): the picture is placed in the banner's own 3:1 frame and sent at
+         1500 by 500, the size it is shown at; Done uploads it with the editor still open, so a refusal is said there
+         and the crop is kept. */
+      if (typeof OW.editMedia === 'function') {
+        OW.editMedia(f, { frame: 'banner', kinds: ['image'], save: function (res) { return postBanner(res.dataUrl); } })
+          .then(function (res) { if (res && res.saved && res.saved.url) tookBanner(res.saved.url); });
+        return;
+      }
       up.setAttribute('data-busy', '1');
       up.firstChild.textContent = 'Uploading…';
       var fr = new FileReader();
       fr.onload = function () {
-        data.post('/api/me/profile-banner', { data: fr.result, kind: 'banner' })
-          .then(function (r) {
-            up.removeAttribute('data-busy');
-            if (!r.ok) { up.firstChild.textContent = 'That did not upload'; return; }
-            up.firstChild.textContent = 'Upload a banner';
-            var url = (r.data || {}).url || '';
-            if (!url) return;
-            /* THE SERVER KEEPS TWELVE AND SAYS SO (founder/660): this trimmed to 12 here, so a 13th banner
-               let the oldest go before the server saw it, and its words never reached the toast */
-            style.banner_urls = [url].concat(style.banner_urls || []);
-            style.banner_url = url; style.banner_customized = true;
-            /* drawn at once, then drawn again from what the server kept, so the row never shows a 13th */
-            paintPicks(); save({ banner_url: url, banner_customized: true }).then(function () { paintPicks(); });
-            var live = doc.querySelector('.ow-banner img');
-            if (live) { live.src = imageUrl(url); }
-            else {
-              var ban = doc.querySelector('.ow-banner');
-              if (ban) {
-                var n = doc.createElement('img'); n.src = imageUrl(url); n.alt = '';
-                ban.insertBefore(n, ban.firstChild);
-                ban.insertBefore(mk('span', 'ow-banner__hue'), ban.lastChild);
-              }
-            }
-          });
+        postBanner(fr.result).then(function (r) {
+          up.removeAttribute('data-busy');
+          if (!r.ok) { up.firstChild.textContent = 'That did not upload'; return; }
+          up.firstChild.textContent = 'Upload a banner';
+          tookBanner(r.url);
+        });
       };
       fr.readAsDataURL(f);
     });
@@ -2135,6 +2247,10 @@
       Object.defineProperty(style, 'personShape', {
         value: /^(round|rounded|square)$/.test(shape || '') ? shape : 'round', writable: true
       });
+      /* THE FACE, beside the style and not in it (not enumerable, so save() never sends it through the style door) */
+      var pic = rs[1].ok && rs[1].data && rs[1].data.picture;
+      Object.defineProperty(style, 'personPicture', { value: (pic && (pic.url || pic)) || '', writable: true });
+      Object.defineProperty(style, 'personName', { value: (rs[1].ok && rs[1].data && rs[1].data.display_name) || '', writable: true });
       return style;
     }).catch(function () { return {}; });
   }

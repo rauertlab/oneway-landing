@@ -52,6 +52,23 @@
         var files = Array.prototype.slice.call(input.files || []);
         input.remove();
         if (!files.length) { resolve({ items: [], refused: [] }); return; }
+        /* EVERY UPLOAD OPENS THE EDITOR (founder/831): each file is placed in its frame (a post's 4:5, 1:1 or 1.91:1,
+           a video's 9:16 too) before anything is stored. Cancel is an answer: nothing is kept and nothing uploads. */
+        if (opts.edit !== false && typeof OW.editMedia === 'function') {
+          OW.editMedia(files, { frame: opts.frame || 'post', videoFrame: opts.videoFrame || 'postVideo',
+                                title: opts.title || 'New post' }).then(function (done) {
+            var items = [], refused = [];
+            (done || []).forEach(function (r, i) {
+              var it = coFromEdit(r, files[i]);
+              if (coBytes(it.src) > CO_MAX_BYTES) {
+                refused.push({ name: it.name, why: 'too big \u2014 keep it under about '
+                  + Math.round(CO_MAX_BYTES / (1024 * 1024)) + 'MB' });
+              } else items.push(it);
+            });
+            resolve({ items: items, refused: refused, cancelled: !done });
+          });
+          return;
+        }
         var items = [], refused = [], left = files.length;
         files.forEach(function (f) {
           var fr = new global.FileReader();
@@ -90,7 +107,8 @@
      needs an object to own it before it can exist. */
   OW.live.uploadMedia = function (dataUrl, opts) {
     opts = opts || {};
-    return data.post('/api/oneway/media', { data: dataUrl, origin: opts.origin || 'uploaded' })
+    return data.post('/api/oneway/media', coMediaBody({ src: dataUrl, origin: opts.origin, kind: opts.kind,
+                                                        crop: opts.crop, trim: opts.trim, poster: opts.poster }))
       .then(function (u) {
         var item = u.ok && (u.data || {}).media;
         if (!item || !item.url) return { ok: false, error: (u.error || 'the file was refused') };
@@ -108,7 +126,7 @@
       return res.items.reduce(function (chain, it, i) {
         return chain.then(function () {
           if (typeof opts.onProgress === 'function') opts.onProgress(i + 1, res.items.length);
-          return OW.live.uploadMedia(it.src).then(function (u) {
+          return OW.live.uploadMedia(it.src, it).then(function (u) {
             if (u.ok) out.stored.push(u.item);
             else out.refused.push({ name: it.name, why: u.error });
           });
@@ -159,6 +177,30 @@
     img.onerror = function () { cb(dataUrl); };
     img.src = dataUrl;
   }
+
+  /* WHAT POST /api/oneway/media IS SENT for one piece: the bytes, where they came from, and a video's frame (its
+     crop, the part that plays and its poster: the file is kept whole, api/oneway/social/routes.py upload_media) */
+  function coMediaBody(p) {
+    var b = { data: p.src, origin: p.origin || 'uploaded' };
+    if (p.kind === 'video') {
+      if (p.crop) b.crop = p.crop;
+      if (p.trim) b.trim = p.trim;
+      if (p.poster) b.poster = p.poster;
+    }
+    return b;
+  }
+  /* A PICK FROM THE EDITOR (oneway-editor.js): a photo is already cut to its frame; a video keeps its file and
+     carries its frame beside it. `file` is what was chosen, so Edit opens the original again, never a crop of a crop. */
+  function coFromEdit(r, file) {
+    var vid = r.kind === 'video';
+    return { src: r.dataUrl, kind: vid ? 'video' : 'photo', origin: 'uploaded', name: (file && file.name) || r.name || '',
+             file: vid ? r.blob : (file || null), frame: r.frame, crop: vid ? r.crop : null, trim: vid ? r.trim : null,
+             poster: vid ? r.poster : '' };
+  }
+
+  /* the editor's mark: the crop corners, as Photos draws its Edit */
+  var CO_EDIT_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+    + 'stroke-linejoin="round" aria-hidden="true"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>';
 
   function coBytes(dataUrl) {
     var i = String(dataUrl || '').indexOf(',');
@@ -797,6 +839,24 @@
       var files = Array.prototype.slice.call(filePick.files || []);
       filePick.value = '';                /* so the same file can be picked twice */
       if (!files.length) return;
+      /* THE EDITOR OPENS AT THE UPLOAD (founder/831), over the camera, and hands back each piece in its frame;
+         Cancel leaves the camera exactly as it was */
+      if (typeof OW.editMedia === 'function') {
+        OW.editMedia(files, { frame: 'post', videoFrame: 'postVideo', title: 'New post' }).then(function (res) {
+          if (!res || !res.length) return;
+          res.forEach(function (r, i) {
+            var it = coFromEdit(r, files[i]);
+            if (coBytes(it.src) > CO_MAX_BYTES) {
+              say('"' + (it.name || 'that file') + '" is too big to send \u2014 keep it under about '
+                  + Math.round(CO_MAX_BYTES / (1024 * 1024)) + 'MB.', 1);
+              return;
+            }
+            picks.push(it);
+          });
+          if (picks.length) go(1);
+        });
+        return;
+      }
       say('Reading ' + files.length + (files.length === 1 ? ' file…' : ' files…'));
       var left = files.length;
       files.forEach(function (f) {
@@ -865,6 +925,8 @@
       }
       var grid = mk('div', 'ow-compose__picks');
       grid.setAttribute('data-n', String(picks.length));
+      /* the editor (and the look of its Edit mark) arrives before the press that needs it */
+      if (OW.need && !(OW.editMedia && OW.editMedia.__owReal)) OW.need('editor').catch(function () {});
       picks.forEach(function (p, i) {
         var cell = mk('div', 'ow-compose__pick');
         if (p.kind === 'video') {
@@ -872,23 +934,36 @@
           v.src = p.src; v.muted = true; v.setAttribute('playsinline', '');
           v.preload = 'metadata';
           cell.appendChild(v);
+          /* framed as it will play: its crop and the part that plays (oneway-popit.js OW.mediaFrame) */
+          if ((p.crop || p.trim) && OW.mediaFrame) OW.mediaFrame.apply(v, p, { fit: 'contain' });
           cell.appendChild(mk('span', 'ow-compose__tag', 'Video'));
           /* TRIM — the one edit almost every clip needs. Lightbulb could film
              and upload video and could not cut a second off either end, which
-             is the difference between a camera and something you'd post from. */
-          var trimBtn = mk('button', 'ow-compose__trim', 'Trim');
+             is the difference between a camera and something you'd post from.
+             It is the editor now (founder/831): the frame and the trim together, and nothing re-encoded. */
+          var editor = typeof OW.editMedia === 'function';
+          var trimBtn = mk('button', 'ow-compose__trim' + (editor ? ' ow-ed-entry' : ''), editor ? CO_EDIT_MARK + '<span>Edit</span>' : 'Trim');
           trimBtn.type = 'button';
-          trimBtn.setAttribute('aria-label', 'Trim video ' + (i + 1));
+          trimBtn.setAttribute('aria-label', (editor ? 'Edit video ' : 'Trim video ') + (i + 1));
           trimBtn.addEventListener('click', function (e) {
             e.stopPropagation();
-            openTrim(p, i);
+            if (editor) editPick(p, i); else openTrim(p, i);
           });
           cell.appendChild(trimBtn);
         } else {
           var im = doc.createElement('img');
           im.src = p.src; im.alt = '';
+          /* cut to its frame in the editor, so it is shown whole: what is seen here is what is posted */
+          if (p.frame) im.style.setProperty('object-fit', 'contain', 'important');
           cell.appendChild(im);
           if (p.external) cell.appendChild(mk('span', 'ow-compose__tag', 'Link'));
+          else if (typeof OW.editMedia === 'function') {
+            var editBtn = mk('button', 'ow-compose__trim ow-ed-entry', CO_EDIT_MARK + '<span>Edit</span>');
+            editBtn.type = 'button';
+            editBtn.setAttribute('aria-label', 'Edit photo ' + (i + 1));
+            editBtn.addEventListener('click', function (e) { e.stopPropagation(); editPick(p, i); });
+            cell.appendChild(editBtn);
+          }
         }
         var rm = mk('button', 'ow-compose__rm', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg><span>Remove</span>');
         rm.type = 'button';
@@ -906,7 +981,26 @@
     }
 
 
+    /* EDIT A PIECE AGAIN: the original opens in the editor (a photo from its file, a video with its frame and trim
+       where they were left), and what comes back takes its place. Cancel changes nothing. */
+    function editPick(p, idx) {
+      /* a photo without a file (the camera's) keeps the shot it started from, so it is never a crop of a crop */
+      var from = p.file || p.orig || p.src;
+      OW.editMedia(from, { frame: 'post', videoFrame: 'postVideo', frameKey: p.frame, title: 'Edit',
+                           crop: p.kind === 'video' ? p.crop : null, trim: p.kind === 'video' ? p.trim : null })
+        .then(function (r) {
+          if (!r) return;
+          var it = coFromEdit(r, p.file);
+          it.origin = p.origin || 'uploaded';
+          if (!it.file && it.kind === 'photo') it.orig = p.orig || p.src;
+          picks[idx] = it;
+          go(1);
+        });
+    }
+
     /* ═══ TRIM — REAL, NOT A REMEMBERED IN/OUT POINT ═══════════════════════
+       (founder/831 moved this: the editor keeps the clip whole and the frame and trim travel beside it, honoured by
+       every renderer through OW.mediaFrame; this re-recording stays only for a page without the editor.)
        The tempting version stores `in`/`out` on the media row and lets players
        honour it. That is a WRITE NOBODY READS: the feed's cover, the immersive
        player, the gallery viewer and every future reader would each have to
@@ -1189,8 +1283,7 @@
           /* THE SAME DOOR AS `share()`. Two upload paths in one file is how
              the origin came to be set in one of them and not the other — the
              defect fixed an hour ago. One door cannot have that bug. */
-          return data.post('/api/oneway/media',
-                           { data: p.src, origin: p.origin || 'uploaded' })
+          return data.post('/api/oneway/media', coMediaBody(p))
             .then(function (u) {
               if (!u.ok) throw new Error(u.error || 'that file was refused');
               var item = (u.data || {}).media;
@@ -1554,8 +1647,7 @@
              code knows whether the shutter or the picker produced the file —
              it is DECLARED on the way in rather than inferred on the way
              out. */
-          return data.post('/api/oneway/media',
-                           { data: p.src, origin: p.origin || 'uploaded' })
+          return data.post('/api/oneway/media', coMediaBody(p))
             .then(function (u) {
               if (!u.ok) throw new Error(u.error || 'that file was refused');
               var item = (u.data || {}).media;
@@ -1838,9 +1930,11 @@
       var cover = mk('div', 'ow-upload__cover');
       if (!first) cover.hidden = true;        /* words on their own have no cover */
       if (first) {
-        var m = doc.createElement(first.kind === 'video' ? 'video' : 'img');
-        m.src = first.src;
-        if (first.kind === 'video') { m.muted = true; m.playsInline = true; m.preload = 'metadata'; }
+        /* a video framed in the editor has its poster, the first frame of the part that plays, cut to its frame */
+        var still = first.kind === 'video' && first.poster;
+        var m = doc.createElement(first.kind === 'video' && !still ? 'video' : 'img');
+        m.src = still ? first.poster : first.src;
+        if (first.kind === 'video' && !still) { m.muted = true; m.playsInline = true; m.preload = 'metadata'; }
         else m.alt = '';
         cover.appendChild(m);
         if (picks.length > 1) cover.appendChild(mk('span', 'ow-upload__n', String(picks.length)));

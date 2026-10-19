@@ -321,6 +321,8 @@
       host.appendChild(bodySlot);
 
       /* ── ANYTHING ATTACHED. Media on the post, and any Gallery it carries. */
+      /* a video's crop and trim from Oneway's editor (founder/831) frame it here as on a card */
+      if (OW.mediaFrame) OW.mediaFrame.note(p.media);
       (p.media || []).forEach(function (m) {
         var u = OW.imageUrl(m && (m.url || m));
         if (!u) return;
@@ -334,6 +336,7 @@
           if (!OW.viewer) return;
           var au = p.author || {};
           OW.viewer.open({ url: m && (m.url || m), kind: isVideo ? 'video' : 'image',
+                           crop: m && m.crop, trim: m && m.trim,
             caption: p.body || p.title || '', when: whenWords ? whenWords(p.created_at) : '',
             who: { name: au.name || '', picture: au.image || au.picture || '',
                    shape: au.shape || 'round', hue: au.hue,

@@ -380,6 +380,18 @@
   data.refusalWords = refusalWords;
   data.sentence = sentence;
   data.wrote = wrote;
+  /* A PICTURE OR A VIDEO, READ AS ITS BYTES (Oneway's editor opens a file already on the platform, founder/831): a Blob,
+     or a refusal in words. Same origin, the session's cookie, never cached away from the person; a data: or blob: address
+     is read as it is. The one home for a raw read of media, so no surface keeps its own fetch (one_of_each frontend.fetch). */
+  data.blob = function (url) {
+    var u = String(url || '');
+    if (!u) return Promise.reject(new Error('There is nothing here to read.'));
+    var full = /^(data:|blob:|https?:)/.test(u) ? u : (BASE + (u.charAt(0) === '/' ? u : '/' + u));
+    return global.fetch(full, { credentials: 'same-origin' }).then(function (r) {
+      if (!r.ok) throw new Error('That picture could not be read.');
+      return r.blob();
+    });
+  };
   /* a shell's own session at open renews the session; these are its only handles on what this file holds */
   data._session = { base: function () { return BASE; }, forget: function () { TOKEN = null; }, set: function (t) { TOKEN = t || null; } };
 })(typeof window !== 'undefined' ? window : this);

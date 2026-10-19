@@ -1147,6 +1147,7 @@
     /* ONE LAYOUT PASS FOR THE WHOLE CANVAS, computed before any tile is drawn —
        a per-tile calculation cannot know what the tile beside it took. */
     this._pack = this.packed();
+    this._freeS = this.freeScale(this._pack);
     h.style.setProperty('--cv-cols', this.cols);
     /* ONE SOURCE FOR THE CAP. The stylesheet carries a fallback so a canvas
        rendered before this line still has a sane ceiling, but the number that
@@ -1179,10 +1180,13 @@
     var shown = (this.items || []).filter(function (it) { return !self.isVoid(it); });
     shown.forEach(function (it) {
       var b = pack[it.id];
-      maxY = Math.max(maxY, b ? (b.y + b.h) : ((it.y || 0) + (it.h || 1)));
+      maxY = Math.max(maxY, b ? (b.y + b.h) : (isFree(it) ? (it.y || 0) * self._freeS : (it.y || 0)) + (it.h || 1));
       h.appendChild(self.tile(it));
     });
-    h.style.setProperty('--cv-rows', Math.max(maxY, 6));
+    /* AS TALL AS WHAT IS ON IT (walk-center-page, 2026-10-18: three Popits ending at 954px, and Add and Arrange at
+       1,896px: six device rows were kept whatever the canvas held, about 940px of nothing at 1366 and 500px at 390). An
+       empty canvas keeps its six rows for the invitation; one being arranged keeps one row more to drop into. */
+    h.style.setProperty('--cv-rows', shown.length ? Math.ceil(maxY) + (this.editing ? 1 : 0) : 6);
     if (keepId) {
       /* after paint — the tile must be in the document before it can be
          measured, and the box measures the tile */
@@ -1553,8 +1557,14 @@
       file.style.display = 'none';
       up.appendChild(file);
       file.addEventListener('change', function () {
-        var f = file.files && file.files[0];
-        if (!f) return;
+        var f0 = file.files && file.files[0];
+        if (!f0) return;
+        /* EVERY UPLOAD OPENS ONEWAY'S EDITOR FIRST (founder/831): a sticker crops free, its own shape */
+        if (OW.editMedia) {
+          OW.editMedia(f0, { frame: 'sticker' }).then(function (out) { if (out && out.blob) send(out.blob); });
+        } else send(f0);
+      });
+      function send(f) {
         var say = up.querySelector('.ow-cv-pick__blurb');
         say.textContent = 'Uploading';
         var fr = new global.FileReader();
@@ -1577,7 +1587,7 @@
           say.textContent = 'That file could not be read.';
         };
         fr.readAsDataURL(f);
-      });
+      }
       list.appendChild(up);
 
       /* A TEXT BOX AND A SHAPE (founder/831): made here, not chosen from the catalog; a text box opens for writing at once */
@@ -4160,7 +4170,7 @@
     if (free) {
       var pct = function (v) { return (Math.max(0, +v || 0) / COLS) * 100; };
       n.style.setProperty('--fx', pct(it.x) + '%');
-      n.style.setProperty('--fy', (it.y || 0));
+      n.style.setProperty('--fy', (it.y || 0) * (this._freeS || 1));
       n.style.setProperty('--fw', pct(it.w || 3) + '%');
       n.style.setProperty('--fh', (it.h || 2));
       n.setAttribute('data-free', '1');
@@ -7808,6 +7818,17 @@
          as for a visitor; in Arrange they take their place again, with the
          notice and the remove, because that is where they can be acted on. */
     if (it.config && it.config.retired) return !(this.mayArrange && this.editing);
+    /* ── THE SAME POPIT TWICE IS DRAWN ONCE (the OS's cold walk, 2026-10-17: a Center's Main showed its Events Popit twice,
+       two placements of one Popit with one setting). Outside arranging the second is not drawn and the pack closes over
+       it; in Arrange it takes its place again, where it can be removed (the placements are the person's, never deleted
+       here). Two of one Popit set differently are two things and both draw. */
+    if (!(this.mayArrange && this.editing) && it.kind === 'popit') {
+      var key = it.ref + '|' + JSON.stringify(it.config || {}), seen = this.items || [];
+      for (var q = 0; q < seen.length && seen[q] !== it; q++) {
+        var o = seen[q];
+        if (o && o.kind === 'popit' && !(o.config && o.config.retired) && o.ref + '|' + JSON.stringify(o.config || {}) === key) return true;
+      }
+    }
     if (this.mayArrange) return false;
     return it.state === 'not_supported';
   };
@@ -7861,6 +7882,24 @@
     }).sort(function (a, b) {
       return ((a.y || 0) - (b.y || 0)) || ((a.x || 0) - (b.x || 0));
     });
+  };
+
+  /* WHERE A TEXT BOX, A SHAPE OR A STICKER STANDS DOWN THE PAGE (walk-center-page, 2026-10-18). Its y is stored in the
+     rows of the canonical twelve, the rows the Popits' own stored places are counted in, while the Popits are drawn packed
+     into the device's rows: on a four-column plane nine stored rows of Popits fill about five drawn ones, so a text box
+     added under them at stored row 9 was drawn at device row 9, 1,400px below the last Popit at 1366 and 1,000px at 390,
+     for the operator and every visitor. The scale is the drawn rows over the stored rows of the same Popits, so a freeform
+     placement keeps its place among them on every device; with no Popit to measure, a row of the twelve is a twelfth of the
+     plane, as its x is. */
+  Canvas.prototype.freeScale = function (pack) {
+    var flow = this.flowOrder(), canon = 0, drawn = 0;
+    pack = pack || this._pack || {};
+    flow.forEach(function (it) {
+      var b = pack[it.id]; if (!b) return;
+      canon = Math.max(canon, (it.y || 0) + (it.h || 1)); drawn = Math.max(drawn, b.y + b.h);
+    });
+    if (canon > 0 && drawn > 0) return drawn / canon;
+    return Math.max(0.05, (this.cols || COLS) / COLS);
   };
 
   Canvas.prototype.packed = function () {
@@ -8107,9 +8146,9 @@
        always holds the twelve-column truth. Converting at the two ends keeps
        every line of the snapping and clamping maths below unchanged, and on
        desktop the two spaces are identical so nothing moves at all. */
-    var ox = Math.round(self.toView(it.x)), oy = it.y;
-    var ow = Math.max(1, Math.round(self.toView(it.w || 1))), oh = it.h || 1;
     var free = FREEFORM.indexOf(it.kind) >= 0;
+    var ox = Math.round(self.toView(it.x)), oy = free ? (it.y || 0) * (self._freeS || 1) : it.y;
+    var ow = Math.max(1, Math.round(self.toView(it.w || 1))), oh = it.h || 1;
     var lines = this.snapLines(it.id);
     /* CAPTURE IS AN OPTIMISATION, NOT A PRECONDITION. It throws whenever the
        pointer id is not actively down — a released pointer, a synthetic event,
@@ -8214,7 +8253,7 @@
       /* BACK TO TWELVE ON THE WAY IN. Rounding once, here at the edit, rather
          than on every render — a value that is re-quantised each paint drifts
          a little further from what the person actually did every time. */
-      it.x = Math.round(self.toBase(x)); it.y = y;
+      it.x = Math.round(self.toBase(x)); it.y = free ? Math.round(y / (self._freeS || 1) * 1000) / 1000 : y;
       it.w = Math.max(1, Math.round(self.toBase(w))); it.h = h;
       tile.style.setProperty('--x', x); tile.style.setProperty('--y', y);
       tile.style.setProperty('--w', w); tile.style.setProperty('--h', h);
@@ -8968,13 +9007,13 @@
              by a VIEW column, from a rounded start: on a desktop a sticker moved a third as far as the hand, and a text box
              near the left edge snapped back to 0) */
           var fx = (it.__fx0 !== undefined ? it.__fx0 : (it.__fx0 = +it.x || 0)) + dx / (grid.getBoundingClientRect().width / COLS),
-              fy = (it.__fy0 !== undefined ? it.__fy0 : (it.__fy0 = +it.y || 0)) + dy / (rowh + GAP);
+              fy = (it.__fy0 !== undefined ? it.__fy0 : (it.__fy0 = +it.y || 0)) + dy / ((rowh + GAP) * (self._freeS || 1));
           it.x = Math.max(0, Math.min(COLS, Math.round(fx * 1000) / 1000));
           it.y = Math.max(0, Math.round(fy * 1000) / 1000);
           t.style.setProperty('--x', it.x);
           t.style.setProperty('--y', it.y);
           t.style.setProperty('--fx', (it.x / COLS * 100) + '%');     /* a freeform tile is drawn from these */
-          t.style.setProperty('--fy', it.y);
+          t.style.setProperty('--fy', it.y * (self._freeS || 1));
           self.dirty = true;
           return;
         }
@@ -9226,8 +9265,9 @@
 
   Canvas.prototype.add = function (entry) {
     /* A NEW THING GOES WHERE THERE IS ROOM, not on top of something else. */
-    var maxY = 0;
-    this.items.forEach(function (i) { maxY = Math.max(maxY, (i.y || 0) + (i.h || 1)); });
+    var maxY = 0, fs = this._freeS || 1;
+    /* a text box or a shape measures its height in the device's rows, the rest in the stored twelve's (freeScale) */
+    this.items.forEach(function (i) { maxY = Math.max(maxY, (i.y || 0) + (i.h || 1) / (isFree(i) ? fs : 1)); });
     /* ── TWO DIFFERENT THINGS CALLED `kind`, AND IT BROKE EVERY ADD ──────
        This method is handed two shapes. A SERVER PLACEMENT (the sticker
        upload returns one) carries `kind` = the PLACEMENT kind — one of
@@ -9540,6 +9580,15 @@
     '.ow-cv{position:relative;display:block;width:100%;',
     '  max-width:var(--cv-max,880px);margin-inline:auto;',
     '  min-height:calc(var(--cv-rows,6) * (var(--cv-row) + var(--cv-gap)))}',
+    /* A CANVAS NEVER DRAWS OVER THE PAGE IT IS ON (QUEUE S66, 2026-10-17). A tile's z (0 to 999) is set as 10 + z, and
+       the plane made no stacking context, so a z-999 text box on a solid ground was ranked against the App's own header
+       (60) and dock (70): any account that founds a Center could lay its words over the logo, the bell and all five
+       dock buttons for every visitor (measured, context/audits/security-2026-10-17/verify-canvas-text-0/). `isolate`
+       ranks the tiles among themselves only. And a freeform tile may sit at x = 12, past the right edge: it pushed the
+       App to 658px at a 390 phone, so the plane clips across (never down: `clip` leaves the other axis visible and
+       makes no scroll box). Bounded by the canvas, as normalize() says. The overlays a tile opens (the expanded Popit,
+       the pickers) are the body's, not the plane's, and stay above everything. */
+    '.ow-cv{isolation:isolate;overflow-x:clip}',
     /* ── THE TRANSFORM BOX ────────────────────────────────────────────────
        Drawn in the world's own light rather than as OS chrome: a thin hue line
        with square handles, the shape a person already reads as "this is the

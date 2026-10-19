@@ -821,6 +821,12 @@
     mail:    '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/>',
     globe:   '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.4 3 14.2 0 18M12 3c-3 3.4-3 14.2 0 18"/>',
     write:   '<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M13.5 6.5l3 3"/>',
+    /* a Center's details on its card name their role with these (landing-cards.js, founder/835's screenshot) */
+    clock:   '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
+    tag:     '<path d="M3 12.2V4.5A1.5 1.5 0 0 1 4.5 3h7.7l8.8 8.8-9.2 9.2z"/><circle cx="8" cy="8" r="1.6"/>',
+    parking: '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M10 17V7.5h3.2a2.8 2.8 0 0 1 0 5.6H10"/>',
+    card:    '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/>',
+    phone:   '<path d="M6.6 3.5h2.6l1.6 4.2-2 1.3a11 11 0 0 0 6.2 6.2l1.3-2 4.2 1.6v2.6a2 2 0 0 1-2.2 2A16.8 16.8 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/>',
     /* THE RESPONSE GLYPHS. The runtime stores MEANING ("like"), never a glyph —
        so the heart lives here, in presentation, and changing it needs no
        migration (the response primitive keeps the two apart on purpose). */
@@ -2980,6 +2986,109 @@
     };
   }
 
+  /* ── A VIDEO PLAYS IN ITS OWN FRAME, AND ONLY THE PART THAT WAS KEPT (founder/831) ──────────────────────────────
+     The editor (oneway-editor.js) keeps a clip whole and sends its frame beside it: `crop` {x, y, w, h}, fractions of
+     the source, and `trim` {start, end} in seconds (api/oneway/social/routes.py upload_media). This is their one reader.
+     Every Post face notes its framed videos by address (postFace, wrapped below), and any <video> of that address in a
+     card or on a post's page is framed once it knows its size: the source sized and placed so the crop fills its box
+     (the card's box taking the crop's shape), or, for a player with its own controls, cover-fit on the crop; and it
+     plays only its kept part, from `start` (a seek at loadedmetadata: a `#t=` address would not pass OW.imageUrl) to
+     `end` (a timeupdate loop, back to the start when it loops). `apply(video, item, {fit: 'contain'})` frames one
+     directly; `note(media)` is how a surface that does not draw a card (posts.js) says what it is about to play. */
+  OW.mediaFrame = (function () {
+    var seen = {};
+    function key(u) {
+      try { return new URL(String(u || ''), global.location.href).pathname; } catch (_) { return String(u || '').split(/[?#]/)[0]; }
+    }
+    function within(v, lo, hi) { return v < lo ? lo : (v > hi ? hi : v); }
+    var SET = ['position', 'objectFit', 'objectPosition', 'maxWidth', 'maxHeight', 'width', 'height', 'left', 'top',
+               'right', 'bottom', 'clipPath', 'aspectRatio'];
+    function clear(v) {
+      SET.forEach(function (k) { v.style[k] = ''; });
+      v.__owFrame = null; v.__owFrameKey = '';
+    }
+    /* set as !important inline, so a surface's own !important sizes (Lightbulb's full-bleed preview) cannot undo it */
+    function put(st, k, val) { st.setProperty(k.replace(/[A-Z]/g, function (c) { return '-' + c.toLowerCase(); }), val, 'important'); }
+    function place(v) {
+      var m = v.__owFrame, c = m && m.crop, box = v.parentElement, sw = v.videoWidth, sh = v.videoHeight;
+      if (!c || !box || !sw || !sh) return;
+      var ar = (c.w * sw) / (c.h * sh), st = v.style;
+      if (v.controls) {
+        var vw = Math.min(sw, sh * ar), vh = vw / ar, cx = (c.x + c.w / 2) * sw, cy = (c.y + c.h / 2) * sh;
+        put(st, 'aspectRatio', ar.toFixed(4)); put(st, 'objectFit', 'cover');
+        put(st, 'objectPosition', (sw > vw ? within((cx - vw / 2) / (sw - vw), 0, 1) * 100 : 50).toFixed(2) + '% '
+          + (sh > vh ? within((cy - vh / 2) / (sh - vh), 0, 1) * 100 : 50).toFixed(2) + '%');
+        return;
+      }
+      if (box.classList.contains('po-card__cover')) box.style.aspectRatio = within(ar, 0.5625, 1.91).toFixed(4);
+      var bw = box.clientWidth, bh = box.clientHeight;
+      if (!bw || !bh) return;
+      var contain = m.fit === 'contain';
+      var s = contain ? Math.min(bw / (c.w * sw), bh / (c.h * sh)) : Math.max(bw / (c.w * sw), bh / (c.h * sh));
+      var W = sw * s, H = sh * s, ox = bw / 2 - (c.x + c.w / 2) * W, oy = bh / 2 - (c.y + c.h / 2) * H;
+      if (!contain) { ox = within(ox, bw - W, 0); oy = within(oy, bh - H, 0); }
+      put(st, 'position', 'absolute'); put(st, 'objectFit', 'fill'); put(st, 'maxWidth', 'none'); put(st, 'maxHeight', 'none');
+      put(st, 'right', 'auto'); put(st, 'bottom', 'auto');
+      put(st, 'width', (W / bw * 100).toFixed(4) + '%'); put(st, 'height', (H / bh * 100).toFixed(4) + '%');
+      put(st, 'left', (ox / bw * 100).toFixed(4) + '%'); put(st, 'top', (oy / bh * 100).toFixed(4) + '%');
+      if (contain) put(st, 'clipPath', 'inset(' + (c.y * 100).toFixed(3) + '% ' + ((1 - c.x - c.w) * 100).toFixed(3) + '% '
+        + ((1 - c.y - c.h) * 100).toFixed(3) + '% ' + (c.x * 100).toFixed(3) + '%)');
+    }
+    function start(v) {
+      var t = v.__owFrame && v.__owFrame.trim;
+      if (t && v.currentTime < t.start - 0.05) { try { v.currentTime = t.start; } catch (_) {} }
+    }
+    function apply(v, item, o) {
+      if (!v || !item || !(item.crop || item.trim)) return v;
+      v.__owFrame = { crop: item.crop || null, trim: item.trim || null, fit: (o && o.fit) || (item.fit || '') };
+      v.__owFrameKey = key(v.getAttribute('src') || v.currentSrc);
+      var go = function () { place(v); start(v); };
+      /* after the card's own shape() (oneway-popit.js "THE FRAME TAKES THE MEDIA'S OWN SHAPE"), which also answers loadedmetadata */
+      if (v.readyState >= 1) setTimeout(go, 0); else v.addEventListener('loadedmetadata', function () { setTimeout(go, 0); }, { once: true });
+      if (!v.__owFrameRO && global.ResizeObserver && v.parentElement) {
+        v.__owFrameRO = new global.ResizeObserver(function () { place(v); });
+        v.__owFrameRO.observe(v.parentElement);
+      }
+      if (!v.__owFrameT) {
+        v.__owFrameT = 1;
+        v.addEventListener('timeupdate', function () {
+          var t = v.__owFrame && v.__owFrame.trim;
+          if (!t) return;
+          if (v.currentTime >= t.end - 0.05) {
+            if (v.loop) { try { v.currentTime = t.start; } catch (_) {} }
+            else { try { v.pause(); v.currentTime = t.start; } catch (_) {} }
+          } else if (v.currentTime < t.start - 0.3) { try { v.currentTime = t.start; } catch (_) {} }
+        });
+        v.addEventListener('ended', function () { var t = v.__owFrame && v.__owFrame.trim; if (t && v.loop) { try { v.currentTime = t.start; v.play(); } catch (_) {} } });
+      }
+      return v;
+    }
+    function note(media) {
+      (media || []).forEach(function (m) {
+        if (!m || typeof m !== 'object' || !(m.crop || m.trim)) return;
+        var u = m.url || m.src || '';
+        if (u && (m.kind === 'video' || /\.(mp4|m4v|mov|webm)(\?|#|$)/i.test(u))) seen[key(u)] = { crop: m.crop || null, trim: m.trim || null };
+      });
+    }
+    /* every video that loads in a card or on a post's page is looked up by its address; a pooled player given another
+       address gives the last one's frame back */
+    function heard(e) {
+      var v = e.target;
+      if (!v || v.tagName !== 'VIDEO') return;
+      var k = key(v.getAttribute('src') || v.currentSrc);
+      if (v.__owFrameKey === k && v.__owFrame) return;
+      if (v.__owFrameKey && v.__owFrameKey !== k) clear(v);
+      var m = seen[k];
+      if (!m || !v.closest || !v.closest('.po-card, .ow-post__media')) return;
+      apply(v, m);
+    }
+    ['loadedmetadata', 'play'].forEach(function (ev) { doc.addEventListener(ev, heard, true); });
+    return { note: note, apply: apply, clear: clear, frameOf: function (u) { return seen[key(u)] || null; } };
+  }());
+  postFace = (function (face) {
+    return function (p) { if (p && p.media) OW.mediaFrame.note(p.media); return face(p); };
+  }(postFace));
+
   /* the feed's own event vocabulary, said the way a person would. Only kinds
      the runtime actually emits appear here; an unknown kind is left unnamed. */
   var VERB = {
@@ -4822,8 +4931,14 @@
           }).join('')
         + (more ? '<div class="ow-product__pics">' + more + '</div>' : '')
         + (buy ? '<div class="ow-product__buy">' + buy + '</div>' : '')
+        /* ORDER TO PICK UP, PAY AT THE COUNTER (oneway/pickup; frontend/shared/oneway-pickup.js draws it, loaded when wanted) */
+        + '<div class="ow-product__pickup" data-po-pickup></div>'
         + '</div>'
     }, origin);
+    var pu = doc.querySelector('.ow-product [data-po-pickup]');
+    if (pu && p.center_id) {
+      (OW.need ? OW.need('pickup') : Promise.resolve()).then(function () { if (OW.pickup) OW.pickup.offer(p, pu); }, function () {});
+    }
   };
 
   OW.open = function (data, origin) {

@@ -435,7 +435,9 @@
             if (sp) { page(el, spec, sp, cid, opts); try { el.scrollIntoView({ block: 'start' }); } catch (_) {} }
             return;
           }
-          var t = root0.querySelector('#' + CSS.escape(id));
+          /* `CSS` here is this file's stylesheet text (above), not the browser's: its escape is global.CSS.escape (the OS cold walk, 2026-10-18:
+             pressing a link to a place on a Center's own page threw "CSS.escape is not a function" and went nowhere) */
+          var t = root0.querySelector('#' + (global.CSS && global.CSS.escape ? global.CSS.escape(id) : String(id).replace(/[^\w-]/g, '\\$&')));
           if (t) { t.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
           showTab(el, 'site:' + id);
         });
@@ -784,7 +786,16 @@
       var i = a.querySelector('input[type="url"]'); i.value = '';
       if (kind !== 'src') i.focus();
       var f = a.querySelector('.ow-site-edit__file');
-      f.onchange = function () { if (f.files && f.files[0]) upload(f.files[0]); };
+      /* EVERY UPLOAD OPENS ONEWAY'S EDITOR FIRST (founder/831), sized to the picture it replaces when that is known */
+      f.onchange = function () {
+        var x = f.files && f.files[0];
+        if (!x) return;
+        if (!OW.editMedia) { upload(x); return; }
+        var r0 = sel && sel.getBoundingClientRect ? sel.getBoundingClientRect() : null;
+        var aspect = (r0 && r0.width > 8 && r0.height > 8) ? r0.width / r0.height : 'free';
+        OW.editMedia(x, { frame: { aspect: aspect, label: 'Photo', out: { max: 2048 } } })
+          .then(function (out) { if (out && out.blob) upload(out.blob); });
+      };
     }
     /* A PHOTOGRAPH FROM THE PHONE: it goes through the App's one media door
        (POST /api/oneway/media — the writer reads its bytes, never its claimed

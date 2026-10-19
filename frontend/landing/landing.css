@@ -27,6 +27,20 @@ main > .lp:last-child,body > .lp:has(~ footer.owfoot):not(:has(~ .lp)){padding-b
 .lk span{font-family:var(--font-display,var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif));font-style:italic;font-weight:900;letter-spacing:-.03em;
   font-size:clamp(22px,2.5vw,30px);line-height:1;color:rgba(255,255,255,.92)}
 /* ONE BUTTON SHAPE for the whole page: a rounded pill, small, sleek (534) */
+/* THE VISUAL ANCHOR, ONE VOCABULARY FOR EVERY PAGE (the founder, 2026-10-19: "i dont like how the page goes from
+   beautfiul header text to subtext everywhere and it gives the eye no where to lead"; agreed on lane A with the system
+   pages and the site writer, whose sites wear the same five as .owl-anchor--*). Between a section's headline and its
+   words stands one thing to look at: a real screenshot (shot), a big number (number), a picture (picture), a product
+   moment (moment) or a drawing (drawing). No two neighbouring sections use the same kind, and none is a headline and
+   then words alone. The anchor follows its section's alignment (its contents are inline). */
+.lp-anchor{display:block;margin:clamp(24px,3.4vw,40px) 0 clamp(22px,3vw,34px)}
+.lp-anchor img,.lp-anchor svg{display:inline-block;vertical-align:top;max-width:100%;height:auto}
+.lp-anchor--shot img{border-radius:clamp(10px,1.4vw,16px);box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.08)}
+.lp-anchor--picture img{border-radius:clamp(14px,2vw,22px)}
+.lp-anchor--number{font-family:var(--font-display,var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif));
+  font-weight:900;font-size:clamp(54px,8vw,104px);line-height:.9;letter-spacing:-.045em;color:#fff}
+.lp-anchor--drawing{color:rgb(var(--land-hue-0,93,226,255))}
+.lp-anchor--drawing svg{width:clamp(104px,14vw,160px)}
 .lp-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .lp-acts--c{justify-content:center}
 /* ONE OUTLINED BUTTON ON EVERY LANDING PAGE (S20's Outlined kind, amended 2026-10-16; founder/790: "they must have the
@@ -39,6 +53,15 @@ main > .lp:last-child,body > .lp:has(~ footer.owfoot):not(:has(~ .lp)){padding-b
    command, which the shared language would draw as words on nothing, so it is held to `a.pill.ow-popit-btn`'s weight
    over oneway-popit.css). It was 40px at 650 and -.005em with a ring at 70%, beside a 36px Sign in on the same page
    (round 2, 2026-10-16); index.html's own copy of this rule and site-page.css's 40px `a.pill.ow-popit-btn` are gone. */
+/* THE SAME SURFACE WITHOUT :is() (Chrome 88): a Chromebook past its updates runs Chrome 76-87, which drops the whole
+   :is() rule, and the hero's two doors lost their ring and stood as two more bare wordmarks under the hero's (the
+   founder, 2026-10-19: "on chromebooks the wordmark at the top is duplicated"). The :is() rule after it keeps its weight
+   where it is understood; held by tools/probe/wordmark-one.cjs. */
+html body .pill,html body a.pill.ow-popit-btn{align-items:center;justify-content:center;gap:8px;box-sizing:border-box;
+  min-height:var(--ow-b-h,36px);padding:0 var(--ow-b-px,16px);border:1px solid currentColor!important;border-radius:var(--ow-b-r,999px)!important;
+  background:transparent;background-image:none;box-shadow:none;transform:none;text-decoration:none;text-shadow:none;
+  color:#fff;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:14px;font-weight:600;font-style:normal;line-height:1.2;letter-spacing:0;
+  cursor:pointer;transition:background .2s}
 html body :is(.pill,a.pill.ow-popit-btn){align-items:center;justify-content:center;gap:8px;box-sizing:border-box;
   min-height:var(--ow-b-h,36px);padding:0 var(--ow-b-px,16px);border:1px solid currentColor!important;border-radius:var(--ow-b-r,999px)!important;
   background:transparent;background-image:none;box-shadow:none;transform:none;text-decoration:none;text-shadow:none;
@@ -67,7 +90,7 @@ html body :is(.pill,a.pill.ow-popit-btn):focus-visible{outline:2px solid current
   filter:drop-shadow(0 50px 60px rgba(0,0,0,.7)) drop-shadow(0 0 60px rgba(139,92,255,.22))}
 .lp-phone .scr{position:absolute;left:5.333%;top:2.5%;width:89.333%;height:95%;overflow:hidden;border-radius:15.8% / 7.28%;background:#000}
 .lp-phone .scr img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
-.lp-phone > .fr{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.lp-phone > .fr{position:absolute;top:0;right:0;bottom:0;left:0;width:100%;height:100%;display:block;pointer-events:none}
 
 /* founder/532: ONEWAY Sans is one cut at every size (founder/469), so its word
    space is the text cut's — 0.262em, where SF Pro Display sets 0.218 at title

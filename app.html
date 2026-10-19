@@ -4,6 +4,44 @@
   <meta charset="UTF-8"/>
   <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
+  <script id="ow-look">
+  /* THE LOOK THIS LOAD, CHOSEN ONCE, FIRST (founder/829: "the icon doesnt sync to the landing pages color"). The page's
+     palette and its tab globe read this one choice: the head's tab script (tools/site_seo.py TAB_GLOBE_JS, right below)
+     names the globe in this look's hue while the head is read, and the palette script further down paints it. */
+  (function () {
+    /* MORE COLOURS ON EACH LOAD (founder/790: "introduce more variety for color options of the landing page. when
+       randomlly loading on"). Each look is a base hue and the two offsets of its other glows; the three glows keep the
+       landing's own lightnesses (deep, light, middle) on its black, so every look is still the landing's room. The
+       eight added looks are my reading of his "more variety" (for his eye). */
+    var looks = [
+      [188.7, 66.4, 209], // The familiar teal, violet and amber combination.
+      [218, 90, 215],     // Deep blue with violet and warm light.
+      [310, 120, 225],    // Pink with green and blue.
+      [145, 90, 225],     // Green with blue and warm light.
+      [38, 185, 95],      // Gold with deep blue and green.
+      [350, 40, 250],     // Crimson with peach light and blue.
+      [200, 330, 80],     // Azure with aqua light and violet.
+      [160, 120, 40],     // Emerald with lavender light and sky.
+      [330, 75, 270],     // Rose with gold light and blue.
+      [250, 200, 70],     // Indigo with lime light and magenta.
+      [12, 300, 180],     // Ember with orchid light and cyan.
+      [180, 150, 60],     // Lagoon teal with pink light and blue.
+      [275, 245, 120]     // Violet with sea-green light and coral.
+    ];
+    var turn = Math.floor(Math.random() * looks.length);
+    /* the first load of a visit is the random one; each reload in the same tab then steps to the next look. The saved
+       turn was read as Number(null) = 0 when nothing was saved yet, so every first load drew look 0 (measured
+       2026-10-16: 14 of 14 fresh loads were the teal look); only a turn actually saved is followed now */
+    try {
+      var saved = sessionStorage.getItem('ow_landing_palette_turn');
+      var savedTurn = saved === null ? NaN : Number(saved);
+      if (Number.isFinite(savedTurn) && savedTurn >= 0) turn = savedTurn % looks.length;
+      sessionStorage.setItem('ow_landing_palette_turn', String(turn + 1));
+    } catch (_) {}
+    window.__owLook = { turn: turn, look: looks[turn] };
+    window.__owPageHue = looks[turn][0];
+  })();
+  </script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
   <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,188.7)</script>
   <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
@@ -38,7 +76,7 @@
   <meta name="apple-mobile-web-app-title" content="Oneway">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"We give every person one profile and every community or business a Center.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"WebPage","@id":"https://oneway.center/app#webpage","url":"https://oneway.center/app","name":"Oneway App","headline":"Oneway App: Home, Discovery, Create, Messages | Oneway","description":"The Oneway App: For You and custom feeds on Home, a map of places in Discovery, Create for photos, videos and imports, and group chats with their own rules.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-17","breadcrumb":{"@id":"https://oneway.center/app#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/app#software","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","url":"https://oneway.center/app","description":"Home, Discovery, Create, Messages and Me: a ranked For You feed and custom feeds, a map of places, photos, videos and imports, group chats that set their own rules, and a profile whose look follows the account.","publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"BreadcrumbList","@id":"https://oneway.center/app#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Oneway App","item":"https://oneway.center/app"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","publisher":{"@id":"https://oneway.center/#organization"},"mainEntity":{"@id":"https://oneway.center/#app"}},{"@type":"WebPage","@id":"https://oneway.center/app#webpage","url":"https://oneway.center/app","name":"Oneway App","headline":"Oneway App: Home, Discovery, Create, Messages | Oneway","description":"The Oneway App: For You and custom feeds on Home, a map of places in Discovery, Create for photos, videos and imports, and group chats with their own rules.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-19","mainEntity":{"@id":"https://oneway.center/#app"},"breadcrumb":{"@id":"https://oneway.center/app#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"The flagship of Oneway. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Home, Discovery, Create, Messages and Me: a ranked For You feed and custom feeds, a map of places, photos, videos and imports, group chats that set their own rules, and a profile whose look follows the account.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/app","mainEntityOfPage":{"@id":"https://oneway.center/app#webpage"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/os","isRelatedTo":{"@id":"https://oneway.center/#app"}},{"@type":"BreadcrumbList","@id":"https://oneway.center/app#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Oneway App","item":"https://oneway.center/app"}]}]}</script>
   <!-- /SEO -->
   <!-- ★ FOUNDER/536 (2026-09-25): *"can you do it for oneway. profesionally
        without stupid ai slang"* — the App landing he reviewed as a proposal in
@@ -52,26 +90,57 @@
   <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
   <script src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
   <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
+  <script>
+  (function () {
+    /* the look this load is the one the head chose (<script id="ow-look">), so the page and its tab globe wear one hue */
+    var turn = window.__owLook.turn, look = window.__owLook.look;
+    function rgb(h, s, l) {
+      h = ((h % 360) + 360) % 360; s /= 100; l /= 100;
+      var a = s * Math.min(l, 1 - l);
+      function channel(n) {
+        var k = (n + h / 30) % 12;
+        return Math.round(255 * (l - a * Math.max(-1, Math.min(Math.min(k - 3, 9 - k), 1))));
+      }
+      return [channel(0), channel(8), channel(4)].join(',');
+    }
+    function paint() {
+      var chosen = getComputedStyle(document.documentElement).getPropertyValue('--ow-user-hue').trim();
+      var base = chosen === '' ? look[0] : Number(chosen) + look[0] - 188.7;
+      /* the tab's globe in this page's colour for a visitor (the person's own hue wins when signed in; oneway-hue.js) */
+      if (window.owTabHue) window.owTabHue(chosen === '' ? base : Number(chosen));
+      var hues = [base, base + look[1], base + look[2]];
+      if (chosen !== '') hues[turn % 3] = Number(chosen);
+      hues.forEach(function (value, i) { document.documentElement.style.setProperty('--land-hue-angle-' + i, value); });
+      [rgb(hues[0], 94.5, 42.7), rgb(hues[1], 91.7, 76.3), rgb(hues[2], 92.1, 50.2)]
+        .forEach(function (value, i) { document.documentElement.style.setProperty('--land-hue-' + i, value); });
+    }
+    paint();
+    addEventListener('ow:hue', paint);
+  })();
+  </script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=4d976ea9"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=e215a35d"/>
   <link rel="stylesheet" href="/frontend/landing/reserve.css?v=afa8ff6f"/>
   <!-- THE APP'S OWN STYLESHEET, for the reserve box's popit and the App Post it becomes (the founder, 2026-10-09:
        "EXACTlY, not a recreation"). Not blocking: nothing on the first screen uses it (measured at 390: the heading,
        the line and the bar keep their place, size and face when it arrives), the way the landing's build loads it. -->
-  <link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=36c79733" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=36c79733"></noscript>
+  <link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=76216ea0" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=76216ea0">
+<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=34bac58d"></noscript>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--font:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--font-display:var(--font);
-      --ease:cubic-bezier(.4,0,.2,1);--ow-h1:139,92,255;--ow-h2:93,226,255;
+      --ease:cubic-bezier(.4,0,.2,1);--ow-h1:var(--land-hue-1,139,92,255);--ow-h2:var(--land-hue-0,93,226,255);
       --muted:rgba(255,255,255,.62);--line:rgba(255,255,255,.08)}
-    /* the ground the three landing pages share (493 #14) */
+    /* THE LANDING'S GROUND AND ACCENTS (the founder, 2026-10-19: "introduce the dynamic coloring to the apps page"): the
+       look this load (<script id="ow-look">, the landing's own list) paints --land-hue-0..2, and the page's ground, its
+       accents (--ow-h1, --ow-h2) and its galaxy wear them, the person's own hue taking one of the three when signed in */
     html{scroll-behavior:smooth;overflow-x:hidden}
     html:root{background:
-      radial-gradient(60% 50% at 18% 22%, rgba(139,92,255,.16), transparent 72%),
-      radial-gradient(55% 45% at 82% 68%, rgba(92,255,255,.10), transparent 72%),
-      radial-gradient(45% 40% at 62% 8%, rgba(255,168,58,.07), transparent 70%),
-      #0e0d1a fixed}
+      radial-gradient(115% 75% at 16% 4%, rgba(var(--land-hue-0,6,182,212),.18), transparent 56%),
+      radial-gradient(115% 80% at 86% 20%, rgba(var(--land-hue-1,167,139,250),.16), transparent 56%),
+      radial-gradient(140% 95% at 52% 114%, rgba(var(--land-hue-2,245,158,11),.14), transparent 60%),
+      #000 fixed}
     body{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:transparent;color:#fff;-webkit-font-smoothing:antialiased;line-height:1.5}   /* a literal stack: the Safari guard */
     a{color:inherit;text-decoration:none}
     h1,h2,h3{text-wrap:balance}
@@ -148,7 +217,7 @@
     .rv.wait{opacity:0;transform:translateY(24px)}
     @media(prefers-reduced-motion:reduce){.rv.wait{opacity:1;transform:none}}
   </style>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=ee9eef51"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=3142d6a9"/>
 </head>
 <body>
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
@@ -168,7 +237,7 @@
       <a href="#claim" class="pill pill--solid">Claim your @name</a>
     </div>
   </nav>
-  <script src="/frontend/shared/oneway-bar.js?v=0a2852dc"></script>
+  <script src="/frontend/shared/oneway-bar.js?v=d5341b18"></script>
 
   <main>
     <!-- 1 · THE OPENING -->
@@ -298,7 +367,7 @@
   <div class="stick" id="stick"><a class="pill pill--solid" href="#claim">Claim your @name</a></div>
 
   <!-- the one reader and writer, which the claim below writes through (as on index.html) -->
-  <script src="/frontend/shared/oneway-data.js?v=cf5ca700"></script>
+  <script src="/frontend/shared/oneway-data.js?v=32d0e409"></script>
   
   <script>
   /* THE GALAXY — the same field the landing pages share, retinted from the
@@ -312,6 +381,11 @@
     addEventListener('resize',resize,{passive:true}); resize();
     var WHITE=[255,255,255], CYAN=[6,182,212], PURPLE=[167,139,250], AMBER=[245,158,11];
     if (window.OW && window.OW.galaxy) { window.OW.galaxy.follow({ CYAN:CYAN, PURPLE:PURPLE, AMBER:AMBER }); }
+    /* the look's three hues, as the landing's galaxy follows them (each star keeps a reference to its colour's array) */
+    function followLook(){ [CYAN, PURPLE, AMBER].forEach(function (c, i) {
+      var v = getComputedStyle(document.documentElement).getPropertyValue('--land-hue-' + i);
+      if (v) c.splice.apply(c, [0, 3].concat(v.split(',').map(Number))); }); }
+    followLook(); addEventListener('ow:hue', followLook);
     function rndCol(){ var r=Math.random(); if(r<0.06) return CYAN; if(r<0.14) return PURPLE; if(r<0.17) return AMBER; return WHITE; }
     function project(x,y,z){ if(z<=-FOV+1) return null; var s=FOV/(FOV+z); return {sx:CX+x*s, sy:CY+y*s, s:s}; }
     function rot3(vx,vy,vz,rx,ry,rz){ var y1=vy*Math.cos(rx)-vz*Math.sin(rx), z1=vy*Math.sin(rx)+vz*Math.cos(rx);

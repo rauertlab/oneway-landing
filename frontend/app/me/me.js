@@ -2140,6 +2140,27 @@ function iconTab(id, label, render, n) {
             body.appendChild(one);
           });
         }).catch(function () {});
+        /* PICKUP ORDERS STILL OPEN (oneway/pickup, the founder 2026-10-19): each opens its card, with the code to show at
+           the counter and what to pay there (frontend/shared/oneway-pickup.js, loaded when pressed) */
+        data.get('/api/oneway/me/pickups').then(function (pr) {
+          var open = ((pr && pr.ok && pr.data && pr.data.orders) || []).filter(function (o) { return o && o.open; });
+          if (!open.length) return;
+          var ph = mk('div', 'ow-cpage__h');
+          ph.appendChild(mk('span', 'ow-cpage__ht', 'Pickup orders'));
+          coming.appendChild(ph);
+          var pb = mk('div', 'ow-cpage__b');
+          coming.appendChild(pb);
+          open.slice(0, 6).forEach(function (o) {
+            var one = mk('button', 'ow-cpage__ev'); one.type = 'button';
+            one.setAttribute('data-pickup', o.id);
+            one.appendChild(mk('b', '', esc('Pickup \u00b7 ' + ((o.center || {}).name || ''))));
+            one.appendChild(mk('span', '', esc([o.window_words, o.state_words, o.code ? 'code ' + o.code : ''].filter(Boolean).join(' \u00b7 '))));
+            one.addEventListener('click', function () {
+              (OW.need ? OW.need('pickup') : Promise.resolve()).then(function () { if (OW.pickup) OW.pickup.open((o.center || {}).id, o.id, one); });
+            });
+            pb.appendChild(one);
+          });
+        }).catch(function () {});
         pane.insertBefore(page, pane.firstChild);
 
         /* AND THE CARDS THEY CARRY — one read, drawn only when there is one

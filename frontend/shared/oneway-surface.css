@@ -1,0 +1,136 @@
+/* oneway-surface.css — THE ONE POPIT SURFACE, in a sheet of its own (founder/822, 835).
+   It was the end of oneway-popit.css; it moved here, unchanged, so a page that is not the App can wear it too: the site's
+   pricing boxes (founder/835: "i want to see the popit button surfaces united across the app, inculfuing the pricing")
+   are named in its lists like every other surface, and the OS page, which does not load the App's sheet, loads this one.
+   Every page that loads oneway-popit.css loads this right after it, so its place in the cascade is the one it had at
+   the end of that sheet. Its tokens carry the App's own :root values as their fallbacks (a page without the App's sheet
+   has none); a page with it uses its own. Read by tools/apple_design.py with oneway-popit.css. Held by
+   api/oneway/platform/test_site_pricebox.py, api/oneway/cards/test_card_surface.py and test_center_row.py. */
+/* ═══ THE ONE POPIT SURFACE ═══════════════════════════════════════════════════════════════════════════════════════════
+   ★ FOUNDER/822, 2026-10-17: the OS switcher's Center buttons had "a slightly different pop-it button surface than the
+     pop-its and posts do, and I want to unify the two together into one canonical pop-it surface that will be used for
+     the rest of the platform. I want to keep the outline. But I want to make it subtle ... it should feel like it's
+     glowing ... Don't make it tacky looking."
+   MEASURED BEFORE (computed style, Popit mode, 2026-10-17): in dark, Popits and Posts already wore one recipe with no
+   outline, and the switcher row its own (a 180-degree wash over an opaque panel, an outer 1px ring at .4, a glow at .75);
+   in light, three recipes (the Popit tile, the river Post on the ground, the switcher).
+   NOW ONE RECIPE PER GROUND, written once, worn by a Post's face, a Popit's face, a switcher row and the surfaces that
+   already shared the material. The outline is kept as LIGHT, not as a drawn ring: a hairline inside the shape in the
+   surface's own hue, the face's light meeting its edge, with that light bleeding a few pixels inward beside the glow it
+   already threw outward. Simple mode keeps its own presentation (the founder, 2026-09-02) and Scroll its black page.
+   Only background-image is set, so a plain world's background-color under a face stays. Read by tools/apple_design.py
+   (the Apple surfaces draw this same block): keep its values literal. For his eye (founder/264), not final. */
+html:not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,
+html:not([data-simple="1"]) .ow-cv-face,
+html:not([data-simple="1"]) .ow-popit::before,
+html:not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,
+html:not([data-simple="1"]) .ow-pricebox,
+html:not([data-simple="1"]) .ow-cv-pick__row,
+html:not([data-simple="1"]) .ow-reqs,
+html:not([data-simple="1"]) .ow-msg:not([data-mine]),
+html:not([data-simple="1"]) .ow-crow{
+  background-image:
+    radial-gradient(130% 80% at 18% -6%, rgba(var(--h),.46), transparent 64%),
+    radial-gradient(120% 90% at 92% 108%, rgba(var(--h2),.30), transparent 60%),
+    linear-gradient(158deg, rgba(var(--h),.18), rgba(var(--h3,var(--ow-h3,var(--h2))),.12) 46%,
+                            rgba(var(--h2),.10) 70%, var(--ow-tile-base,rgba(48,50,92,.50)));
+  box-shadow:
+    inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),
+    inset 0 0 0 1px rgba(var(--h),.18),
+    inset 0 0 16px -6px rgba(var(--h),.38),
+    0 0 34px -10px rgba(var(--h),.50),
+    0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html[data-theme="light"]:not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,
+html[data-theme="light"]:not([data-simple="1"]) .ow-cv-face,
+html[data-theme="light"]:not([data-simple="1"]) .ow-popit::before,
+html[data-theme="light"]:not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,
+html[data-theme="light"]:not([data-simple="1"]) .ow-pricebox,
+html[data-theme="light"]:not([data-simple="1"]) .ow-cv-pick__row,
+html[data-theme="light"]:not([data-simple="1"]) .ow-reqs,
+html[data-theme="light"]:not([data-simple="1"]) .ow-msg:not([data-mine]),
+html[data-theme="light"]:not([data-simple="1"]) .po-sheet,
+html[data-theme="light"]:not([data-simple="1"]) .ow-cpage__ev,
+html[data-theme="light"]:not([data-simple="1"]) .ow-claims__row,
+html[data-theme="light"]:not([data-simple="1"]) .ow-map__tile,
+html[data-theme="light"]:not([data-simple="1"]) .ow-crow{
+  background-image:
+    radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.32), transparent 62%),
+    radial-gradient(92% 62% at 50% 116%, rgba(var(--h2),.22), transparent 64%),
+    linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -26px 46px rgba(76,66,120,.055),
+    inset 0 0 0 1px rgba(var(--h),.28),
+    inset 0 0 14px -6px rgba(var(--h),.22),
+    0 0 26px -12px rgba(var(--h),.38),
+    0 14px 28px -14px rgba(48,40,80,.3)}
+/* the Center row (oneway-centerrow.css) takes its Center's own pair there, and lights up a little more under the pointer or the keyboard */
+html:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible){
+  box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.32),inset 0 0 18px -6px rgba(var(--h),.55),
+    0 0 42px -10px rgba(var(--h),.62),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html[data-theme="light"]:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible){
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
+    inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}
+
+/* ═══ THE SIMPLE SURFACE: the same components in the Simple material (the founder, 2026-10-19: "visual clean interface built for
+   simple mode"; the dispatcher's brief: the same layouts and information as Pop-it, flat, calm, clear, real pictures and
+   icons, one accent per Center hue). Every component the one Popit surface lights wears, in Simple mode, the feed's own
+   ground (oneway-popit.css "27 · SIMPLE MODE" .po-river: the room's ground with 3% of its own hue) and a hairline: no glow,
+   no grain, no grey. A new component that wears `.ow-popit` (or is named in the lists above) wears this in Simple by itself;
+   nothing else is written for it. Messages keep their own Simple bubbles (oneway-popit.css "MESSAGES IN SIMPLE MODE").
+   Tokens, per element: --ow-simple-ground and --ow-simple-edge. The attribute is said twice on purpose: the light room's older
+   material rules weigh three parts (html[data-theme="light"][data-theme="light"] .ow-cv-face), and this must outweigh them. ═══ */
+html[data-simple="1"][data-simple="1"] .po-card:not(.ow-fpos .po-card) > .po-card__face,
+html[data-simple="1"][data-simple="1"] .ow-cv-face,
+html[data-simple="1"][data-simple="1"] .ow-cv-t[data-family] .ow-cv-face.ow-cv-face--w,
+html[data-simple="1"][data-simple="1"] .ow-popit::before,
+html[data-simple="1"][data-simple="1"] .ow-cv-pick__row,
+html[data-simple="1"][data-simple="1"] .ow-reqs,
+html[data-simple="1"][data-simple="1"] .ow-crow,
+html[data-simple="1"][data-simple="1"] .ow-pricebox,
+/* the components that light themselves with the hue outside the one surface's lists (measured: every rule in oneway-popit.css
+   whose background is a radial light of --h), their boxes only: sheets, Popit faces and glance beads, the Center page's
+   events, claims rows, map tiles, Discovery's rows, Create's panels. Buttons, faces and pictures keep their own. */
+html[data-simple="1"][data-simple="1"] .po-sheet,
+html[data-simple="1"][data-simple="1"] .po-face,
+html[data-simple="1"][data-simple="1"] .po-glance__face,
+html[data-simple="1"][data-simple="1"] .po-plate,
+html[data-simple="1"][data-simple="1"] .ow-cpage__ev,
+html[data-simple="1"][data-simple="1"] .ow-claims__row,
+html[data-simple="1"][data-simple="1"] .ow-map__tile,
+html[data-simple="1"][data-simple="1"] .ow-find__row,
+html[data-simple="1"][data-simple="1"] .ow-compose__lens,
+html[data-simple="1"][data-simple="1"] .ow-compose__lensdoor,
+html[data-simple="1"][data-simple="1"] .ow-compose__way,
+html[data-simple="1"][data-simple="1"] .ow-compose__write{
+  --ow-simple-ground:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h,var(--ow-h1,139,92,255))) 3%);
+  --ow-simple-edge:color-mix(in srgb,var(--ow-ink,#fff) 10%,transparent);
+  background:var(--ow-simple-ground);background-image:none;box-shadow:inset 0 0 0 1px var(--ow-simple-edge);
+  animation:none}
+html[data-simple="1"][data-simple="1"] .po-card:not(.ow-fpos .po-card) > .po-card__face::after,
+html[data-simple="1"][data-simple="1"] .ow-cv-face::after,
+html[data-simple="1"][data-simple="1"] .ow-popit::after,
+html[data-simple="1"][data-simple="1"] .ow-cv-pick__row::after,
+html[data-simple="1"][data-simple="1"] .ow-reqs::after,
+html[data-simple="1"][data-simple="1"] .po-sheet::after,
+html[data-simple="1"][data-simple="1"] .po-face::after,
+html[data-simple="1"][data-simple="1"] .ow-cpage__ev::after{display:none}
+
+/* SIMPLE HOLDS STILL (the founder, 2026-10-19: "visual clean interface built for simple mode"). In Simple nothing moves for
+   show. Measured on every screen before this: Simple ran the same endless motion as Pop-it, the world's nebula and two star
+   fields drifting, the globe on an empty screen turning, breathing and glowing. Now the world's picture stays where it is (the
+   plain background in Appearance is what takes it away), a floating Popit rests, an open Popit's socket stops pulsing,
+   the map's pins stop breathing and their people stop orbiting, and the globe on an empty screen (`.ow-door`) is a
+   still line drawing in the hue, no halo, no travelling light. What answers a person still moves: the globe while a page
+   loads or a request is in flight (`.ow-loading`, the crossing), typing dots, loading bars, a recording, a like's bloom, a
+   message arriving, a sheet opening. */
+html[data-simple="1"][data-simple="1"] .ow-world__neb,
+html[data-simple="1"][data-simple="1"] .ow-world__stars::before,
+html[data-simple="1"][data-simple="1"] .ow-world__stars::after,
+html[data-simple="1"][data-simple="1"] .po.po-float.po-live,
+html[data-simple="1"][data-simple="1"] .po[data-po-open]::after,
+html[data-simple="1"][data-simple="1"] .ow-map__pin i,
+html[data-simple="1"][data-simple="1"] .ow-map__pin u,
+html[data-simple="1"][data-simple="1"] .ow-door .ow-globe *{animation:none}
+html[data-simple="1"][data-simple="1"] .ow-door .ow-globe__halo,
+html[data-simple="1"][data-simple="1"] .ow-door .ow-globe__hot{display:none}

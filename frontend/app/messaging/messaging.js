@@ -2214,6 +2214,15 @@
         if (!f) return;
         if (f.size > 60 * 1024 * 1024) { note('That file is over 60 MB.'); return; }
         var isVideo = /^video\//.test(f.type);
+        /* A PHOTO OPENS IN THE EDITOR FIRST (founder/831), with a free crop, as a photo sent in iMessage can be cut
+           before it goes; Cancel sends nothing. A GIF keeps its movement and a clip plays whole, so both go as they are. */
+        if (!isVideo && !/gif/i.test(f.type) && typeof OW.editMedia === 'function') {
+          OW.editMedia(f, { frame: 'chat', kinds: ['image'], done: 'Send' }).then(function (r) {
+            if (!r) return;
+            sendMedia(r.dataUrl, false, URL.createObjectURL(r.blob), ta.value.trim());
+          });
+          return;
+        }
         var local = URL.createObjectURL(f);
         var rd = new FileReader();
         rd.onload = function () { sendMedia(String(rd.result || ''), isVideo, local, ta.value.trim()); };
@@ -3153,24 +3162,38 @@
             var gpick = doc.createElement('input'); gpick.type = 'file'; gpick.accept = 'image/*'; gpick.hidden = true;
             who.appendChild(gpick);
             f.addEventListener('click', function () { gpick.click(); });
+            /* the group's face goes up through the one media writer and onto the room; `quiet` is the editor's own
+               Done, which says a refusal in its frame (founder/831), so no toast says it twice */
+            var putFace = function (dataUrl, quiet) {
+              f.setAttribute('data-busy', '1');
+              return data.post('/api/oneway/media', { data: dataUrl, origin: 'uploaded' }).then(function (up) {
+                var item = up && up.ok && up.data && (up.data.media || up.data);
+                var url = item && item.url;
+                if (!url) {
+                  f.removeAttribute('data-busy');
+                  var w0 = (up && up.error) || 'That picture could not be uploaded.';
+                  if (!quiet && OW.toast) OW.toast(w0);
+                  return { ok: false, error: w0 };
+                }
+                return data.patch(conv_(cid), { picture: url }).then(function (r) {
+                  f.removeAttribute('data-busy');
+                  if (!r || !r.ok) { var w1 = why(r) || 'That did not save.'; if (!quiet && OW.toast) OW.toast(w1); return { ok: false, error: w1 }; }
+                  conv.face = Object.assign({}, conv.face || {}, { image: url });
+                  rereadRoom('');
+                  return { ok: true, url: url };
+                });
+              });
+            };
             gpick.addEventListener('change', function () {
               var file = gpick.files && gpick.files[0]; gpick.value = '';
               if (!file) return;
+              /* THE GROUP'S PICTURE IS PLACED IN ITS CIRCLE FIRST (founder/831) */
+              if (typeof OW.editMedia === 'function') {
+                OW.editMedia(file, { frame: 'group', kinds: ['image'], save: function (r) { return putFace(r.dataUrl, true); } });
+                return;
+              }
               var rd = new FileReader();
-              rd.onload = function () {
-                f.setAttribute('data-busy', '1');
-                data.post('/api/oneway/media', { data: String(rd.result || ''), origin: 'uploaded' }).then(function (up) {
-                  var item = up && up.ok && up.data && (up.data.media || up.data);
-                  var url = item && item.url;
-                  if (!url) { f.removeAttribute('data-busy'); if (OW.toast) OW.toast((up && up.error) || 'That picture could not be uploaded.'); return; }
-                  return data.patch(conv_(cid), { picture: url }).then(function (r) {
-                    f.removeAttribute('data-busy');
-                    if (!r || !r.ok) { if (OW.toast) OW.toast(why(r) || 'That did not save.'); return; }
-                    conv.face = Object.assign({}, conv.face || {}, { image: url });
-                    rereadRoom('');
-                  });
-                });
-              };
+              rd.onload = function () { putFace(String(rd.result || ''), false); };
               rd.readAsDataURL(file);
             });
           }

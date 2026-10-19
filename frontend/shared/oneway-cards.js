@@ -684,7 +684,52 @@
     return first;
   }
 
-  OW.cards = { read: read, deck: deck, html: html, face: face, fill: fill, inside: inside, node: node, mount: mount, forget: forget,
+  /* A DETAIL'S ICON NAMES ITS ROLE, ONE RULE FOR THE CARD AND THE PROFILE (founder/835's screenshot: "the details on the right
+     line by line with an icon each"; the founder, 2026-10-19: the info "always on right side weather its card or profile ...
+     in that one clean list"). The shared set's glyph (OW.glyph); a label no role is known for gets a quiet dot, never an
+     icon that says something it does not. */
+  var ROLE = [
+    [/^(open|hours|times?|classes|schedule|daily)$/i, 'clock'],
+    [/^(season|dates?|events?|showcase|when)$/i, 'event'],
+    [/^(vendors|members|ages|capacity|staff|team|seats|guests)$/i, 'people'],
+    [/^(price|prices|lessons|from|fees?|rates?|cost|first class|tickets?|entry)$/i, 'tag'],
+    [/^(rentals|shop|menu|serves|sells|offers?|styles?)$/i, 'cart'],
+    [/^(parking)$/i, 'parking'],
+    [/^(pays|payment|payments)$/i, 'card'],
+    [/^(address|place|location|where)$/i, 'place'],
+    [/^(website|site|web)$/i, 'globe'],
+    [/^(phone|call)$/i, 'phone'],
+    [/^(email|mail)$/i, 'mail']
+  ];
+  function detailIcon(label) {
+    var name = '';
+    ROLE.some(function (r) { if (r[0].test(String(label || '').trim())) { name = r[1]; return true; } return false; });
+    var svg = name && OW.glyph ? OW.glyph(name) : '';
+    return svg || '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="2.2"/></svg>';
+  }
+
+  /* THE PLATFORMS, ONE STRAIGHT LINE (the founder, 2026-10-19: "cards do not stop at 4 icons then go down to next row but should
+     be straight clean line on profile and card"): a row of marks never wraps. This says what the row's sheet needs to draw it:
+     how many marks it holds (`data-n`, the sheet steps the size down past what fits), whether they run past its edge
+     (`data-overflow`), and where its sideways scroll stands (`data-at`: start, middle, end), so the edge fades only where there
+     is more to see. One helper for the card and the profile; idempotent. */
+  function lineMarks(row) {
+    if (!row || row.__owLine) return row;
+    row.__owLine = 1;
+    row.setAttribute('data-n', String(row.children.length));
+    var said = function () {
+      var over = row.scrollWidth > row.clientWidth + 1;
+      row.setAttribute('data-overflow', over ? '1' : '0');
+      var x = row.scrollLeft, end = row.scrollWidth - row.clientWidth - 1;
+      row.setAttribute('data-at', !over ? 'all' : x <= 1 ? 'start' : x >= end ? 'end' : 'middle');
+    };
+    row.addEventListener('scroll', said, { passive: true });
+    if (global.ResizeObserver) new global.ResizeObserver(said).observe(row);
+    else global.requestAnimationFrame && global.requestAnimationFrame(said);
+    return row;
+  }
+
+  OW.cards = { lineMarks: lineMarks, detailIcon: detailIcon, read: read, deck: deck, html: html, face: face, fill: fill, inside: inside, node: node, mount: mount, forget: forget,
     identityHTML: identityHTML, informationHTML: informationHTML, countsHTML: countsHTML, counts: counts, countWords: countWords,
     linksHTML: linksHTML, linksInner: linksInner, directions: directions, handle: handleOf, handleLine: handleLine,
     sayOnce: sayOnce, shortPlace: shortPlace, mark: mark };

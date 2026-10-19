@@ -1,140 +1,149 @@
-/* THE LANDING'S CARDS: A SOCIAL TOP HEADER, CONDENSED (the founder, 2026-10-17: "condense the profile and center cards to be
-   the same size, completely redo them with correct design and info"; "If a new Claude session or a person can't look at it
-   and say, wow, that looks like a perfect representation of a condensed social media top header ... like a TikTok or
-   Instagram ... it also adds information and the user's social links so well, then do not show it to me"). The one
-   renderer's markup (OW.cards, as 'tile', through OW.lcard in landing-cards.js), styled here for the landing's decks only
-   (.lc), so the App's cards and its header work are untouched. Two layouts, as the platform has them: beside (Instagram:
-   the picture with the name and the counts beside it) and above (TikTok: the picture over everything, centred). Every
-   card: the name, the handle, the counts as a number over its word, the bio, where it is (a person's place, a Center's
-   category and place), a person's platforms as their own marks, and Follow and Message, equal, the words centred.
-   The shared tile's own rules are strong (popit material, projections), so the ones that must hold here say so. */
-.lc.lc.lc{--lc-h:var(--h,262);box-sizing:border-box;width:100%;max-width:420px;margin:0 auto;padding:20px 20px 18px!important;
-  border-radius:26px!important;color:#fff;font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;text-align:left;
-  background:radial-gradient(120% 70% at 10% 0%,hsl(var(--lc-h) 70% 34% / .55),transparent 60%),
-             linear-gradient(180deg,hsl(var(--lc-h) 38% 15%),hsl(var(--lc-h) 30% 9%))!important;
-  box-shadow:0 1px 0 rgba(255,255,255,.09) inset,0 0 0 1px hsl(var(--lc-h) 70% 72% / .18) inset,0 26px 50px -26px rgba(0,0,0,.75)!important}
-.lc.lc.lc::before,.lc.lc.lc::after{display:none!important}
-.lc.lc.lc .ow-ocard__top{display:grid!important;grid-template-columns:84px minmax(0,1fr)!important;column-gap:16px!important;row-gap:0!important;align-items:center!important;margin:0!important}
-.lc.lc.lc .ow-ocard__face{width:84px!important;height:84px!important;margin:0!important;border-radius:50%!important;display:grid!important;place-items:center!important;overflow:hidden!important;
-  background:radial-gradient(75% 75% at 32% 22%,hsl(var(--lc-h) 85% 74%),hsl(var(--lc-h) 70% 44%))!important;
-  box-shadow:0 0 0 3px hsl(var(--lc-h) 30% 10%),0 0 0 5.5px hsl(var(--lc-h) 90% 68%)!important}
-.lc.lc.lc .ow-ocard__face i{font-style:normal!important;font-weight:800!important;font-size:28px!important;letter-spacing:-.02em!important;color:#fff!important;line-height:1!important}
-.lc.lc.lc .ow-ocard__face svg{display:none!important}
-.lc.lc.lc .ow-ocard__id{display:flex!important;flex-direction:column!important;min-width:0!important;align-items:flex-start!important}
-.lc.lc.lc .ow-ocard__name{font-weight:750!important;font-size:19px!important;line-height:1.2!important;letter-spacing:-.01em!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%}
-.lc.lc.lc .ow-ocard__sub{font-weight:500!important;font-size:14px!important;line-height:1.35!important;color:rgba(255,255,255,.62)!important;margin-top:2px!important}
-/* the counts: a number over its word, three columns of one width, as Instagram sets them */
-.lc.lc.lc .ow-ocard__counts{display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(0,max-content)!important;column-gap:22px!important;margin:12px 0 0!important;justify-content:start!important}
-.lc.lc.lc .ow-ocard__count{display:flex!important;flex-direction:column!important;align-items:flex-start!important;font-weight:500!important;font-size:12.5px!important;line-height:1.25!important;color:rgba(255,255,255,.62)!important;white-space:nowrap!important;letter-spacing:0!important}
-.lc.lc.lc .ow-ocard__count b{font-weight:750!important;font-size:16.5px!important;line-height:1.2!important;color:#fff!important;letter-spacing:-.01em!important}
-.lc.lc.lc .ow-ocard__summary{display:block!important;margin:16px 0 0!important;grid-template-columns:none!important}
-.lc.lc.lc .ow-ocard__bio{display:-webkit-box!important;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden!important;width:auto!important;max-width:none!important;
-  font-weight:500!important;font-size:15px!important;line-height:1.45!important;color:rgba(255,255,255,.93)!important;margin:0!important}
-.lc.lc.lc .ow-ocard__info{display:block!important;width:auto!important;margin:0!important}
-.lc.lc.lc .ow-ocard__info .ow-ocard__detail{display:none!important}   /* a Center's place and categories are said once, in the where line */
-.lc.lc.lc .lc-where{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13.5px;font-weight:500;line-height:1.35;color:rgba(255,255,255,.68)}
-.lc.lc.lc .lc-where svg{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.lc.lc.lc .lc-where b{font-weight:600;color:rgba(255,255,255,.9)}
-/* a person's platforms, their own marks in their own colours, one size, one gap */
-.lc.lc.lc .ow-ocard__links{display:flex!important;flex-wrap:wrap!important;gap:10px!important;margin:14px 0 0!important;padding:0!important}
-.lc.lc.lc .ow-linkbar__i{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;border-radius:50%!important;margin:0!important;
-  background:rgba(255,255,255,.08)!important;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset!important;pointer-events:none}
-.lc.lc.lc .ow-linkbar__i svg{width:18px!important;height:18px!important}
-/* Follow and Message, equal, the words centred (founder/803) */
-.lc.lc.lc .lc-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.lc.lc.lc .lc-acts span{display:flex;align-items:center;justify-content:center;height:38px;border-radius:12px;font-weight:650;font-size:14px;line-height:1;cursor:default;user-select:none}
-.lc.lc.lc .lc-acts .lc-follow{background:hsl(var(--lc-h) 88% 64%);color:#0b0a12}
-.lc.lc.lc .lc-acts .lc-msg{box-shadow:0 0 0 1px rgba(255,255,255,.36) inset;color:#fff;background:rgba(255,255,255,.04)}
-/* TIKTOK'S LAYOUT: the picture over everything, every line centred */
-.lc.lc.lc[data-layout="above"] .ow-ocard__top{grid-template-columns:1fr!important;justify-items:center!important;row-gap:12px!important;text-align:center!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__face{width:92px!important;height:92px!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__id{align-items:center!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__counts{justify-content:center!important;column-gap:30px!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__count{align-items:center!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__bio{text-align:center!important}
-.lc.lc.lc[data-layout="above"] .lc-where,.lc.lc.lc[data-layout="above"] .ow-ocard__links{justify-content:center!important}
-/* the shared tile places its name, handle and counts on its own grid (align-self:end, grid-area) and fixes the link row's
-   width; inside this card's column they flow in order, and the link row is as wide as its card */
-.lc.lc.lc .ow-ocard__id > *{align-self:auto!important;grid-area:auto!important;justify-self:auto!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__id > *{align-self:center!important}
-.lc.lc.lc .ow-ocard__links{width:auto!important;max-width:none!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__summary{margin-top:14px!important}
-/* the picture centred on its name block (Instagram's row); no space the shared tile reserves under the counts; Follow and
-   Message at the card's foot, so cards set to one height (the deck's) end on one line */
-.lc.lc.lc{display:flex!important;flex-direction:column!important}
-.lc.lc.lc .ow-ocard__face{align-self:center!important}
-.lc.lc.lc .ow-ocard__top,.lc.lc.lc .ow-ocard__id{padding:0!important;min-height:0!important}
-.lc.lc.lc .ow-ocard__counts{margin-bottom:0!important}
-.lc.lc.lc .lc-acts{margin-top:auto!important;padding-top:16px}
-/* the summary is the top's third child: it spans the card under the picture and the name, in the row after them, and the
-   rows take only their content's height (the shared tile reserved more) */
-.lc.lc.lc .ow-ocard__top{grid-template-rows:none!important;grid-auto-rows:auto!important;align-content:start!important;height:auto!important}
-.lc.lc.lc .ow-ocard__top > .ow-ocard__summary{grid-column:1 / -1!important;grid-row:auto!important}
+/* THE CLEAN CARD (founder/835, 836, 2026-10-18): his screenshot of a Center card as its direction, "a clean design for the
+   cards", "cards need to look different on simple vs popitmode", and "want to do banners on cards correctly". Drawn by
+   OW.lcard (landing-cards.js) from the one renderer's parts (OW.cards), for the landing's decks and wherever the card is
+   asked for. One anatomy in both modes:
+     the banner   the account's own picture across the card's top, flush with its corners (none without a picture);
+     the head     the face over the banner's lower edge, the name on one line, the handle small under it, a Center's
+                  categories under that; with no banner, the face beside the name as Instagram sets it;
+     the counts   one row, hairlines between, a number over its word;
+     the about    the bio at the left with the platforms under it; a Center's details at the right, line by line, an icon
+                  each, its place last;
+     the acts     Follow filled in the account's hue and Message outlined, equal, at the card's foot.
+   THE MATERIAL IS THE MODE'S. Pop-it: the card wears THE ONE POPIT SURFACE (oneway-popit.css, founder/822) through
+   `.ow-popit::before`, nothing of it written here. Simple: the plain card, a flat ground and a hairline, no light.
+   The shared tile's own rules are strong (projections, the header block), so the ones that must hold here say so. */
+.lc.lc.lc{--lc-h:262;--lc-pad:18px;--lc-face:80px;
+  --lc-ink:#fff;--lc-ink-2:rgba(255,255,255,.74);--lc-ink-3:rgba(255,255,255,.56);--lc-line:rgba(255,255,255,.13);
+  --lc-ring:hsl(var(--lc-h) 34% 15%);
+  box-sizing:border-box;width:100%;max-width:420px;margin:0 auto;padding:var(--lc-pad)!important;display:flex!important;flex-direction:column!important;
+  border-radius:22px 19px 23px 20px!important;overflow:visible!important;color:var(--lc-ink);text-align:left;
+  font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:none!important;box-shadow:none!important;container-type:inline-size}
+html[data-theme="light"] .lc.lc.lc{--lc-ink:#15131f;--lc-ink-2:rgba(21,19,31,.72);--lc-ink-3:rgba(21,19,31,.54);--lc-line:rgba(21,19,31,.11);--lc-ring:#f6f5fb}
+
+/* THE BANNER: flush with the card's top and sides, its top corners the card's own */
+.lc.lc.lc .lc-banner{display:block;position:relative;margin:calc(-1 * var(--lc-pad)) calc(-1 * var(--lc-pad)) 0;height:clamp(96px,30cqw,140px);
+  border-top-left-radius:inherit;border-top-right-radius:inherit;overflow:hidden;background:hsl(var(--lc-h) 30% 22%)}
+.lc.lc.lc .lc-banner img{display:block;width:100%;height:100%;object-fit:cover}
+/* FADE (the account's choice for its profile, founder/824; "made sure we are supporting fading banners and they look good
+   across all surfaces"): the picture melts into the card's own ground from its middle down, the face standing in the melt;
+   Framed keeps its edge */
+.lc.lc.lc[data-banner-style="fade"] .lc-banner{height:clamp(112px,36cqw,160px);background:none;
+  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 42%,rgba(0,0,0,.5) 70%,transparent 100%);
+  mask-image:linear-gradient(180deg,#000 0,#000 42%,rgba(0,0,0,.5) 70%,transparent 100%)}
+
+/* THE HEAD: the face beside the name block; over a banner the face rises half its height onto the banner's edge */
+.lc.lc.lc .ow-ocard__top{display:grid!important;grid-template-columns:var(--lc-face) minmax(0,1fr)!important;grid-template-rows:none!important;
+  grid-auto-rows:auto!important;column-gap:14px!important;row-gap:0!important;align-items:center!important;align-content:start!important;
+  margin:0!important;padding:0!important;min-height:0!important;height:auto!important}
 .lc.lc.lc .ow-ocard__top > .ow-ocard__face,.lc.lc.lc .ow-ocard__top > .ow-ocard__id{grid-row:1!important}
-.lc.lc.lc[data-layout="above"] .ow-ocard__top > .ow-ocard__id{grid-row:2!important}
-/* THE JUDGE'S ROUND (a cold reviewer, 2026-10-17): one edge for the ring and the words, the name block centred on the
-   picture, even padding, a Center's category under its name, Follow's words by its hue, no word alone on a bio's last
-   line, the platforms' marks a size larger */
-.lc.lc.lc{padding:20px!important}
-.lc.lc.lc .ow-ocard__top{grid-template-columns:96px minmax(0,1fr)!important}
-.lc.lc.lc .ow-ocard__face{width:86px!important;height:86px!important;margin:5px!important;justify-self:start!important}
-.lc.lc.lc .ow-ocard__id{align-self:center!important}
-.lc.lc.lc .ow-ocard__sub{color:rgba(255,255,255,.62)!important}
-.lc.lc.lc[data-kind="center"] .ow-ocard__sub,.lc.lc.lc .ow-ocard__top[data-kind="center"] .ow-ocard__sub{color:hsl(var(--lc-h) 85% 76%)!important}
-.lc.lc.lc .lc-cat{display:block;margin-top:3px;font-size:13.5px;font-weight:500;line-height:1.3;color:rgba(255,255,255,.66);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.lc.lc.lc .ow-ocard__counts{margin-top:10px!important}
-.lc.lc.lc .ow-ocard__bio{text-wrap:pretty}
-.lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{color:#fff}
-.lc.lc.lc .ow-linkbar__i svg{width:20px!important;height:20px!important}
+.lc.lc.lc .ow-ocard__face{width:var(--lc-face)!important;height:var(--lc-face)!important;margin:0!important;border-radius:50%!important;
+  display:grid!important;place-items:center!important;overflow:hidden!important;align-self:center!important;justify-self:start!important;transform:none!important;
+  background:radial-gradient(75% 75% at 32% 22%,hsl(var(--lc-h) 85% 72%),hsl(var(--lc-h) 68% 42%))!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.16)!important;border:0!important}
+.lc.lc.lc .ow-ocard__face i{font-style:normal!important;font-weight:800!important;font-size:27px!important;letter-spacing:-.02em!important;color:#fff!important;line-height:1!important}
+.lc.lc.lc .ow-ocard__face img{width:100%;height:100%;object-fit:cover}
+.lc.lc.lc .ow-ocard__face svg{display:none!important}
+.lc.lc.lc[data-banner="1"] .ow-ocard__top{align-items:start!important}
+/* THE TOP, GEOMETRIC: the face's centre on the banner's lower edge (Framed), its name beginning on that edge beside it; over a
+   Fade the face rises further into the melt */
+.lc.lc.lc[data-banner="1"]{--lc-face:84px}
+.lc.lc.lc[data-banner="1"] .ow-ocard__face{margin-top:calc(var(--lc-face) / -2)!important;align-self:start!important;
+  box-shadow:0 0 0 4px var(--lc-ring)!important}
+.lc.lc.lc[data-banner="1"] .ow-ocard__id{padding-top:6px!important}
+.lc.lc.lc[data-banner-style="fade"][data-banner="1"] .ow-ocard__face{margin-top:calc(var(--lc-face) * -.72)!important;box-shadow:0 0 0 1px rgba(255,255,255,.18)!important}
+.lc.lc.lc[data-banner-style="fade"][data-banner="1"] .ow-ocard__id{padding-top:0!important;margin-top:calc(var(--lc-face) * -.22)!important}
+.lc.lc.lc .ow-ocard__id{display:flex!important;flex-direction:column!important;min-width:0!important;align-items:flex-start!important;align-self:center!important;padding:0!important;min-height:0!important}
+.lc.lc.lc .ow-ocard__id > *{align-self:auto!important;grid-area:auto!important;justify-self:auto!important}
+.lc.lc.lc .ow-ocard__name{margin:0!important;padding:0!important;font-weight:750!important;font-size:19px!important;line-height:1.2!important;letter-spacing:-.01em!important;
+  color:var(--lc-ink)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%;min-block-size:0!important;display:block!important}
+.lc.lc.lc .ow-ocard__sub{font-weight:500!important;font-size:13.5px!important;line-height:1.35!important;color:var(--lc-ink-3)!important;margin-top:1px!important;opacity:1!important;
+  white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%}
+.lc.lc.lc .lc-cat{display:block;margin-top:2px;font-size:13.5px;font-weight:550;line-height:1.3;color:var(--lc-ink-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+
+/* THE COUNTS: one row, three equal cells, hairlines between, the number over its word */
+.lc.lc.lc .lc-counts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);margin:16px 0 0;padding:2px 0}
+.lc.lc.lc .lc-counts .ow-ocard__count{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center;gap:1px;
+  font-size:12.5px!important;font-weight:500!important;line-height:1.25!important;color:var(--lc-ink-3)!important;white-space:nowrap!important;letter-spacing:0!important;opacity:1!important}
+.lc.lc.lc .lc-counts .ow-ocard__count + .ow-ocard__count{border-left:1px solid var(--lc-line)}
+.lc.lc.lc .lc-counts .ow-ocard__count b{font-weight:750!important;font-size:17px!important;line-height:1.2!important;color:var(--lc-ink)!important;letter-spacing:-.01em!important;font-variant-numeric:tabular-nums}
+
+/* THE ABOUT ROW: the bio and the platforms at the left, a Center's details at the right, a hairline between */
+.lc.lc.lc .lc-about{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px}
+.lc.lc.lc .lc-about[data-cols="2"]{grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);align-items:start}   /* the details the wider, so each line stays one */
+.lc.lc.lc .lc-left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.lc.lc.lc .ow-ocard__bio{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden!important;margin:0!important;width:auto!important;max-width:none!important;
+  font-weight:500!important;font-size:14.5px!important;line-height:1.45!important;color:var(--lc-ink)!important;opacity:.94;text-wrap:pretty!important}
+.lc.lc.lc .lc-about[data-cols="1"] .ow-ocard__bio{-webkit-line-clamp:3}
+.lc.lc.lc .lc-about[data-cols="2"] .ow-ocard__bio{-webkit-line-clamp:6}   /* beside the details, as long as their column */
+.lc.lc.lc .lc-facts{display:flex;flex-direction:column;gap:7px;min-width:0;padding-left:14px;border-left:1px solid var(--lc-line)}
+.lc.lc.lc .lc-fact{display:flex;align-items:flex-start;gap:7px;min-width:0;font-size:12.5px;line-height:1.35;color:var(--lc-ink-2)}
+.lc.lc.lc .lc-fact > span{min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.lc.lc.lc .lc-fact > span > i{font-style:normal;font-weight:600;color:var(--lc-ink-3)}
+.lc.lc.lc .lc-fact > span > b{font-weight:600;color:var(--lc-ink)}
+.lc.lc.lc .lc-ic{flex:none;display:grid;place-items:center;width:15px;height:17px;font-style:normal;color:var(--lc-ink-3)}
+.lc.lc.lc .lc-ic svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 80% 72%)}
+html[data-theme="light"] .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 62% 42%)}
+.lc.lc.lc .lc-where{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;line-height:1.35;color:var(--lc-ink-2)}
+/* the platforms: their own marks, in round outlined discs, one size, one gap */
+.lc.lc.lc .ow-ocard__links{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:0!important;padding:0!important;width:auto!important;max-width:none!important}
+.lc.lc.lc .ow-linkbar__i{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;border-radius:50%!important;margin:0!important;
+  background:transparent!important;box-shadow:inset 0 0 0 1px var(--lc-line)!important;pointer-events:none}
+.lc.lc.lc .ow-linkbar__i svg,.lc.lc.lc .ow-linkbar__i[data-platform] svg{width:17px!important;height:17px!important}
+/* THE PLATFORMS, ONE STRAIGHT LINE (the founder, 2026-10-19: "cards do not stop at 4 icons then go down to next row but should be
+   straight clean line on profile and card"): never a second line. Past four the marks step down a size; past what the line
+   holds it scrolls sideways, the edge fading only where there is more (OW.cards.lineMarks says data-n, data-overflow, data-at) */
+.lc.lc.lc .ow-ocard__links{flex-wrap:nowrap!important;overflow-x:auto!important;overflow-y:hidden!important;scrollbar-width:none;overscroll-behavior-x:contain;min-width:0}
+.lc.lc.lc .ow-ocard__links::-webkit-scrollbar{display:none}
+.lc.lc.lc .ow-ocard__links > .ow-linkbar__i{flex:none!important}
+.lc.lc.lc .ow-ocard__links:not([data-n="1"]):not([data-n="2"]):not([data-n="3"]):not([data-n="4"]){gap:6px!important}
+.lc.lc.lc .ow-ocard__links:not([data-n="1"]):not([data-n="2"]):not([data-n="3"]):not([data-n="4"]) > .ow-linkbar__i{width:28px!important;height:28px!important}
+.lc.lc.lc .ow-ocard__links:not([data-n="1"]):not([data-n="2"]):not([data-n="3"]):not([data-n="4"]) > .ow-linkbar__i svg{width:15px!important;height:15px!important}
+.lc.lc.lc .ow-ocard__links[data-at="start"]{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 28px),transparent 100%)}
+.lc.lc.lc .ow-ocard__links[data-at="middle"]{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 calc(100% - 28px),transparent 100%)}
+.lc.lc.lc .ow-ocard__links[data-at="end"]{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 100%);mask-image:linear-gradient(90deg,transparent 0,#000 28px,#000 100%)}
+/* a phone's card gives its details the wider column and a step smaller type, so each stays one line where it can */
+@container (max-width:380px){
+  .lc.lc.lc .lc-about[data-cols="2"]{gap:12px}
+  .lc.lc.lc .lc-facts{padding-left:12px}
+  .lc.lc.lc .lc-fact{font-size:12px;gap:6px}
+  .lc.lc.lc .ow-ocard__bio{font-size:14px!important}
+}
+/* a narrow card stacks its details under the bio */
+@container (max-width:300px){
+  .lc.lc.lc .lc-about[data-cols="2"]{grid-template-columns:minmax(0,1fr)}
+  .lc.lc.lc .lc-facts{padding:12px 0 0;border-left:0;border-top:1px solid var(--lc-line)}
+}
+
+/* FOLLOW AND MESSAGE: the one button language (S20), equal, at the card's foot: Follow filled in the account's hue, Message
+   outlined */
+.lc.lc.lc .lc-acts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:auto;padding-top:18px}
+.lc.lc.lc .lc-acts span{display:flex;align-items:center;justify-content:center;height:40px;border-radius:999px;font-weight:650;font-size:14px;line-height:1;cursor:default;user-select:none}
+.lc.lc.lc .lc-acts .lc-follow{background:linear-gradient(135deg,hsl(var(--lc-h) 90% 66%),hsl(calc(var(--lc-h) - 24) 88% 58%));color:#0b0a12}
+.lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{background:linear-gradient(135deg,hsl(var(--lc-h) 74% 56%),hsl(calc(var(--lc-h) - 24) 72% 48%));color:#fff}
+.lc.lc.lc .lc-acts .lc-msg{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc-ink) 34%,transparent);color:var(--lc-ink);background:transparent}
+
+/* TIKTOK'S LAYOUT: the picture over everything, every line centred */
+.lc.lc.lc[data-layout="above"] .ow-ocard__top{grid-template-columns:1fr!important;justify-items:center!important;row-gap:10px!important;text-align:center!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__top > .ow-ocard__id{grid-row:2!important;align-items:center!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__face{justify-self:center!important}
+.lc.lc.lc[data-layout="above"] .ow-ocard__id > *{align-self:center!important}
+.lc.lc.lc[data-layout="above"][data-banner="1"] .ow-ocard__id{padding-top:0!important}
+
+/* SIMPLE MODE: the plain card, Simple's own feed surface (oneway-popit.css "27 · SIMPLE MODE", .po-river): the ground with 3%
+   of the account's own hue, a hairline edge, the feed's corners; no light, no grain, no grey (founder, 2026-10-19: "the darker
+   tones might have to be a little bit blacker. I don't know if gray cards really work"). The same anatomy as Pop-it. */
+html[data-simple="1"] .lc.lc.lc{--lc-ring:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%);border-radius:24px!important;
+  background:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%)!important;
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink,#fff) 10%,transparent)!important}
+html[data-simple="1"] .lc.lc.lc::before,html[data-simple="1"] .lc.lc.lc::after{display:none!important}
+html[data-simple="1"] .lc.lc.lc .lc-banner{border-top-left-radius:24px;border-top-right-radius:24px}
+html[data-simple="1"] .lc.lc.lc .ow-ocard__face{background:hsl(var(--lc-h) 58% 46%)!important}
+html[data-simple="1"] .lc.lc.lc .lc-acts .lc-follow,html[data-simple="1"] .lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{background:hsl(var(--lc-h) 70% 50%);color:#fff}
 
 /* in a deck the cards stand behind each other (oneway-deck.css .pcard), never one after another */
 .lc.lc.lc.pcard{position:absolute!important;left:0;right:0;top:0}
 .lc.lc.lc:not(.pcard){position:relative}
-/* THE SECOND JUDGE'S ROUND: the shared tile gives the name a 34px top margin, which pushed the words down off the picture's
-   centre and left the top empty; Instagram's order of figures (posts, followers, following); a business's handle gray like
-   a person's; platform marks in 40px discs, one optical size; the bio fills its lines; Follow's pink deep enough for
-   white words */
-.lc.lc.lc .ow-ocard__name{margin:0!important;padding:0!important}
-.lc.lc.lc .ow-ocard__count[data-count="posts"]{order:1}
-.lc.lc.lc .ow-ocard__count[data-count="followers"]{order:2}
-.lc.lc.lc .ow-ocard__count[data-count="following"],.lc.lc.lc .ow-ocard__count[data-count="events"]{order:3}
-.lc.lc.lc[data-kind="center"] .ow-ocard__sub,.lc.lc.lc .ow-ocard__top[data-kind="center"] .ow-ocard__sub{color:rgba(255,255,255,.62)!important}
-.lc.lc.lc .ow-ocard__links{gap:10px!important}
-.lc.lc.lc .ow-linkbar__i{width:40px!important;height:40px!important}
-.lc.lc.lc .ow-linkbar__i svg{width:20px!important;height:20px!important;object-fit:contain}
-.lc.lc.lc .ow-linkbar__i[data-platform="youtube"] svg{width:22px!important;height:22px!important}
-.lc.lc.lc .ow-linkbar__i[data-platform="x"] svg{width:18px!important;height:18px!important}
-.lc.lc.lc .ow-ocard__bio{text-wrap:wrap!important}
-.lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{background:hsl(var(--lc-h) 72% 52%)}
-/* THE THIRD JUDGE'S ROUND: a business's category reads as its kind, not as a second handle (white, medium); the platforms'
-   marks one weight in plain discs (no gray ring that looks disabled, one glyph box); the picture plain with a fine edge (an
-   always-on coloured ring reads as Instagram's "new story"); Follow and Message 44px, the tap size */
-.lc.lc.lc .lc-cat{color:rgba(255,255,255,.88);font-weight:600}
-.lc.lc.lc .ow-linkbar__i{box-shadow:none!important;background:rgba(255,255,255,.09)!important}
-.lc.lc.lc .ow-linkbar__i svg,.lc.lc.lc .ow-linkbar__i[data-platform] svg{width:20px!important;height:20px!important}
-.lc.lc.lc .ow-ocard__face{box-shadow:0 0 0 1px rgba(255,255,255,.16)!important;margin:0!important;width:88px!important;height:88px!important;align-self:center!important}
-.lc.lc.lc .ow-ocard__top{grid-template-columns:88px minmax(0,1fr)!important}
-.lc.lc.lc .lc-acts span{height:44px}
-/* THE PASSING ROUND'S TWO NOTES: no word alone on a bio's last line; a business's category under its handle at the
-   handle's weight, a shade brighter (its kind, not a second address); the three figures spread over the column */
-.lc.lc.lc .ow-ocard__bio{text-wrap:pretty!important}
-.lc.lc.lc .lc-cat{color:rgba(255,255,255,.76);font-weight:500}
-.lc.lc.lc .ow-ocard__counts{grid-auto-columns:minmax(0,1fr)!important;column-gap:12px!important;max-width:280px;justify-content:stretch!important}
-/* A CENTER'S BUSINESS BESIDE ITS BIO: the bio at the left, its details in a column at the right (founder/801: "the info
-   condensed to the right, bio in line to the left"), a quiet word over each value; the pin line under both */
-.lc.lc.lc .lc-pair{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);column-gap:16px;align-items:start}
-.lc.lc.lc .lc-pair .ow-ocard__bio{-webkit-line-clamp:5}
-.lc.lc.lc .lc-facts{display:flex;flex-direction:column;gap:9px;padding-left:14px;border-left:1px solid rgba(255,255,255,.12)}
-.lc.lc.lc .lc-fact{display:flex;flex-direction:column;min-width:0}
-.lc.lc.lc .lc-fact i{font-style:normal;font-size:11.5px;font-weight:600;line-height:1.2;color:rgba(255,255,255,.55)}
-.lc.lc.lc .lc-fact b{font-size:13.5px;font-weight:600;line-height:1.3;color:rgba(255,255,255,.92);overflow-wrap:anywhere}
-
-/* AS MANY DETAILS AS THE CENTER HAS: one to three in the column beside the bio (the bio may run as long as the column);
-   four or more in two even columns under the bio, the bio then the card's full width */
-.lc.lc.lc[data-facts="few"] .lc-pair .ow-ocard__bio{-webkit-line-clamp:7}
-.lc.lc.lc[data-facts="many"] .lc-pair{grid-template-columns:1fr;row-gap:14px}
-.lc.lc.lc[data-facts="many"] .lc-facts{display:grid;grid-template-columns:1fr 1fr;column-gap:16px;row-gap:10px;padding:12px 0 0;border-left:0;border-top:1px solid rgba(255,255,255,.12)}
-
 /* A DECK THAT FITS ITS FRONT CARD (oneway-deck.js opts.fit): the cards behind fade out instead of peeking, since a taller
    card behind would show under a shorter one; the faces under the deck choose which stands in front */
 .deck .lc.lc.lc.pcard:not([data-at="0"]){opacity:0!important;transform:none!important;filter:none!important;pointer-events:none}

@@ -1,12 +1,12 @@
 # Oneway, every page in words
 
-> The words of every page on oneway.center, read on 2026-10-17 from the pages themselves (tools/site_seo.py).
+> The words of every page on oneway.center, read on 2026-10-19 from the pages themselves (tools/site_seo.py).
 
 ---
 
 ## Oneway
 
-Source: https://oneway.center/ (last changed 2026-10-17)
+Source: https://oneway.center/ (last changed 2026-10-19)
 
 >
 
@@ -37,236 +37,19 @@ We give every person one profile and every community or business a Center.
 
 Create your account
 
-Find a place, follow its updates or build a space for a community.
+Your corner of the internet, connected.
+
+Bring the best of the internet into one customizable place. Put your links, posts, activity, and social accounts together, making it easier to connect and network while choosing what you share and how you appear in every space.
 
 What a Center is
 
 These profiles and Centers are examples, until the beta's own arrive.
 
-App
-
-Introducing
-Your fully customizable social network.
-
-See what your friends and the places you love are posting, and what is coming up at each of them.
-
-Open the App The Oneway App
-
-OS
-
-A Center you make entirely your own.
-
-A Center is a canvas: place its posts, events, links and website where you want them, and everyone who opens it sees it your way. Oneway OS is the AI business management side of the same social network, so the place people follow and the place you run are one.
-
-See how deep it goes.
-
-Connect your casino in one place.
-
-Go anywhere. Connect everywhere.
-
-Write it from your words,
-09429b1a; bookings, events, the shop, customers, staff and roles, the inbox; the System Store; the Brain's web on
-Business OS). PROPOSED words, for his eye. -->
-
-Build your Center
-Make its page, its look and its own website, arranged as a canvas of Popits, from layouts made for your kind of place.
-
-Run it from one place
-Bookings and events, a shop, customers, staff and roles, and every message in one inbox.
-
-Grow it as you go
-Add Systems when you need them, connect the platforms you already use, and on Business OS see how all of it connects through the Brain.
-
-From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
-
-OS Brain
-
-iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
-
-Open Oneway OS Oneway OS
-
-Reserve your name.
-
-Individual @you
-Organization .yourplace
-
-@
-
-Reserve your @name
-
-@you Reserved
-Held for · —
-Reserve another name
-
-Plans and pricing.
-
-Every person and every Center starts free.
-
-App
-OS
-Business OS
-Developer OS
-
-+
-For people
-
-The App's own private Brain
-
-Your own map
-
-Deeper recommendations
-
-More control over what it remembers
-
-Create your account
-
-OS
-For every Center
-
-Free
-
-A Center's public side
-
-Its community
-
-The tools to run it
-
-Create your Center
-
-Core
-For one Center's team
-
-One Center's staff, customers, assets and commitments
-
-Direct acts, reports and configured rules
-
-Industry-specific work
-
-Contact us
-
-Business OS
-
-For one business Center
-
-$330 a month
-
-Everything in Core, plus
-
-Coordinated decisions and delegated execution
-
-Organization-wide control
-
-The Brain, Systems, Agents and Cross Projection
-
-Several Business Centers under one organization are by contact.
-
-Buy Business OS today
-
-What a Center gets on each plan.
-
-What a Center gets
-OS Free
-Business OS $330 a month
-Developer OS Free
-
-A public page and its community OS Included Business Included Developer Included
-
-Posts and events OS Included Business Included Developer Included
-
-The canvas and its Popits OS Included Business Included Developer Included
-
-A website on its own domain OS Included Business Included Developer Included
-
-Its members and the people who run it OS Included Business Included Developer Included
-
-Bookings OS Not included Business Included Developer Not included
-
-One inbox for everything that arrives OS Not included Business Included Developer Not included
-
-Custom roles OS Not included Business Included Developer Not included
-
-Systems from the System Store OS Not included Business Included Developer Not included
-
-The Brain and Cross Projection OS Not included Business Included Developer Not included
-
-Several Centers under one organization OS Not included Business Included Developer Not included
-
-Modules of its own OS Not included Business Included Developer Included
-
-Developer OS, for building applications, Systems and integrations on Oneway, is in closed beta.
-
-Invitation Only NYC Beta
-
-Our first launch is New York City.
-
-Closed Selective Server Beta
-
-Contact
-
-Get Oneway OS today.
-
-Tell us what you run or what you want to build, and we set it up with you. We reply almost instantly to any business inquiry and adapt Oneway to any use case. Build this model of the internet with us.
-
-Buy Business OS today Start on Developer OS
-
-Questions
-
-Oneway, in plain words.
-
-What is Oneway?
-Oneway is a social network and a business platform in one. Every person has one profile, and every community, place and business has a Center.
-
-What is a Center?
-A Center is the home of a place, a community or a business on Oneway. At its simplest it is an information page; it can also be a social profile, a website on its own domain, a storefront and the workspace its team runs it from.
-
-What is Oneway OS?
-Oneway OS is where a Center is run: its page and website, posts, events and community, free. Business OS adds bookings, staff and the Systems of its industry.
-
-Who controls my data?
-You do. Your profile shows only what you choose, your work for a Center stays apart from your personal activity, and you can delete your data and your account; if you own a Center, you hand it over first.
-
-Our Mission
-App
-OS
-Business OS
-Developer OS
-Security
-Contact
-
-Support
-Safety
-Community Guidelines
-Accessibility
-Glossary
-
-Privacy
-Terms
-Data Deletion
-Corporate Charter
-
-2027, Oneway Technologies LLC
-
----
-
-## Our Mission
-
-Source: https://oneway.center/mission (last changed 2026-10-17)
-
-class="mission-page">
-
-Our Mission App OS Security Contact
-
-Sign in
-
-Mission
-
-Oneway aims to bring the web and local community together.
-
-Always building a place for individual expression, stronger communities and more connected workplaces, shaped by the people who use it.
-
 Compatibility & Integration
+
 Bring the web together without leaving it behind.
-Oneway is designed to connect websites, social platforms and business tools. Cross Projection keeps one Oneway record connected across its supported views, so an event can appear in the App, its Center and a connected website.
+
+Connect the platforms and services you already use, bringing your online presence together while keeping the freedom to use the web your way.
 
 Bluesky
 
@@ -404,18 +187,224 @@ OpenRouter
 
 Connections are built platform by platform. Availability depends on each service's supported capabilities and permissions.
 
-Privacy
-Your identity and data stay under your control.
-Choose what your profile shows and keep personal and workplace activity separate. Access to organizational work follows permissions, not a public profile.
-Privacy and security
+App
 
-Oneway OS
-Building the best social media ecosystem for businesses and communities.
-A public Center is where people connect with a place. Oneway OS is where its team can manage that presence and organize the work behind it.
-Explore Oneway OS
+Introducing
+Your fully customizable social network.
+
+See what your friends and the places you love are posting, and what is coming up at each of them.
+
+For You
+A feed ranked to what you like, a Following feed of only who you follow, and custom feeds you make from people, places and words, pinned as tabs on Home.
+
+Messages
+Messaging of its own: chats one to one and in groups that set their own rules, with friends and with places.
+
+Discovery
+A map of the people, places and Centers around you. A Center can start as an information page, checked by a person, and be followed before its owner claims it.
+
+Open the App The Oneway App
+
+OS
+
+A Center you make entirely your own.
+
+A Center is a canvas: place its posts, events, links and website where you want them, and everyone who opens it sees it your way. Oneway OS is the AI business management side of the same social network, so the place people follow and the place you run are one.
+
+See how deep it goes.
+
+Connect your casino in one place.
 
 Go anywhere. Connect everywhere.
-Explore the App Talk to us
+
+Write it from your words,
+09429b1a; bookings, events, the shop, customers, staff and roles, the inbox; the System Store; the Brain's web on
+Business OS). PROPOSED words, for his eye. -->
+
+Build your Center
+Make its page, its look and its own website, arranged as a canvas of Popits, from layouts made for your kind of place.
+
+Run it from one place
+Bookings and events, a shop, customers, staff and roles, and every message in one inbox.
+
+Grow it as you go
+Add Systems when you need them, connect the platforms you already use, and on Business OS see how all of it connects through the Brain.
+
+From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
+
+OS Brain
+
+iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
+
+Open Oneway OS Oneway OS
+
+Reserve your name.
+
+Individual @you
+Organization .yourplace
+
+@
+
+Reserve your @name
+
+@you Reserved
+Held for · —
+Reserve another name
+
+Plans and pricing.
+
+Every person and every Center starts free.
+
+App
+OS
+Business OS
+Developer OS
+
++
+For people
+
+The App's own private Brain
+
+Your own map
+
+Deeper recommendations
+
+More control over what it remembers
+
+Create your account
+
+OS
+For every Center
+
+Free
+
+A Center's public side
+
+Its community
+
+The tools to run it
+
+Create your Center
+
+Core
+For one Center's team
+
+The whole Brain on your Center: it notices, answers, drafts and recommends
+
+Assets, bookings, staff and customers on one record
+
+The Systems for your kind of place
+
+Lightbulb and the website creator, inside a monthly allowance
+
+You press the button on every act
+
+Contact us
+
+Business OS
+
+For one business Center
+
+$330 a month
+
+Everything in Core, plus
+
+The Brain can act for you, within the limits you set
+
+Helpers and plans that carry on by themselves
+
+A much larger thinking allowance
+
+Buy Business OS today
+
+Enterprise OS
+For organizations with several locations
+
+Several Centers under one organization
+
+One Brain that learns across every location
+
+A portfolio view, with a budget for each property
+
+Talk to us about Enterprise OS
+
+What a Center gets on each plan.
+
+What a Center gets
+OS Free
+Core By contact
+Business OS $330 a month
+Enterprise OS By inquiry
+
+The Center itself: a public page, community, posts, events, members and a website OS Included Core Included Business Included Enterprise Included
+
+The Brain knows your whole Center and answers from it, with its source OS Not included Core Included Business Included Enterprise Included
+
+It notices what needs you, and shows what an act would cause before you press it OS Not included Core Included Business Included Enterprise Included
+
+Smart replies: greetings, away messages and drafts from your live hours OS Not included Soon Core Included, soon Soon Business Included, soon Soon Enterprise Included, soon
+
+Assets, bookings and housekeeping on one record OS Not included Core Included Business Included Enterprise Included
+
+Hours, offers and availability kept true everywhere you are shown OS Not included Core Included Business Included Enterprise Included
+
+The Systems for your kind of place OS Not included Core Included Business Included Enterprise Included
+
+Staff, schedules and custom roles OS Not included Core Included Business Included Enterprise Included
+
+Lightbulb and the website creator, inside a monthly allowance OS Not included Core Included Business Included Enterprise Included
+
+Modules of its own OS Not included Core Included Business Included Enterprise Included
+
+The Brain acts for you, within the limits you set OS Not included Core Not included Business Included Enterprise Included
+
+Helpers and plans that carry on by themselves OS Not included Core Not included Business Included Enterprise Included
+
+A much larger thinking allowance OS Not included Core Not included Business Included Enterprise Included
+
+Several Centers under one organization OS Not included Core Not included Business Not included Enterprise Included
+
+One Brain across every location, with a budget for each OS Not included Core Not included Business Not included Enterprise Included
+
+Developer OS, for building applications, Systems and integrations on Oneway, is in closed beta.
+
+Invitation Only NYC Beta
+
+Our first launch is New York City.
+
+Closed Selective Server Beta
+
+Coming soon
+
+Contact
+
+Get Oneway OS today.
+
+Tell us what you run or what you want to build, and we set it up with you. We reply almost instantly to any business inquiry and adapt Oneway to any use case. Build this model of the internet with us.
+
+Buy Business OS today Talk to us about Enterprise OS Start on Developer OS
+
+Questions
+
+Oneway, in plain words.
+
+What is Oneway?
+Oneway is a social network and a business platform in one. Every person has one profile, and every community, place and business has a Center.
+
+Does Oneway have a feed like Instagram?
+Yes. Home has a For You feed ranked to what you like and a Following feed of only the people and places you follow, with photo and video posts and stories. You can also make custom feeds from people, places and words, newest first or top this week, pin them as tabs on Home, and share a public one for anyone to pin. You can also make custom feeds from people, places and words, newest first or top this week, pin them as tabs on Home, and share a public one for anyone to pin.
+
+How do people find places on Oneway?
+Through Discovery: a map and search of the people, places and Centers near you. A Center can start as an information page, its facts checked by a person, and its owner claims it when they join.
+
+What is a Center?
+A Center is the home of a place, a community or a business on Oneway. At its simplest it is an information page; it can also be a social profile, a website on its own domain, a storefront and the workspace its team runs it from.
+
+What is Oneway OS?
+Oneway OS is where a Center is run: its page and website, posts, events and community, free. Business OS adds bookings, staff and the Systems of its industry.
+
+Who controls my data?
+You do. Your profile shows only what you choose, your work for a Center stays apart from your personal activity, and you can delete your data and your account; if you own a Center, you hand it over first.
 
 Our Mission
 App
@@ -442,7 +431,7 @@ Corporate Charter
 
 ## Oneway App
 
-Source: https://oneway.center/app (last changed 2026-10-17)
+Source: https://oneway.center/app (last changed 2026-10-19)
 
 >
 
@@ -570,9 +559,234 @@ Claim your @name
 
 ---
 
+## Our Mission
+
+Source: https://oneway.center/mission (last changed 2026-10-19)
+
+class="mission-page">
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Mission
+
+Oneway aims to bring the web and local community together.
+
+Always building a place for individual expression, stronger communities and more connected workplaces, shaped by the people who use it.
+
+Privacy
+Your identity and data stay under your control.
+Choose what your profile shows and keep personal and workplace activity separate. Access to organizational work follows permissions, not a public profile.
+Privacy and security
+
+Oneway OS
+Building the best social media ecosystem for businesses and communities.
+A public Center is where people connect with a place. Oneway OS is where its team can manage that presence and organize the work behind it.
+Explore Oneway OS
+
+About Our Brand
+
+Built around experiences people want to return to.
+
+Oneway began with an interest in entertainment, hospitality, and the places that bring people together. What started as an idea for a modern arcade and social gathering space grew into a broader vision: connecting the experiences people enjoy in the physical world with the possibilities of the internet. That vision became Oneway Technologies, a company developing a connected ecosystem for people, communities, and businesses.
+
+One identity. Endless possibilities.
+
+The name Oneway reflects our belief that the internet should feel more connected without making every person, community, or business look and operate the same way. We bring different experiences together through one ecosystem while giving people the freedom to choose their own direction.
+
+A Profile
+A personal social space, a creative portfolio, or a place to bring together an online presence.
+
+A Center
+A neighborhood, an organization, a business, or an entire operation, as simple or as sophisticated as its purpose requires.
+
+Bluesky
+
+Mastodon
+
+Instagram
+
+Facebook
+
+X
+
+Threads
+
+LinkedIn
+
+TikTok
+
+YouTube
+
+Pinterest
+
+Reddit
+
+Telegram
+
+Discord
+
+Google Business Profile
+
+Stripe
+
+Resend
+
+Firebase Cloud Messaging
+
+Apple Push Notification service
+
+Mozilla Push Service
+
+Windows Push Notification Services
+
+Google Calendar
+
+Apple
+
+OpenStreetMap
+
+Nominatim
+
+Overpass API
+
+Protomaps
+
+MapLibre
+
+Leaflet
+
+CesiumJS
+
+OSRM
+
+Google Maps
+
+Apple Maps
+
+GitHub
+
+Fly.io
+
+Google Fonts
+
+jsDelivr
+
+unpkg
+
+WordPress
+
+Wix
+
+Squarespace
+
+Webflow
+
+Weebly
+
+GoDaddy Website Builder
+
+Framer
+
+Carrd
+
+Duda
+
+HubSpot CMS
+
+Ghost
+
+Drupal
+
+Joomla!
+
+Google Sites
+
+Toast
+
+Oracle OPERA Cloud
+
+Oracle MICROS Simphony
+
+Shopify
+
+Wikipedia
+
+Wikimedia Commons
+
+National Weather Service
+
+NOAA
+
+Anthropic
+
+xAI
+
+Groq
+
+OpenAI
+
+Gemini
+
+Mistral AI
+
+DeepSeek
+
+OpenRouter
+
+The goal isn’t to replace everything people already use. It’s to make the web easier to navigate, connect, and build upon.
+
+Technology that serves the experience.
+
+We approach technology from both sides: the people experiencing it and the people making those experiences possible.
+
+For individuals
+More control over identity, privacy, expression, and connection.
+
+For communities
+Accessible ways to organize, share information, and build a presence that reflects the people behind it.
+
+For businesses
+Their public presence, relationships, communications, and daily operations connected, without losing sight of the people they serve.
+
+Built to keep evolving.
+
+Oneway is an independent, founder-led technology company with ambitions beyond any single application, industry, or device, building a foundation that grows alongside the people and organizations using it. We’re starting by bringing social networking, local discovery, community management, and business operations into one connected ecosystem.
+
+Where Oneway goes next will be shaped by the people, places, and ideas that become part of it, and by the experiences we create both on and beyond the screen. From the spaces we connect to the destinations we bring to life, we’re building for a world where digital and physical experiences come together naturally.
+
+Created by William Rauert.
+
+Go anywhere. Connect everywhere.
+Explore the App Talk to us
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+
+---
+
 ## Oneway OS
 
-Source: https://oneway.center/os (last changed 2026-10-17)
+Source: https://oneway.center/os (last changed 2026-10-19)
 
 >
 
@@ -758,7 +972,7 @@ Corporate Charter
 
 ## Get Oneway OS today
 
-Source: https://oneway.center/contact (last changed 2026-10-17)
+Source: https://oneway.center/contact (last changed 2026-10-19)
 
 >
 
@@ -784,7 +998,7 @@ Business OS.
 
 Run your business, venue or community on Oneway OS: your Center and its website, bookings and reservations, customers, staff schedules, inventory and online sales, with the AI that works alongside your team.
 
-The rates are in the plans . For several Centers under one organization, write to us.
+The rates are in the plans . For several locations as one organization, see Enterprise OS.
 
 Buy Business OS today
 
@@ -797,6 +1011,14 @@ Build Systems and modules on Oneway's platform, from your own code or from a des
 Free for developers.
 
 Start on Developer OS
+
+For organizations
+
+Enterprise OS.
+
+Run several locations as one organization: one Brain across every Center, a view of the whole portfolio, and a budget for each property. Tell us what you run, how many locations and where, and which systems you use today.
+
+Talk to us about Enterprise OS
 
 For people
 
@@ -812,6 +1034,7 @@ Pressing send opens your email app with your inquiry written out, to send from y
 
 A business
 A developer
+Several locations
 A community
 The App beta
 Something else
@@ -857,7 +1080,7 @@ Corporate Charter
 
 ## Privacy Policy
 
-Source: https://oneway.center/privacy (last changed 2026-10-17)
+Source: https://oneway.center/privacy (last changed 2026-10-19)
 
 >
 
@@ -871,7 +1094,7 @@ Sign in
 
 Privacy Policy
 
-This is the Privacy Policy for the Oneway ecosystem: the Oneway App, the Oneway OS, Sign in with Oneway on any site, oneway.center, and any other or future Oneway service. It is published by Oneway Technologies LLC, a New York limited liability company. Oneway is in closed beta. Last updated October 5, 2026.
+This is the Privacy Policy for the Oneway ecosystem: the Oneway App, the Oneway OS, Sign in with Oneway on any site, oneway.center, and any other or future Oneway service. It is published by Oneway Technologies LLC, a New York limited liability company. Oneway is in closed beta. Last updated October 18, 2026.
 
 Contents Who decides what happens to your information What we collect How we use it Who can see what Recognition by places Connected accounts Businesses and their records Sensitive information Who we share it with How long we keep it Security Your choices Without an account Paying a Center Automatic checks Children Where it is handled Changes
 
@@ -893,7 +1116,7 @@ What you post Posts, photos, videos, comments, reactions, saves, reposts, drafts
 
 Messages Messages, files and reactions in chats, and the groups you are in To deliver them
 
-Places and plans Centers you join, follow, save or visit. Events you answer. Bookings: your name, email, party size, dates and notes. An application to a Center's job or class listing opens a conversation with that Center. If you contact or book a Center without an account, we keep the name and email you give. To run your plans
+Places and plans Centers you join, follow, save or visit. Events you answer. Bookings: your name, email, party size, dates and notes. An application to a Center's job or class listing opens a conversation with that Center. If you message or book a Center without an account, we keep what you send for that Center: your words, the name you give and the way to reach you that you give, an email address or a phone number as you typed it. To run your plans
 
 Location Only if you turn sharing on. Never read from your device otherwise. To show where you are, to the people you choose
 
@@ -913,7 +1136,7 @@ Security log Sign-ins, refused sign-ins to your account, and password and two-st
 
 What reached your screen Which posts you were shown, how many times and when last, so Home does not repeat itself
 
-How you watch Whether you watched a video to the end, watched it again, how long you stayed, or skipped it. It shapes the next posts in Home and fades within minutes to hours. We do not label posts by topic or guess your interests from your words.
+How you watch Whether you watched a video to the end, watched it again, how long you stayed, or skipped it. It shapes the next posts in Home and fades within minutes to hours, but not for a person under 18, whose Home it does not shape. We do not label posts by topic or guess your interests from your words.
 
 Photos Hidden data inside a photo, such as GPS position, is removed before it is stored. Videos and GIFs are stored as uploaded, with whatever their phone wrote into them.
 
@@ -925,7 +1148,7 @@ To run Oneway: sign you in, show your profile, deliver posts and messages, make 
 
 To keep accounts safe: limit sign-in attempts, require two-step sign-in in casino, guest, rewards and credential areas, and keep the security log.
 
-To rank Home from who and what you follow, the places you belong to, your reactions, what you have already seen and what you are watching now.
+To rank Home from who and what you follow, the places you belong to, your reactions, what you have already seen and what you are watching now. None of this orders Home for a person under 18: their Home is the people and places they follow, newest first.
 
 To order For you in two moments. When you open it, the first posts come from what you follow and belong to, places near yours, and updates from city and community Centers near you, with other people's reactions counting for little. As you scroll, posts that more people reacted to come first. A feed you set to top this week is ordered by reactions alone.
 
@@ -1087,6 +1310,10 @@ Messages A new conversation starts with messages that disappear after 2 days. Th
 
 Location Your latest shared position, until it expires or you turn sharing off
 
+Orders A paid order is kept as the Center’s record of a sale, for as long as the Center keeps its records; the Center decides, and you ask the Center to see or correct it. An order that was never paid is deleted after 7 days.
+
+What you send a Center without an account Kept for that Center, as one of its messages or bookings. The Center decides how long, and you ask the Center to see, correct or delete it.
+
 What reached your screen Kept until you delete your account, which removes it. We have not set an end date before then. We will set one and publish it here before the App opens to the public.
 
 The security log Kept after you delete your account too. We have not set an end date. We will set one and publish it here before the App opens to the public.
@@ -1140,11 +1367,11 @@ To use a right, email williamrau78@gmail.com . We answer within 30 days, and may
 
 Without an account
 
-You can look around Oneway without signing in. We make no account and no record of you for it. A like or dislike you press is kept in your browser, on this device, and is not sent to us; when you sign in, it is sent once, as you. Nothing you do signed out becomes a page or appears in search. To comment, repost or save, you sign in.
+You can look around Oneway without signing in. We make no account and no record of you for it. A like or dislike you press is kept in your browser, on this device, and is not sent to us; when you sign in, it is sent once, as you. Nothing you do signed out becomes a page or appears in search. To comment, repost or save, you sign in. You can also message a Center from its page, book a table and pay a Center without an account; the sections above and below say what is kept when you do.
 
 Paying a Center
 
-When you buy from a Center through Oneway, you pay on Stripe’s own page, to the Center’s Stripe account. Your card details go to Stripe and never to Oneway. We keep the order: what it was for, its amount, and whether Stripe says it is paid or refunded. Oneway’s fee is at most 1% of the sale, and it is refunded when the sale is refunded.
+When you buy from a Center through Oneway, you do not need an account. You pay on Stripe’s own page, to the Center’s Stripe account. Your card details go to Stripe and never to Oneway, and Stripe keeps your email address, billing address and shipping address. We keep the order: what it was for, how many, its amount, Oneway’s fee, the name Stripe was given, and whether Stripe says it is paid or refunded. If you were signed in, your account’s address is kept on the order too, so it is yours to find, and an event ticket answers you Going. A paid order is the Center’s record of a sale. Oneway’s fee is at most 1% of the sale, and it is refunded when the sale is refunded.
 
 Automatic checks
 
@@ -1160,11 +1387,17 @@ The profile is private until they choose otherwise.
 
 Only people they follow can message them.
 
-Notifications are held from 10 PM to 7 AM in their own time zone.
+Notifications are held from 10 PM to 7 AM in their own time zone, and from midnight to 6 AM Eastern whatever their time zone.
+
+Their Home is the people and places they follow, newest first. It is not ordered from what they react to, save or watch.
+
+After 60 minutes in a day the App says so once and goes on working; they can choose to keep going, and a weekly recap shows the days they did.
+
+They can invite a parent or guardian with an adult account to supervise. A parent can make the quiet hours longer and the day shorter, answers a young teen’s request to open their profile, and sees who they talk to by name and never what they say. Either of them can end it.
 
 From 13 to 15, their posts are not recommended to people who do not follow them, and their profile can be opened to everyone only with a parent’s approval.
 
-Where a state’s law asks for more for minors, that law applies.
+Where a state’s law asks for more for minors, that law applies. We have read New York’s SAFE for Kids Act and Child Data Protection Act, and we apply the strictest rule we have read to every account under 18, in every state, until we have read that state’s own law.
 
 Where it is handled
 
@@ -1204,7 +1437,7 @@ Corporate Charter
 
 ## Terms of Service
 
-Source: https://oneway.center/terms (last changed 2026-10-17)
+Source: https://oneway.center/terms (last changed 2026-10-19)
 
 >
 
@@ -1218,7 +1451,7 @@ Sign in
 
 Terms of Service
 
-This is the Terms of Service for the Oneway ecosystem: the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in closed beta. Last updated October 5, 2026.
+This is the Terms of Service for the Oneway ecosystem: the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in closed beta. Last updated October 18, 2026.
 
 Contents Closed beta Who can use it Your account What you post Rules Reports and appeals Copyright Messages Connected accounts Centers and the OS Data processing for Centers Sign in with Oneway AI features Privacy Our rights Third-party services Plans and billing No warranty Limit of liability Your responsibility Ending Governing law and disputes Notices Changes The rest
 
@@ -1232,7 +1465,7 @@ You must be 13 or older. If you are under 18, or under the age of majority where
 
 3. Your account
 
-Give accurate information. Keep your password and your two-step codes to yourself and tell us at once if someone else has them. You are responsible for what happens under your account. You may hold one personal account.
+Give accurate information. Keep your password and your two-step codes to yourself and tell us at once if someone else has them. You are responsible for what happens under your account. You may hold one personal account. You do not need an account to look around, to message or book a Center from its page, or to pay a Center; these Terms apply to you when you do.
 
 4. What you post
 
@@ -1376,7 +1609,7 @@ Business OS is $330 per month for one Center, and Oneway sets it up with you by 
 
 When a Center sells through Oneway, Oneway’s fee is at most 1% of the sale, and it is refunded when the sale is refunded.
 
-When you buy from a Center, the Center is the seller and is responsible for what it sells. You pay on Stripe’s page, to the Center’s own Stripe account, and Stripe’s terms apply to the payment.
+When you buy from a Center, you do not need an account; the Center is the seller and is responsible for what it sells. You pay on Stripe’s page, to the Center’s own Stripe account, and Stripe’s terms apply to the payment.
 
 Nothing is charged today. When billing opens, the price, the billing period, the renewal date and how to cancel are shown to you before you agree, and nothing is charged without your agreement.
 
@@ -1456,7 +1689,7 @@ Corporate Charter
 
 ## Data Deletion
 
-Source: https://oneway.center/data-deletion (last changed 2026-10-17)
+Source: https://oneway.center/data-deletion (last changed 2026-10-19)
 
 >
 
@@ -1629,7 +1862,7 @@ Corporate Charter
 
 ## Oneway Business OS
 
-Source: https://oneway.center/os-business (last changed 2026-10-17)
+Source: https://oneway.center/os-business (last changed 2026-10-19)
 
 class="mission-page ind-page">
 
@@ -1712,7 +1945,7 @@ Corporate Charter
 
 ## Business OS for Restaurants
 
-Source: https://oneway.center/os-business-restaurants (last changed 2026-10-17)
+Source: https://oneway.center/os-business-restaurants (last changed 2026-10-19)
 
 class="mission-page ind-page">
 
@@ -1830,7 +2063,7 @@ Corporate Charter
 
 ## Business OS for Hospitality
 
-Source: https://oneway.center/os-business-hospitality (last changed 2026-10-17)
+Source: https://oneway.center/os-business-hospitality (last changed 2026-10-19)
 
 class="mission-page ind-page">
 
@@ -1967,7 +2200,7 @@ Corporate Charter
 
 ## Business OS for Entertainment & Venues
 
-Source: https://oneway.center/os-business-entertainment (last changed 2026-10-17)
+Source: https://oneway.center/os-business-entertainment (last changed 2026-10-19)
 
 class="mission-page ind-page">
 
@@ -2061,7 +2294,7 @@ Corporate Charter
 
 ## Business OS for Additional Industries
 
-Source: https://oneway.center/os-business-industries (last changed 2026-10-17)
+Source: https://oneway.center/os-business-industries (last changed 2026-10-19)
 
 class="mission-page ind-page">
 
@@ -2152,7 +2385,7 @@ Corporate Charter
 
 ## What Oneway's words mean
 
-Source: https://oneway.center/learn (last changed 2026-10-17)
+Source: https://oneway.center/learn (last changed 2026-10-19)
 
 class="learn-page">
 
@@ -2278,7 +2511,7 @@ Corporate Charter
 
 ## Community Guidelines
 
-Source: https://oneway.center/community-guidelines (last changed 2026-10-17)
+Source: https://oneway.center/community-guidelines (last changed 2026-10-19)
 
 class="mission-page trust-page">
 
@@ -2394,7 +2627,7 @@ Corporate Charter
 
 ## Safety
 
-Source: https://oneway.center/safety (last changed 2026-10-17)
+Source: https://oneway.center/safety (last changed 2026-10-19)
 
 class="mission-page trust-page">
 
@@ -2561,7 +2794,7 @@ Corporate Charter
 
 ## Support
 
-Source: https://oneway.center/support (last changed 2026-10-17)
+Source: https://oneway.center/support (last changed 2026-10-19)
 
 class="mission-page trust-page">
 
@@ -2664,7 +2897,7 @@ Corporate Charter
 
 ## Accessibility
 
-Source: https://oneway.center/accessibility (last changed 2026-10-17)
+Source: https://oneway.center/accessibility (last changed 2026-10-19)
 
 class="mission-page trust-page">
 
@@ -2761,7 +2994,7 @@ Corporate Charter
 
 ## Security
 
-Source: https://oneway.center/security (last changed 2026-10-17)
+Source: https://oneway.center/security (last changed 2026-10-19)
 
 >
 

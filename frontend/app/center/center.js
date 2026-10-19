@@ -24,6 +24,29 @@
       signedIn = _u.signedIn;
 
 
+  /* ── THE STRIP FOLLOWS ITS SECTIONS (the OS's cold walk, 2026-10-17, item 10: the OS's Sections listed Main and About
+     while the page had no About tab, two ideas of "tabs" at once; web's ruling: the strip reads its Sections, and a
+     Section with no tab is not listed). When the Center has arranged its Sections (the app read's `sections`, as this
+     viewer may see them), each tab that IS a Section takes its Section's word and its place in their order, and is not
+     shown when it is not among them; every other tab (its website's pages, Photos, Story) keeps its own place. A Section
+     no tab draws (a hero, a custom block) is not a tab, so the strip does not list it. Held by api/test_center_sections.py. */
+  var SECTION_TAB = { main: 'main', about: 'about', events: 'today', spaces: 'book', community: 'people', discovery: 'nearby', opportunities: 'opportunities' };
+  function sectionedStrip(tabs, secs) {
+    if (!Array.isArray(secs) || !secs.length || !Array.isArray(tabs)) return tabs;
+    var byTab = {}, owned = {};
+    Object.keys(SECTION_TAB).forEach(function (k) { owned[SECTION_TAB[k]] = true; });
+    secs.forEach(function (x) { var t = x && SECTION_TAB[x.kind]; if (t && !byTab[t]) byTab[t] = x; });
+    var kept = tabs.filter(function (t) { return !(t && owned[t.id]) || byTab[t.id]; });
+    var slots = [], mine = [];
+    kept.forEach(function (t, i) { if (t && byTab[t.id]) { slots.push(i); mine.push(t); } });
+    mine.sort(function (a, b) { return byTab[a.id].order - byTab[b.id].order; });
+    mine.forEach(function (t, j) {
+      var x = byTab[t.id];
+      if (x.label && x.label !== t.label) { t = Object.assign({}, t, { label: x.label }); }
+      kept[slots[j]] = t;
+    });
+    return kept;
+  }
   function awayWords(iso) {
     if (!iso) return '';
     var t = new Date(iso);
@@ -920,6 +943,17 @@
            team and opens a conversation on the Center's side. The contact
            is how they answer; nothing else is asked. */
         if (!signedIn()) { guestAsk(); return; }
+        /* THE CENTER'S OWN RUNG, SAID ON THE PRESS (walked 2026-10-18: set to Nobody, the button still opened the line and
+           the message went through). The composed read carries messaging/inbound's answer for this person; a refusal is
+           its words, once, beside the button, and nothing is opened. Its people always reach it. */
+        var rm = (part.reach || {}).messaging;
+        if (rm && rm.allowed === false && !(part.viewer || {}).operates) {
+          var said0 = acts.querySelector('.po-act__why--reach') || mk('p', 'po-act__why po-act__why--reach', '');
+          var w0 = String(rm.why || 'this Center is not taking messages');
+          said0.textContent = w0.charAt(0).toUpperCase() + w0.slice(1) + '.';
+          if (!said0.parentNode) acts.appendChild(said0);
+          return;
+        }
         reach.disabled = true; reach.textContent = 'Opening…';
         /* ONE CALL, BECAUSE THE ROUTE ALREADY DOES BOTH. My first cut read
            `/reception` and then posted to `/message` — but `/message` takes no
@@ -2864,6 +2898,18 @@
       var _opT = OW.opps && OW.opps.tabEntry && OW.opps.tabEntry(centerId, _cnA.offering);
       if (_opT) tabs.push(_opT);
       if (OW.site && OW.site.arrange) tabs = OW.site.arrange(tabs, app && app.website);
+      tabs = sectionedStrip(tabs, app && app.sections);
+      /* MAIN LEADS (the OS's cold walk, 2026-10-17: on a Center whose site has 39 pages, Main was the last of 41 tabs, about
+         5,400px along the row). The site's pages go before the Center's own tabs; unless the Center chose its strip's order
+         itself (founder/681, arranged above; or its Sections), its Main comes first and the site's pages after it. */
+      var _ord = app && app.website && app.website.categories && app.website.categories.order;
+      /* the Center chose the order when it placed its strip (website.categories.order) or put another Section before
+         Main in its Sections; a site's own pages (its "Home" among them) never go ahead of Main otherwise */
+      var _secs = app && Array.isArray(app.sections) ? app.sections : [];
+      var _secFirst = _secs.slice().sort(function (a, b) { return a.order - b.order; })[0];
+      if (!(_ord && _ord.length) && !(_secFirst && _secFirst.kind !== 'main' && SECTION_TAB[_secFirst.kind])) {
+        for (var _mi = 1; _mi < tabs.length; _mi++) { if (tabs[_mi] && tabs[_mi].id === 'main') { tabs.unshift(tabs.splice(_mi, 1)[0]); break; } }
+      }
       profileShell(host, {
         kind: 'center', cardRef: String(centerId), name: head.name || ident.name || 'Center',
         /* WHAT THIS PLACE IS — never what the READER is to it. `viewer.line`

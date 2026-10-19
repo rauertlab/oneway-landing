@@ -1104,16 +1104,18 @@
      profile is drawn as Instagram and TikTok draw one. The picture and the counts on one row (a number over its word, each
      list a door); the name, the handle under it once (a name that is only the handle is said once), a Center's category;
      the bio; the place; a Center's details, a word over its value; the platforms; then the profile's own buttons, the
-     first filled. A wide screen sets the picture larger at the left and everything else beside it. Its panel is the one
-     Popit surface (`.ow-popit`, oneway-popit.css THE ONE POPIT SURFACE, founder/822) on the account's own light, its glow
-     outside Simple mode and Simple's own look in it. Read from the same card read as the card (OW.cards.counts, handleLine,
-     linksInner, no card markup): one truth, two forms. Held by api/test_profile_header.py and
-     tools/probe/profile-header-shoot.cjs (red if the profile is the card's markup, or its surface is not the Popits' outside
-     Simple). */
+     first filled. A wide screen sets the picture larger at the left and everything else beside it.
+     NO BOX (the founder, 2026-10-19: "The profiles need to look like social media profiles once clicked on and viewed ... the
+     top headers of profiles shouldn't look like cards like this ... should be quick reflections and projections of them"):
+     the header stands open on the page, in both modes, as Instagram's does; the card (OW.lcard) is the boxed, lit
+     projection of it, and the banner the account's choice, Fade behind or Framed above (profile-header.css). Read from the
+     same card read as the card (OW.cards.counts, handleLine, linksInner, no card markup): one truth, two forms. Held by
+     api/test_profile_header.py and tools/probe/profile-header-shoot.cjs (red if the profile is the card's markup or wears
+     a card's box). */
   var PIN = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/></svg>';
   function profileHeader(c, o, ev) {
     var C = OW.cards, center = c.kind === 'center';
-    var el = mk('section', 'ow-ph ow-popit');
+    var el = mk('section', 'ow-ph');
     el.setAttribute('data-kind', center ? 'center' : 'person');
     el.setAttribute('aria-label', (c.title || 'This') + (center ? '' : '’s profile'));
     /* a person is round, as their picture is everywhere in the App (founder/471: a circle is the default); a Center keeps the
@@ -1122,7 +1124,7 @@
     var face = mk('div', 'ow-ph__face');
     face.setAttribute('data-shape', shape);
     if (pic.url) { var im = doc.createElement('img'); im.src = imageUrl(pic.url) || pic.url; im.alt = ''; im.decoding = 'async'; face.appendChild(im); }
-    else face.appendChild(mk('span', 'ow-ph__ini', esc(OW.initials ? OW.initials(c.title) : String(c.title || '').charAt(0))));
+    else face.appendChild(mk('span', 'ow-ph__ini', C.inside({ kind: center ? 'center' : 'person', name: c.title })));   /* the face rule, asked of the shared renderer (S21) */
     el.appendChild(face);
     /* the counts: followers always, a 0 included; a person's following; a Center's events (30+ past what is read) */
     var list = (C.counts ? C.counts(c) : []).slice();
@@ -1154,26 +1156,41 @@
     var cats = center ? ((c.categories && c.categories.length) ? c.categories : (c.category_label ? [c.category_label] : [])) : [];
     if (cats.length) id.appendChild(mk('div', 'ow-ph__cat', esc(cats.join(' · '))));
     el.appendChild(id);
-    /* about: the bio, the place, a Center's details, the platforms */
+    /* about: the bio at the left; THE INFORMATION AT THE RIGHT, ONE CLEAN LIST, as the card draws it
+       (the founder, 2026-10-19: "i want the info to always be on right side weather its card or profile ... in that one clean
+       list"): a Center's details line by line, "Label: value" with its role's icon (OW.cards.detailIcon, the card's own
+       rule), and where it is, said the short way ("Location: Atlantic City, NJ"); a person's place the same way */
     var about = mk('div', 'ow-ph__about');
+    var left = mk('div', 'ow-ph__left');
     var bio = center ? (c.blurb || '') : (c.line || '');
-    if (bio) { var b = mk('p', 'ow-ph__bio', esc(bio)); b.setAttribute('dir', 'auto'); about.appendChild(b); }
-    var place = center ? (c.line || '') : (c.place || '');
-    if (place) about.appendChild(mk('div', 'ow-ph__place', PIN + '<span>' + esc(place) + '</span>'));
-    if ((c.details || []).length) {
-      var facts = mk('dl', 'ow-ph__facts');
-      c.details.forEach(function (d) {
-        var f = mk('div', 'ow-ph__fact');
-        if (/\n/.test(d.value || '') || String(d.value || '').length > 26) f.setAttribute('data-wide', '1');
-        f.appendChild(mk('dt', '', esc(d.label)));
-        f.appendChild(mk('dd', '', esc(d.value)));
-        facts.appendChild(f);
+    if (bio) { var b = mk('p', 'ow-ph__bio', esc(bio)); b.setAttribute('dir', 'auto'); left.appendChild(b); }
+    /* THE PLATFORMS, A ROW OF THEIR OWN (the founder, 2026-10-19: "Social icons should be more prominent and should not be
+       trapped by the bio or information"): their own marks, larger, under the information, before the buttons */
+    var links = C.linksInner ? C.linksInner(c, { centers: true }) : '';
+    var lb = null;
+    if (links) { lb = mk('div', 'ow-ph__links ow-linkbar', links.replace(/ow-ocard__link-text/g, 'ow-ph__linktext')); lb.setAttribute('role', 'list'); }
+    var short = function (v) { return C.shortPlace ? C.shortPlace(v) : v; };
+    var isPlace = function (l) { return /^(address|location|place)$/i.test(String(l || '')); };
+    var rows = (c.details || []).filter(function (d) { return d && d.label && d.value; }).map(function (d) {
+      return { label: d.label, value: isPlace(d.label) ? short(d.value) : d.value, place: isPlace(d.label) };
+    });
+    var place = short(center ? (c.line || '') : (c.place || ''));
+    if (place && !rows.some(function (r) { return r.place; })) rows.push({ label: 'Location', value: place, place: true });
+    rows.sort(function (x, y) { return (x.place ? 1 : 0) - (y.place ? 1 : 0); });   /* where it is, last */
+    if (left.childNodes.length) about.appendChild(left);
+    if (rows.length) {
+      var info = mk('ul', 'ow-ph__info');
+      rows.forEach(function (r) {
+        var li = mk('li', 'ow-ph__row' + (r.place ? ' ow-ph__row--place' : ''),
+          '<i class="ow-ph__ic">' + (C.detailIcon ? C.detailIcon(r.place ? 'place' : r.label) : '') + '</i><span><i>' + esc(r.label) + ':</i> <b dir="auto">' + esc(r.value) + '</b></span>');
+        li.title = r.label + ': ' + r.value;
+        info.appendChild(li);
       });
-      about.appendChild(facts);
+      about.appendChild(info);
     }
-    var links = C.linksInner ? C.linksInner(c) : '';
-    if (links) { var lb = mk('div', 'ow-ph__links ow-linkbar', links.replace(/ow-ocard__link-text/g, 'ow-ph__linktext')); lb.setAttribute('role', 'list'); about.appendChild(lb); }
+    about.setAttribute('data-cols', left.childNodes.length && rows.length ? '2' : '1');
     el.appendChild(about);
+    if (lb) el.appendChild(C.lineMarks ? C.lineMarks(lb) : lb);   /* one straight line, never a second row (the founder, 2026-10-19) */
     el.appendChild(mk('div', 'ow-ph__acts'));
     return el;
   }
@@ -1253,6 +1270,25 @@
               function () { if (OW.toast) OW.toast('The link could not be copied here.'); });
           });
           row.appendChild(sh); row.appendChild(cp);
+          /* MUTE A PLACE (web 18:16Z; Instagram's parity): its posts stop reaching this person's Home and feeds, its own page
+             still shows them; the state read from `between`, never assumed; signed-in visitors only */
+          if (o.cardRef && data.me && data.me()) {
+            var mu = mk('button', 'po-act', 'Mute'); mu.type = 'button'; mu.disabled = true;
+            var mpath = '/api/oneway/graph/mute/' + encodeURIComponent(o.cardRef), muted = false;
+            var said = function () { mu.textContent = muted ? 'Unmute' : 'Mute'; mu.setAttribute('aria-pressed', String(muted)); };
+            data.get('/api/oneway/graph/between/' + encodeURIComponent(o.cardRef)).then(function (r) {
+              muted = !!(r && r.ok && r.data && r.data.muted); said(); mu.disabled = false;
+            }, function () { mu.disabled = false; said(); });
+            mu.addEventListener('click', function () {
+              var next = !muted; mu.disabled = true;
+              (next ? data.post(mpath, {}) : data.del(mpath)).then(function (r) {
+                mu.disabled = false;
+                if (r && r.ok) { muted = next; said(); if (OW.toast) OW.toast(next ? 'Muted. Its posts stay off your feeds; its page still shows them.' : 'Unmuted.', { tone: 'ok' }); }
+                else if (OW.toast) OW.toast('That did not change. ' + ((r && r.error) || ''));
+              });
+            });
+            row.appendChild(mu);
+          }
           acts.appendChild(row); cmore.setAttribute('aria-expanded', 'true');
         });
         mine.push(cmore);
@@ -1279,10 +1315,18 @@
           if (here && !here.__owOwn) { here.remove(); b.setAttribute('aria-expanded', 'false'); e.stopImmediatePropagation(); }
         }, true);
       });
+      /* A PERSON'S NOTE STANDS TO THE RIGHT OF THEIR NAME (founder/832: "when a user has an attached note, it must go to the
+         right of the card. It shouldn't extend the card upwards"). The note, its "Leave a note" and its editor are written
+         into the shell's header (OW.noteOn, noteComposer), which is hidden: each is brought into this header's identity,
+         a pill after the name with its tether toward the picture, now and whenever the composer writes it again. */
+      var idBox = el.querySelector('.ow-ph__id');
+      var noteNode = function (n) { return n.nodeType === 1 && (n.classList.contains('po-note') || n.classList.contains('ow-note-set') || n.classList.contains('ow-note-edit')); };
       var shell = root.querySelector('.ow-prof__id');
+      if (shell && idBox) [].forEach.call(shell.querySelectorAll('.po-note, .ow-note-set, .ow-note-edit'), function (n) { idBox.appendChild(n); });
       if (shell && global.MutationObserver) new global.MutationObserver(function (list) {
         list.forEach(function (m) { [].forEach.call(m.addedNodes, function (n) {
           if (n.nodeType === 1 && n.classList.contains('po-acts__more') && acts.isConnected) acts.appendChild(n);
+          else if (idBox && noteNode(n)) { var old = idBox.querySelector(':scope > .' + n.classList[0]); if (old && old !== n) old.remove(); idBox.appendChild(n); }
         }); });
       }).observe(shell, { childList: true, subtree: true });
       var hero = root.querySelector('.ow-prof__hero');

@@ -27,6 +27,22 @@
   var bar = document.querySelector('.owbar');
   if (!bar || bar._owbar) return;
   bar._owbar = true;
+  /* THE CALM PATH (the founder, 2026-10-19: "on old phones the animation glitches really have it compatable with
+     everything"). A device that asks for less motion, has 2 GB or less or two cores or fewer, or runs an engine from
+     before 2021 (no aspect-ratio: Safari before 15, Chrome before 88, the Chromebooks past their updates) gets
+     html.ow-calm: the wordmark is not flown frame by frame (the hero's own mark scrolls under the bar and the bar's mark
+     comes in when it has), no blur behind the bar, and the landing holds its sky still (index.html). Set once, here,
+     because every page wears this bar; window.owCalm says it to the page. */
+  var calm = (function () {
+    try {
+      var n = navigator;
+      if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+      if ((n.deviceMemory && n.deviceMemory <= 2) || (n.hardwareConcurrency && n.hardwareConcurrency <= 2)) return true;
+      return !(window.CSS && CSS.supports && CSS.supports('aspect-ratio', '1 / 1'));
+    } catch (e) { return true; }
+  })();
+  window.owCalm = calm;
+  if (calm) document.documentElement.classList.add('ow-calm');
   var brand = bar.querySelector('.owbar-brand'), pages = bar.querySelector('.owbar-pages'),
       right = bar.querySelector('.owbar-right'), mark = bar.querySelector('.owbar-mark');
   var links = pages ? [].slice.call(pages.querySelectorAll('a')) : [];
@@ -187,16 +203,41 @@
 
   /* ── THE FLIGHT ─────────────────────────────────────────────────────────────────────────────────────────────── */
   var markImg = mark && mark.querySelector('img');
-  if (bar.classList.contains('owbar--fly')) document.documentElement.classList.add('owbar-flying');
+  /* EXACTLY ONE WORDMARK, AT EVERY MOMENT (the founder, 2026-10-19: "on chromebooks the wordmark at the top is
+     duplicated and on old phones the animation glitches"). The hero's mark is put away in the same frame the flying one
+     is first drawn on top of it (html.owbar-flying, below in frame()), never before: hidden from the script's start, a
+     slow machine showed no wordmark until the picture loaded and then faded one in; and a flight that never starts
+     (an old browser, a picture that fails) leaves the hero's own mark standing. Held by tools/probe/wordmark-one.cjs. */
   function startFlight() {
     var hero = document.querySelector('[data-owbar-hero]');
     if (!hero || !markImg || !bar.classList.contains('owbar--fly')) {
       bar.classList.remove('owbar--fly'); document.documentElement.classList.remove('owbar-flying'); grounded(); return;
     }
+    if (calm) {
+      /* calm: nothing follows the scroll. The bar darkens as the page leaves the top, the hero's mark scrolls under it
+         with the page, and the moment it has gone under the bar the bar's own fades in (.owbar--docked, oneway-bar.css) */
+      var home = false;
+      var dock = function () {
+        var h = hero.getBoundingClientRect();
+        home = h.bottom <= bar.getBoundingClientRect().bottom + 1;
+        bar.classList.toggle('owbar--docked', home);
+        bar.classList.toggle('owbar--scrolled', (window.scrollY || 0) > 16);
+      };
+      flight = { frame: dock, docked: function () { return (window.scrollY || 0) > 16; },
+                 canOpen: function () { return home; }, glide: function () {} };
+      window.addEventListener('resize', dock, { passive: true });
+      window.addEventListener('load', dock);
+      dock();
+      return;
+    }
     var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    /* a touch screen scrolls in one continuous glide: the eased scroll below (made for a mouse wheel's 100 px steps) only
+       held the wordmark behind the finger, a frame or more on a slow phone */
+    var coarse = window.matchMedia && matchMedia('(pointer: coarse)').matches;
     var fly = document.createElement('img');
     fly.className = 'owbar-fly'; fly.alt = ''; fly.setAttribute('aria-hidden', 'true');
     fly.src = hero.currentSrc || hero.src;
+    fly.style.transition = 'none';   // never a fade: oneway-popit.css fades every child of <body> in .45 s, this one included
     var share = parseFloat(hero.getAttribute('data-owbar-span'));
     document.body.appendChild(fly);
     var p = 0, short = false, queued = false, K = 0, glide0 = null;   // K: how far into the bar the open state has drawn it
@@ -235,7 +276,7 @@
          is taken at yS: the progress and where the hero would stand. So the never-past-the-bar law holds for yS exactly,
          at rest it is exact (yS = scroll), docked it is exact (the mark is fixed). Reduced motion draws the scroll itself. */
       var now = performance.now();
-      if (yS === null || still) yS = y;
+      if (yS === null || still || coarse) yS = y;                  // a finger's scroll is already smooth: never behind it
       else yS = yS + (y - yS) * (1 - Math.exp(-Math.min(64, now - lastT) / 70));
       if (Math.abs(y - yS) < 0.25) yS = y; else queue();
       lastT = now;
@@ -244,7 +285,7 @@
       H = { cx: H.cx, cy: H.cy + (y - yS), w: H.w, h: H.h };         // the hero as it stood at yS
       var e = 1 - Math.pow(1 - pS, 3);                              // decelerate into the dock
       e = e + (1 - e) * K;                                          // the bar open draws it the rest of the way, smoothly
-      return { cx: H.cx + (M.cx - H.cx) * e, cy: H.cy + (M.cy - H.cy) * e, w: H.w + (M.w - H.w) * e };
+      return { cx: H.cx + (M.cx - H.cx) * e, cy: H.cy + (M.cy - H.cy) * e, w: H.w + (M.w - H.w) * e, e: e };
     }
     function ease(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
     function frame() {
@@ -262,7 +303,14 @@
       var ratio = H.h / H.w;
       fly.style.width = H.w + 'px';
       fly.style.transform = 'translate(' + (S.cx - S.w / 2) + 'px,' + (S.cy - S.w * ratio / 2) + 'px) scale(' + (S.w / H.w) + ')';
-      fly.classList.add('on');
+      /* a page that fades its opening in (os.html's lockup) draws the wordmark with it: on the hero the flying mark is as
+         faint as the hero's own would be, and it comes to full strength as it leaves for the bar */
+      var a = 1;
+      if (S.e < 1) for (var x = hero.parentElement; x && x !== document.body; x = x.parentElement) a *= parseFloat(getComputedStyle(x).opacity) || 0;
+      a = a + (1 - a) * S.e;
+      fly.style.opacity = a > 0.999 ? '' : a.toFixed(3);
+      if (a <= 0.999) queue();                                      // follow the opening's fade to its end
+      if (!fly.classList.contains('on')) { fly.classList.add('on'); document.documentElement.classList.add('owbar-flying'); }
       grounded();
     }
     function queue() { if (!queued) { queued = true; requestAnimationFrame(frame); } }
