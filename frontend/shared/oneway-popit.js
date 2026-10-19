@@ -1713,15 +1713,23 @@
       }
       raf = requestAnimationFrame(frame);
     }
+    /* SIMPLE HOLDS STILL (oneway-surface.css; the founder, 2026-10-19: "visual clean interface built for simple mode"):
+       in Simple the network is the last frame drawn, a still picture, and moves again the moment Simple is off */
+    function still() { return root.getAttribute('data-simple') === '1'; }
     size(); frame();
+    if (still()) { cancelAnimationFrame(raf); raf = 0; }
     var t; global.addEventListener('resize', function () {
-      clearTimeout(t); t = setTimeout(size, 140);
+      clearTimeout(t); t = setTimeout(function () { size(); if (still()) { frame(); cancelAnimationFrame(raf); raf = 0; } }, 140);
     }, { passive: true });
     /* parked with the tab — canon §4 */
     doc.addEventListener('visibilitychange', function () {
       if (doc.hidden) { cancelAnimationFrame(raf); raf = 0; }
-      else if (!raf) raf = requestAnimationFrame(frame);
+      else if (!raf && !still()) raf = requestAnimationFrame(frame);
     });
+    if (global.MutationObserver) new MutationObserver(function () {
+      if (still()) { cancelAnimationFrame(raf); raf = 0; }
+      else if (!raf && !doc.hidden) raf = requestAnimationFrame(frame);
+    }).observe(root, { attributes: true, attributeFilter: ['data-simple'] });
   };
 
   /* ═══ WHAT ACTUALLY WENT WRONG ═════════════════════════════════════════

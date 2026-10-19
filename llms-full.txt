@@ -8,8 +8,6 @@
 
 Source: https://oneway.center/ (last changed 2026-10-19)
 
->
-
 Our Mission
 App
 OS
@@ -209,6 +207,10 @@ OS
 
 A Center you make entirely your own.
 
+OS Brain
+
+iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
+
 A Center is a canvas: place its posts, events, links and website where you want them, and everyone who opens it sees it your way. Oneway OS is the AI business management side of the same social network, so the place people follow and the place you run are one.
 
 See how deep it goes.
@@ -231,10 +233,6 @@ Grow it as you go
 Add Systems when you need them, connect the platforms you already use, and on Business OS see how all of it connects through the Brain.
 
 From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
-
-OS Brain
-
-iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
 
 Open Oneway OS Oneway OS
 
@@ -433,8 +431,6 @@ Corporate Charter
 
 Source: https://oneway.center/app (last changed 2026-10-19)
 
->
-
 Our Mission
 App
 OS
@@ -454,6 +450,7 @@ Claim your @name Open the App
 
 Discovery
 Discover people, places, and communities. Your way.
+
 Explore Oneway through an interactive map or a personalized grid of posts. Find local businesses, events, and communities, follow the places you love, and see what is happening around you.
 Connect with other Oneway users passing the same local Centers, quietly, with Waypass. You control whether you take part.
 Create Info Centers to populate our ecosystem and win monthly rewards and ranking in your area.
@@ -461,6 +458,7 @@ Monthly rewards and eligibility rules are planned.
 
 Home
 For You, and you get to choose.
+
 Oneway is a customizable social media app for photos, videos, and posts. Explore a ranked For You feed, follow people and places, switch to Following, or create custom feeds that shape what you see.
 Import posts from supported connected platforms and arrange Popits on your in-app Home. iOS Home Screen widgets are planned, not available yet.
 
@@ -503,6 +501,7 @@ Screenshot notices apply to detected shortcuts. The web App cannot detect phone 
 
 Lightbulb
 Capture it. Import it. Make it yours.
+
 Capture photos, videos, and posts, bring in content from supported platforms, save it to your Workspace, and share it with friends and communities.
 
 My profile and workspace
@@ -563,8 +562,6 @@ Claim your @name
 
 Source: https://oneway.center/mission (last changed 2026-10-19)
 
-class="mission-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -577,11 +574,13 @@ Always building a place for individual expression, stronger communities and more
 
 Privacy
 Your identity and data stay under your control.
+
 Choose what your profile shows and keep personal and workplace activity separate. Access to organizational work follows permissions, not a public profile.
 Privacy and security
 
 Oneway OS
 Building the best social media ecosystem for businesses and communities.
+
 A public Center is where people connect with a place. Oneway OS is where its team can manage that presence and organize the work behind it.
 Explore Oneway OS
 
@@ -788,8 +787,6 @@ Corporate Charter
 
 Source: https://oneway.center/os (last changed 2026-10-19)
 
->
-
 Our Mission
 App
 OS
@@ -850,6 +847,8 @@ System Store
 
 Everything your Center needs.
 
+Oneway OS, with sample records.
+
 Systems bring industry and everyday capabilities into a Center. Explore what is available, then connect the tools that fit your operation.
 
 For your kind of place
@@ -879,6 +878,8 @@ Install the Systems your place needs; each adds its tools to your Center and its
 Business OS vs. the stack
 
 Seven apps, or one Center.
+
+7 separate apps, or one Center on one login
 
 Most businesses run on a pile of separate tools that never talk to each other. Business OS puts them in one Center, on one login.
 
@@ -924,6 +925,8 @@ How a Center grows
 
 Start as a community. Grow into an operation.
 
+4 stages, from a community to an enterprise
+
 Stage 1
 Community
 Members, channels, events, and shared resources.
@@ -946,6 +949,8 @@ Open Oneway OS →
 Create your account
 
 Built for communities, organizations, businesses and places.
+
+Oneway OS has its own site, with every System: onewayos.com
 
 Our Mission
 App
@@ -973,8 +978,6 @@ Corporate Charter
 ## Get Oneway OS today
 
 Source: https://oneway.center/contact (last changed 2026-10-19)
-
->
 
 Our Mission
 App
@@ -1081,8 +1084,6 @@ Corporate Charter
 ## Privacy Policy
 
 Source: https://oneway.center/privacy (last changed 2026-10-19)
-
->
 
 Our Mission
 App
@@ -1439,8 +1440,6 @@ Corporate Charter
 
 Source: https://oneway.center/terms (last changed 2026-10-19)
 
->
-
 Our Mission
 App
 OS
@@ -1691,8 +1690,6 @@ Corporate Charter
 
 Source: https://oneway.center/data-deletion (last changed 2026-10-19)
 
->
-
 Our Mission
 App
 OS
@@ -1864,8 +1861,6 @@ Corporate Charter
 
 Source: https://oneway.center/os-business (last changed 2026-10-19)
 
-class="mission-page ind-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -1882,6 +1877,8 @@ Talk to us Oneway OS
 Industries
 
 Start with your industry.
+
+Oneway OS, with sample records.
 
 Each page shows what Business OS runs for that kind of place, and the Systems it starts with.
 
@@ -1900,6 +1897,8 @@ Leases and what tenants owe, for rental property, and a Center for a museum, a s
 What it carries
 
 The business layer of a Center.
+
+$330 a month for one Center on Business OS
 
 Everything a free Center has, and the parts a business runs on.
 
@@ -1947,8 +1946,6 @@ Corporate Charter
 
 Source: https://oneway.center/os-business-restaurants (last changed 2026-10-19)
 
-class="mission-page ind-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -1965,6 +1962,8 @@ Talk to us
 The floor
 
 Every table, and who is at it.
+
+Oneway OS, with sample records.
 
 The host sees each table with its seats and its section, the party at it, and how long they have been there.
 
@@ -1992,6 +1991,8 @@ The waitlist
 
 The line, on the guest's phone too.
 
+Oneway OS, with sample records.
+
 Who is waiting, how many, the quote they were given and how long they have waited, and which parties are past their quote.
 
 Join from the App
@@ -2003,6 +2004,8 @@ When the host says a table is ready, a guest who joined from the App is told the
 The kitchen
 
 The 86 board.
+
+Oneway OS, with sample records.
 
 What the kitchen is out of today, who said so and when, and back on with one press.
 
@@ -2017,6 +2020,8 @@ Of a closed check, Oneway keeps its totals, and never the tips, the payment or w
 System Store
 
 Add what the restaurant needs.
+
+5 Systems a restaurant starts with
 
 A restaurant can start with these five.
 
@@ -2065,8 +2070,6 @@ Corporate Charter
 
 Source: https://oneway.center/os-business-hospitality (last changed 2026-10-19)
 
-class="mission-page ind-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -2083,6 +2086,8 @@ Talk to us
 Hotel Operations
 
 The book, from the rate to the room.
+
+Oneway OS, with sample records.
 
 A hotel sells a room type, for a night, at a rate. The book keeps all three, and what is left to sell on every date.
 
@@ -2110,6 +2115,8 @@ Guest Experience
 
 Every guest, known across the property.
 
+Oneway OS, with sample records.
+
 What each department needs to know about a stay, the guest's own messages, and a program that rewards them for coming back.
 
 Traces
@@ -2129,6 +2136,8 @@ System Store: Rewards & Membership and Maintenance, beside Hotel Operations.
 Front Office
 
 The desk's day, and the numbers.
+
+Oneway OS, with sample records.
 
 Arrivals, the guests in the house and the ones leaving today, the night audit, and the figures every hotelier judges a property by.
 
@@ -2202,8 +2211,6 @@ Corporate Charter
 
 Source: https://oneway.center/os-business-entertainment (last changed 2026-10-19)
 
-class="mission-page ind-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -2221,6 +2228,8 @@ Events
 
 Found, answered and counted.
 
+The Oneway App, with a sample Center.
+
 People find the event on the Center's page in the Oneway App, say Going, Maybe or Not going, and see how many are going.
 
 A draft until it is out
@@ -2235,6 +2244,8 @@ The door
 
 Who is here, of who is coming.
 
+Oneway OS, with sample records.
+
 At the door the team sees the next events, how many are here of how many are coming, and checks each guest in with one press, or undoes it.
 
 The people who come
@@ -2246,6 +2257,8 @@ The Center's followers see its posts in their feeds, its members have joined it,
 The work
 
 The work behind every night.
+
+Oneway OS, with sample records.
 
 Work orders on the venue's own things, in the order to do them.
 
@@ -2296,8 +2309,6 @@ Corporate Charter
 
 Source: https://oneway.center/os-business-industries (last changed 2026-10-19)
 
-class="mission-page ind-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -2314,6 +2325,8 @@ Talk to us
 Rental property
 
 The rent roll, unit by unit.
+
+Oneway OS, with sample records.
 
 Every unit leased, on notice or vacant, what is owed past its due date, and the leases coming to an end.
 
@@ -2343,6 +2356,8 @@ System Store: Property Management, with Maintenance for the work orders.
 Every kind of place
 
 A Center for every kind of place.
+
+$0 Community Management, on Oneway OS
 
 Museums and galleries, schools and clubs, churches and nonprofits, festivals, neighborhoods and cities.
 
@@ -2386,8 +2401,6 @@ Corporate Charter
 ## What Oneway's words mean
 
 Source: https://oneway.center/learn (last changed 2026-10-19)
-
-class="learn-page">
 
 Our Mission App OS Security Contact
 
@@ -2513,8 +2526,6 @@ Corporate Charter
 
 Source: https://oneway.center/community-guidelines (last changed 2026-10-19)
 
-class="mission-page trust-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -2628,8 +2639,6 @@ Corporate Charter
 ## Safety
 
 Source: https://oneway.center/safety (last changed 2026-10-19)
-
-class="mission-page trust-page">
 
 Our Mission App OS Security Contact
 
@@ -2796,8 +2805,6 @@ Corporate Charter
 
 Source: https://oneway.center/support (last changed 2026-10-19)
 
-class="mission-page trust-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -2899,8 +2906,6 @@ Corporate Charter
 
 Source: https://oneway.center/accessibility (last changed 2026-10-19)
 
-class="mission-page trust-page">
-
 Our Mission App OS Security Contact
 
 Sign in
@@ -2995,8 +3000,6 @@ Corporate Charter
 ## Security
 
 Source: https://oneway.center/security (last changed 2026-10-19)
-
->
 
 Our Mission
 App

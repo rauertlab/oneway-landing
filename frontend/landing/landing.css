@@ -41,6 +41,36 @@ main > .lp:last-child,body > .lp:has(~ footer.owfoot):not(:has(~ .lp)){padding-b
   font-weight:900;font-size:clamp(54px,8vw,104px);line-height:.9;letter-spacing:-.045em;color:#fff}
 .lp-anchor--drawing{color:rgb(var(--land-hue-0,93,226,255))}
 .lp-anchor--drawing svg{width:clamp(104px,14vw,160px)}
+/* the anchor's own parts, for the pages beyond the landing (the system pages' session) (the system pages' session, 2026-10-19):
+   a MOMENT is one product part, cut close from the real screen and framed as a piece of it; a phone SHOT stands at a
+   phone's width; a NUMBER says what it counts under it; a SHOT names its records as samples; a wide DRAWING is a
+   diagram of how the parts move (its words in the page's face); a STRIP is the industries side by side */
+.lp-anchor--moment img{border-radius:clamp(12px,1.6vw,18px);background:rgba(255,255,255,.02);
+  box-shadow:0 24px 64px rgba(0,0,0,.45),0 0 0 1px rgba(var(--land-hue-0,93,226,255),.28)}
+.lp-anchor--phone img{width:clamp(220px,26vw,300px);border-radius:clamp(26px,3vw,36px)}
+.lp-anchor--number .lp-anchor-label{display:block;margin-top:12px;font-size:var(--lp-fs-caption,15px);font-weight:600;
+  line-height:var(--lp-lh-caption,1.4);letter-spacing:0;color:rgba(255,255,255,.78)}
+.lp-anchor-cap{margin-top:12px;color:rgba(255,255,255,.6)}
+.lp-anchor--wide svg{width:min(100%,520px)}
+.lp-anchor--wide svg.lp-rings{width:min(72vw,280px)}
+.lp-anchor--strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,1.2vw,16px)}
+.lp-anchor--strip img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:left top}
+.lp-anchor--strip .lp-anchor-cap{grid-column:1/-1}
+@media(max-width:600px){.lp-anchor--strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* A TWO-COLUMN SECTION WITH ITS ANCHOR BESIDE IT (the App page): the headline, then the anchor, then the words, in that
+   order in the page; side by side, the anchor stands beside the headline and the words (on the side .lp-flip names);
+   stacked on a phone, it stands between them */
+.lp-anchored{grid-template-areas:"head anchor" "words anchor";grid-template-rows:auto 1fr;row-gap:0}
+.lp-anchored.lp-flip{grid-template-areas:"anchor head" "anchor words"}
+.lp-anchored.lp-flip > :first-child{order:0}
+.lp-anchored > .lp-head{grid-area:head;align-self:end}
+.lp-anchored > .lp-words{grid-area:words;align-self:start}
+.lp-anchored > .lp-anchor{grid-area:anchor;margin:0;align-self:center}
+.lp-anchor--device img{box-shadow:none}
+@media(max-width:820px){
+  .lp-anchored,.lp-anchored.lp-flip{grid-template-areas:"head" "anchor" "words";grid-template-rows:auto}
+  .lp-anchored > .lp-anchor{margin:clamp(26px,7vw,40px) 0}
+}
 .lp-acts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
 .lp-acts--c{justify-content:center}
 /* ONE OUTLINED BUTTON ON EVERY LANDING PAGE (S20's Outlined kind, amended 2026-10-16; founder/790: "they must have the
