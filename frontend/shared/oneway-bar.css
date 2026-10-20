@@ -156,9 +156,11 @@ html[data-theme="light"] .owbar--room.owbar--scrolled{background:var(--ow-ground
 .owfoot nav a{display:inline-block;padding:5px 0;transition:opacity .15s}
 .owfoot-pages a{font-size:14px;opacity:.8}
 .owfoot-help a,.owfoot-more a,.owfoot-legal a{opacity:.72}
-/* WHO MAKES ONEWAY, AND WHAT IT IS NOT (the founder, 2026-10-20: "do all parts" of AI search; tools/site_seo.py DISAMBIG): one
-   quiet line under the footer's own, on every page, read by people and by assistants alike */
-.owfoot-who{margin:6px 0 0;max-width:72ch;font-size:12px;line-height:1.5;color:rgba(255,255,255,.55)}
+/* WHO MAKES ONEWAY, AND WHAT IT IS NOT (the founder, 2026-10-20: "this has to be somewhere not front and center for users to see
+   but ai"): one quiet line under the footer's legal row, its smallest type, across the footer's width; never hidden (hidden
+   words read as cloaking), only small and last. The full statement is the Organization's disambiguatingDescription and the
+   top of llms.txt (tools/site_seo.py DISAMBIG) */
+.owfoot-who{grid-column:1/-1;display:block;margin:0;max-width:96ch;font-size:11px;line-height:1.45;font-weight:400;color:rgba(255,255,255,.42)}
 .owfoot nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 html.ow-old .owfoot a:focus{opacity:1;outline:2px solid currentColor;outline-offset:3px;border-radius:4px}
 .owfoot a:focus-visible{opacity:1;outline:2px solid currentColor;outline-offset:3px;border-radius:4px}

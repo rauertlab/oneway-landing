@@ -62,6 +62,9 @@ main > .lp:last-child,body > .lp:has(~ footer.owfoot):not(:has(~ .lp)){padding-b
 .lp-anchored > .lp-words{grid-area:words;align-self:start}
 .lp-anchored > .lp-anchor{grid-area:anchor;margin:0;align-self:center}
 .lp-anchor--device img{box-shadow:none}
+/* WHAT IT IS, PLAINLY (tools/site_seo.py ANSWERS): the first section's quiet last paragraph below a hero, never the hero */
+.lp-answer{margin-top:16px;max-width:62ch;color:rgba(255,255,255,.58)}
+.os-answer{margin:14px auto 0;text-align:center}
 @media(max-width:820px){
   .lp-anchored,.lp-anchored.lp-flip{grid-template-areas:"head" "anchor" "words";grid-template-rows:auto}
   .lp-anchored > .lp-anchor{margin:26px 0;margin:max(26px,min(7vw,40px)) 0;margin:clamp(26px,7vw,40px) 0}

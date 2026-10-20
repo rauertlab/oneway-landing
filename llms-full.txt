@@ -8,7 +8,7 @@ Oneway is a social network and a business platform in one: the Oneway App gives 
 
 ## Oneway
 
-Source: https://oneway.center/ (last changed 2026-10-19)
+Source: https://oneway.center/ (last changed 2026-10-20)
 
 Our Mission
 App
@@ -20,7 +20,7 @@ Sign in
 
 Oneway. We build & elevate experiences people want to return to.
 
-One profile for every person, a Center for every place, and Oneway OS to run it. Oneway is a social network and a business platform in one: the Oneway App for people, with a For You feed, messages and a map of places, and Oneway OS for the businesses and communities around them, made by Oneway Technologies LLC in New York.
+One profile for every person, a Center for every place, and Oneway OS to run it.
 
 Download App
 Explore Oneway OS
@@ -28,6 +28,8 @@ Explore Oneway OS
 Making entertainment, connection, and the Internet better for all sides.
 
 A modern ecosystem for people to easily and conveniently connect with cities, communities, and businesses.
+
+Oneway is a social network and a business platform in one: the Oneway App for people, with a For You feed, messages and a map of places, and Oneway OS for the businesses and communities around them, made by Oneway Technologies LLC in New York.
 
 Our mission
 
@@ -405,9 +407,6 @@ A Center is the home of a place, a community or a business on Oneway. At its sim
 What is Oneway OS?
 Oneway OS is where a Center is run: its page and website, posts, events and community, free. Business OS adds bookings, staff and the Systems of its industry.
 
-Is Oneway the same as other products named Oneway?
-No. Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
-
 Who controls my data?
 You do. Your profile shows only what you choose, your work for a Center stays apart from your personal activity, and you can delete your data and your account; if you own a Center, you hand it over first.
 
@@ -439,7 +438,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Oneway App
 
-Source: https://oneway.center/app (last changed 2026-10-19)
+Source: https://oneway.center/app (last changed 2026-10-20)
 
 Our Mission
 App
@@ -454,7 +453,7 @@ App
 
 Go anywhere. Connect everywhere.
 
-Follow your friends, discover places you love, and bring your favorite parts of the internet together. The Oneway App is a social app with a For You feed, a Following feed and custom feeds, stories, messages with group chats, and a map of the people and places near you, made by Oneway Technologies LLC in New York.
+Follow your friends, discover places you love, and bring your favorite parts of the internet together.
 
 Claim your @name Open the App
 
@@ -464,6 +463,8 @@ Discover people, places, and communities. Your way.
 Explore Oneway through an interactive map or a personalized grid of posts. Find local businesses, events, and communities, follow the places you love, and see what is happening around you.
 Connect with other Oneway users passing the same local Centers, quietly, with Waypass. You control whether you take part.
 Create Info Centers to populate our ecosystem and win monthly rewards and ranking in your area.
+The Oneway App is a social app with a For You feed, a Following feed and custom feeds, stories, messages with group chats, and a map of the people and places near you, made by Oneway Technologies LLC in New York.
+
 Monthly rewards and eligibility rules are planned.
 
 Home
@@ -573,7 +574,7 @@ Claim your @name
 
 ## Our Mission
 
-Source: https://oneway.center/mission (last changed 2026-10-19)
+Source: https://oneway.center/mission (last changed 2026-10-20)
 
 Our Mission App OS Security Contact
 
@@ -583,12 +584,14 @@ Mission
 
 Oneway aims to bring the web and local community together.
 
-Always building a place for individual expression, stronger communities and more connected workplaces, shaped by the people who use it. Oneway is made by Oneway Technologies LLC, a New York company: the Oneway App, a social network for people and the places they love, and Oneway OS, which runs the businesses and communities behind them.
+Always building a place for individual expression, stronger communities and more connected workplaces, shaped by the people who use it.
 
 Privacy
 Your identity and data stay under your control.
 
 Choose what your profile shows and keep personal and workplace activity separate. Access to organizational work follows permissions, not a public profile.
+
+Oneway is made by Oneway Technologies LLC, a New York company: the Oneway App, a social network for people and the places they love, and Oneway OS, which runs the businesses and communities behind them.
 Privacy and security
 
 Oneway OS
@@ -602,8 +605,6 @@ About Our Brand
 Built around experiences people want to return to.
 
 Oneway began with an interest in entertainment, hospitality, and the places that bring people together. What started as an idea for a modern arcade and social gathering space grew into a broader vision: connecting the experiences people enjoy in the physical world with the possibilities of the internet. That vision became Oneway Technologies, a company developing a connected ecosystem for people, communities, and businesses.
-
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
 
 One identity. Endless possibilities.
 
@@ -803,7 +804,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Get Oneway OS today
 
-Source: https://oneway.center/contact (last changed 2026-10-19)
+Source: https://oneway.center/contact (last changed 2026-10-20)
 
 Our Mission
 App
@@ -912,7 +913,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Privacy Policy
 
-Source: https://oneway.center/privacy (last changed 2026-10-19)
+Source: https://oneway.center/privacy (last changed 2026-10-20)
 
 Our Mission
 App
@@ -1270,7 +1271,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Terms of Service
 
-Source: https://oneway.center/terms (last changed 2026-10-19)
+Source: https://oneway.center/terms (last changed 2026-10-20)
 
 Our Mission
 App
@@ -1523,7 +1524,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Data Deletion
 
-Source: https://oneway.center/data-deletion (last changed 2026-10-19)
+Source: https://oneway.center/data-deletion (last changed 2026-10-20)
 
 Our Mission
 App
@@ -1697,7 +1698,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## What Oneway's words mean
 
-Source: https://oneway.center/learn (last changed 2026-10-19)
+Source: https://oneway.center/learn (last changed 2026-10-20)
 
 Our Mission App OS Security Contact
 
@@ -1824,7 +1825,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Community Guidelines
 
-Source: https://oneway.center/community-guidelines (last changed 2026-10-19)
+Source: https://oneway.center/community-guidelines (last changed 2026-10-20)
 
 Our Mission App OS Security Contact
 
@@ -1941,7 +1942,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Safety
 
-Source: https://oneway.center/safety (last changed 2026-10-19)
+Source: https://oneway.center/safety (last changed 2026-10-20)
 
 Our Mission App OS Security Contact
 
@@ -2109,7 +2110,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Support
 
-Source: https://oneway.center/support (last changed 2026-10-19)
+Source: https://oneway.center/support (last changed 2026-10-20)
 
 Our Mission App OS Security Contact
 
@@ -2213,7 +2214,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Accessibility
 
-Source: https://oneway.center/accessibility (last changed 2026-10-19)
+Source: https://oneway.center/accessibility (last changed 2026-10-20)
 
 Our Mission App OS Security Contact
 
@@ -2311,7 +2312,7 @@ Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, o
 
 ## Security
 
-Source: https://oneway.center/security (last changed 2026-10-19)
+Source: https://oneway.center/security (last changed 2026-10-20)
 
 Our Mission
 App
