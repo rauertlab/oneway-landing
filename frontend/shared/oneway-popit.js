@@ -3211,6 +3211,7 @@
       n.setAttribute('data-po-kind', 'highlight');
       n.setAttribute('aria-label', 'Open ' + (who.name || 'this Center'));
       n.classList.add('ow-ocard', 'ow-ocard--simple');
+      n.setAttribute('data-live-ref', 'center:' + g._center);   /* live on the card (frontend/shared/oneway-live.js) */
       n.textContent = who.name || 'Loading profile';
       OW.cards.mount(n, 'center', g._center, { as: 'simple', into: true, onOpen: false,
         onMissing: function () { n.textContent = 'Profile unavailable'; },

@@ -110,7 +110,7 @@
     addEventListener('ow:hue', paint);
   })();
   </script>
-  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=0441e400">
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=6d7e4f0b">
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{
@@ -313,14 +313,66 @@
     .cta-site a{color:#fff;text-decoration:underline;text-underline-offset:3px}
     .cta-band h2{font-size:28px;font-size:max(28px,min(3.6vw,46px));font-size:clamp(28px,3.6vw,46px);font-weight:800;letter-spacing:-.035em;margin-bottom:22px}
     /* the footer is THE ONE FOOTER of every landing page (oneway-bar.css .owfoot, founder/801) */
-  </style>
+    /* THE OS PAGE IN HIS ORDER (founder/849) */
+    .cm{padding:150px 0;padding:110px 0;padding:max(110px,min(14vw,190px)) 0;padding:clamp(110px,14vw,190px) 0;border-top:0}
+    .cm-wrap{max-width:900px;text-align:center}
+    .cm-h{margin:0 auto}
+    .cm-rot{margin:34px auto 0;color:#fff}
+    .cm-rot .rot-word{display:inline-block;font-weight:800}
+    .cm-p{max-width:46ch;margin:28px auto 0;color:rgba(255,255,255,.78)}
+    .free-split{display:grid;grid-template-columns:1fr;grid-gap:56px;gap:56px}
+    @media(min-width:760px){.free-split{grid-template-columns:1fr 1fr;grid-gap:0;gap:0}
+      .free-half+.free-half{border-left:1px solid var(--border)}}
+    .free-half{display:flex;flex-direction:column;align-items:center;text-align:center;padding:24px 32px}
+    .free-half .os-product-mark{width:160px;height:160px;margin:0 0 22px}
+    .free-half .os-product-globe{width:160px;height:160px}
+    .free-half--dev .os-product-globe{background:linear-gradient(135deg,rgb(var(--land-hue-1,167,139,250)),rgb(var(--land-hue-2,245,158,11)))}
+    .free-tag{color:rgba(255,255,255,.72);margin:0 0 10px}
+    .free-h{font-weight:900;font-size:40px;line-height:1.05;margin:0 0 14px;color:#fff}
+    .free-p{max-width:34ch;margin:0 auto 22px;color:rgba(255,255,255,.76)}
+    .free-a{display:inline-block;font-weight:700;color:#fff;border-bottom:1px solid rgba(255,255,255,.4);padding-bottom:2px}
+    .free-a:hover{border-bottom-color:#fff}
+    .free .os-answer{max-width:62ch;margin:48px auto 0;text-align:center}
+    .bos{text-align:center}
+    .bos .sec-h2{margin:0 auto}
+    .bos-plans{display:grid;grid-template-columns:1fr;grid-gap:18px;gap:18px;max-width:880px;margin:40px auto 0;text-align:left}
+    @media(min-width:760px){.bos-plans{grid-template-columns:1fr 1fr}}
+    .bos-plan{padding:28px 26px}
+    .bos-k{margin:0 0 6px;color:var(--dim)}
+    .bos-for{margin:0 0 14px;color:rgba(255,255,255,.72)}
+    .bos-price{font-weight:900;font-size:30px;line-height:1.1;color:#fff;margin:0 0 18px}
+    .bos-list{list-style:none;margin:0;padding:0}
+    .bos-list li{padding:9px 0;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.86)}
+    .bos-say{margin:34px auto 0;max-width:58ch}
+    .bos-acts{display:flex;flex-wrap:wrap;justify-content:center;margin-top:18px}
+    .bos-acts .free-a{margin:6px 14px}
+    .bs-cards{display:grid;grid-template-columns:1fr;grid-gap:20px;gap:20px}
+    @media(min-width:860px){.bs-cards{grid-template-columns:1fr 1fr}}
+    .bs-card{display:flex;flex-direction:column;align-items:center;text-align:center;border:1px solid var(--border);border-radius:22px;padding:38px 30px;background:rgba(8,9,12,.5)}
+    .bs-mark{width:220px;height:220px;margin:0 0 20px}
+    .bs-mark canvas{width:100%;height:100%;display:block;filter:brightness(1.6)}
+    .bs-shot{width:100%;margin:0 0 22px}
+    .bs-shot img{display:block;width:100%;height:auto;border-radius:14px}
+    .bs-h{font-weight:900;font-size:34px;line-height:1.08;margin:0 0 12px;color:#fff}
+    .bs-p{max-width:40ch;margin:0 auto 16px;color:rgba(255,255,255,.78)}
+    .bs-meta{color:rgba(255,255,255,.72);margin:0}
+    .cp-split{display:grid;grid-template-columns:1fr;grid-gap:34px;gap:34px;align-items:center;margin-top:30px}
+    @media(min-width:860px){.cp-split{grid-template-columns:minmax(0,300px) minmax(0,1fr);grid-gap:56px;gap:56px}}
+    .cp-shot{margin:0 auto;max-width:300px;width:100%}
+    .cp-shot img{display:block;width:100%;height:auto;border-radius:28px;box-shadow:0 0 0 1px rgba(255,255,255,.14)}
+    .cp-list{list-style:none;margin:22px 0 0;padding:0}
+    .cp-list li{display:flex;flex-direction:column;padding:14px 0;border-top:1px solid rgba(255,255,255,.1)}
+    .cp-list b{color:#fff;margin:0 0 4px}
+    .cp-list span{color:rgba(255,255,255,.76)}
+    @media(max-width:600px){.free-h{font-size:32px}.bs-h{font-size:28px}.bs-mark{width:170px;height:170px}.cm{padding:96px 0}}
+</style>
 <style>
   .rot-word{display:inline-block;white-space:nowrap;background:linear-gradient(120deg,#f5c76a,#ff9a4a 60%,#ffd27a);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 </style>
   <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=eb2caf7f"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=2110192e">   <!-- THE ONE POPIT SURFACE for the price boxes -->
-  <link rel="stylesheet" href="/frontend/landing/compat.css?v=1e44ceb0">
+  <link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=dee6db9c">   <!-- THE ONE POPIT SURFACE for the price boxes -->
+  <link rel="stylesheet" href="/frontend/landing/compat.css?v=0e7d1cf8">
   <link rel="stylesheet" href="/frontend/landing/landing.css?v=95e2a056">   <!-- the anchors every site page shares (.lp-anchor and its kinds) -->
 </head>
 <body>
@@ -358,101 +410,113 @@
     </div>
   </header>
 
-  <section class="sec os-products-section" id="tiers" aria-label="Oneway operating systems">
+  <!-- THE OS PAGE IN HIS ORDER (founder/849, 2026-10-20): 02 the Center Model, text only; 03 Oneway OS and Developer OS, the
+       two free products, with their globes; 04 Business OS with its Core and Business plans; 05 Oneway Brain and Oneway Systems,
+       the Brain with its spinning Solomon core (frontend/shared/brainmap.js, coreOnly) and Systems linking to its catalog,
+       /systems/, where the list of every System built today now lives; 06 every Center has a page. The globes are the page's own
+       (one globe, /oneway-globe.svg, founder/499); no art is new. -->
+  <section class="sec cm" id="center-model">
+    <div class="wrap cm-wrap">
+      <div class="sec-eyebrow t-mark">The Center Model</div>
+      <h2 class="cm-h t-display">The Center is the canvas. Oneway&nbsp;OS is the&nbsp;brush.</h2>
+      <p class="cm-rot t-sub lp-anchor lp-anchor--moment">A Center can be <span id="cmWord" class="rot-word">an information page</span>.</p>
+      <p class="cm-p t-lead">However you choose to use Oneway OS, the Center model creates opportunities for communities, businesses, and organizations to connect, grow, and strengthen the places they bring&nbsp;together.</p>
+    </div>
+  </section>
+
+  <section class="sec free" id="free" aria-label="The free products: Oneway OS and Developer OS">
     <div class="wrap">
-      <div class="os-products">
-        <article class="os-product os-product--business">
-          <div class="os-product-mark os-product-mark--brain" role="img" aria-label="Rotating geometric Brain">
-            <canvas id="os-product-brain" aria-hidden="true"></canvas>
-          </div>
-          <h3>Business OS</h3>
-          <p><span class="os-copy-wide">Run your people, Systems and daily work from one Center.</span><span class="os-copy-narrow">Run your whole operation.</span></p>
-          <a href="/os-business" aria-label="Explore Business OS"><span class="os-action-wide">Explore Business OS</span><span class="os-action-narrow">Business</span><span aria-hidden="true">→</span></a>
-        </article>
-        <article class="os-product os-product--free">
+      <div class="free-split">
+        <article class="free-half">
           <div class="os-product-mark" role="img" aria-label="Oneway globe"><span class="os-product-globe" aria-hidden="true"></span></div>
-          <h3>Oneway OS</h3>
-          <p><span class="os-copy-wide">Create a Center for your community or an information page.</span><span class="os-copy-narrow">Create a community Center.</span></p>
-          <a href="/beta" aria-label="Open Oneway OS"><span class="os-action-wide">Open Oneway OS</span><span class="os-action-narrow">Oneway</span><span aria-hidden="true">→</span></a>
+          <p class="free-tag t-mark">Free</p>
+          <h3 class="free-h">Oneway OS</h3>
+          <p class="free-p t-lead">Create a Center for your community, your business's public page or an information page about a&nbsp;place.</p>
+          <a class="free-a" href="/beta">Open Oneway OS <span aria-hidden="true">&rarr;</span></a>
         </article>
-        <article class="os-product os-product--developer">
+        <article class="free-half free-half--dev">
           <div class="os-product-mark os-product-mark--developer" role="img" aria-label="Oneway globe with a hammer"><span class="os-product-globe" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 12-9.373 9.373a1 1 0 0 1-3.001-3L12 9"/><path d="m18 15 4-4"/><path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172v-.344a2 2 0 0 0-.586-1.414l-1.657-1.657A6 6 0 0 0 12.516 3H9l1.243 1.243A6 6 0 0 1 12 8.485V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"/></svg></div>
-          <h3>Developer OS</h3>
-          <p><span class="os-copy-wide">Build apps, modules and integrations for Centers.</span><span class="os-copy-narrow">Build for the ecosystem.</span></p>
-          <a href="/contact#developers" aria-label="Explore Developer OS"><span class="os-action-wide">Explore Developer OS</span><span class="os-action-narrow">Developer</span><span aria-hidden="true">→</span></a>
+          <p class="free-tag t-mark">Free</p>
+          <h3 class="free-h">Developer OS</h3>
+          <p class="free-p t-lead">Build apps, modules and integrations that Centers can&nbsp;use.</p>
+          <a class="free-a" href="/contact#developers">Explore Developer OS <span aria-hidden="true">&rarr;</span></a>
         </article>
       </div>
-      <p class="os-products-note ow-pricebox t-caption">Business OS is $330 a month, set up by contact. <a href="/contact#business">Get Oneway OS today</a></p>
-    <p class="t-caption lp-answer os-answer">Oneway OS runs a business, a community or a place: its page, website, posts, events and members for free, and with Business OS, the Systems of its industry, its team and the&nbsp;Brain.</p>
+      <p class="t-caption lp-answer os-answer">Oneway OS runs a business, a community or a place: its page, website, posts, events and members for free, and with Business OS, the Systems of its industry, its team and the&nbsp;Brain.</p>
     </div>
   </section>
 
-  <!-- WHAT A CENTER IS, right under the three products (the founder, 2026-10-17: "it really needs to focus on a center being an
-       informational plane, not start talking about random shit like putting pop-its on main ... the center at its simplest
-       could be an informational page, an Instagram-like social media post profile, or a business's website. And you have
-       to keep going with what the definitions could be. Don't just stop at that three and also don't create 11 nonsensical
-       definitions"; the canvas, "it has to talk about the canvas", comes after). Each kind is one Oneway already makes: an
-       Info Center (Our Mission #ecosystem), a Center's posts and followers, its own site and domain (domains, site.html),
-       communities (members, groups, chat, events), a shop and bookings (commerce, reservations), a team's workspace (the
-       OS); the canvas is /api/canvas/center:{id}, arranged by the Center (PUT /api/canvas/{surface}). PROPOSED words.
-       Said once (founder/823): "a Center is a canvas" with what a visitor sees is the landing's (index.html #os), so this
-       page says only that the team lays it out here; the kinds open on "A Center can be:", because the first kind is the
-       information page. On a wide screen the head and the list stand side by side, so the section is not one narrow
-       column with the right half empty. -->
-  <section class="sec" id="center">
+  <section class="sec bos" id="business-os">
     <div class="wrap">
-      <div class="sec-head center-split">
-        <div class="center-say">
-          <div class="sec-eyebrow t-mark">What a Center is</div>
-          <h2 class="sec-h2 t-heading">A Center is whatever your place needs it to&nbsp;be.</h2>
-        <div class="lp-anchor lp-anchor--drawing lp-anchor--wide rv d1"><svg viewBox="0 0 440 260" role="img" aria-label="One Center: an information page, a social profile, a website, a community's home, a storefront and a workspace"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M184.3 104.1L100 43M255.7 104.1L340 43M176 130L124 130M264 130L316 130M184.3 155.9L100 217M255.7 155.9L340 217"/><circle cx="220" cy="130" r="44" fill="currentColor" fill-opacity=".14" stroke-width="2.5"/></g><g fill="#fff" font-family="inherit" text-anchor="middle" font-size="14" font-weight="600"><text x="96" y="30">Information page</text><text x="344" y="30">Social profile</text><text x="116" y="135" text-anchor="end">Website</text><text x="324" y="135" text-anchor="start">Community</text><text x="96" y="244">Storefront</text><text x="344" y="244">Workspace</text><text x="220" y="136" font-size="17" font-weight="800">Center</text></g></svg></div>
-        </div>
-        <div class="center-list">
-          <p class="sec-sub t-lead">A Center can be:</p>
-          <ul class="center-kinds">
-            <li class="t-lead">an information page for a place, a landmark or what locals know</li>
-            <li class="t-lead">a social profile with posts and followers, the way Instagram works</li>
-            <li class="t-lead">your business's website, on your own domain</li>
-            <li class="t-lead">a community's home, with members, groups, chat and events</li>
-            <li class="t-lead">a storefront that takes orders and bookings</li>
-            <li class="t-lead">the workspace your team runs the business from</li>
+      <div class="sec-eyebrow t-mark">Business OS</div>
+      <h2 class="sec-h2 t-heading">Run your whole operation from one&nbsp;Center.</h2>
+      <div class="bos-plans lp-anchor lp-anchor--picture">
+        <article class="bos-plan ow-pricebox" id="os-core">
+          <p class="bos-k t-mark">Core</p>
+          <p class="bos-for t-body">For one Center's team</p>
+          <p class="bos-price">$39.99 a month</p>
+          <ul class="bos-list t-body">
+            <li>The whole Brain on your Center: it notices, answers, drafts and recommends</li>
+            <li>Assets, bookings, staff and customers on one record</li>
+            <li>The Systems for your kind of place</li>
+            <li>Lightbulb and the website creator, inside a monthly allowance</li>
+            <li>You approve every action</li>
           </ul>
-          <p class="sec-sub t-lead">Whichever it is, its page is a canvas its team lays out in Oneway&nbsp;OS, Popit by&nbsp;Popit.</p>
-        </div>
+        </article>
+        <article class="bos-plan ow-pricebox" id="os-business">
+          <p class="bos-k t-mark">Business</p>
+          <p class="bos-for t-body">For one business Center</p>
+          <p class="bos-price">$330 a month</p>
+          <ul class="bos-list t-body">
+            <li>Everything in Core, plus:</li>
+            <li>The Brain can act for you, within the limits you set</li>
+            <li>Helpers and plans that keep running on their own</li>
+            <li>A much larger thinking allowance</li>
+          </ul>
+        </article>
+      </div>
+      <p class="sec-sub t-lead bos-say">Business OS adds the Brain, the Systems for your industry and your team's tools to a Center. It is set up with you by contact, and several Centers or Enterprise OS are by contact&nbsp;too.</p>
+      <div class="bos-acts"><a class="free-a" href="/contact#business">Talk to us <span aria-hidden="true">&rarr;</span></a><a class="free-a" href="/os-business">Explore Business OS <span aria-hidden="true">&rarr;</span></a></div>
+    </div>
+  </section>
+
+  <section class="sec bs" id="systems" aria-label="Oneway Brain and Oneway Systems">
+    <div class="wrap">
+      <div class="bs-cards">
+        <article class="bs-card bs-card--brain">
+          <div class="bs-mark" role="img" aria-label="The Oneway Brain's symbol, turning"><canvas id="os-product-brain" aria-hidden="true"></canvas></div>
+          <h3 class="bs-h">Oneway Brain</h3>
+          <p class="bs-p t-lead">The Brain sits under your Center. It connects the platforms and tools you already use, notices what needs attention, answers your questions and drafts the next&nbsp;step.</p>
+          <p class="bs-meta t-body">On Core and Business.</p>
+        </article>
+        <article class="bs-card bs-card--systems">
+          <div class="bs-shot"><img src="/assets/systems/os-systems.webp" width="1600" height="1007" alt="Oneway OS: a hotel's Systems, from Asset Management and Customer Relationships to Hotel Operations and Reservations" loading="lazy" decoding="async"/></div>
+          <h3 class="bs-h">Oneway Systems</h3>
+          <p class="bs-p t-lead">Add Systems for your industry and your everyday work: customers, inventory, equipment, maintenance, scheduling, bookings and&nbsp;more.</p>
+          <a class="free-a" href="/systems/">See every System <span aria-hidden="true">&rarr;</span></a>
+        </article>
       </div>
     </div>
   </section>
 
-
-  <!-- HOW ONEWAY OS WORKS in three steps (Build your Center, Run it from one place, Grow it as you go) is the landing's
-       (index.html #os), word for word the same here until 2026-10-17; said once (founder/823), so it is not repeated on
-       this page, whose sections below go deeper into each. -->
-
-  <!-- WHAT THE FREE PLAN INCLUDES is the landing's plan table, row by row ("What a Center gets on each plan", index.html
-       #plans); this page's list said the same rows, so it went (founder/823: no page repeats another's points). -->
-
-  <!-- SYSTEM STORE -->
-  <section class="sec" id="systems">
+  <section class="sec cp" id="center-page">
     <div class="wrap">
-      <div class="sec-head">
-        <div class="sec-eyebrow t-mark">System Store</div>
-        <h2 class="sec-h2 t-heading">Everything your Center needs.</h2>
-        <div class="lp-anchor lp-anchor--shot rv d1"><img src="/assets/systems/os-systems.webp" width="1600" height="1007" alt="Oneway OS: a hotel's Systems, from Asset Management and Customer Relationships to Hotel Operations and Reservations" loading="lazy" decoding="async"/><p class="lp-anchor-cap t-caption">Oneway OS, with sample records.</p></div>
-        <p class="sec-sub t-lead">Systems bring industry and everyday capabilities into a Center. Explore what is available, then connect the tools that fit your operation.</p>
+      <div class="sec-eyebrow t-mark">Every Center has a page</div>
+      <h2 class="sec-h2 t-heading">Every Center has a public&nbsp;page.</h2>
+      <div class="cp-split">
+        <div class="cp-shot lp-anchor lp-anchor--shot"><img src="/frontend/site/app-screen-center.webp" width="1179" height="2556" alt="A Center's public page in the Oneway App" loading="lazy" decoding="async"/></div>
+        <div class="cp-say">
+          <p class="sec-sub t-lead">It's what people see when they find you on the map, in search or in a friend's feed, in the Oneway App and on the&nbsp;web.</p>
+          <ul class="cp-list">
+            <li><b class="t-sub">Your layout</b><span class="t-body">Arrange your page your way with Popits: your info, posts, events, offers, photos and&nbsp;more.</span></li>
+            <li><b class="t-sub">Works like a profile</b><span class="t-body">Post updates, get followers and messages. Your followers and members are real people with their own&nbsp;Profiles.</span></li>
+            <li><b class="t-sub">Your content</b><span class="t-body">Posts, events, offers, photos and hours, kept up to date in one&nbsp;place.</span></li>
+            <li><b class="t-sub">Your community</b><span class="t-body">Members, groups, chat and events for the people around your&nbsp;place.</span></li>
+            <li><b class="t-sub">Your website too</b><span class="t-body">The same page can be your website, on your own&nbsp;domain.</span></li>
+            <li><b class="t-sub">Run from Oneway OS</b><span class="t-body">Your team runs the Center in Oneway OS, and what you change there shows on your page right&nbsp;away.</span></li>
+          </ul>
+        </div>
       </div>
-      <!-- THE SYSTEM STORE AS IT IS (the founder, 2026-10-17: "why is business os such a small system store list?"): the 16
-           Systems measured on 10-16 as installing on a Business Center and answering every act they offer (PLAN R5,
-           context/audits/r5-2026-10-16/systems.json, systems/test_action_coverage.py COVERED), grouped; the other 14 of the
-           catalog (api/oneway/systems/registry/catalog.py) named as not built yet, since they offer no act yet ("coming next"
-           promised an order of work nobody has set: the truth check, 2026-10-17, on os-business.html's Agents). -->
-      <!-- EVERY SYSTEM BUILT TODAY, WITH WHAT IT DOES (the founder, 2026-10-20: "the landing pages need to communicate everything our
-           systems can once built"): each System that installs on a Business Center and answers its acts, in his order (CRM,
-           Inventory, Asset Management, Maintenance, Scheduling, then Reservations, Rewards, Community Management, Hotel,
-           Restaurant, Property, Casino), its modules in plain words from its landed acts (api/oneway/brain/act_classes.py) and its
-           page; a System not built stays off -->
-      <ul class="sys-all"><li><a class="t-sub" href="/systems/crm">Customer Relationships</a><span class="t-body">Customers and their whole story, deals and pipelines, follow-ups that ring at their hour, companies, saved lists, consent, import and&nbsp;export.</span></li><li><a class="t-sub" href="/systems/inventory">Inventory</a><span class="t-body">Stock by place and shelf, counts by scanning, lots and expiry, orders and deliveries due, recipes and plate cost, sales taking&nbsp;stock.</span></li><li><a class="t-sub" href="/systems/asset-management">Asset Management</a><span class="t-body">A register of every thing, lending and returns, warranties, condition and downtime, guided audits, groups and the cost of&nbsp;ownership.</span></li><li><a class="t-sub" href="/systems/maintenance">Maintenance</a><span class="t-body">Work orders by priority, requests from the App, preventive upkeep by time and meter, inspections, vendors, parts reserved, hours from the&nbsp;clock.</span></li><li><a class="t-sub" href="/systems/scheduling">Scheduling</a><span class="t-body">The week's shifts, open shifts filled by rule, swaps and time off, the time clock, timesheets for payroll, labour against&nbsp;sales.</span></li><li><a class="t-sub" href="/systems/reservations">Reservations</a><span class="t-body">Rooms, tables, courts and spaces booked from the App, booking hours and who may book, the desk's book, idle time&nbsp;offered.</span></li><li><a class="t-sub" href="/systems/rewards">Rewards &amp; Membership</a><span class="t-body">Tiers and benefits, credits earned and redeemed, members and their cards in the App, cards from other&nbsp;programs.</span></li><li><b class="t-sub">Community Management</b><span class="t-body">Members, requests to join with Admit and Decline, invitations, and who joined this week. Free on Oneway&nbsp;OS.</span></li><li><a class="t-sub" href="/systems/hotel-operations">Hotel Operations</a><span class="t-body">The book and its rates, holds and group blocks, the front desk and folios, house accounts, housekeeping, traces and the night&nbsp;audit.</span></li><li><b class="t-sub">Restaurant Operations</b><span class="t-body">Tables and the floor, the waitlist, seating and table states, the 86&nbsp;board.</span></li><li><b class="t-sub">Property Management</b><span class="t-body">Units and leases, rent posted and paid, late fees, renewals, notices and&nbsp;move-outs.</span></li><li><b class="t-sub">Casino Operations</b><span class="t-body">Machines and tables on the floor, hand pays, a guest's limits and&nbsp;exclusions.</span></li><li><a class="t-sub" href="/systems/hvac">HVAC Service Operations</a><span class="t-body">Calls and dispatch, the tech's day, equipment history, service agreements, the price book and good, better, best&nbsp;quotes.</span></li><li><a class="t-sub" href="/systems/events">Events</a><span class="t-body">Events put on and changed, Going and Maybe in the App, check-in at the door, promotion by other&nbsp;Centers.</span></li><li><a class="t-sub" href="/systems/communications">Communications</a><span class="t-body">One shared inbox, saved and automatic replies, notes to the&nbsp;team.</span></li><li><a class="t-sub" href="/systems/marketing">Marketing</a><span class="t-body">Offers, one post to every platform with each picture in its shape, and where every record of your business&nbsp;stands.</span></li><li><a class="t-sub" href="/systems/team">People</a><span class="t-body">Roles that say what each person may do, and permits reminded before they&nbsp;lapse.</span></li></ul>
-      <div class="sys-pages-wrap"><p class="sys-gh">Each System, on its own page</p><div class="sys-pages"><a class="sys-page" href="/systems/crm"><img src="/assets/systems/crm/pc.webp" width="1600" height="1007" alt="Oneway CRM in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Oneway CRM</span></a><a class="sys-page" href="/systems/inventory"><img src="/assets/systems/inventory/pc.webp" width="1600" height="1007" alt="Inventory Management in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Inventory Management</span></a><a class="sys-page" href="/systems/asset-management"><img src="/assets/systems/asset-management/pc.webp" width="1600" height="1007" alt="Asset Management in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Asset Management</span></a><a class="sys-page" href="/systems/hotel-operations"><img src="/assets/systems/hotel-operations/pc.webp" width="1600" height="1007" alt="Hotel Operations in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Hotel Operations</span></a><a class="sys-page" href="/systems/hvac"><img src="/assets/systems/hvac/pc.webp" width="1600" height="1007" alt="HVAC Service Operations in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">HVAC Service Operations</span></a></div><p class="sys-gh sys-gh--mods">Each module, on its own page</p><div class="sys-pages"><a class="sys-page" href="/systems/scheduling"><img src="/assets/systems/scheduling/pc.webp" width="1600" height="1007" alt="Scheduling in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Scheduling</span></a><a class="sys-page" href="/systems/reservations"><img src="/assets/systems/reservations/pc.webp" width="1600" height="1007" alt="Reservations in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Reservations</span></a><a class="sys-page" href="/systems/maintenance"><img src="/assets/systems/maintenance/pc.webp" width="1600" height="1007" alt="Maintenance in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Maintenance</span></a><a class="sys-page" href="/systems/communications"><img src="/assets/systems/communications/pc.webp" width="1600" height="1007" alt="Communications in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Communications</span></a><a class="sys-page" href="/systems/marketing"><img src="/assets/systems/marketing/pc.webp" width="1600" height="1007" alt="Marketing in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Marketing</span></a><a class="sys-page" href="/systems/events"><img src="/assets/systems/events/pc.webp" width="1600" height="1007" alt="Events in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Events</span></a><a class="sys-page" href="/systems/team"><img src="/assets/systems/team/pc.webp" width="1600" height="1007" alt="Team in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Team</span></a><a class="sys-page" href="/systems/rewards"><img src="/assets/systems/rewards/pc.webp" width="1600" height="1007" alt="Rewards and Membership in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Rewards &amp; Membership</span></a></div></div>
-      <p class="sec-sub t-lead sys-more">Install the Systems your place needs; each adds its tools to your Center and its Popits to the&nbsp;canvas.</p>
     </div>
   </section>
 
@@ -542,50 +606,6 @@
         })();
         </script>
         <p class="vs-note t-caption">The names are examples of each kind of tool, and none of them has any affiliation with&nbsp;Oneway.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMPATIBILITY AND THE BRAIN, later on the page (the founder, 2026-10-17: "we should move down this brain graph and make
-       this the whole compatibility and brain section, which would come a little bit later. But the brain is with Business
-       OS anyways"; "One Center, then everything connects. That's pretty bad, honestly"). The Brain's graph keeps its own stage.
-       The platforms wheel (the one on Our Mission, frontend/landing/platforms.*) joins this section once its exact marks land.
-       PROPOSED words. -->
-  <section class="sec" id="how">
-    <div class="wrap">
-      <div class="sec-head">
-        <div class="sec-eyebrow t-mark">Compatibility &amp; the Brain</div>
-        <h2 class="sec-h2 t-heading">Bring everything you use into one&nbsp;place.</h2>
-      </div>
-      <div class="hiw-stage lp-anchor lp-anchor--drawing">
-        <canvas id="os-brain" aria-hidden="true"></canvas>
-      </div>
-      <div class="sec-head hiw-words">
-        <p class="sec-sub t-lead">On Business OS, the Brain sits under your Center. It connects the platforms and tools you already use, the Systems you install route back through it, and the whole operation moves as one.</p>
-      </div>
-      <div class="flow">
-        <span class="fnode t-body">Center</span><span class="farrow">→</span>
-        <span class="fnode brain t-body">Brain</span><span class="farrow">→</span>
-        <span class="fnode t-body">System Store</span><span class="farrow">→</span>
-        <span class="fnode t-body">Installed Systems</span><span class="farrow">→</span>
-        <span class="fnode t-body">Team · website · operations</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- CENTER LIFECYCLE -->
-  <section class="sec" id="lifecycle">
-    <div class="wrap">
-      <div class="sec-head">
-        <div class="sec-eyebrow t-mark">How a Center grows</div>
-        <h2 class="sec-h2 t-heading">Start as a community. Grow into an operation.</h2>
-        <div class="lp-anchor lp-anchor--number rv d1">4<span class="lp-anchor-label">stages, from a community to an enterprise</span></div>
-      </div>
-      <div class="life">
-        <div class="ls"><div class="lsn t-caption">Stage 1</div><div class="lst t-sub">Community</div><p class="t-body">Members, channels, events, and shared resources.</p></div>
-        <div class="ls"><div class="lsn t-caption">Stage 2</div><div class="lst t-sub">Connected</div><p class="t-body">+ a public website, public intake, and Brain.</p></div>
-        <div class="ls"><div class="lsn t-caption">Stage 3</div><div class="lst t-sub">Operational</div><p class="t-body">+ installed Systems and staff.</p></div>
-        <div class="ls"><div class="lsn t-caption">Stage 4</div><div class="lst t-sub">Enterprise</div><p class="t-body">+ multiple Systems, departments, and advanced Brain.</p></div>
       </div>
     </div>
   </section>
@@ -758,27 +778,12 @@
   @media(max-width:680px){ .owbar-right .nav-os{display:none} }
 
   .sys-list{max-width:none;columns:2;column-gap:40px}
-  .sys-all{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 48px;text-align:left}
-  .sys-all li{display:flex;flex-direction:column;gap:4px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}html.ow-nogap .sys-all li>*+*{margin-top:4px}
-  .sys-all a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:3px}
-  .sys-all .t-body{color:rgba(255,255,255,.72)}
-  @media(max-width:700px){ .sys-all{grid-template-columns:minmax(0,1fr);gap:18px} }
   .sys-list a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:3px}
   .sys-list a:hover{text-decoration-color:#fff}
   /* EACH SYSTEM ON ITS OWN PAGE (the founder, 2026-10-19: "the systems pages better be good and better be across both landing
      pages"): the five System pages, each tile its own room in Oneway OS; the same on onewayos.com, built from this page */
-  .sys-pages-wrap{margin-top:40px}
-  .sys-gh--mods{margin-top:28px}
-  .sys-pages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-top:14px}
-  .sys-page{display:block;color:#fff;text-decoration:none}
-  .sys-page img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:left top;border-radius:12px;
-    box-shadow:0 18px 48px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);transition:transform .2s ease}
-  .sys-page:hover img{transform:translateY(-3px)}
-  .sys-page span{display:block;margin-top:10px}
-  @media(max-width:900px){ .sys-pages{grid-template-columns:repeat(2,minmax(0,1fr))} }
   .sys-list li{break-inside:avoid}
   @media(max-width:640px){ .sys-list{columns:1} }
-  .sys-more{margin-top:18px}
 
   /* ONE BUTTON, MEASURED (the founder, 2026-10-17: "fix button spacing dude"). Before: the pairs were 178 and 139px wide in
      two weights and two paddings; the products' buttons 149 against 124px with 10.5px words; the bar's Sign in 36px tall
@@ -856,7 +861,6 @@
 
   /* the System Store: two groups of open lists, the coming ones named in one quiet line */
   .sys-store{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px 44px;margin-top:8px}
-  .sys-gh{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-style:italic;font-weight:900;font-size:var(--lp-fs-body);color:rgba(255,255,255,.7);margin:0 0 6px}
   .sys-store .sys-group:last-child .sys-list{columns:2;column-gap:36px}
   .sys-coming{margin-top:24px;font-size:var(--lp-fs-caption);line-height:var(--lp-lh-caption);color:rgba(255,255,255,.62);max-width:70ch}
   .sys-coming b{color:rgba(255,255,255,.85);font-weight:650}
@@ -900,6 +904,17 @@
     var words=['casino','hotel','city','club','restaurant','stadium','museum','convention center','neighborhood','business','brand','organization'];
   var i=0; el.style.transition='opacity .22s';
   setInterval(function(){ i=(i+1)%words.length; el.style.opacity='0'; setTimeout(function(){ el.textContent=words[i]; el.style.opacity='1'; },220); }, 2200);
+})();
+</script>
+<script>
+/* THE CENTER MODEL'S TURNING LINE (founder/849: "the headline and rotating supporting text should carry that section"): the kinds
+   a Center is, as the page said them before; still for anyone who asks for less motion */
+(function(){
+  var el=document.getElementById('cmWord'); if(!el) return;
+  if(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var words=['an information page','a social profile','your business website',"a community's home",'a storefront',"your team's workspace"];
+  var i=0; el.style.transition='opacity .25s';
+  setInterval(function(){ i=(i+1)%words.length; el.style.opacity='0'; setTimeout(function(){ el.textContent=words[i]; el.style.opacity='1'; },250); }, 2600);
 })();
 </script>
 </body>

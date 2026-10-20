@@ -142,3 +142,32 @@ html[data-simple="1"][data-simple="1"] .ow-map__pin u,
 html[data-simple="1"][data-simple="1"] .ow-door .ow-globe *{animation:none}
 html[data-simple="1"][data-simple="1"] .ow-door .ow-globe__halo,
 html[data-simple="1"][data-simple="1"] .ow-door .ow-globe__hot{display:none}
+
+/* LIVE ON EVERY CARD (the founder, 2026-10-20: "live activity ... i acutally dont see that on the cards and its super
+   important"): frontend/shared/oneway-live.js lays this pill over a card's top right corner, absolutely, so a card never
+   moves when it arrives, changes or goes. A beating red dot when something is on now, green when open, amber when soon,
+   grey otherwise. Simple holds still (no beat), as does a person who asked for less motion. No flex gap: Safari 12. */
+.ow-live{position:absolute;top:10px;right:10px;z-index:3;display:inline-flex;align-items:center;max-width:64%;
+  padding:4px 10px 4px 8px;border-radius:999px;font:600 11.5px/1.25 'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:#fff;background:rgba(10,10,18,.66);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);white-space:nowrap;
+  overflow:hidden;opacity:0;transition:opacity .28s ease;pointer-events:none}
+.ow-live[data-on="1"]{opacity:1}
+.ow-live[data-beside="menu"]{right:48px}
+.ow-live i{flex:none;width:7px;height:7px;margin-right:6px;border-radius:50%;background:#9aa0a6}
+.ow-live b{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.ow-live[data-tone="live"] i{background:#ff3b5c;animation:ow-live-beat 1.6s ease-out infinite}
+.ow-live[data-tone="open"] i{background:#34c759}
+.ow-live[data-tone="soon"] i{background:#ff9f0a}
+@keyframes ow-live-beat{0%{box-shadow:0 0 0 0 rgba(255,59,92,.55)}100%{box-shadow:0 0 0 7px rgba(255,59,92,0)}}
+html[data-theme="light"] .ow-live{color:#111;background:rgba(255,255,255,.86);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+html[data-simple="1"][data-simple="1"] .ow-live[data-tone="live"] i{animation:none}
+@media (prefers-reduced-motion:reduce){.ow-live i{animation:none!important}.ow-live{transition:none}}
+
+/* THE X BESIDE A RESERVED NAME (home.js releaseButton): a quiet circle, then, armed, the word in the delete red */
+.ow-claims__x{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0;border:0;
+  border-radius:999px;background:none;color:var(--ow-ink-3);cursor:pointer;font:inherit;font-size:13px;font-weight:600}
+.ow-claims__x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.ow-claims__x:hover{color:var(--ow-ink);background:rgba(var(--ow-h1),.10)}
+.ow-claims__x.is-armed{padding:0 14px;background:rgba(255,92,108,.16);box-shadow:inset 0 0 0 1px rgba(255,92,108,.55);color:#ff5c6c}
+html.ow-old .ow-claims__x:focus{outline:2px solid var(--ow-ink);outline-offset:2px}
+.ow-claims__x:focus-visible{outline:2px solid var(--ow-ink);outline-offset:2px}

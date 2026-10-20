@@ -124,6 +124,15 @@
     if (isNaN(t.getTime())) return '';
     var zone = tz.timezone || 'UTC';
     var abbr = tz.timezone ? (tz.abbreviation || '') : 'UTC';
+    /* THE ZONE'S NAME ON THE EVENT'S OWN DAY, not today's: a weekly 8 pm after the clocks change is 8 PM EST, though the
+       Center reads EDT this morning (events/series.py keeps the hour; walked 2026-10-20) */
+    if (tz.timezone) {
+      try {
+        var zn = new Intl.DateTimeFormat('en-US', { timeZone: zone, timeZoneName: 'short' }).formatToParts(t)
+          .filter(function (p) { return p.type === 'timeZoneName'; })[0];
+        if (zn && zn.value) abbr = zn.value;
+      } catch (e) { /* the Center's own word for today stands */ }
+    }
     function fmt(o) {
       try { return new Intl.DateTimeFormat([], Object.assign({ timeZone: zone }, o)).format(t); }
       catch (e) { return new Intl.DateTimeFormat([], o).format(t); }
@@ -290,6 +299,21 @@
       var where = (ev.mode === 'digital') ? 'Online'
         : ((ev.place || ev.location || '').trim() || '');
       if (where) page.appendChild(mk('div', 'ow-ev__w', esc(where)));
+      /* ── ITS DATES (events/series.py): one of a series, each date an event of its own; the next ones open as themselves ── */
+      var sr = (er.data && er.data.series) || {};
+      if (sr.dates && sr.dates.length > 1) {
+        var srBox = mk('div', 'ow-ev__series', '');
+        srBox.appendChild(mk('div', 'ow-ev__sr-t', esc(sr.words || 'Repeats')));
+        var srRow = mk('div', 'ow-ev__sr-d', '');
+        sr.dates.filter(function (d) { return d.state === 'scheduled' || d.state === 'live' || d.id === eventId; }).slice(0, 8).forEach(function (d) {
+          var dd = new Date(d.starts_at), word = isNaN(dd.getTime()) ? '' : dd.toLocaleDateString(undefined, (tz && tz.timezone) ? { weekday: 'short', month: 'short', day: 'numeric', timeZone: tz.timezone } : { weekday: 'short', month: 'short', day: 'numeric' });
+          var a = mk(d.id === eventId ? 'span' : 'a', 'ow-ev__sr-c' + (d.id === eventId ? ' is-here' : ''), esc(word));
+          if (d.id !== eventId) a.setAttribute('href', '#event/' + encodeURIComponent(d.id)); else a.setAttribute('aria-current', 'true');
+          srRow.appendChild(a);
+        });
+        srBox.appendChild(srRow);
+        page.appendChild(srBox);
+      }
 
       /* ── WHO IS ON ─────────────────────────────────────────────────────
          `performers` is the field an event about people is FOR — a lineup, a
@@ -339,6 +363,31 @@
          waiting for a `replayed` flag that will never come for this class. */
       var acts = mk('div', 'ow-ev__acts', '');
       var count = mk('div', 'ow-ev__count', '');
+      /* ── ITS WAITLIST (events/waitlist.py): full, a person waits in order and is told when a place opens ── */
+      var left = (er.data && er.data.places_left != null) ? er.data.places_left : null;
+      var waitAt = ((er.data && er.data.waitlist) || {}).position || 0;
+      var waitBox = mk('div', 'ow-ev__wait', '');
+      function nth(n) { return n + ((n % 100 >= 11 && n % 100 <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th')); }
+      function paintWait() {
+        waitBox.innerHTML = '';
+        if (asksAnything()) return;                      /* a sign-up form says it in its own words */
+        var full = left === 0 && String(mine || '') !== 'going';
+        if (!full && !waitAt) return;
+        waitBox.appendChild(mk('p', 'ow-ev__said', esc(waitAt ? 'You\u2019re ' + nth(waitAt) + ' on the waitlist: you are told when a place opens.' : 'This event is full.')));
+        var b = mk('button', 'po-act', waitAt ? 'Leave the waitlist' : 'Join the waitlist');
+        b.type = 'button'; b.setAttribute('data-wait', waitAt ? 'leave' : 'join'); if (!waitAt) b.setAttribute('data-act', 'on');
+        b.addEventListener('click', function () {
+          if (!signedIn()) { if (global.go) global.go('home'); return; }
+          b.disabled = true;
+          var url = '/api/oneway/events/' + encodeURIComponent(eventId) + '/waitlist';
+          (waitAt ? data.del(url) : data.post(url, {})).then(function (r) {
+            b.disabled = false;
+            if (r && r.ok) { waitAt = (r.data && r.data.position) || 0; paintWait(); return; }
+            if (global.OW && OW.toast) OW.toast((r && r.error) || 'That did not change. Try again.');
+          });
+        });
+        waitBox.appendChild(b);
+      }
       var mine = String((er.data && er.data.you) || ev.my_rsvp || '').toLowerCase();
 
       function paint(status, attending, maybe) {
@@ -355,7 +404,10 @@
           if (maybe != null) att.maybe = maybe;
           count.textContent = attending + (attending === 1 ? ' person going'
                                                            : ' people going')
-            + (att.maybe ? ' \u00b7 ' + att.maybe + ' maybe' : '');
+            + (att.maybe ? ' \u00b7 ' + att.maybe + ' maybe' : '')
+            /* ITS ROOM (rsvp.places_left: seats, a person and the guests they bring): said only when the host set one */
+            + (left != null ? ' \u00b7 ' + (left ? left + (left === 1 ? ' place left' : ' places left') : 'full') : '');
+          paintWait();
         }
       }
 
@@ -378,6 +430,7 @@
             .then(function (r) {
               if (r && r.ok && r.data) {
                 /* `answer` and `counts.going` are the domain's own names. */
+                if (r.data.places_left !== undefined) left = r.data.places_left;
                 paint(r.data.answer || c.v,
                       (r.data.counts && r.data.counts.going),
                       (r.data.counts && r.data.counts.maybe));
@@ -426,6 +479,65 @@
          went; a live one says it is on. The choices are drawn only while
          they can still be chosen. `stored_state` rides beside it and is not
          what a person is shown. */
+      /* ── ITS SIGN-UP FORM (events/registration.py, on the one Forms engine): the host's questions, the guests a person
+         may bring, and whether the host lets each person in. Drawn instead of Going / Maybe when the event asks anything;
+         sent, the person is Going at once or waits for the host, and the page says which in the server's own words. ── */
+      var reg = (er.data && er.data.registration) || {}, regd = (er.data && er.data.registered) || {};
+      var asks = !!((reg.questions || []).length || reg.approval || reg.plus_ones_max);
+      function asksAnything() { return asks; }
+      function signup() {
+        var box = mk('form', 'ow-ev__signup', ''), said = mk('p', 'ow-ev__said', '');
+        box.setAttribute('novalidate', '');
+        var paintSaid = function () {
+          said.textContent = regd.state ? (regd.words + (regd.state === 'in' && regd.plus_ones ? ', with ' + regd.plus_ones + (regd.plus_ones === 1 ? ' guest' : ' guests') : '') + '.') : '';
+        };
+        paintSaid();
+        if (regd.state === 'declined') { box.appendChild(said); return box; }
+        (reg.questions || []).forEach(function (q) {
+          var lab = mk('label', 'ow-ev__q', ''), sp = document.createElement('span'), inp;
+          sp.textContent = q.label + (q.required ? '' : ' (if you like)');
+          if (q.form === 'long') inp = document.createElement('textarea');
+          else if (q.form === 'choice' || q.form === 'yesno') {
+            inp = document.createElement('select');
+            [''].concat(q.form === 'yesno' ? ['yes', 'no'] : (q.options || [])).forEach(function (o) {
+              var op = document.createElement('option'); op.value = o;
+              op.textContent = o ? (q.form === 'yesno' ? (o === 'yes' ? 'Yes' : 'No') : o) : 'Choose'; inp.appendChild(op);
+            });
+          } else { inp = document.createElement('input'); inp.type = { number: 'number', date: 'date' }[q.form] || 'text'; }
+          inp.name = q.key; inp.className = 'ow-ev__in';
+          if ((regd.answers || {})[q.key] != null) inp.value = regd.answers[q.key];
+          lab.appendChild(sp); lab.appendChild(inp); box.appendChild(lab);
+        });
+        if (reg.plus_ones_max) {
+          var pl = mk('label', 'ow-ev__q', ''), ps = document.createElement('span'), sel = document.createElement('select');
+          ps.textContent = 'Guests you bring'; sel.name = '_plus'; sel.className = 'ow-ev__in';
+          for (var i = 0; i <= reg.plus_ones_max; i++) {
+            var op = document.createElement('option'); op.value = String(i); op.textContent = i ? String(i) : 'Just me';
+            if ((regd.plus_ones || 0) === i) op.selected = true; sel.appendChild(op);
+          }
+          pl.appendChild(ps); pl.appendChild(sel); box.appendChild(pl);
+        }
+        var send = mk('button', 'po-act', esc(regd.state ? 'Change my answers' : (reg.approval ? 'Ask to come' : 'Sign up')));
+        send.type = 'submit'; send.setAttribute('data-act', 'on'); box.appendChild(send); box.appendChild(said);   /* drawn as a chosen answer is */
+        box.addEventListener('submit', function (e) {
+          e.preventDefault();
+          if (!signedIn()) { if (global.go) global.go('home'); return; }
+          var answers = {}, plus = 0;
+          Array.prototype.forEach.call(box.elements, function (x) {
+            if (!x.name) return;
+            if (x.name === '_plus') plus = parseInt(x.value, 10) || 0; else answers[x.name] = x.value;
+          });
+          send.disabled = true; said.textContent = 'Sending\u2026';
+          data.post('/api/oneway/events/' + encodeURIComponent(eventId) + '/register', { answers: answers, plus_ones: plus },
+                    { invalidate: '/api/oneway/events/' })
+            .then(function (r) {
+              send.disabled = false;
+              if (r && r.ok) { regd = (r.data && r.data.registered) || {}; paintSaid(); send.textContent = 'Change my answers'; return; }
+              said.textContent = (r && r.error) || 'It was not sent. Try again.';
+            });
+        });
+        return box;
+      }
       var state = String(ev.state || '').toLowerCase();
       if (state === 'ended') {
         var went = (att.going != null) ? att.going : null;
@@ -435,8 +547,9 @@
         page.appendChild(mk('div', 'ow-ev__state', 'This event was cancelled.'));
       } else {
         if (state === 'live') page.appendChild(mk('div', 'ow-ev__state ow-ev__state--live', 'Happening now.'));
-        page.appendChild(acts);
+        page.appendChild(asks ? signup() : acts);
         page.appendChild(count);
+        page.appendChild(waitBox);
         /* ── TICKETS, PAID ON ONEWAY (PLAN §5.0 unit 1; founder/744) ─────────────────────────────────────────────
            An event that states its ticket price is sold on the Center's own Stripe: what is for sale, its price and
            how many one order takes are the server's (payments/payable), asked only for an event that has a price.
@@ -471,6 +584,53 @@
             said();
           });
         }
+        /* ── ITS TICKET TYPES (events/ticket_types.py): each a product of the Center tied to this event, bought through the
+           one checkout (kind product) on the Center's own Stripe; paid, the seats are the buyer's, one code each. What is
+           on sale, its price and what is left are the server's own words. ── */
+        var types = (er.data && er.data.ticket_types) || [];
+        if (types.length && ev.center_id) {
+          var tt = mk('div', 'ow-ev__types', '');
+          types.forEach(function (t) {
+            var rowEl = mk('div', 'ow-ev__type', '');
+            rowEl.appendChild(mk('div', 'ow-ev__typeinfo', '<b>' + esc(t.name) + '</b><span>' + esc([t.price ? t.price + ' ' + String(t.currency || '').toUpperCase() : '',
+              t.left != null && t.left > 0 ? t.left + ' left' : ''].filter(Boolean).join(' \u00b7 ')) + '</span>'));
+            if (!t.on_sale) {
+              var why = String(t.why_not || 'not on sale');
+              rowEl.appendChild(mk('span', 'ow-ev__typeoff', esc(why.charAt(0).toUpperCase() + why.slice(1))));
+              tt.appendChild(rowEl); return;
+            }
+            var most = Math.max(1, Math.min(10, t.left == null ? 10 : t.left));
+            var sel = document.createElement('select'); sel.className = 'ow-ev__in ow-ev__qty';
+            sel.setAttribute('aria-label', 'How many ' + t.name + ' tickets');
+            for (var i = 1; i <= most; i++) { var op = document.createElement('option'); op.value = String(i); op.textContent = String(i); sel.appendChild(op); }
+            var buy = mk('button', 'po-act', 'Buy'); buy.type = 'button'; buy.setAttribute('data-act', 'on'); buy.setAttribute('data-ticket-type', t.id);
+            buy.addEventListener('click', function () {
+              if (!signedIn()) { if (global.go) global.go('home'); return; }
+              buy.disabled = true;
+              data.post('/api/oneway/places/' + encodeURIComponent(ev.center_id) + '/pay', { kind: 'product', ref: t.id, quantity: parseInt(sel.value, 10) || 1 }).then(function (r) {
+                var url = r && r.ok && r.data && r.data.url;
+                if (url && /^https?:\/\//i.test(url)) { global.location.assign(url); return; }
+                buy.disabled = false;
+                if (global.OW && OW.toast) OW.toast((r && r.error) || 'The checkout did not open. Nothing was charged.');
+              });
+            });
+            rowEl.appendChild(sel); rowEl.appendChild(buy); tt.appendChild(rowEl);
+          });
+          page.appendChild(tt);
+        }
+      }
+      /* ── THE TICKETS THIS PERSON HOLDS FOR IT (events/tickets: theirs alone), one code a seat: what the door reads ── */
+      var held = (er.data && er.data.my_tickets) || [], pass = (er.data && er.data.my_pass) || {};
+      /* the QR is the server's own drawing of the code (events/scan.qr: squares only), shown for the door to scan */
+      if (held.length || pass.code) {
+        var hb = mk('div', 'ow-ev__held', '<b>' + (held.length ? 'Your tickets' : 'Your pass') + '</b>');
+        held.forEach(function (h) {
+          (h.codes || []).forEach(function (code, i) {
+            hb.appendChild(mk('div', 'ow-ev__code', '<span class="ow-ev__qr">' + ((h.qr || [])[i] || '') + '</span><span>' + esc(h.type) + '</span><code>' + esc(code) + '</code>'));
+          });
+        });
+        if (pass.code) hb.appendChild(mk('div', 'ow-ev__code', '<span class="ow-ev__qr">' + (pass.qr || '') + '</span><span>Show this at the door</span><code>' + esc(pass.code) + '</code>'));
+        page.appendChild(hb);
       }
       /* THE VIEWER'S OWN ANSWER IS NOT ON A SESSIONLESS READ, and it is not
          invented. Nothing is shown as selected until they choose, which is
@@ -630,6 +790,9 @@
     '.ow-ev__t{font-size:clamp(22px,5vw,28px);font-weight:650;letter-spacing:-.03em;',
     '  line-height:1.05;margin:2px 0 0;color:var(--ow-ink,#f3f2f8)}',
     '.ow-ev__when{font-size:14.5px;font-weight:560;color:var(--ow-ink-2,#9793ad)}',
+    '.ow-ev__series{margin:10px 0 2px}.ow-ev__sr-t{font-size:13px;font-weight:600;color:var(--ow-ink-2,#9793ad);margin-bottom:6px}',
+    '.ow-ev__sr-d{display:flex;flex-wrap:wrap;gap:6px}.ow-ev__sr-c{font-size:13px;padding:5px 10px;border-radius:999px;border:1px solid var(--ow-line,rgba(255,255,255,.14));color:inherit;text-decoration:none}',
+    '.ow-ev__sr-c.is-here{border-color:currentColor;font-weight:600}',
     '.ow-ev__w{font-size:13.5px;color:var(--ow-ink-3,#6f6b85)}',
     '.ow-ev__cover{width:100%;margin:0 0 14px;border-radius:20px 15px 18px 16px;overflow:hidden;',
     '  background:rgba(255,255,255,.04);box-shadow:0 0 0 1px rgba(var(--ow-h1),.28),0 18px 40px -22px rgba(0,0,0,.8)}',
@@ -645,6 +808,23 @@
     '  background:linear-gradient(150deg,rgba(var(--ow-h1),.7),rgba(var(--ow-h2),.45));',
     '  box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 0 26px -8px rgba(var(--ow-h1),.9)}',
     '.ow-ev__acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}',
+    '.ow-ev__signup{display:grid;gap:10px;margin-top:10px;max-width:520px}',
+    '.ow-ev__q{display:grid;gap:4px;font-size:14px}',
+    '.ow-ev__in{font:inherit;padding:10px 12px;border:1px solid currentColor;border-radius:10px;background:transparent;color:inherit;width:100%;box-sizing:border-box}',
+    'textarea.ow-ev__in{min-height:88px}',
+    '.ow-ev__signup .po-act{justify-self:start;border:1px solid currentColor;border-radius:999px;padding:10px 20px;font-weight:600}',
+    '.ow-ev__said{margin:0;font-size:14px;min-height:1.2em}',
+    '.ow-ev__types{display:grid;gap:8px;margin-top:14px;max-width:560px}',
+    '.ow-ev__type{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid color-mix(in srgb,currentColor 22%,transparent);border-radius:14px}',
+    '.ow-ev__typeinfo{display:flex;flex-direction:column;min-width:0}',
+    '.ow-ev__typeinfo span{font-size:13px;opacity:.75}',
+    '.ow-ev__typeoff{font-size:13px;opacity:.75;grid-column:2 / -1}',
+    '.ow-ev__qty{width:auto;padding:8px 10px}',
+    '.ow-ev__held{display:grid;gap:6px;margin-top:14px;max-width:560px}',
+    '.ow-ev__code{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 12px;border:1px dashed color-mix(in srgb,currentColor 40%,transparent);border-radius:12px}',
+    '.ow-ev__code code{font-family:ui-monospace,Menlo,monospace;font-size:16px;letter-spacing:.08em}',
+    '.ow-ev__qr{display:block;width:96px;height:96px;flex:0 0 96px;background:#fff;border-radius:8px;padding:4px;box-sizing:border-box}',
+    '.ow-ev__qr svg{display:block;width:100%;height:100%}',
     '.ow-ev__count{font-size:13px;color:var(--ow-ink-2,#9793ad);min-height:1.2em}',
     '.ow-ev__state{margin-top:10px;font-size:13.5px;font-weight:560;color:var(--ow-ink-2,#9793ad)}',
     '.ow-ev__state--live{color:var(--ow-ink,#fff)}',

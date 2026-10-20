@@ -60,3 +60,11 @@
    the name's weight with !important): the header face; the rest of the card is the page's text face */
 .ow-ocard .ow-ocard__name,.lc.lc.lc.lc .ow-ocard__name{font-family:var(--ow-head,'ONEWAY Head','ONEWAY Sans',sans-serif)!important;
   font-weight:var(--ow-head-weight,1000)!important;letter-spacing:var(--ow-head-track,-0.025em)!important}
+
+/* THE READING SCALE, ONE SET FOR THE APP, ONEWAY.CENTER AND EVERY GENERATED SITE (the founder, 2026-10-20: "text should be smaller on mobile and more centered in the middle of the screen. this should go for generated websites aswell"). Every
+   surface reads its reading sizes from these roles (the App through oneway-type.css, the site through compat.css, a Center's
+   site through oneway-site.css). From 768 px up each role keeps the size it had; under 768 px each takes one step down the
+   one scale 12 13 14 15 16 17 18 20. Headlines keep their own clamp(): they already scale with the screen. --ow-col is the
+   centred reading column: headlines and paragraphs stand in it, lists and forms keep their left edge inside it. */
+:root{--ow-fs-note:13px;--ow-fs-small:14px;--ow-fs-text:15px;--ow-fs-body:16px;--ow-fs-read:17px;--ow-fs-lead:18px;--ow-col:34rem}
+@media (max-width:767px){:root{--ow-fs-note:12px;--ow-fs-small:13px;--ow-fs-text:14px;--ow-fs-body:15px;--ow-fs-read:16px;--ow-fs-lead:17px}}

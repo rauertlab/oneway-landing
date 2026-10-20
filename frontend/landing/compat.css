@@ -23,7 +23,12 @@
   --lp-fs-mark:clamp(18px,1.85vw,24px);     /* a section's name above its headline (founder/793's top header) */
   --lp-fs-lead:clamp(18px,1.9vw,22px);      /* the line under a headline */
   --lp-fs-body:17px;                        /* an item's sentence */
-  --lp-fs-caption:15px}:root.ow-old{--lp-fs-display:40px;--lp-fs-display-long:32px;--lp-fs-heading:30px;--lp-fs-sub:22px;--lp-fs-mark:18px;--lp-fs-lead:18px}                     /* a note under an item: white, sentence case, never smaller */
+  --lp-fs-caption:15px}:root.ow-old{--lp-fs-display:40px;--lp-fs-display-long:32px;--lp-fs-heading:30px;--lp-fs-sub:22px;--lp-fs-mark:18px;--lp-fs-lead:18px}
+/* under 768 px the site's reading sizes are the shared scale's (oneway-fonts.css), one step down (the founder, 2026-10-20: "text should be smaller on mobile and more centered in the middle of the screen. this should go for generated websites aswell") */
+@media (max-width:767px){
+  :root{--lp-fs-lead:var(--ow-fs-lead,17px);--lp-fs-body:var(--ow-fs-read,16px);--lp-fs-caption:var(--ow-fs-text,14px)}
+  .lp-p{font-size:var(--lp-fs-lead)}
+}                     /* a note under an item: white, sentence case, never smaller */
 /* THE ROLES, as classes any landing page uses (the same face, weight, size and spacing on every page) */
 .t-display{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}
 .t-display-long{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display-long);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}

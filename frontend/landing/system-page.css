@@ -86,3 +86,20 @@
 .sys-fact dt{color:rgba(255,255,255,.62);margin:0;text-align:left}
 .sys-fact dd{margin:0;color:#fff;text-align:left}
 @media(max-width:600px){.sys-fact{grid-template-columns:minmax(0,1fr);gap:4px}}
+
+/* THE CATALOG, /systems/ (founder/849): every System built today, then each System's own page (moved with the list from
+   os.html; the tiles are .sys-tile, since .sys-page is every System page's body) */
+.sys-all{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 48px;text-align:left}
+.sys-all li{display:flex;flex-direction:column;gap:4px;padding-top:14px;border-top:1px solid rgba(255,255,255,.1)}html.ow-nogap .sys-all li>*+*{margin-top:4px}
+.sys-all a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:3px}
+.sys-all .t-body{color:rgba(255,255,255,.72)}
+@media(max-width:700px){ .sys-all{grid-template-columns:minmax(0,1fr);gap:18px} }
+.sys-tiles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-top:14px}
+.sys-tile{display:block;color:#fff;text-decoration:none}
+.sys-tile img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:left top;border-radius:12px;
+    box-shadow:0 18px 48px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);transition:transform .2s ease}
+.sys-tile:hover img{transform:translateY(-3px)}
+.sys-tile span{display:block;margin-top:10px}
+@media(max-width:900px){ .sys-tiles{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.sys-tile span{word-wrap:break-word;overflow-wrap:break-word}
+@media(max-width:360px){ .sys-tiles{grid-template-columns:minmax(0,1fr)} }

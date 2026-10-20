@@ -42,6 +42,8 @@
       var hp=(typeof c.hue==='number')?pair(c.hue):null;
       var el=opts.make?opts.make(c):OW.cards.node(c,{as:'tile',className:'pcard',onOpen:false});
       if(opts.make) el.classList.add('pcard');
+      /* live on the card (frontend/shared/oneway-live.js reads it by this): the landing's own card has no data-ref */
+      if(opts.make && c && c.id && !el.getAttribute('data-live-ref')) el.setAttribute('data-live-ref', (c.kind==='person'?'person:':'center:')+c.id);
       el.querySelectorAll('.ow-ocard__links a').forEach(function(a){ a.addEventListener('click',function(e){ e.stopPropagation(); }); });
       el.addEventListener('click',function(e){ if(e.target.closest&&e.target.closest('a')) return; if(el.getAttribute('data-at')==='0') open(c, el); });
       el.addEventListener('keydown',function(e){ if(e.target===el && el.getAttribute('data-at')==='0' && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); open(c,el); } });

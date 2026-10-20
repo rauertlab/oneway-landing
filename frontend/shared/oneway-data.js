@@ -265,6 +265,10 @@
     },
     /* A RENEWAL, WHEN NOTHING IS IN FLIGHT (above): `renew` is called once every request already sent has its answer (or
        after 4 s), and every request made meanwhile waits for its answer. One at a time: a second asks for the first. */
+    /* A REQUEST SENT OUTSIDE THIS FILE, CARRIED AS ONE OF ITS OWN (R18, 2026-10-20: the OS's reads went around OW.data, so
+       one in flight across a renewal came back 401 and read as signed out): counted while it flies, and held while a
+       renewal runs. `send` is called when it may go and returns the request's promise. */
+    carry: function (send) { return lift(send); },
     renewWhenQuiet: function (renew) {
       if (renewal) return renewal;
       var quiet = new Promise(function (done) {

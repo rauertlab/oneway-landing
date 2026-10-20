@@ -423,6 +423,10 @@
        and Import still under the thumb. */
     var mode = opts.mode === 'write' ? 'write' : 'camera';
     var lensShut = false;      /* the person chose More: the rest of Lightbulb */
+    /* A PLACE FROM THE FIRST RUN (founder/846): sign-up's "Put a place on Oneway" leaves one to confirm; Lightbulb opens on
+       More, where create.js shows it filled in, never on a camera the person did not ask for */
+    try { if (global.sessionStorage && global.sessionStorage.getItem('ow_place_prefill')) lensShut = true; } catch (_) {}
+    try { if (global.sessionStorage && global.sessionStorage.getItem('ow_place_near')) lensShut = true; } catch (_) {}   /* an area request's tap */
     var textPost = false;      /* words on their own went to the post page */
     var lensGen = 0;           /* a stream that answers after its lens closed is released */
     var curLens = null;

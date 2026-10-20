@@ -2565,6 +2565,10 @@
             keys: 'private profile comments counts likes active typing seen', move: ['Privacy'] },
           { id: 'where', label: 'Location sharing', icon: 'pin',
             keys: 'location map share where gps precise approximate background', move: ['Where you are'] },
+          /* founder/845: live activity, what you are playing, listening to, watching or streaming (oneway/presence) */
+          { id: 'presence', label: 'Live activity', icon: 'activity', fresh: true,
+            keys: 'live activity presence status online playing listening watching streaming busy spotify music games calendar',
+            open: pagePresence },
           /* ★ FOUNDER/539: "add the missing settings". The old page's Blocked
              and Muted lists (one canonical read each, one DELETE to undo,
              re-read after — 2026-09-02) were still drawn off-screen, and no
@@ -2637,6 +2641,7 @@
         'go-activity': 'Review your posts and account activity',
         sites: 'Review and remove access to your Oneway identity',
         where: 'Choose whether and with whom to share your location',
+        presence: 'What you play, hear and watch',
         discovery: 'Recommendations and who can find you',
         accessibility: 'Motion, contrast and text size'
       };
@@ -2881,7 +2886,9 @@
         };
         if (q.connected && OW.toast) OW.toast(nameOf(q.connected) + ' is connected.', { tone: 'ok' });
         else if (q.failed && OW.toast) OW.toast(nameOf(q.failed) + ' did not connect' + (q.why ? ' — ' + q.why : '') + '.');
-        if (q.connected || q.failed) {
+        /* a live-activity source's return (oneway/presence/routes.py): the server's own sentence */
+        else if (q.said && OW.toast) OW.toast(q.said, /^Not connected/.test(q.said) ? undefined : { tone: 'ok' });
+        if (q.connected || q.failed || q.said) {
           try { global.history.replaceState(global.history.state, '', global.location.pathname + global.location.hash); } catch (_) {}
         }
       }, 0);
@@ -3593,6 +3600,243 @@
           });
         }
         draw();
+      }
+
+      /* LIVE ACTIVITY (founder/845: "live activtiy … like using discord or listening to x on spotfiy with real album art").
+         What a person is playing, listening to, watching or streaming, and when they are busy, from the platforms they
+         connect (oneway/presence). EVERY SOURCE IS OFF UNTIL ITS PERSON TURNS IT ON, and each has its own audience. The
+         sources, how each connects, whether this server is set up for it, and the audiences' words all come from
+         GET /api/oneway/me/presence: this page names no platform of its own, so a source added on the server appears here
+         the day it ships. Every press is answered by the server and the page is drawn again from its answer. */
+      function pagePresence(body) {
+        var BASE = '/api/oneway/me/presence', shown = {};
+        var SKIP = { manual: 1, device_agent: 1 };            /* typed and this-device sources are reported, not switched here */
+        function sec(title, into) {
+          var el = mk('section', 'ow-sup');
+          el.appendChild(mk('h2', 'ow-set__sh', esc(title)));
+          (into || body).appendChild(el);
+          return el;
+        }
+        function line(into, text, cls) { var p = mk('p', cls || 'ow-set__lede', esc(text)); into.appendChild(p); return p; }
+        function act(method, url, payload) {
+          return data.post(url, payload || {}, { method: method }).then(function (r) {
+            if (!r.ok) { say(body, r.error || 'That could not be done just now.', true); return null; }
+            if (OW.presence && OW.presence.forget) OW.presence.forget();
+            return r.data || {};
+          });
+        }
+        /* APPLE'S MUSICKIT, loaded only when the person presses Connect Apple Music (the App's policy allows Apple's script host
+           and no other page's does: platform/static_site.py) */
+        var mkLoading = null;
+        function musicKit() {
+          if (global.MusicKit && global.MusicKit.configure) return Promise.resolve(global.MusicKit);
+          if (mkLoading) return mkLoading;
+          mkLoading = new Promise(function (resolve, reject) {
+            doc.addEventListener('musickitloaded', function () { resolve(global.MusicKit); }, { once: true });
+            var sc = doc.createElement('script');
+            sc.src = 'https://js-cdn.music.apple.com/musickit/v3/musickit.js';
+            sc.async = true;
+            sc.setAttribute('data-web-components', '');
+            sc.onerror = function () { mkLoading = null; reject(new Error('MusicKit did not load')); };
+            doc.head.appendChild(sc);
+          });
+          return mkLoading;
+        }
+        function reload() {
+          return data.get(BASE, { fresh: true }).then(function (r) {
+            if (!r.ok) { body.innerHTML = ''; line(body, 'Your live activity could not be read just now.'); return; }
+            paint(r.data || {});
+          });
+        }
+        /* who sees it: the server's own words for each audience */
+        function audiences(into, label, current, options, write) {
+          var group = mk('div', 'ow-swatches ow-choice ow-pres-aud');
+          group.setAttribute('role', 'group'); group.setAttribute('aria-label', label);
+          options.forEach(function (o) {
+            var b = mk('button', 'po-act', esc(o.label)); b.type = 'button';
+            b.setAttribute('aria-pressed', String(o.value === current));
+            if (o.value === current) b.setAttribute('data-act', 'on');
+            b.addEventListener('click', function () {
+              if (o.value === current || group.getAttribute('aria-busy') === 'true') return;
+              group.setAttribute('aria-busy', 'true');
+              Array.prototype.forEach.call(group.children, function (x) { x.disabled = true; });
+              write(o.value).then(reload);
+            });
+            group.appendChild(b);
+          });
+          into.appendChild(mk('span', 'ow-pres-audl', esc(label)));
+          into.appendChild(group);
+        }
+        function source(into, s, auds) {
+          var card = mk('div', 'ow-pres-src');
+          card.setAttribute('data-source', s.id);
+          var state = s.connected ? (s.account ? 'Connected as ' + s.account : (s.connector === 'oneway' ? s.how : 'Connected')) : s.how;
+          var sw = mk('button', 'ow-switch'); sw.type = 'button';
+          sw.setAttribute('aria-pressed', String(!!s.enabled));
+          sw.innerHTML = '<span class="ow-switch__b"><b>' + esc(s.name) + '</b><span>' + esc(state) + '</span></span>'
+            + '<span class="ow-switch__k" aria-hidden="true"></span>';
+          if (!s.connected) { sw.disabled = true; sw.title = 'Connect ' + s.name + ' first'; }
+          sw.addEventListener('click', function () {
+            if (sw.disabled) return;
+            sw.disabled = true;
+            act('PUT', BASE + '/sources/' + encodeURIComponent(s.id), { enabled: !s.enabled }).then(reload);
+          });
+          card.appendChild(sw);
+          if (s.connected && s.enabled) {
+            audiences(card, 'Who sees ' + s.name, s.audience, auds, function (v) {
+              return act('PUT', BASE + '/sources/' + encodeURIComponent(s.id), { audience: v });
+            });
+          }
+          var acts = mk('div', 'ow-pres-acts');
+          if (s.connector === 'oauth' && !s.connected) {
+            var go = btn('Connect ' + s.name);
+            go.disabled = !s.set_up;
+            go.addEventListener('click', function () {
+              go.disabled = true;
+              act('POST', BASE + '/sources/' + encodeURIComponent(s.id) + '/connect').then(function (d) {
+                go.disabled = false;
+                if (d && d.go) global.location.href = d.go;
+              });
+            });
+            acts.appendChild(go);
+          }
+          if (s.connector === 'username' && !s.connected) {
+            var f = field('Name on ' + s.name, 'text', { autocomplete: 'off', maxlength: '120', spellcheck: 'false' });
+            f.input.disabled = !s.set_up;
+            acts.appendChild(f.el);
+            var save = btn('Connect'); save.disabled = !s.set_up;
+            save.addEventListener('click', function () {
+              var v = f.input.value.trim();
+              if (!v) { say(body, 'Write your ' + s.name + ' username first.', true); return; }
+              save.disabled = true;
+              act('PUT', BASE + '/sources/' + encodeURIComponent(s.id) + '/account', { account: v }).then(function (d) {
+                save.disabled = false;
+                if (d) reload();
+              });
+            });
+            acts.appendChild(save);
+          }
+          /* A TOKEN THE PLATFORM MADE FOR THE PERSON (Hardcover): pasted once, checked there, kept in the vault, never shown again */
+          if (s.connector === 'token' && !s.connected) {
+            var tf = field('Token from ' + s.name, 'password', { autocomplete: 'off', maxlength: '4000', spellcheck: 'false' });
+            acts.appendChild(tf.el);
+            var keep = btn('Connect');
+            keep.addEventListener('click', function () {
+              var v = tf.input.value.trim();
+              if (!v) { say(body, 'Paste the token from ' + s.name + ' first.', true); return; }
+              keep.disabled = true;
+              act('PUT', BASE + '/sources/' + encodeURIComponent(s.id) + '/token', { token: v }).then(function (d) {
+                keep.disabled = false; tf.input.value = '';
+                if (d) reload();
+              });
+            });
+            acts.appendChild(keep);
+          }
+          /* APPLE MUSIC: a developer token signed by our server for this request, MusicKit's own sign-in at Apple, and the token
+             Apple gives back sent once to the vault */
+          if (s.connector === 'musickit' && !s.connected) {
+            var am = btn('Connect ' + s.name);
+            am.addEventListener('click', function () {
+              am.disabled = true;
+              data.get(BASE + '/sources/' + encodeURIComponent(s.id) + '/developer-token', { fresh: true }).then(function (r) {
+                if (!r.ok || !r.data || !r.data.token) throw new Error((r && r.error) || 'Apple Music could not be reached just now.');
+                return musicKit().then(function (MK) {
+                  return Promise.resolve(MK.configure({ developerToken: r.data.token, app: { name: 'Oneway', build: '1' } }))
+                    .then(function (inst) { return (inst || MK.getInstance()).authorize(); });
+                });
+              }).then(function (userToken) {
+                if (!userToken) throw new Error('Apple Music was not given access.');
+                return act('PUT', BASE + '/sources/' + encodeURIComponent(s.id) + '/token', { token: userToken });
+              }).then(function (d) {
+                am.disabled = false;
+                if (d) reload();
+              }).catch(function (e) {
+                am.disabled = false;
+                say(body, (e && e.message) || 'Apple Music did not connect. Try again.', true);
+              });
+            });
+            acts.appendChild(am);
+          }
+          if (s.connector === 'webhook') {
+            var mint = btn(s.connected ? 'Make a new address' : 'Make my ' + s.name + ' address', s.connected ? 'ow-btn--quiet' : '');
+            mint.addEventListener('click', function () {
+              mint.disabled = true;
+              act('POST', BASE + '/sources/' + encodeURIComponent(s.id) + '/hook').then(function (d) {
+                mint.disabled = false;
+                if (d && d.hook) { shown[s.id] = { hook: d.hook, said: d.said || '' }; paint(d); }
+              });
+            });
+            acts.appendChild(mint);
+          }
+          if (s.connected && s.connector !== 'oneway') {
+            var off = btn('Disconnect', 'ow-btn--quiet'), armed = 0;     /* asks once by asking twice, as Log out does */
+            off.addEventListener('click', function () {
+              if (!armed) { armed = global.setTimeout(function () { armed = 0; off.textContent = 'Disconnect'; }, 3200); off.textContent = 'Tap again to disconnect'; return; }
+              global.clearTimeout(armed); armed = 0; off.disabled = true;
+              act('DELETE', BASE + '/sources/' + encodeURIComponent(s.id) + '/connection').then(function () { delete shown[s.id]; reload(); });
+            });
+            acts.appendChild(off);
+          }
+          if (acts.children.length) card.appendChild(acts);
+          /* A PRIVATE ADDRESS IS SHOWN ONCE, right after it is made: the server keeps only its hash */
+          if (shown[s.id]) {
+            var box = mk('div', 'ow-pres-hook');
+            var input = doc.createElement('input'); input.type = 'text'; input.readOnly = true; input.value = shown[s.id].hook;
+            input.setAttribute('aria-label', 'Your ' + s.name + ' address');
+            input.addEventListener('focus', function () { input.select(); });
+            box.appendChild(input);
+            var copy = btn('Copy', 'ow-btn--quiet');
+            copy.addEventListener('click', function () {
+              try { global.navigator.clipboard.writeText(shown[s.id].hook).then(function () { if (OW.toast) OW.toast('Copied.', { tone: 'ok' }); }); }
+              catch (_) { input.select(); }
+            });
+            box.appendChild(copy);
+            if (shown[s.id].said) line(box, shown[s.id].said, 'ow-set__say');
+            card.appendChild(box);
+          }
+          into.appendChild(card);
+        }
+        function paint(d) {
+          body.innerHTML = '';
+          var auds = d.audiences || [];
+          line(body, 'Share what you are playing, listening to, watching or streaming, and when you are busy. Every source '
+            + 'is off until you turn it on, and each one is seen only by the people you choose.');
+          var now = sec('What people see now');
+          var acts = d.activities || [];
+          if (!acts.length) line(now, 'Nothing right now.', 'ow-set__say');
+          acts.forEach(function (a) {
+            var row = mk('div', 'ow-pres-row ow-pres-now');
+            row.innerHTML = OW.presence ? OW.presence.activityLine(a) : esc(a.title);
+            now.appendChild(row);
+          });
+          var on = sec('Online status');
+          audiences(on, 'Who sees when you are online', d.status_audience, auds, function (v) {
+            return act('PUT', BASE, { status: d.chosen || '', status_audience: v });
+          });
+          var list = (d.sources || []).filter(function (s) { return s.connectable && !SKIP[s.connector]; });
+          var groups = [['Connected', list.filter(function (s) { return s.connected && s.connector !== 'oneway'; })],
+                        ['On Oneway', list.filter(function (s) { return s.connector === 'oneway'; })],
+                        ['Connect a source', list.filter(function (s) { return !s.connected && s.set_up; })]];
+          groups.forEach(function (g) {
+            if (!g[1].length) return;
+            var el = sec(g[0]);
+            g[1].forEach(function (s) { source(el, s, auds); });
+          });
+          /* A SOURCE THIS SERVER HAS NO KEYS FOR is named, never offered: a button that cannot work is not drawn */
+          var later = list.filter(function (s) { return !s.connected && !s.set_up; });
+          if (later.length) line(sec('Not set up on this server yet'), later.map(function (s) { return s.name; }).join(', ') + '.', 'ow-set__say');
+          /* A PLATFORM WITH NO OFFICIAL WAY IN is named with the server's reason, never faked */
+          var none = (d.sources || []).filter(function (s) { return s.connector === 'none' && s.why; });
+          if (none.length) {
+            var nx = sec('Not possible yet');
+            none.forEach(function (s) { line(nx, s.name + ': ' + s.why + '.', 'ow-set__say'); });
+          }
+          setValue('presence', list.filter(function (s) { return s.enabled; }).length
+            ? list.filter(function (s) { return s.enabled; }).length + ' on' : 'Off');
+        }
+        body.innerHTML = '';
+        line(body, 'Loading…');
+        reload();
       }
 
       function pageRequests(body) {

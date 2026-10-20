@@ -2093,13 +2093,22 @@ function iconTab(id, label, render, n) {
                          status: c.status || '' });
           });
         });
-        data.get('/api/oneway/me/reservations').then(function (rr) {
+        Promise.all([data.get('/api/oneway/me/reservations'), data.get('/api/oneway/me/tickets')]).then(function (rs2) {
+          var rr = rs2[0], tr = rs2[1];
           /* the server answers what is on now or coming, soonest first, each said in the Center's own time */
           var booked = ((rr && rr.ok && rr.data && rr.data.reservations) || []).map(function (r) {
             return { center_id: (r.center || {}).id || '', center: (r.center || {}).name || '', kind: 'reservation',
                      start: r.start, status: r.status || '', when: r.when_words || '', thing: (r.thing || {}).name || '' };
           });
-          var soon = booked.concat(going)
+          /* THE TICKETS THEY HOLD (GET /api/oneway/me/tickets, events/tickets: theirs alone, at any Center): each opens its event,
+             where the codes the door reads are */
+          var held = ((tr && tr.ok && tr.data && tr.data.tickets) || []).filter(function (t) {
+            return t.state !== 'ended' && t.state !== 'cancelled';
+          }).map(function (t) {
+            return { center_id: (t.center || {}).id || '', center: (t.center || {}).name || '', kind: 'ticket', event_id: t.event_id,
+                     start: t.starts_at, status: '', when: '', thing: t.title + ' \u00b7 ' + t.quantity + ' ' + t.type };
+          });
+          var soon = booked.concat(held).concat(going)
             .sort(function (a2, b2) { return String(a2.start).localeCompare(String(b2.start)); });
           if (!soon.length) return;
           var h = mk('div', 'ow-cpage__h');
@@ -2113,7 +2122,7 @@ function iconTab(id, label, render, n) {
           coming.appendChild(h);
           var body = mk('div', 'ow-cpage__b');
           coming.appendChild(body);
-          var WORD = { reservation: 'Booked', booking: 'Booked', rsvp: 'Going' };
+          var WORD = { reservation: 'Booked', booking: 'Booked', rsvp: 'Going', ticket: 'Ticket' };
           soon.slice(0, 6).forEach(function (r) {
             var when = r.when || '';
             if (!when) {
@@ -2131,7 +2140,12 @@ function iconTab(id, label, render, n) {
             one.appendChild(mk('b', '', esc((WORD[r.kind] || 'Booked') + ' \u00b7 ' + r.center)));
             one.appendChild(mk('span', '', esc([r.thing, when, r.status && r.status !== 'confirmed' ? r.status : '']
               .filter(Boolean).join(' \u00b7 '))));
-            if (r.center_id) {
+            if (r.kind === 'ticket' && r.event_id) {
+              one.setAttribute('data-ticket-event', r.event_id);
+              one.addEventListener('click', function () {
+                try { doc.dispatchEvent(new CustomEvent('ow:open-event', { detail: { id: r.event_id } })); } catch (e) {}
+              });
+            } else if (r.center_id) {
               one.addEventListener('click', function () {
                 try { doc.dispatchEvent(new CustomEvent('ow:enter-center',
                   { detail: { id: r.center_id, name: r.center } })); } catch (e) {}
