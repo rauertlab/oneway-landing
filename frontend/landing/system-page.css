@@ -68,3 +68,10 @@
 .sys-map text{fill:#fff;font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif}
 .sys-map__t{font-size:17px;font-weight:600;letter-spacing:-.01em}
 .sys-map__c{font-size:21px;font-weight:850;letter-spacing:-.02em}
+/* AT A GLANCE (tools/system_pages.py facts()): the System's facts as a quiet two-column table an assistant can cite */
+.sys-facts{display:grid;grid-template-columns:minmax(0,1fr);gap:0;margin:28px auto 0;max-width:760px;text-align:left}
+.sys-fact{display:grid;grid-template-columns:minmax(120px,180px) minmax(0,1fr);gap:18px;padding:14px 0;border-top:1px solid rgba(255,255,255,.1)}
+.sys-fact:last-child{border-bottom:1px solid rgba(255,255,255,.1)}
+.sys-fact dt{color:rgba(255,255,255,.62);margin:0;text-align:left}
+.sys-fact dd{margin:0;color:#fff;text-align:left}
+@media(max-width:600px){.sys-fact{grid-template-columns:minmax(0,1fr);gap:4px}}

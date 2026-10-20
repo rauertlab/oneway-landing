@@ -2,9 +2,11 @@
 
 > Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.
 >
-> Oneway, at oneway.center, gives every person one profile and every community or business a Center. It is made by
-> Oneway Technologies LLC, a New York limited liability company, and is in closed beta. Oneway is not affiliated
-> with other services that use the name Oneway.
+> Oneway, at oneway.center, gives every person one profile and every community or business a Center.
+
+## What Oneway is, and what it is not
+
+Oneway is a social network and a business platform in one: the Oneway App gives every person one profile, a For You feed, messages and a map of the people and places near them, and Oneway OS runs the businesses, communities and places behind them. It is in a closed beta, by invitation, in New York City and Long Island. Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
 
 One standard for the whole ecosystem. The same protections cover every part of Oneway: a person's account, profile and messages in the Oneway App; a community's or a business's Center; the operating side of every Center in Oneway OS, Business OS and Developer OS; every System a Center runs, from a restaurant's floor and a hotel's rooms to a venue, a shop and a casino resort; every website a Center wears; and every integration and app built on the platform.
 
@@ -39,4 +41,4 @@ The Oneway App is Oneway's flagship product; Oneway OS is the operating system b
 
 - [Every page, in words](https://oneway.center/llms-full.txt)
 
-Read from oneway.center's own pages on 2026-10-19 (tools/site_seo.py).
+Read from oneway.center's own pages on 2026-10-20 (tools/site_seo.py).

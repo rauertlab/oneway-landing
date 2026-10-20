@@ -2946,6 +2946,8 @@
       title: p.title || '',
       description: p.body || '',
       cover: (m && (m.url || m.src || m)) || '',
+      _coverSizes: (m && m.sizes) || null,
+      _coverWidth: (m && m.width) || 0,
       _hue: p.destination_hue != null ? p.destination_hue : null,
       _post: true,
       /* THE ROOM, ONLY WHEN THE ROOM IS NOT THE AUTHOR. A post to a person's
@@ -3328,6 +3330,19 @@
        PER-ITEM CAPTIONS ARE OPTIONAL (founder: *"not mandatory"* for native
        Posts). A strip whose items carry none renders no caption line at all
        rather than an empty bar. */
+    /* A PHOTO'S SIZES (CP-02, 2026-10-19): the upload writes WebP at the widths narrower than the photo
+       (api/media/sizes.py) and the item carries them; the browser takes the one its screen needs, and the
+       original stays the widest choice and the fallback. */
+    var srcsetOf = function (sizes, orig, ow) {
+      if (!sizes || !sizes.length) return '';
+      var set = [], k;
+      for (k = 0; k < sizes.length; k++) {
+        var su = OW.imageUrl((sizes[k] || {}).url || '');
+        if (su && sizes[k].w) set.push(su + ' ' + sizes[k].w + 'w');
+      }
+      if (ow && orig) set.push(orig + ' ' + ow + 'w');
+      return set.length ? ' srcset="' + esc(set.join(', ')) + '" sizes="(max-width: 680px) 100vw, 680px"' : '';
+    };
     var shots = (g._media && g._media.length > 1) ? g._media : null;
     var shotsHTML = '';
     if (shots) {
@@ -3345,7 +3360,7 @@
           + (vid
              ? '<video src="' + esc(u) + '" muted playsinline preload="metadata"'
                + ' tabindex="-1" aria-hidden="true" onerror="this.remove()"></video>'
-             : '<img src="' + esc(u) + '" alt="' + esc(it.alt || '')
+             : '<img src="' + esc(u) + '"' + srcsetOf(it.sizes, u, it.width) + ' alt="' + esc(it.alt || '')
                + '" loading="lazy" decoding="async" onerror="this.remove()">')
           + '</span>';
       }
@@ -3370,8 +3385,8 @@
            cover, exactly as a broken <img> already does. */
         ? '<video src="' + esc(coverSrc) + '" muted playsinline preload="metadata"'
           + ' tabindex="-1" aria-hidden="true" onerror="this.remove()"></video>'
-        : '<img src="' + esc(coverSrc) + '" alt="" loading="lazy" decoding="async"'
-          + ' onerror="this.remove()">';
+        : '<img src="' + esc(coverSrc) + '"' + srcsetOf(g._coverSizes, coverSrc, g._coverWidth)
+          + ' alt="" loading="lazy" decoding="async" onerror="this.remove()">';
     /* an empty Gallery is honest about being empty rather than being dressed
        up as a picture — nothing is ever invented to fill a frame (Law 15).
        It is a QUIET LINE now, not a photo-shaped hole: see the `[data-empty]`
