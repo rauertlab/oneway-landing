@@ -46,7 +46,7 @@ html{-webkit-text-size-adjust:100%;font-family:'ONEWAY Sans',system-ui,-apple-sy
    frontend/shared/oneway-popit.css, which every page with a box loads, so no recipe is written here. This rule gives the
    box only what is its own: the platform's pair (--ow-h1, --ow-h2), the Popit's corners, one padding on every side so the
    words sit evenly. Held by api/oneway/platform/test_site_pricebox.py. */
-.ow-pricebox{--h:var(--ow-h1,139,92,255);--h2:var(--ow-h2,93,226,255);--h3:var(--h2);position:relative;box-sizing:border-box;border-radius:22px 19px 23px 20px;padding:var(--ow-pricebox-pad,20px);padding:var(--ow-pricebox-pad,max(20px,min(2.6vw,28px)));padding:var(--ow-pricebox-pad,clamp(20px,2.6vw,28px))}
+.ow-pricebox{--h:var(--ow-h1,139,92,255);--h2:var(--ow-h2,93,226,255);--h3:var(--h2);position:relative;box-sizing:border-box;border-radius:22px 19px 23px 20px;padding:var(--ow-pricebox-pad,20px);padding:var(--ow-pricebox-pad,max(20px,min(2.6vw,28px)));padding:var(--ow-pricebox-pad,clamp(20px,2.6vw,28px))}html.ow-old .ow-pricebox{padding:var(--ow-pricebox-pad,20px)}
 @media(max-width:560px){.ow-pricebox{--ow-pricebox-pad:20px}}
 /* a price said in a line of words: the box is as wide as the words, never the column */
 p.ow-pricebox{width:fit-content;max-width:100%}

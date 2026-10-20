@@ -461,7 +461,8 @@
 
   /* The kinds that answer to the hand. Mirrors FREEFORM_KINDS on the server;
      one rule, stated in both places rather than a client that disagrees. */
-  var FREEFORM = ['sticker', 'text', 'shape'];   /* text boxes and shapes (founder/831) are freeform, as the server says */
+  var FREEFORM = ['sticker', 'text', 'shape'];
+  var START_MAX = 8;          /* Center Popits a never-arranged Main offers by name; the rest are in the picker, one press away */   /* text boxes and shapes (founder/831) are freeform, as the server says */
 
   var COLS = 12;               /* replaced by whatever the server reports */
   var ROW = 44;                /* px per grid row; the one visual constant */
@@ -1135,7 +1136,10 @@
        person resized a Popit and their selection vanished the instant it
        saved, which reads as the control breaking at the moment it worked.
        The id is remembered here and re-attached after the draw. */
-    var keepId = this._sel && this._sel.item && this._sel.item.id;
+    /* ...and a selection a draw could not re-attach (the canvas moved into a new page while the OS re-drew around it, and
+       laid out once detached: R18, 2026-10-20, Move later lost its Popit's selection that way) is remembered until a draw
+       can, or arranging ends, or the person deselects. */
+    var keepId = (this._sel && this._sel.item && this._sel.item.id) || this._keepSel || '';
     this.deselect();
     var h = doc.createElement('div');
     h.className = 'ow-cv' + (this.mayArrange ? ' is-mine' : '')
@@ -1193,7 +1197,8 @@
       global.setTimeout(function () {
         var node = h.querySelector('[data-id="' + keepId + '"]');
         var item = self.items.filter(function (x) { return x.id === keepId; })[0];
-        if (node && item && node.isConnected) self.select(h, node, item);
+        if (node && item && node.isConnected) { self._keepSel = ''; self.select(h, node, item); }
+        else if (self.editing) self._keepSel = keepId;
       }, 0);
     }
 
@@ -1233,6 +1238,45 @@
         OW.states.nothing(this.host, mineHere
           ? (acts.length === 3 ? 'Make a post, arrange' : 'Arrange') + ' Popits and stickers here, or bring your Home\u2019s layout across. Nothing shows to others until you ' + (acts.length === 3 ? 'share or ' : '') + 'place it.'
           : 'Arrange Popits and stickers here. Nothing shows to others until you place it.', 'Nothing on your Main yet', acts);
+        return;
+      }
+      /* A CENTER'S EMPTY MAIN STARTS FROM WHAT A CENTER SHOWS (R18, 2026-10-20; the founder: "go much deeper on the Center
+         canvas"). Never arranged, it offers the catalog's own Center Popits (the rows whose subjects name a Center, the same
+         rule the picker keeps), each one press to place, with the whole picker one press away. A placed Popit is the
+         canonical projection the App shows; placing one publishes nothing else, and an emptied Main stays empty (above). */
+      if (this.mayArrange && this.arranged === false && /^center:/.test(this.surface || '')) {
+        this.host.innerHTML = '';
+        this.grid = null;
+        this.paintNote();
+        var start = doc.createElement('div');
+        start.className = 'ow-cv-start';
+        start.innerHTML = '<p class="ow-cv-start__h">Start this Center\u2019s Main</p>' +
+          '<p class="ow-cv-start__p">Place what a visitor should see first. Each Popit is drawn from this Center\u2019s own records, and you arrange them here.</p>' +
+          '<div class="ow-cv-start__list"><span class="ow-cv-start__wait">Reading what can go here\u2026</span></div>';
+        var all = doc.createElement('button');
+        all.type = 'button';
+        all.className = 'ow-cv-empty ow-cv-empty--act ow-cv-start__all';
+        all.textContent = 'Everything that can go here';
+        all.addEventListener('click', function () { self.pick(); });
+        start.appendChild(all);
+        this.host.appendChild(start);
+        OW.canvas.catalog(self.centerId || '').then(function (cat) {
+          var list = start.querySelector('.ow-cv-start__list');
+          if (!list) return;
+          var rows = ((cat && cat.popits) || []).filter(function (r0) { return r0 && r0.subjects && r0.subjects.indexOf('center') !== -1; });
+          list.innerHTML = '';
+          rows.slice(0, START_MAX).forEach(function (r0) {
+            var b = doc.createElement('button');
+            b.type = 'button';
+            b.className = 'ow-cv-start__i';
+            b.setAttribute('data-cv-start', r0.id);
+            var nm = doc.createElement('b'); nm.textContent = r0.name || r0.id;
+            var bl = doc.createElement('span'); bl.textContent = r0.blurb || '';
+            b.appendChild(nm); b.appendChild(bl);
+            b.addEventListener('click', function () { self.add({ place: 'popit', id: r0.id, name: r0.name, blurb: r0.blurb, w: r0.w, h: r0.h }); });
+            list.appendChild(b);
+          });
+        }, function () { var l0 = start.querySelector('.ow-cv-start__list'); if (l0) l0.innerHTML = ''; });
         return;
       }
       if (this.mayArrange && this.arranged === false) {
@@ -7164,9 +7208,42 @@
       });
       box.appendChild(kill);
     }
+    /* MOVE EARLIER, MOVE LATER: BY A PRESS OR THE KEYBOARD (R18, 2026-10-20; lane C's OS Interface Plan v0.1 §5: "Dragging
+       always has Move up/down or a destination command"). The selected Popit trades places with its neighbour in the
+       canvas's reading order, written as a drag writes it (reorderIds), and stays selected for the next press. A sticker,
+       a text box or a shape floats and is moved by hand. */
+    if (self.mayArrange && FREEFORM.indexOf(item.kind) < 0) {
+      var flow = self.flowOrder().filter(function (x) { return FREEFORM.indexOf(x.kind) < 0; }).map(function (x) { return x.id; });
+      var at = flow.indexOf(item.id);
+      [['earlier', -1, '\u2191', 'Move earlier'], ['later', 1, '\u2193', 'Move later']].forEach(function (m) {
+        var to = at + m[1];
+        if (at < 0 || to < 0 || to >= flow.length) return;
+        var mv = doc.createElement('button');
+        mv.type = 'button';
+        mv.className = 'ow-cv-move ow-cv-move--' + m[0];
+        mv.setAttribute('aria-label', m[3] + ': ' + (item.name || 'this Popit'));
+        mv.title = m[3];
+        mv.textContent = m[2];
+        mv.addEventListener('pointerdown', function (ev) { ev.stopPropagation(); });
+        mv.addEventListener('click', function (ev) {
+          ev.preventDefault(); ev.stopPropagation();
+          var ids = flow.slice(); ids.splice(at, 1); ids.splice(to, 0, item.id);
+          self._focusMove = { id: item.id, dir: m[0] };   /* the re-draws keep it selected (render) and its control focused (below) */
+          self.reorderIds(ids);
+        });
+        box.appendChild(mv);
+      });
+    }
     grid.appendChild(box);
     this._box = box;
     this.placeBox(grid);
+    /* the control last pressed keeps the focus through every re-draw of the same Popit; another Popit, a deselect or the
+       end of arranging lets it go */
+    if (this._focusMove && this._focusMove.id !== item.id) this._focusMove = null;
+    if (this._focusMove) {
+      var fm = box.querySelector('.ow-cv-move--' + this._focusMove.dir) || box.querySelector('.ow-cv-move');
+      if (fm) { try { fm.focus(); } catch (e) {} }
+    }
 
     /* ── A CLOCK NEEDS A ZONE, OR IT IS HALF A CLOCK ──────────────────────
        ★ FOUNDER: *"clocks set to time zones."*
@@ -8714,7 +8791,7 @@
     if (on) this._snap = this.snapshot();
     this.editing = on;
     if (this.grid) this.grid.setAttribute('data-editing', on ? '1' : '');
-    if (!on) this.deselect();
+    if (!on) { this.deselect(); this._keepSel = ''; this._focusMove = null; }
     if (!on && this._staleRemote && !this.dirty) {
       var me = this; this._staleRemote = false;
       global.setTimeout(function () { try { me.load(); } catch (_) {} }, 0);
@@ -8765,7 +8842,7 @@
         /* THE GROUND IS THE WAY OUT. Tapping the galaxy leaves arrangement
            entirely rather than merely dropping the selection — otherwise the
            person is still in a mode with nothing selected to show it. */
-        if (self.editing) self.setEditing(false); else self.deselect();
+        if (self.editing) self.setEditing(false); else { self.deselect(); self._keepSel = ''; self._focusMove = null; }
       }
     }, true);
     /* ── ONE ESCAPE LISTENER FOR EVERY CANVAS, NOT ONE PER CANVAS FOREVER ──
@@ -9869,6 +9946,25 @@
     '  width:34px;height:34px;transform:translate(-50%,-50%)}',
     '.ow-cv-kill:focus-visible{outline:2px solid rgba(var(--ow-h1),.95);',
     '  outline-offset:2px}',
+    /* Move earlier and Move later: the badge's mark at the top-right, side by side, each a thumb-sized target (R18) */
+    '.ow-cv-move{position:absolute;top:0;margin:-11px 0 0;width:24px;height:24px;border-radius:50%;border:0;padding:0;',
+    '  pointer-events:auto;cursor:pointer;z-index:41;display:flex;align-items:center;justify-content:center;',
+    '  font:700 13px/1 var(--ow-font,inherit);color:#12111a;background:#fff;',
+    '  box-shadow:0 0 0 1.5px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.5);touch-action:none}',
+    '.ow-cv-move::before{content:"";position:absolute;left:50%;top:50%;width:40px;height:40px;transform:translate(-50%,-50%)}',
+    '.ow-cv-move--earlier{right:30px}.ow-cv-move--later{right:0}',
+    '.ow-cv-move:focus-visible{outline:2px solid rgba(var(--ow-h1),.95);outline-offset:2px}',
+    /* a Center's never-arranged Main: what can go there first, by name (R18) */
+    '.ow-cv-start{display:flex;flex-direction:column;gap:10px;padding:8px 0 16px}',
+    '.ow-cv-start__h{margin:0;font:700 17px/1.3 var(--ow-font,inherit);color:var(--ow-ink,inherit)}',
+    '.ow-cv-start__p{margin:0;font-size:14px;line-height:1.5;color:var(--ow-ink-2,inherit)}',
+    '.ow-cv-start__list{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}',
+    '.ow-cv-start__wait{font-size:13px;color:var(--ow-ink-3,inherit)}',
+    '.ow-cv-start__i{display:flex;flex-direction:column;gap:3px;min-height:64px;padding:10px 12px;text-align:left;cursor:pointer;',
+    '  border-radius:14px;border:1px solid color-mix(in srgb,var(--ow-ink,#000) 12%,transparent);background:none;color:var(--ow-ink,inherit);font-family:var(--ow-font,inherit)}',
+    '.ow-cv-start__i b{font-size:15px;font-weight:700}.ow-cv-start__i span{font-size:13px;color:var(--ow-ink-3,inherit);line-height:1.35}',
+    '.ow-cv-start__i:focus-visible{outline:2px solid rgba(var(--ow-h1),.95);outline-offset:1px}',
+    '@media (hover:hover) and (pointer:fine){.ow-cv-start__i:hover{border-color:color-mix(in srgb,var(--ow-ink,#000) 28%,transparent)}}',
     '.ow-cv-h--nw{left:0;top:0;cursor:nwse-resize}',
     '.ow-cv-h--n{left:50%;top:0;cursor:ns-resize}',
     '.ow-cv-h--ne{left:100%;top:0;cursor:nesw-resize}',

@@ -17,8 +17,25 @@
    display cut tightened titles the other faces kept roomy). Served from this repository — /assets/fonts — never from a
    font CDN. Every surface ONEWAY draws links this file first. Licence:
    assets/fonts/OFL-oneway-sans.txt. */
+/* ★ THE FOUNDER, 2026-10-20, with Meta's Pocket beside it ("make the main header font look like this and the main oneway
+     font start looking like this"): he picked Nunito from the side-by-side (context/audits/cards-2026-10-19/type-side-by-side-
+     *.jpg). 'ONEWAY Sans' keeps its name on every stack and is drawn by Nunito (SIL OFL 1.1, assets/fonts/OFL-nunito.txt),
+     self-hosted, Latin, one variable file. Declared for 500 to 1000: a variable face's weight is held to its declared range,
+     so text asked at 400 is drawn at 500. The App and the OS stand on oneway-type.css (this face and their titles at 900);
+     every other page stands on this sheet. v0 (ONEWAYSans[wght].woff2, Inter's derivative) stays on disk. */
+/* ★ THE FOUNDER, 2026-10-20: "Do the split: new font for titles and all cards everywhere, old ONEWAY Sans for the
+     landing's and the OS's small text and numbers." Two faces, two names:
+   · 'ONEWAY Sans' is v0 again on every page that stands on this sheet (the landing, its site pages, the OS): Inter's
+     derivative, one variable file, the paragraphs, buttons, small text, labels and numbers. Every stack names it first.
+   · 'ONEWAY Sans 2' (Nunito's rounded shapes halfway to v0's proportions; tools/fonts/build_oneway_sans_2.py, SIL OFL 1.1,
+     assets/fonts/OFL-oneway-sans-2.txt) draws the titles and every card: below. The App stands on oneway-type.css, where
+     'ONEWAY Sans' is ONEWAY Sans 2 throughout, unchanged. */
 @font-face{font-family:'ONEWAY Sans';font-style:normal;font-weight:100 900;font-display:swap;
   src:url(/assets/fonts/ONEWAYSans[wght].woff2?v=0.4) format('woff2')}   /* v0.4 — the @ where Apple's sits, the shy pairs kerned (532) */
+@font-face{font-family:'ONEWAY Sans 2';font-style:normal;font-weight:500;font-display:swap;src:url(/assets/fonts/ONEWAYSans2-500.woff2) format('woff2')}
+@font-face{font-family:'ONEWAY Sans 2';font-style:normal;font-weight:600;font-display:swap;src:url(/assets/fonts/ONEWAYSans2-600.woff2) format('woff2')}
+@font-face{font-family:'ONEWAY Sans 2';font-style:normal;font-weight:700;font-display:swap;src:url(/assets/fonts/ONEWAYSans2-700.woff2) format('woff2')}
+@font-face{font-family:'ONEWAY Sans 2';font-style:normal;font-weight:800;font-display:swap;src:url(/assets/fonts/ONEWAYSans2-800.woff2) format('woff2')}
 /* Space Grotesk stays on disk only for the wordmark catalogue a person may
    choose for their own name; it is not the platform's face (462). */
 @font-face{font-family:'Space Grotesk';font-style:normal;font-weight:300 700;font-display:swap;
@@ -27,3 +44,19 @@
 /* the one stack, for any surface that wants it by name — ours, then the
    phone's own face (which is what Instagram and X shipped for years) */
 :root{--ow-face:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+
+/* ── THE HEADER FACE, AND WHERE ONEWAY SANS 2 STILL STANDS (the founder, 2026-10-20: "keep the orginal oneway sans for the
+   landing page and its headers") ─────────────────────────────────────────────────────────────────────────────────────
+   The landing and every site page are the original ONEWAY Sans throughout, their headers too. A profile card's name line
+   wears the header face; the OS's titles keep ONEWAY Sans 2 at 800 until he says otherwise. The wordmark is an image. */
+/* ONEWAY HEAD, THE HEADER FACE (the founder, 2026-10-20: "keep the orginal oneway sans for the landing page and its headers
+   and then the 3rd photo for the app ... and then user profiles and oneway profile cards"): H2 of
+   context/audits/cards-2026-10-19/type-headers-bubbly-390.jpg, the repo's own Nunito at 1000, tracking -0.025em. ONE
+   token: to swap it, change this @font-face's src and --ow-head-weight / --ow-head-track; every use reads them. */
+@font-face{font-family:'ONEWAY Head';font-style:normal;font-weight:200 1000;font-display:swap;src:url(/assets/fonts/Nunito[wght].woff2) format('woff2')}
+:root{--ow-head:'ONEWAY Head','ONEWAY Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;--ow-head-weight:1000;--ow-head-track:-0.025em}
+.ow-hero__t.ow-hero__t{font-family:'ONEWAY Sans 2','ONEWAY Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-weight:800;letter-spacing:normal}
+/* a profile card's name line, people and Center, on every surface (OW.cards .ow-ocard; the landing's .lc, whose sheet sets
+   the name's weight with !important): the header face; the rest of the card is the page's text face */
+.ow-ocard .ow-ocard__name,.lc.lc.lc.lc .ow-ocard__name{font-family:var(--ow-head,'ONEWAY Head','ONEWAY Sans',sans-serif)!important;
+  font-weight:var(--ow-head-weight,1000)!important;letter-spacing:var(--ow-head-track,-0.025em)!important}

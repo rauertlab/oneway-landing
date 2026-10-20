@@ -26,7 +26,7 @@ html.ow-old a:focus,html.ow-old button:focus{outline:2px solid rgba(var(--ow-h2)
 a:focus-visible,button:focus-visible{outline:2px solid rgba(var(--ow-h2),.9);outline-offset:3px}
 
 /* ── the bar: the mark, and the one thing only the corner does (founder/493) ── */
-.nav{position:fixed;top:0;left:0;right:0;z-index:50;height:calc(60px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:14px;padding:env(safe-area-inset-top,0px) 20px 0 20px;padding:env(safe-area-inset-top,0px) max(20px,env(safe-area-inset-right)) 0 max(20px,env(safe-area-inset-left));transition:background .3s,box-shadow .3s}html.ow-nogap .nav>*+*{margin-left:14px}
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;height:calc(60px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:14px;padding:env(safe-area-inset-top,0px) 20px 0 20px;padding:env(safe-area-inset-top,0px) max(20px,env(safe-area-inset-right)) 0 max(20px,env(safe-area-inset-left));transition:background .3s,box-shadow .3s}html.ow-old .nav{padding:env(safe-area-inset-top,0px) 20px 0 20px}html.ow-nogap .nav>*+*{margin-left:14px}
 .nav.scrolled{background:rgba(10,9,20,.86);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 1px 0 var(--line)}
 .nav-logo img{height:16px;display:block}
 .nav-right{margin-left:auto;display:flex;align-items:center;gap:6px}html.ow-nogap .nav-right>*+*{margin-left:6px}

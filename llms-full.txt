@@ -4,6 +4,8 @@
 
 Oneway is a social network and a business platform in one: the Oneway App gives every person one profile, a For You feed, messages and a map of the people and places near them, and Oneway OS runs the businesses, communities and places behind them. It is in a closed beta, by invitation, in New York City and Long Island. Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
 
+Oneway Technologies LLC, Oneway's phone: +1 (516) 261-2413.
+
 ---
 
 ## Oneway
@@ -37,11 +39,15 @@ Ecosystem
 
 We give every person one profile and every community or business a Center.
 
-Create your account
-
-Your corner of the internet, connected.
+Your corner of the internet.
 
 Bring the best of the internet into one customizable place. Put your links, posts, activity, and social accounts together, making it easier to connect and network while choosing what you share and how you appear in every space.
+
+Create your account
+
+Your community, all in one place.
+
+A Center can represent a neighborhood, an organization, a business, or an entire operation, as simple or as sophisticated as its purpose requires.
 
 What a Center is
 
@@ -206,6 +212,14 @@ Discovery
 A map of the people, places and Centers around you. A Center can start as an information page, checked by a person, and be followed before its owner claims it.
 
 Open the App The Oneway App
+
+Invitation Only NYC Beta
+
+Our first launch is New York City.
+
+Closed Selective Server Beta
+
+Coming soon
 
 OS
 
@@ -372,14 +386,6 @@ One Brain across every location, with a budget for each OS Not included Core Not
 
 Developer OS, for building applications, Systems and integrations on Oneway, is in closed beta.
 
-Invitation Only NYC Beta
-
-Our first launch is New York City.
-
-Closed Selective Server Beta
-
-Coming soon
-
 Contact
 
 Get Oneway OS today.
@@ -396,7 +402,7 @@ What is Oneway?
 Oneway is a social network and a business platform in one. Every person has one profile, and every community, place and business has a Center.
 
 Does Oneway have a feed like Instagram?
-Yes. Home has a For You feed ranked to what you like and a Following feed of only the people and places you follow, with photo and video posts and stories. You can also make custom feeds from people, places and words, newest first or top this week, pin them as tabs on Home, and share a public one for anyone to pin. You can also make custom feeds from people, places and words, newest first or top this week, pin them as tabs on Home, and share a public one for anyone to pin.
+Yes. Home has a For You feed ranked to what you like and a Following feed of only the people and places you follow, with photo and video posts and stories. You can also make custom feeds from people, places and words, newest first or top this week, pin them as tabs on Home, and share a public one for anyone to pin.
 
 How do people find places on Oneway?
 Through Discovery: a map and search of the people, places and Centers near you. A Center can start as an information page, its facts checked by a person, and its owner claims it when they join.
@@ -432,7 +438,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -566,7 +572,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 Claim your @name
 
@@ -587,34 +593,41 @@ Oneway aims to bring the web and local community together.
 Always building a place for individual expression, stronger communities and more connected workplaces, shaped by the people who use it.
 
 Privacy
-Your identity and data stay under your control.
+Your space, with security and privacy built in.
 
-Choose what your profile shows and keep personal and workplace activity separate. Access to organizational work follows permissions, not a public profile.
-
-Oneway is made by Oneway Technologies LLC, a New York company: the Oneway App, a social network for people and the places they love, and Oneway OS, which runs the businesses and communities behind them.
+Choose what you share, control who can access it, and keep your personal and workplace activity separate. Your information stays protected by privacy settings and permissions designed around how you use Oneway.
 Privacy and security
+
+Developed by Oneway Technologies LLC, Oneway brings together a social network for people and the places they love with an operating system for the businesses and communities behind them.
 
 Oneway OS
 Building the best social media ecosystem for businesses and communities.
 
-A public Center is where people connect with a place. Oneway OS is where its team can manage that presence and organize the work behind it.
+A public Center brings people closer to the places, businesses, and communities they care about. Oneway OS gives the people behind those Centers the tools to manage their presence, communicate, organize their teams, and run daily operations, all within the same connected ecosystem.
+From a neighborhood community to a business operating across multiple locations, Oneway is designed to grow with the people and organizations using it.
 Explore Oneway OS
 
 About Our Brand
 
 Built around experiences people want to return to.
 
-Oneway began with an interest in entertainment, hospitality, and the places that bring people together. What started as an idea for a modern arcade and social gathering space grew into a broader vision: connecting the experiences people enjoy in the physical world with the possibilities of the internet. That vision became Oneway Technologies, a company developing a connected ecosystem for people, communities, and businesses.
+Oneway began with an interest in entertainment, hospitality, and the places that bring people together. Originally envisioned as a modern arcade and social destination, the concept gradually expanded beyond locations into a larger ambition to connect physical experiences with the digital world.
 
-One identity. Endless possibilities.
+That vision became Oneway Technologies, a company developing a connected ecosystem for people, communities, and businesses.
+
+One ecosystem. Your way.
 
 The name Oneway reflects our belief that the internet should feel more connected without making every person, community, or business look and operate the same way. We bring different experiences together through one ecosystem while giving people the freedom to choose their own direction.
 
-A Profile
-A personal social space, a creative portfolio, or a place to bring together an online presence.
+Your corner of the internet.
+A Profile can be a personal social space, a creative portfolio, or one customizable place to bring together your online presence.
 
-A Center
-A neighborhood, an organization, a business, or an entire operation, as simple or as sophisticated as its purpose requires.
+Your community, all in one place.
+A Center can represent a neighborhood, an organization, a business, or an entire operation, as simple or as sophisticated as its purpose requires.
+
+Bring the web together without leaving it behind.
+
+The internet is full of platforms, services, and tools that people already depend on. Oneway is being built to connect with that wider world, bringing more of what people use into one accessible ecosystem.
 
 Bluesky
 
@@ -767,11 +780,11 @@ Their public presence, relationships, communications, and daily operations conne
 
 Built to keep evolving.
 
-Oneway is an independent, founder-led technology company with ambitions beyond any single application, industry, or device, building a foundation that grows alongside the people and organizations using it. We’re starting by bringing social networking, local discovery, community management, and business operations into one connected ecosystem.
+Oneway is an independent, founder-led technology company with ambitions beyond any single application, industry, or device. We're building a foundation designed to grow alongside the people and organizations using it, starting with social networking, local discovery, community management, and business operations.
 
-Where Oneway goes next will be shaped by the people, places, and ideas that become part of it, and by the experiences we create both on and beyond the screen. From the spaces we connect to the destinations we bring to life, we’re building for a world where digital and physical experiences come together naturally.
+Where Oneway goes next will be shaped by the people, places, and ideas that become part of it, and by the experiences we create both on and beyond the screen. From the spaces we connect to the destinations we bring to life, we're building for a world where digital and physical experiences come together naturally.
 
-Created by William Rauert.
+Created by William Rauert for Atlantic City, Manhattan and Queens, and the creators and businesses who we will have the joy of providing our platform to.
 
 Go anywhere. Connect everywhere.
 Explore the App Talk to us
@@ -798,7 +811,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -883,6 +896,8 @@ Press
 Partnerships
 Privacy and data deletion
 
+Oneway Technologies LLC, Oneway’s phone: +1 (516) 261-2413
+
 Oneway Technologies LLC, a New York limited liability company. Other services that use the name Oneway are not connected with us. williamrau78@gmail.com
 
 Our Mission
@@ -907,7 +922,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -1171,7 +1186,7 @@ Your choices
 
 You can How
 
-See what Oneway knows about you Settings, Understanding. For a full copy, email us. A copy covers your posts, comments, follows, memberships, profile, event answers and places. It does not yet include messages, bookings, location, connected accounts, what reached your screen, linked identities or the security log.
+See what Oneway knows about you Settings, Understanding, at any time. For a full copy, Settings, Download your data: a zip made in the background, its link good for 72 hours, with your account, your profile (its private fields too), your posts, who you follow and who follows you, your messages, the Centers you belong to and your role, your security page, what you did on Oneway, and the address of every picture and video you posted. It never holds other people's private data or your secrets, such as passwords and keys.
 
 Correct it Edit your profile any time. Remove linked identities in Settings.
 
@@ -1265,7 +1280,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -1518,7 +1533,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -1582,7 +1597,7 @@ A copy of your data
 
 In the Oneway App, Settings , then What Oneway knows about you , shows what Oneway understands about you. For a full copy, email williamrau78@gmail.com from the address on your account. We answer within 30 days, and may need to confirm it is you.
 
-Everything at once
+Everything, with 30 days to change your mind
 
 Your whole account
 
@@ -1590,13 +1605,15 @@ In the Oneway App, open Settings , then Delete your account
 
 Enter your password, and the code from your authenticator app if two-step is on
 
-Press Delete your account , then Tap again to delete it for good
+Press Delete your account , then Tap again to delete it in 30 days
 
 If you own a Center, hand it over to someone in Oneway OS first; you are told which one. Your own space is not a Center you run, and it goes with your account.
 
-What goes at once: every session, on every device. Your profile, picture and search listings. Your posts from view, and your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected on your profile, with the access we held for them. Your linked identities. Your shared location and your Footsteps. What reached your screen, and what the feed learned from it. Your list of bookings. Your notifications.
+At once: every session, on every device, and your profile leaves view and search. For 30 days you can change your mind: sign in and press Keep my account .
 
-It cannot be undone, and nobody can sign in to it again. If you cannot sign in, email us from the address on the account.
+What goes after the 30 days: your profile, picture and search listings. Your posts from view, and your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected on your profile, with the access we held for them. Your linked identities. Your shared location and your Footsteps. What reached your screen, and what the feed learned from it. Your list of bookings. Your notifications.
+
+After the 30 days it cannot be undone, and nobody can sign in to it again. If you cannot sign in, email us from the address on the account.
 
 After you delete
 
@@ -1692,7 +1709,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -1819,7 +1836,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -1936,7 +1953,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -2104,7 +2121,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -2208,7 +2225,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -2306,7 +2323,7 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
 ---
 
@@ -2454,5 +2471,5 @@ Data Deletion
 Corporate Charter
 
 2027, Oneway Technologies LLC
-Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 

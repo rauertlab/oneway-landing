@@ -1001,9 +1001,9 @@
           return;
         }
         var CHOICES = [
-          ['', 'Device', 'follows your phone or computer'],
           ['light', 'Light', ''],
-          ['dark', 'Dark', '']
+          ['dark', 'Dark', ''],
+          ['', 'Match device', 'follows your phone or computer']
         ];
         var btns = [];
         function paint() {
@@ -1049,69 +1049,51 @@
         n++;
       })();
 
-      /* PLAIN — the galaxy put away for a flat ground. */
-      (function () {
-        var W = global.OW && global.OW.world;
-        var row = mk('div', 'ow-cust__row ow-cust__row--display-toggle');
-        row.appendChild(mk('span', 'ow-cust__lbl', 'Plain background'));
-        var sw = mk('button', 'ow-switch');
-        sw.type = 'button';
-        function paint(plain) {
-          sw.setAttribute('aria-pressed', plain ? 'true' : 'false');
-          sw.innerHTML = '<span class="ow-switch__b"><b>'
-            + 'Plain background</b><span>'
-            + 'On uses a plain light or dark background. Off shows the galaxy background.'
-            + '</span></span><span class="ow-switch__k" aria-hidden="true"></span>';
-        }
-        if (!W) {
-          sw.textContent = 'Unavailable'; sw.disabled = true;
-        } else {
-          paint(W.get() === 'plain');
-          sw.addEventListener('click', function () {
-            var next = W.get() === 'plain' ? 'galaxy' : 'plain';
-            W.set(next); paint(next === 'plain');
+      /* ── EACH THEME, ITS OWN CARDS AND ITS OWN BACKGROUND ─────────────────────
+         ★ THE FOUNDER, 2026-10-20: *"simple mode, popit mode on both cards and background and let users set which one
+           it defaults too for light and dark mode and also let them then set it to device basically the theme
+           customization for both light and dark mode"*. For Light mode and for Dark mode: the cards Simple or Popit
+           (OW.simple, the one writer; Simple keeps a compact feed, Popit wears your hue and Popit frames) and the
+           background Simple (a plain ground) or Popit (the galaxy; OW.world). Each is kept on the account
+           (OW.look.save), so on Match device the person meets their own choice in whichever room the device is in.
+           These replace one Plain background switch and one Post presentation for both themes. */
+      ['light', 'dark'].forEach(function (t) {
+        var S = global.OW && global.OW.simple, W = global.OW && global.OW.world;
+        var name = t === 'light' ? 'Light mode' : 'Dark mode';
+        var row = mk('div', 'ow-cust__row ow-cust__row--stack');
+        row.setAttribute('data-theme-mode', t);
+        row.appendChild(mk('span', 'ow-cust__lbl', name));
+        var paints = [];
+        [['Cards', function () { return !!(S && S.of && S.of(t)); }, function (simple) { S.setFor(t, simple); }],
+         ['Background', function () { return !!(W && W.of && W.of(t) === 'plain'); }, function (simple) { W.setFor(t, simple ? 'plain' : 'galaxy'); }]
+        ].forEach(function (part) {
+          var seg = mk('div', 'ow-seg');
+          seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', name + ' ' + part[0].toLowerCase());
+          var key = mk('span', 'ow-seg__k', part[0]);
+          key.style.cssText = 'min-width:96px;font-size:14px;font-weight:600;opacity:.72;align-self:center';
+          seg.appendChild(key);
+          var btns = [];
+          ['Simple', 'Popit'].forEach(function (label, i) {
+            var btn = mk('button', 'ow-seg__b', label); btn.type = 'button';
+            btn.disabled = !(S && W && S.setFor);
+            btn.addEventListener('click', function () {
+              part[2](i === 0);
+              if (global.OW && OW.look) OW.look.save();
+              paints.forEach(function (f) { f(); });
+            });
+            btns.push(btn); seg.appendChild(btn);
           });
-        }
-        row.appendChild(sw);
-        box.appendChild(row);
-        n++;
-      })();
-
-      /* ── SIMPLE MODE ────────────────────────────────────────────────────
-         ★ FOUNDER, 2026-09-02: *"on simple mode we are gonna drop the popit
-           presentation and ahve instagram/ twitter display"* · *"on home and
-           scroll but only WHEN simple mode is on"*.
-
-         IT SITS WITH THE OTHER DISPLAY PREFERENCES because that is what it is —
-         beside Light mode and Plain background, not in a new section. And it
-         drives `OW.simple`, the ONE writer, rather than setting an attribute
-         itself: the light/dark switch once wrote `data-mode` while the material
-         system keyed on `data-theme`, so the switch flipped, the label changed,
-         and nothing happened. Two writers, one of them inert. */
-      (function () {
-        var S = global.OW && global.OW.simple;
-        var row = mk('div', 'ow-cust__row');
-        row.appendChild(mk('span', 'ow-cust__lbl', 'Post presentation'));
-        var choices = mk('div', 'ow-seg');
-        choices.setAttribute('role', 'group'); choices.setAttribute('aria-label', 'Post presentation');
-        var buttons = [];
-        function paint() {
-          buttons.forEach(function (button, i) {
-            button.setAttribute('aria-pressed', String(!!S && S.get() === (i === 0)));
+          paints.push(function () {
+            var simple = part[1]();
+            btns.forEach(function (btn, i) { var on = (i === 0) === simple; btn.setAttribute('aria-pressed', String(on)); btn.setAttribute('data-act', on ? 'on' : 'off'); });
           });
-        }
-        ['Simple mode', 'Popit mode'].forEach(function (label, i) {
-          var button = mk('button', 'ow-seg__b', label); button.type = 'button';
-          button.disabled = !S;
-          button.addEventListener('click', function () { S.set(i === 0); paint(); });
-          buttons.push(button); choices.appendChild(button);
+          row.appendChild(seg);
         });
-        paint(); row.appendChild(choices);
-        row.appendChild(mk('p', 'ow-cust__help', S
-          ? 'Simple mode keeps a compact feed. Popit mode uses your hue and Popit frames. Applies to Home and Scroll.'
-          : 'Post presentation is unavailable right now.'));
+        paints.forEach(function (f) { f(); });
+        /* the account's look can arrive after this page is drawn (a fresh device): drawn again when it does */
+        try { document.addEventListener('ow:look', function () { paints.forEach(function (f) { f(); }); }); } catch (e) {}
         box.appendChild(row); n++;
-      })();
+      });
 
       /* WHICH SUBSCRIPTION IS YOURS, named so it cannot be mistaken for the
          other one (founder, 2026-08-02). ONEWAY+ is a PERSON's subscription;
@@ -1734,23 +1716,29 @@
        is why it cannot be a two-way switch. */
     if (!(opts && opts.look)) {
       choiceRow('Theme',
-        [{ label: 'Device', value: '' },
-         { label: 'Light', value: 'light' },
-         { label: 'Dark', value: 'dark' }],
+        [{ label: 'Light', value: 'light' },
+         { label: 'Dark', value: 'dark' },
+         { label: 'Match device', value: '' }],
         function () { try { return localStorage.getItem('ow_theme') || ''; } catch (e) { return ''; } },
         function (v) { if (OW.theme) OW.theme.set(v || null); });
 
-      /* GALAXY OR PLAIN — the world behind everything. */
-      choiceRow('Page background',
-        [{ label: 'Galaxy', value: 'galaxy' }, { label: 'Plain', value: 'plain' }],
-        function () { return (OW.world && OW.world.get()) || 'galaxy'; },
-        function (v) { if (OW.world) OW.world.set(v); });
-
-      /* SIMPLE — the familiar layout, without the Popit presentation. */
-      choiceRow('Post presentation',
-        [{ label: 'Popit mode', value: 'full' }, { label: 'Simple mode', value: 'simple' }],
-        function () { return (OW.simple && OW.simple.get()) ? 'simple' : 'full'; },
-        function (v) { if (OW.simple) OW.simple.set(v === 'simple'); });
+      /* ── EACH THEME, ITS OWN CARDS AND ITS OWN BACKGROUND ───────────────────
+         ★ THE FOUNDER, 2026-10-20: *"simple mode, popit mode on both cards and background and let users set which one
+           it defaults too for light and dark mode and also let them then set it to device basically the theme
+           customization for both light and dark mode"*. For Light and for Dark: the cards Simple or Popit (OW.simple)
+           and the background Simple (plain) or Popit (the galaxy, OW.world), each kept on the account (OW.look.save),
+           so a person on Match device meets their own choice in whichever room the device is in. */
+      ['light', 'dark'].forEach(function (t) {
+        var name = t === 'light' ? 'Light mode' : 'Dark mode';
+        choiceRow(name + ': cards',
+          [{ label: 'Simple', value: 'simple' }, { label: 'Popit', value: 'popit' }],
+          function () { return (OW.simple && OW.simple.of(t)) ? 'simple' : 'popit'; },
+          function (v) { if (OW.simple) { OW.simple.setFor(t, v === 'simple'); if (OW.look) OW.look.save(); } });
+        choiceRow(name + ': background',
+          [{ label: 'Simple', value: 'simple' }, { label: 'Popit', value: 'popit' }],
+          function () { return (OW.world && OW.world.of(t) === 'plain') ? 'simple' : 'popit'; },
+          function (v) { if (OW.world) { OW.world.setFor(t, v === 'simple' ? 'plain' : 'galaxy'); if (OW.look) OW.look.save(); } });
+      });
     }
 
     /* ── HOW YOUR NAME IS SET ─────────────────────────────────────────────
@@ -2485,7 +2473,7 @@
             value: (doc.documentElement.getAttribute('data-theme') === 'light' ? 'Light' : 'Dark'),
             keys: 'dark light mode theme galaxy background plain colour color logos icons black white mono simple '
               + 'appearance look hue banner popits widgets avatar shape name font wordmark hearts thumbs likes dislikes customize style',
-            move: ['Theme', 'Plain background', 'Post presentation'],
+            move: ['Theme', 'Light mode', 'Dark mode'],
             extra: function (body) { marksRow(body); likesRow(body); lookRows(body); } }
         ]],
         ['Account', [
@@ -2503,8 +2491,12 @@
             open: pageConnected },
           /* DELETE YOUR ACCOUNT (founder/581) — the one core task of 36 that
              had no door. Red, like Log out, because it cannot be undone. */
+          /* YOUR DATA, IN ONE PLACE (founder, 2026-10-20: "data delatipn can be where the download is"): the copy
+             to download and the deletion beside it open the same page. */
+          { id: 'data', label: 'Download your data', icon: 'understanding',
+            keys: 'download data copy export my data zip gdpr archive', open: pageData },
           { id: 'delete', label: 'Delete your account', icon: 'trash', danger: true,
-            keys: 'delete account remove close deactivate erase leave oneway gdpr', open: pageDelete }
+            keys: 'delete account remove close deactivate erase leave oneway gdpr', open: pageData }
         ]],
         /* ── HOW YOU USE ONEWAY (founder/520) ────────────────────────────
            Your activity, Understanding and the Calendar are pages with no
@@ -2994,53 +2986,122 @@
         });
       }
 
-      /* ── DELETE YOUR ACCOUNT (identity/departure.py) ─────────────────────
-         What goes and what stays is said before anything is asked. The
-         password is the gate (and the code, if the server says two-step is
-         on); the button asks once by asking twice, the rule Log out keeps —
-         no modal. A Center the person owns is named by the server's refusal
-         and must be handed over first. */
-      function pageDelete(body) {
+      /* ── YOUR DATA: A COPY TO DOWNLOAD, AND DELETING THE ACCOUNT BESIDE IT ────────────
+         people/exports.py and identity/departure.py. The copy is a zip made in the background; the person is
+         told when it is ready and its link ends after the hours the server says. Deleting gives 30 days to
+         change your mind: every session ends at once and the profile leaves view; signing in and Keep my
+         account undoes it. The password is the gate (and the code, if the server says two-step is on); the
+         delete button asks once by asking twice, the rule Log out keeps — no modal. */
+      function pageData(body) {
+        var when = function (iso) { try { return new Date(iso).toLocaleString(); } catch (_) { return iso || ''; } };
+        body.appendChild(mk('p', 'ow-set__big', 'Download your data'));
         body.appendChild(mk('p', 'ow-set__lede',
-          'Your profile, your posts, your likes and the people you follow are removed. '
-          + 'Every session ends, every site you signed in to with Oneway loses access, '
-          + 'and you leave every Center you belong to. Comments you left in other people\'s '
-          + 'conversations stay, shown as "Deleted account". Your email address cannot be '
-          + 'used for a new account. This cannot be undone.'));
-        var pw = field('Your password', 'password', { autocomplete: 'current-password' });
-        body.appendChild(pw.el);
-        var code = field('A code from your authenticator app', 'text',
+          'A copy of your profile, posts, messages, follows, Centers and the links to your photos and videos, '
+          + 'as one file. It is made in the background and you are told when it is ready.'));
+        var pw1 = field('Your password', 'password', { autocomplete: 'current-password' });
+        body.appendChild(pw1.el);
+        var code1 = field('A code from your authenticator app', 'text',
           { inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '12' });
-        code.el.style.display = 'none';     /* .ow-set__f is display:flex, which [hidden] loses to */
-        body.appendChild(code.el);
-        var go = btn('Delete your account', 'ow-set__danger'); body.appendChild(go);
-        var armed = 0;
-        go.addEventListener('click', function () {
-          if (!pw.input.value) { say(body, 'Enter your password.', true); return; }
-          if (!armed) {
-            armed = global.setTimeout(function () { armed = 0; go.textContent = 'Delete your account'; }, 4000);
-            go.textContent = 'Tap again to delete it for good';
+        code1.el.style.display = 'none';
+        body.appendChild(code1.el);
+        var ask = btn('Make my copy'); body.appendChild(ask);
+        var copies = mk('div', 'ow-set__copies'); body.appendChild(copies);
+        var del = mk('div', 'ow-set__deletion'); body.appendChild(del);
+        function draw(d) {
+          copies.innerHTML = '';
+          (d.exports || []).forEach(function (x) {
+            var row = mk('p', 'ow-set__lede');
+            if (x.state === 'ready') {
+              var a = doc.createElement('a'); a.href = x.download; a.setAttribute('download', 'oneway-my-data.zip');
+              a.textContent = 'Download your copy'; row.appendChild(a);
+              row.appendChild(doc.createTextNode(' · until ' + when(x.expires_at)));
+            } else if (x.state === 'making') {
+              row.textContent = 'Your copy is being made. You will be told when it is ready.';
+            } else {
+              row.textContent = x.why || 'This copy could not be made. Ask again.';
+            }
+            copies.appendChild(row);
+          });
+          drawDeletion(d);
+        }
+        function load() {
+          data.get('/api/oneway/me/data-export', { fresh: true }).then(function (r) { if (r.ok) draw(r.data || {}); });
+        }
+        ask.addEventListener('click', function () {
+          if (!pw1.input.value) { say(body, 'Enter your password.', true); return; }
+          ask.disabled = true; say(body, 'Asking…');
+          data.post('/api/oneway/me/data-export', { password: pw1.input.value, code: code1.input.value }).then(function (r) {
+            ask.disabled = false;
+            if (!r.ok) {
+              if (r.body && r.body.needs_2fa) code1.el.style.display = '';
+              say(body, r.error || 'Your copy was not asked for.', true); return;
+            }
+            pw1.input.value = ''; say(body, 'Your copy is being made.');
+            load();
+          });
+        });
+
+        function drawDeletion(d) {
+          del.innerHTML = '';
+          del.appendChild(mk('p', 'ow-set__big', 'Delete your account'));
+          if (d.deletion && d.deletion.purge_at) {
+            del.appendChild(mk('p', 'ow-set__lede', 'Your account will be deleted on ' + when(d.deletion.purge_at)
+              + '. Until then your profile is out of view, and you can keep your account.'));
+            var keep = btn('Keep my account'); del.appendChild(keep);
+            keep.addEventListener('click', function () {
+              keep.disabled = true;
+              data.post('/api/oneway/me/deletion/cancel', {}).then(function (r) {
+                keep.disabled = false;
+                if (!r.ok) { say(body, r.error || 'That did not change.', true); return; }
+                if (OW.toast) OW.toast('Your account stays.', { tone: 'ok' });
+                load();
+              });
+            });
             return;
           }
-          global.clearTimeout(armed); armed = 0;
-          go.disabled = true; go.textContent = 'Deleting…'; say(body, '');
-          data.post('/api/oneway/identity/delete',
-                    { password: pw.input.value, code: code.input.value, confirm: 'delete' })
-            .then(function (r) {
-              if (!r.ok) {
-                go.disabled = false; go.textContent = 'Delete your account';
-                if (r.body && r.body.needs_2fa) code.el.style.display = '';
-                say(body, r.error || 'Your account was not deleted.', true);
-                return;
-              }
-              try {
-                ['ow_session_token', 'ow_tokens', 'ow_session'].forEach(function (k) { global.localStorage.removeItem(k); });
-              } catch (_) {}
-              body.innerHTML = '';
-              body.appendChild(mk('p', 'ow-set__big', 'Your account is deleted.'));
-              global.setTimeout(function () { global.location.href = '/login.html'; }, 1800);
-            });
-        });
+          var days = d.grace_days || 30;
+          del.appendChild(mk('p', 'ow-set__lede',
+            'You have ' + days + ' days to change your mind: every session ends now and your profile leaves view, '
+            + 'and signing in before then lets you keep your account. After that your profile, your posts, your likes '
+            + 'and the people you follow are removed, every site you signed in to with Oneway loses access, and you '
+            + 'leave every Center you belong to. Comments you left in other people\'s conversations stay, shown as '
+            + '"Deleted account". Your email address cannot be used for a new account.'));
+          var pw = field('Your password', 'password', { autocomplete: 'current-password' });
+          del.appendChild(pw.el);
+          var code = field('A code from your authenticator app', 'text',
+            { inputmode: 'numeric', autocomplete: 'one-time-code', maxlength: '12' });
+          code.el.style.display = 'none';     /* .ow-set__f is display:flex, which [hidden] loses to */
+          del.appendChild(code.el);
+          var go = btn('Delete your account', 'ow-set__danger'); del.appendChild(go);
+          var armed = 0;
+          go.addEventListener('click', function () {
+            if (!pw.input.value) { say(body, 'Enter your password.', true); return; }
+            if (!armed) {
+              armed = global.setTimeout(function () { armed = 0; go.textContent = 'Delete your account'; }, 4000);
+              go.textContent = 'Tap again to delete it in ' + days + ' days';
+              return;
+            }
+            global.clearTimeout(armed); armed = 0;
+            go.disabled = true; go.textContent = 'Deleting…'; say(body, '');
+            data.post('/api/oneway/me/deletion', { password: pw.input.value, code: code.input.value, confirm: 'delete' })
+              .then(function (r) {
+                if (!r.ok) {
+                  go.disabled = false; go.textContent = 'Delete your account';
+                  if (r.body && r.body.needs_2fa) code.el.style.display = '';
+                  say(body, r.error || 'Your account was not deleted.', true);
+                  return;
+                }
+                try {
+                  ['ow_session_token', 'ow_tokens', 'ow_session'].forEach(function (k) { global.localStorage.removeItem(k); });
+                } catch (_) {}
+                body.innerHTML = '';
+                body.appendChild(mk('p', 'ow-set__big', 'Your account will be deleted on ' + when((r.data || {}).purge_at) + '.'));
+                body.appendChild(mk('p', 'ow-set__lede', 'Sign in before then to keep it.'));
+                global.setTimeout(function () { global.location.href = '/login.html'; }, 2600);
+              });
+          });
+        }
+        load();
       }
 
       /* TWO-STEP VERIFICATION — an authenticator app, recovery codes shown once */

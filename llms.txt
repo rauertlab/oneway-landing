@@ -8,6 +8,8 @@
 
 Oneway is a social network and a business platform in one: the Oneway App gives every person one profile, a For You feed, messages and a map of the people and places near them, and Oneway OS runs the businesses, communities and places behind them. It is in a closed beta, by invitation, in New York City and Long Island. Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
 
+Oneway Technologies LLC, Oneway's phone: +1 (516) 261-2413.
+
 One standard for the whole ecosystem. The same protections cover every part of Oneway: a person's account, profile and messages in the Oneway App; a community's or a business's Center; the operating side of every Center in Oneway OS, Business OS and Developer OS; every System a Center runs, from a restaurant's floor and a hotel's rooms to a venue, a shop and a casino resort; every website a Center wears; and every integration and app built on the platform.
 
 ## Products

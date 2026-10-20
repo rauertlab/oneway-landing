@@ -472,7 +472,7 @@ html[data-simple="1"] .po-act[data-act="on"],html[data-simple="1"] .ow-popit-btn
   background:transparent;color:rgb(var(--h,var(--ow-h1)));box-shadow:none}
 @media (hover:hover) and (pointer:fine){
   html[data-simple="1"] .po-act:hover:not(:disabled),
-  html[data-simple="1"] .ow-popit-btn--fill:hover:not(:disabled){transform:none;background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);box-shadow:none}
+  html[data-simple="1"] .ow-popit-btn--fill:hover:not(:disabled){transform:none;background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);box-shadow:none}html.ow-old[data-simple="1"] .po-act:hover:not(:disabled),html.ow-old[data-simple="1"] .ow-popit-btn--fill:hover:not(:disabled){background:rgba(255,255,255,0.08)}
 }
 .ow-cv-add{border-radius:var(--ow-btn-r) !important}
 .ow-feedswitch button{border-radius:var(--ow-btn-r)}
@@ -504,7 +504,7 @@ html[data-world="plain"] body{background:var(--ow-ground)}
 /* the Popit faces carry their own translucency, which over a flat ground reads
    thin — so on plain they sit on a little more of their own body */
 html[data-world="plain"] .ow-cv-face,
-html[data-world="plain"] .po-card[data-blended] .po-card__face{background-color:var(--ow-ground);background-color:color-mix(in srgb, var(--ow-ground) 78%, transparent)}
+html[data-world="plain"] .po-card[data-blended] .po-card__face{background-color:var(--ow-ground);background-color:color-mix(in srgb, var(--ow-ground) 78%, transparent)}html.ow-old[data-world="plain"] .ow-cv-face,html.ow-old[data-world="plain"] .po-card[data-blended] .po-card__face{background-color:var(--ow-ground)}
 
 /* 2.1 — the hue field. Always on, every tier, pure CSS. */
 .ow-world__field{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;background-color:var(--ow-ground);background-image:
@@ -1076,7 +1076,10 @@ html[data-theme="light"][data-theme="light"] .po-glance__day{color:#fff}
     radial-gradient(126% 96% at 50% 46%,
       transparent 0%,
       color-mix(in srgb, var(--ow-scrim) 55%, transparent) 44%,
-      color-mix(in srgb, var(--ow-scrim) 116%, transparent) 100%);opacity:0;pointer-events:none;transition:opacity .42s var(--ow-ease)}
+      color-mix(in srgb, var(--ow-scrim) 116%, transparent) 100%);opacity:0;pointer-events:none;transition:opacity .42s var(--ow-ease)}html.ow-old .po-scrim{background:radial-gradient(126% 96% at 50% 46%,
+      transparent 0%,
+      var(--ow-scrim) 44%,
+      var(--ow-scrim) 100%)}
 .po-scrim.is-on{opacity:1;pointer-events:auto}
 /* `color-mix` is recent; without it the wash is the flat token it always was
    rather than nothing at all. */
@@ -1153,7 +1156,8 @@ html[data-fx="safe"] .po-beam{display:none}   /* light costs; the floor keeps it
 
 .po-stage{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:301;display:grid;place-items:center;pointer-events:none;padding:20px 20px
           20px 20px;padding:max(20px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right))
-          max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+          max(20px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}html.ow-old .po-stage{padding:20px 20px
+          20px 20px}
 
 .po-sheet{--po-rest-rot:-1.2deg;position:relative;pointer-events:auto;display:none;width:100vw;width:min(1100px,100vw);height:100vh;height:100dvh;max-height:100vh;max-height:100dvh;overflow:hidden auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;color:var(--ow-ink);text-align:left;border-radius:30px 26px 29px 27px;background:
     radial-gradient(78% 46% at 50% -6%,   rgba(var(--h),.34), transparent 62%),
@@ -1440,7 +1444,7 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
    no separate ground, no inset margin, no horizon, no vignette. The name is set
    ON the one surface the way a Post's name is, and the object's face sits with
    it rather than under it. */
-.po-sheet.is-open .po-sheet__plane{margin:0;height:auto;min-height:0;border-radius:0;background:none;box-shadow:none;padding:26px 26px 4px;padding:max(26px,env(safe-area-inset-top)) 26px 4px}
+.po-sheet.is-open .po-sheet__plane{margin:0;height:auto;min-height:0;border-radius:0;background:none;box-shadow:none;padding:26px 26px 4px;padding:max(26px,env(safe-area-inset-top)) 26px 4px}html.ow-old .po-sheet.is-open .po-sheet__plane{padding:26px 26px 4px}
 .po-sheet.is-open .po-sheet__plane::before,
 .po-sheet.is-open .po-sheet__plane::after{display:none}
 .po-sheet.is-open .po-sheet__id{position:static;left:auto;right:auto;bottom:auto}
@@ -1480,14 +1484,14 @@ textarea.ow-cv-cfg__in{resize:none;min-height:56px;line-height:1.45}
    than as a number — `--ow-cv-sig` is tuned for a count and a title set at 40px
    wraps to three lines in a 6x4. Everything else about the tile is the shared
    material, unchanged, on purpose. */
-.ow-cv-sig--app{font-size:calc(17px * var(--cv-type,1));font-size:max(calc(17px * var(--cv-type,1)),min(4.6cqw,25px));font-size:clamp(calc(17px * var(--cv-type,1)),4.6cqw,25px);line-height:1.1;letter-spacing:-.01em}
+.ow-cv-sig--app{font-size:calc(17px * var(--cv-type,1));font-size:max(calc(17px * var(--cv-type,1)),min(4.6cqw,25px));font-size:clamp(calc(17px * var(--cv-type,1)),4.6cqw,25px);line-height:1.1;letter-spacing:-.01em}html.ow-old .ow-cv-sig--app{font-size:calc(17px * var(--cv-type,1))}
 
 .po-sheet__stage{position:relative;display:flex;flex-direction:column;
   height:100%;border-radius:inherit;overflow:hidden}
 /* the stage's bar is the same masthead one level in — same ruling, same fix:
    it is not a bar, it is the name set on the surface, and the app's floor
    begins under it rather than inside a chrome band */
-.po-stage__bar{flex:none;display:flex;align-items:baseline;gap:10px;padding:26px 26px 14px;padding:max(26px,env(safe-area-inset-top)) 26px 14px;position:relative;z-index:2;background:none;box-shadow:none}html.ow-nogap .po-stage__bar>*+*{margin-left:10px}
+.po-stage__bar{flex:none;display:flex;align-items:baseline;gap:10px;padding:26px 26px 14px;padding:max(26px,env(safe-area-inset-top)) 26px 14px;position:relative;z-index:2;background:none;box-shadow:none}html.ow-old .po-stage__bar{padding:26px 26px 14px}html.ow-nogap .po-stage__bar>*+*{margin-left:10px}
 .po-stage__kind{font-family:var(--ow-font-atmos);font-weight:600;font-size:9.5px;
   letter-spacing:.01em;color:rgba(var(--h),.95)}
 .po-stage__name{font-family:var(--ow-font-display);font-weight:650;font-size:16px;
@@ -2409,7 +2413,7 @@ html.ow-old .po-links__more:focus{outline:2px solid rgba(var(--h),.9);outline-of
    the identity hue and is always defined, so the chain degrades to the person's
    own colour instead of to nothing. */
 .po-act,.ow-popit-btn{font:inherit;font-family:var(--ow-font);font-weight:560;font-size:12.5px;color:var(--ow-ink);cursor:pointer;border:0;padding:8px 14px;border-radius:var(--ow-btn-r,12px 10px 13px 11px);background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,0.3);box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 30%,transparent);transition:transform .16s var(--ow-spring), box-shadow .16s var(--ow-ease),
-             background .16s var(--ow-ease), opacity .16s}
+             background .16s var(--ow-ease), opacity .16s}html.ow-old .po-act,html.ow-old .ow-popit-btn{box-shadow:0 0 0 1px rgba(255,255,255,0.3)}
 .po-act--wide{width:100%;text-align:left;display:flex;flex-direction:column;gap:1px}html.ow-nogap .po-act--wide>*+*{margin-top:1px}
 /* ── THE TAIL THAT TELLS TWO DESTINATIONS APART ────────────────────────────
    Shown ONLY when a chip's name is not unique in its row (see `chip` in
@@ -3203,7 +3207,10 @@ html.ow-old .ow-thread:focus{outline:2px solid rgba(var(--ow-h1),.9);outline-off
     linear-gradient(150deg,
       color-mix(in oklab,rgb(var(--ch1,var(--ow-h1))) 84%,#14131f),
       color-mix(in oklab,rgb(var(--ch2,var(--ow-h2))) 44%,#14131f));box-shadow:inset 0 1px 0 rgba(255,255,255,.45),
-             0 0 0 2px rgba(var(--ch1,var(--ow-h1)),.55)}
+             0 0 0 2px rgba(var(--ch1,var(--ow-h1)),.55)}html.ow-old .ow-thread__av{background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,
+      rgb(var(--ch1,var(--ow-h1))),
+      #14131f)}
 .ow-thread__av img{width:100%;height:100%;object-fit:cover}
 /* a Center thread is a tile, a person is a round — the same convention as everywhere */
 .ow-thread__av[data-kind="center"]{border-radius:14px 11px 15px 12px}
@@ -3296,7 +3303,9 @@ html.ow-old .ow-thread:focus{outline:2px solid rgba(var(--ow-h1),.9);outline-off
     rgb(var(--ow-h1)),
     rgb(var(--ow-h2)));background:linear-gradient(160deg,
     color-mix(in oklab,rgb(var(--ow-h1)) 82%,#14131f),
-    color-mix(in oklab,rgb(var(--ow-h2)) 50%,#14131f));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 14px -6px rgba(var(--ow-h1),.7)}
+    color-mix(in oklab,rgb(var(--ow-h2)) 50%,#14131f));box-shadow:inset 0 1px 0 rgba(255,255,255,.4),0 4px 14px -6px rgba(var(--ow-h1),.7)}html.ow-old .ow-msg[data-mine]{background:linear-gradient(160deg,
+    rgb(var(--ow-h1)),
+    rgb(var(--ow-h2)))}
 /* ── THE FACE BESIDE AN INCOMING BUBBLE (founder/409) ────────────────────
    A row: the person's face, then their bubble. The face is drawn on the LAST
    bubble of a run and reserved (invisible) on the others, so the column of
@@ -3334,7 +3343,7 @@ html.ow-old .ow-msg-face:focus{outline:2px solid rgba(var(--h),.95);outline-offs
   letter-spacing:.01em;color:var(--ow-ink-3);margin:12px 0 4px}
 
 /* ── the composer ── */
-.ow-composer{position:sticky;bottom:0;display:flex;gap:8px;align-items:flex-end;padding:10px 0 10px;padding:10px 0 max(10px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--ow-chrome) 62%,transparent)}html.ow-nogap .ow-composer>*+*{margin-left:8px}
+.ow-composer{position:sticky;bottom:0;display:flex;gap:8px;align-items:flex-end;padding:10px 0 10px;padding:10px 0 max(10px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--ow-chrome) 62%,transparent)}html.ow-old .ow-composer{padding:10px 0 10px}html.ow-nogap .ow-composer>*+*{margin-left:8px}
 .ow-composer textarea{flex:1 1 auto;min-height:42px;max-height:120px;resize:none;
   font:inherit;font-size:14.5px;line-height:1.4;color:var(--ow-ink);padding:11px 14px;
   border:0;border-radius:18px 15px 17px 16px;
@@ -3548,7 +3557,7 @@ html.ow-old .ow-msg__act:focus{outline:2px solid rgba(var(--ow-h1),.9);outline-o
 .ow-typing{font-size:12px;color:var(--ow-ink-3);padding:2px 4px 6px;min-height:0}
 .ow-typing[hidden]{display:none}
 .ow-thread__foot{display:flex;flex-direction:column}
-.ow-composer__no{font-size:12.5px;line-height:1.4;color:var(--ow-ink-3);padding:10px 0 10px;padding:10px 0 max(10px,env(safe-area-inset-bottom))}
+.ow-composer__no{font-size:12.5px;line-height:1.4;color:var(--ow-ink-3);padding:10px 0 10px;padding:10px 0 max(10px,env(safe-area-inset-bottom))}html.ow-old .ow-composer__no{padding:10px 0 10px}
 .ow-reply-aim{display:flex;align-items:center;gap:8px;padding:6px 9px;margin-bottom:6px;
   border-radius:11px 9px 12px 10px;background:rgba(var(--ow-h1),.1);
   box-shadow:inset 2px 0 0 rgba(var(--ow-h1),.85)}html.ow-nogap .ow-reply-aim>*+*{margin-left:8px}
@@ -3699,7 +3708,7 @@ a.po-act[data-door="os"]{gap:6px}
    picture is theirs, the light under it is their own hue, and with neither it is the empty banner's own light. */
 .ow-prof__hero{position:relative;isolation:isolate;padding:48px 0 18px;padding:max(48px,min(7vw,64px)) 0 18px;padding:clamp(48px,7vw,64px) 0 18px;--ow-ink:#fff;--ow-ink-2:rgba(255,255,255,.88);--ow-ink-3:rgba(255,255,255,.68)}
 .ow-prof__hero>.ow-banner{position:absolute;top:0;right:0;bottom:0;left:0;inset:0;height:auto;z-index:-1;border-radius:0;box-shadow:none;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 82%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 82%,transparent 100%)}
-.ow-prof__hero>.ow-banner{left:50%;right:auto;top:calc(-1 * 54px);top:calc(-1 * max(54px,env(safe-area-inset-top) + 44px));width:100vw;transform:translateX(-50%)}
+.ow-prof__hero>.ow-banner{left:50%;right:auto;top:calc(-1 * 54px);top:calc(-1 * max(54px,env(safe-area-inset-top) + 44px));width:100vw;transform:translateX(-50%)}html.ow-old .ow-prof__hero>.ow-banner{top:calc(-1 * 54px)}
 .ow-prof[data-banner-style="framed"] .ow-prof__hero>.ow-banner{top:0;bottom:auto;height:var(--ow-frame-height);width:calc(100vw - 72px);width:min(calc(100vw - 72px),920px);border:1px solid rgba(255,255,255,.72);border-radius:18px;box-shadow:none;-webkit-mask-image:none;mask-image:none}
 .ow-prof[data-banner-style="framed"] .ow-prof__hero{--ow-frame-height:clamp(70px,calc(var(--ow-banner-height,144px) * .6),116px);
   padding-top:calc(var(--ow-frame-height) - 10px);padding-bottom:12px}html.ow-old .ow-prof[data-banner-style="framed"] .ow-prof__hero{--ow-frame-height:70px}
@@ -4557,7 +4566,10 @@ html.ow-old .ow-lb__find:focus{outline:2px solid rgba(var(--ow-h1),.9);outline-o
                var(--ow-ground));background:radial-gradient(120% 80% at 50% -12%,rgba(var(--h),.34),transparent 64%),
              linear-gradient(180deg,
                color-mix(in srgb, var(--ow-ground) 88%, rgb(var(--h))),
-               var(--ow-ground));box-shadow:inset 0 2px 1px var(--ow-lift),0 22px 60px -28px rgba(var(--h),.75);transition:transform .14s ease}html.ow-nogap .ow-compose__lensdoor>*+*{margin-top:9px}
+               var(--ow-ground));box-shadow:inset 0 2px 1px var(--ow-lift),0 22px 60px -28px rgba(var(--h),.75);transition:transform .14s ease}html.ow-old .ow-compose__lensdoor{background:radial-gradient(120% 80% at 50% -12%,rgba(var(--h),.34),transparent 64%),
+             linear-gradient(180deg,
+               var(--ow-ground),
+               var(--ow-ground))}html.ow-nogap .ow-compose__lensdoor>*+*{margin-top:9px}
 .ow-compose__lensdoor:active{transform:scale(.988)}
 /* the shutter ring — the one shape everyone already reads as "camera" */
 .ow-compose__ring{width:66px;height:66px;border-radius:50%;
@@ -5008,7 +5020,7 @@ html[data-ow-view="immersive"]{--ow-dock:calc(60px + env(safe-area-inset-bottom)
 @media (max-width:899px){
   /* the phone pill is sticky in the page's flow; over a fixed scroller it has
      to be fixed itself, at the same offset, centred the way it was */
-  html[data-ow-view="immersive"] .ow-nav{position:fixed;left:50%;right:auto;transform:translateX(-50%);bottom:10px;bottom:max(10px,calc(env(safe-area-inset-bottom) + 6px))}
+  html[data-ow-view="immersive"] .ow-nav{position:fixed;left:50%;right:auto;transform:translateX(-50%);bottom:10px;bottom:max(10px,calc(env(safe-area-inset-bottom) + 6px))}html.ow-old[data-ow-view="immersive"] .ow-nav{bottom:10px}
 }
 @media (min-width:900px){html[data-ow-view="immersive"]{--ow-dock:0px}}
 html[data-ow-view="immersive"] .po-acts--rail{bottom:calc(11px + var(--ow-dock))}
@@ -5918,7 +5930,7 @@ html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over){display:none}
    person to the exact position they pressed from, not to the top of the feed.
    It is `OW.live.post` — the same surface a post opens into from anywhere
    else, given a different host. */
-.ow-fover{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:140;overflow-y:auto;overscroll-behavior:contain;background:var(--ow-ground, #000);background:color-mix(in srgb, var(--ow-ground, #000) 97%, transparent);padding:calc(env(safe-area-inset-top) + 56px) 0 calc(env(safe-area-inset-bottom) + 24px);-webkit-overflow-scrolling:touch;animation:ow-fover-in .22s var(--ow-ease) both}
+.ow-fover{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:140;overflow-y:auto;overscroll-behavior:contain;background:var(--ow-ground, #000);background:color-mix(in srgb, var(--ow-ground, #000) 97%, transparent);padding:calc(env(safe-area-inset-top) + 56px) 0 calc(env(safe-area-inset-bottom) + 24px);-webkit-overflow-scrolling:touch;animation:ow-fover-in .22s var(--ow-ease) both}html.ow-old .ow-fover{background:var(--ow-ground, #000)}
 @keyframes ow-fover-in{from{opacity:0;transform:translateY(14px)}
                        to{opacity:1;transform:none}}
 .ow-fover__in{max-width:620px;margin:0 auto;padding:0 18px}
@@ -6005,10 +6017,10 @@ html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over){display:none}
 .ow-feedrow .ow-reach__mk svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
 .ow-feedpicked,.ow-feedfound{display:flex;flex-wrap:wrap;gap:8px}html.ow-nogap .ow-feedpicked>*{margin-right:8px}html.ow-nogap .ow-feedpicked>*{margin-bottom:8px}html.ow-nogap .ow-feedfound>*{margin-right:8px}html.ow-nogap .ow-feedfound>*{margin-bottom:8px}
 .ow-feedpicked:empty,.ow-feedfound:empty{display:none}
-.ow-feedpick{appearance:none;-webkit-appearance:none;border:0;cursor:pointer;font:600 13px/1 var(--ow-font);padding:9px 12px;border-radius:13px 11px 14px 12px;color:var(--ow-ink);background:rgba(255,255,255,0.07);background:color-mix(in srgb, var(--ow-ink) 7%, transparent)}
+.ow-feedpick{appearance:none;-webkit-appearance:none;border:0;cursor:pointer;font:600 13px/1 var(--ow-font);padding:9px 12px;border-radius:13px 11px 14px 12px;color:var(--ow-ink);background:rgba(255,255,255,0.07);background:color-mix(in srgb, var(--ow-ink) 7%, transparent)}html.ow-old .ow-feedpick{background:rgba(255,255,255,0.07)}
 .ow-feedpick--add{color:var(--ow-ink-2)}
 /* kinds of Center on the feed maker: words in a hairline; the held ones read in the ink (S20) */
-.ow-feedkind{appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;font:600 13px/1 var(--ow-font);padding:9px 12px;border-radius:13px 11px 14px 12px;color:var(--ow-ink-2);border:1px solid rgba(255,255,255,0.22);border:1px solid color-mix(in srgb, var(--ow-ink) 22%, transparent)}
+.ow-feedkind{appearance:none;-webkit-appearance:none;background:transparent;cursor:pointer;font:600 13px/1 var(--ow-font);padding:9px 12px;border-radius:13px 11px 14px 12px;color:var(--ow-ink-2);border:1px solid rgba(255,255,255,0.22);border:1px solid color-mix(in srgb, var(--ow-ink) 22%, transparent)}html.ow-old .ow-feedkind{border:1px solid rgba(255,255,255,0.22)}
 .ow-feedkind[aria-pressed="true"]{color:var(--ow-ink);border-color:var(--ow-ink)}
 .ow-feedhead{display:flex;flex-direction:column;gap:6px;margin:4px 0 16px}html.ow-nogap .ow-feedhead>*+*{margin-top:6px}
 .ow-feedhead__n{margin:0;font-family:var(--ow-font-display);font-weight:700;font-size:22px;color:var(--ow-ink)}
@@ -6051,7 +6063,7 @@ a.ow-popit-btn{display:inline-block;text-decoration:none}   /* its ink is the bu
 .ow-upcoming__h{font-size:12.5px;font-weight:650;letter-spacing:.02em;color:var(--ow-ink-3)}
 .ow-upcoming__row{appearance:none;-webkit-appearance:none;border:0;background:none;cursor:pointer;text-align:left;
   display:flex;align-items:center;gap:12px;padding:6px 0;font-family:var(--ow-font);color:var(--ow-ink)}html.ow-nogap .ow-upcoming__row>*+*{margin-left:12px}
-.ow-upcoming__face{flex:none;width:38px;height:38px;border-radius:11px 10px 12px 11px;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,0.07);background:color-mix(in srgb, var(--ow-ink) 7%, transparent)}
+.ow-upcoming__face{flex:none;width:38px;height:38px;border-radius:11px 10px 12px 11px;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,0.07);background:color-mix(in srgb, var(--ow-ink) 7%, transparent)}html.ow-old .ow-upcoming__face{background:rgba(255,255,255,0.07)}
 .ow-upcoming__face img{width:100%;height:100%;object-fit:cover;display:block}
 .ow-upcoming__face svg,.ow-now__ic svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .ow-upcoming__w{flex:1 1 auto;min-width:0;display:flex;flex-direction:column;gap:2px}html.ow-nogap .ow-upcoming__w>*+*{margin-top:2px}
@@ -6071,7 +6083,7 @@ a.ow-popit-btn{display:inline-block;text-decoration:none}   /* its ink is the bu
   -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);animation:ow-now-in .32s var(--ow-settle, ease) both}html.ow-nogap .ow-now>*+*{margin-left:10px}
 @keyframes ow-now-in{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.ow-now{animation:none}}
-.ow-now__ic{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent)}
+.ow-now__ic{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent)}html.ow-old .ow-now__ic{background:rgba(255,255,255,0.08)}
 .ow-now__w{flex:1 1 auto;min-width:0;appearance:none;-webkit-appearance:none;border:0;background:none;padding:0;
   text-align:left;cursor:pointer;font-family:var(--ow-font);color:inherit;display:flex;flex-direction:column;gap:2px}html.ow-nogap .ow-now__w>*+*{margin-top:2px}
 .ow-now__w b{font-size:14.5px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -6801,7 +6813,7 @@ html[data-motion="reduced"] .ow-globe__halo *{opacity:.24 !important}
 .po-act--primary{padding:11px 20px;font-size:13.5px;
   background:transparent;
   box-shadow:0 0 0 1.5px rgba(var(--h,var(--ow-h1)),.8), 0 6px 22px -12px rgba(var(--h,var(--ow-h1)),.6)}
-.po-act--ghost{background:none;color:var(--ow-ink-2);box-shadow:0 0 0 1px rgba(255,255,255,0.16);box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 16%,transparent)}
+.po-act--ghost{background:none;color:var(--ow-ink-2);box-shadow:0 0 0 1px rgba(255,255,255,0.16);box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 16%,transparent)}html.ow-old .po-act--ghost{box-shadow:0 0 0 1px rgba(255,255,255,0.16)}
 .ow-door__acts .po-act{padding:11px 20px;font-size:13.5px}
 .ow-door__logo{height:26px;width:auto;opacity:.92;
   filter:drop-shadow(0 2px 18px rgba(var(--ow-h1),.28))}
@@ -7047,7 +7059,7 @@ html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after,
 /* the focused field deepens its OWN ground — `rgba(0,0,0,.36)` here was a dark
    grey block under dark ink in the light room (measured on the Lightbulb's
    "Say something", 2026-09-21) */
-.ow-fld input:focus,.ow-fld select:focus,.ow-fld textarea:focus{background:var(--ow-field);background:color-mix(in srgb,var(--ow-field) 86%,rgb(var(--ow-h1)) 14%);border-color:rgba(var(--ow-h1),.55);box-shadow:0 0 0 3px rgba(var(--ow-h1),.16)}
+.ow-fld input:focus,.ow-fld select:focus,.ow-fld textarea:focus{background:var(--ow-field);background:color-mix(in srgb,var(--ow-field) 86%,rgb(var(--ow-h1)) 14%);border-color:rgba(var(--ow-h1),.55);box-shadow:0 0 0 3px rgba(var(--ow-h1),.16)}html.ow-old .ow-fld input:focus,html.ow-old .ow-fld select:focus,html.ow-old .ow-fld textarea:focus{background:var(--ow-field)}
 .ow-fld input:-webkit-autofill{-webkit-text-fill-color:#fff;
   -webkit-box-shadow:0 0 0 60px rgb(19,18,28) inset;caret-color:#fff}
 
@@ -9370,7 +9382,7 @@ html[data-theme="dark"] .ow-cv-face.ow-cv-face--posts{
    those: content sits ON the ground, separated by a hairline, and the media
    runs edge to edge. So each of those four is removed rather than restyled. */
 
-html[data-simple="1"] .po-river{gap:0;border:1px solid rgba(255,255,255,0.1);border:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:24px;box-sizing:border-box;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 97%,rgb(var(--ow-h1)) 3%);overflow:hidden}
+html[data-simple="1"] .po-river{gap:0;border:1px solid rgba(255,255,255,0.1);border:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:24px;box-sizing:border-box;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 97%,rgb(var(--ow-h1)) 3%);overflow:hidden}html.ow-old[data-simple="1"] .po-river{border:1px solid rgba(255,255,255,0.1);background:var(--ow-ground)}
 html[data-simple="1"] .po-river>.ow-hlband{padding:16px 16px 0;margin-bottom:8px;min-width:0}
 
 /* One feed surface with quiet row boundaries, as in the founder's Threads reference. */
@@ -9378,7 +9390,7 @@ html[data-simple="1"] .po-river > .po-card,
 html[data-simple="1"] .ow-fpos > .po-card{
   border-radius:0;box-shadow:none;background:none;border:0;
   padding:0;margin:0}
-html[data-simple="1"] .po-river>.po-card{display:grid;grid-template-columns:40px minmax(0,1fr);gap:0 12px;padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08);border-top:1px solid color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+html[data-simple="1"] .po-river>.po-card{display:grid;grid-template-columns:40px minmax(0,1fr);gap:0 12px;padding:16px 24px;border-top:1px solid rgba(255,255,255,0.08);border-top:1px solid color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old[data-simple="1"] .po-river>.po-card{border-top:1px solid rgba(255,255,255,0.08)}
 html[data-simple="1"] .po-river>.po-card:first-child{border-top:0}
 html[data-simple="1"] .po-river>.po-card>span{grid-column:2;min-width:0}
 html[data-simple="1"] .po-river>.po-card>.po-card__who{grid-column:1/-1;grid-row:1;
@@ -9400,7 +9412,7 @@ html[data-simple="1"] .po-river>.po-card .po-card__media{margin-top:10px}
 /* An unpublished empty gallery contributes its text, not a photo-sized placeholder. */
 .po-river .po-card__media:has(.po-card__cover[data-empty="no picture in it yet"]){display:none}
 html[data-simple="1"] .ow-fpos > .po-card,
-html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card{border:1px solid rgba(255,255,255,0.12);border:1px solid color-mix(in srgb,var(--ow-ink) 12%,transparent);border-radius:8px;background:none;box-shadow:none}
+html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card{border:1px solid rgba(255,255,255,0.12);border:1px solid color-mix(in srgb,var(--ow-ink) 12%,transparent);border-radius:8px;background:none;box-shadow:none}html.ow-old[data-simple="1"] .ow-fpos > .po-card,html.ow-old[data-simple="1"] .ow-fpos .ow-fgroup > .po-card{border:1px solid rgba(255,255,255,0.12)}
 html[data-simple="1"] .ow-fpos .ow-fgroup > .po-card{
   transform:none;width:100%;max-width:100%;margin:0}
 
@@ -10186,13 +10198,13 @@ html.ow-old .ow-post__nmb:focus{outline:2px solid rgba(var(--ow-h1),.7);outline-
   justify-content:flex-start}
 
 /* the number is the object; it gets the room and the weight */
-.ow-cv-own__n{font-family:var(--ow-font-display);font-weight:600;font-size:22px;font-size:max(22px,min(calc(52cqw / var(--po-digits,3)),74px));font-size:clamp(22px,calc(52cqw / var(--po-digits,3)),74px);line-height:.96;letter-spacing:-.01em;color:var(--ow-ink);margin-top:auto;font-variant-numeric:tabular-nums}
+.ow-cv-own__n{font-family:var(--ow-font-display);font-weight:600;font-size:22px;font-size:max(22px,min(calc(52cqw / var(--po-digits,3)),74px));font-size:clamp(22px,calc(52cqw / var(--po-digits,3)),74px);line-height:.96;letter-spacing:-.01em;color:var(--ow-ink);margin-top:auto;font-variant-numeric:tabular-nums}html.ow-old .ow-cv-own__n{font-size:22px}
 
 /* the unit rides with the number rather than under it — "3 DAYS" is one fact */
-.ow-cv-own__u{font-size:calc(9px * var(--cv-type,1));font-size:max(calc(9px * var(--cv-type,1)),min(3.2cqw,12px));font-size:clamp(calc(9px * var(--cv-type,1)),3.2cqw,12px);font-weight:600;letter-spacing:.01em;color:var(--ow-h1-ink);margin-top:3px}
+.ow-cv-own__u{font-size:calc(9px * var(--cv-type,1));font-size:max(calc(9px * var(--cv-type,1)),min(3.2cqw,12px));font-size:clamp(calc(9px * var(--cv-type,1)),3.2cqw,12px);font-weight:600;letter-spacing:.01em;color:var(--ow-h1-ink);margin-top:3px}html.ow-old .ow-cv-own__u{font-size:calc(9px * var(--cv-type,1))}
 
 /* the person's own word for what they counted */
-.ow-cv-own__cap{font-size:calc(11px * var(--cv-type,1));font-size:max(calc(11px * var(--cv-type,1)),min(3.4cqw,14px));font-size:clamp(calc(11px * var(--cv-type,1)),3.4cqw,14px);line-height:1.3;color:var(--ow-ink-2);margin-top:5px;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:normal;word-break:normal}
+.ow-cv-own__cap{font-size:calc(11px * var(--cv-type,1));font-size:max(calc(11px * var(--cv-type,1)),min(3.4cqw,14px));font-size:clamp(calc(11px * var(--cv-type,1)),3.4cqw,14px);line-height:1.3;color:var(--ow-ink-2);margin-top:5px;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:normal;word-break:normal}html.ow-old .ow-cv-own__cap{font-size:calc(11px * var(--cv-type,1))}
 
 /* ── COLOURS: THE CONTENT IS THE LIGHT ─────────────────────────────────────
    Not a swatch of a colour picked from a palette — the person's ACTUAL light,
@@ -10239,7 +10251,7 @@ html.ow-old .ow-post__nmb:focus{outline:2px solid rgba(var(--ow-h1),.7);outline-
 @container (max-height:84px){.ow-cv-rhythm__l{display:none}}
 
 /* a sentence is not a number: it reads at reading weight, filling the tile */
-.ow-cv-own__say{font-size:calc(13px * var(--cv-type,1));font-size:max(calc(13px * var(--cv-type,1)),min(4.6cqw,20px));font-size:clamp(calc(13px * var(--cv-type,1)),4.6cqw,20px);line-height:1.32;font-weight:500;color:var(--ow-ink);margin-top:auto;letter-spacing:-.01em;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:normal;word-break:normal}
+.ow-cv-own__say{font-size:calc(13px * var(--cv-type,1));font-size:max(calc(13px * var(--cv-type,1)),min(4.6cqw,20px));font-size:clamp(calc(13px * var(--cv-type,1)),4.6cqw,20px);line-height:1.32;font-weight:500;color:var(--ow-ink);margin-top:auto;letter-spacing:-.01em;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:normal;word-break:normal}html.ow-old .ow-cv-own__say{font-size:calc(13px * var(--cv-type,1))}
 
 /* ── LINKS: A SHELF OF PLACES ──────────────────────────────────────────────
    Names lead, hosts follow quietly. No new chrome — the row is the same seam
@@ -10270,8 +10282,8 @@ html.ow-old .ow-post__nmb:focus{outline:2px solid rgba(var(--ow-h1),.7);outline-
 .ow-cv-own__linkmore{display:block;margin-top:4px;font-family:var(--ow-font-atmos);
   font-weight:600;font-size:12px;letter-spacing:.01em;
   color:var(--ow-h1-ink)}
-.ow-cv-own__linkn{font-size:calc(11px * var(--cv-type,1));font-size:max(calc(11px * var(--cv-type,1)),min(3.4cqw,14px));font-size:clamp(calc(11px * var(--cv-type,1)),3.4cqw,14px);font-weight:560;color:var(--ow-ink);white-space:normal;overflow:visible;text-overflow:clip}
-.ow-cv-own__linkh{font-size:calc(9px * var(--cv-type,1));font-size:max(calc(9px * var(--cv-type,1)),min(2.7cqw,11px));font-size:clamp(calc(9px * var(--cv-type,1)),2.7cqw,11px);color:var(--ow-ink-3);white-space:normal;overflow:visible;text-overflow:clip}
+.ow-cv-own__linkn{font-size:calc(11px * var(--cv-type,1));font-size:max(calc(11px * var(--cv-type,1)),min(3.4cqw,14px));font-size:clamp(calc(11px * var(--cv-type,1)),3.4cqw,14px);font-weight:560;color:var(--ow-ink);white-space:normal;overflow:visible;text-overflow:clip}html.ow-old .ow-cv-own__linkn{font-size:calc(11px * var(--cv-type,1))}
+.ow-cv-own__linkh{font-size:calc(9px * var(--cv-type,1));font-size:max(calc(9px * var(--cv-type,1)),min(2.7cqw,11px));font-size:clamp(calc(9px * var(--cv-type,1)),2.7cqw,11px);color:var(--ow-ink-3);white-space:normal;overflow:visible;text-overflow:clip}html.ow-old .ow-cv-own__linkh{font-size:calc(9px * var(--cv-type,1))}
 /* the host is the first thing to go when the shelf is narrow: the name is the
    destination, the host is only reassurance about where it leads */
 @container (max-width:132px){.ow-cv-own__linkh{display:none}}
@@ -10321,7 +10333,7 @@ html:not([data-simple="1"]) .po-river>.po-card{margin:0}
 html:not([data-simple="1"]) .po-river{gap:8px}
 .po-river .ow-hlband{padding:18px 24px;margin:0}
 .ow-hlband__h{font:600 15px/1.4 var(--ow-font);letter-spacing:0;margin-bottom:14px}
-.ow-ocard.ow-ocard--simple{position:relative;isolation:isolate;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;width:218px;min-height:78px;padding:12px;border-radius:8px;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 90%,rgb(var(--h,var(--ow-h1))) 10%);box-shadow:inset 0 0 0 1px rgba(var(--h,var(--ow-h1)),.16);border:0;text-align:left;cursor:pointer;font-family:var(--ow-font);transition:background .15s ease,box-shadow .15s ease}html.ow-nogap .ow-ocard.ow-ocard--simple>*+*{margin-left:10px}
+.ow-ocard.ow-ocard--simple{position:relative;isolation:isolate;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;width:218px;min-height:78px;padding:12px;border-radius:8px;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 90%,rgb(var(--h,var(--ow-h1))) 10%);box-shadow:inset 0 0 0 1px rgba(var(--h,var(--ow-h1)),.16);border:0;text-align:left;cursor:pointer;font-family:var(--ow-font);transition:background .15s ease,box-shadow .15s ease}html.ow-old .ow-ocard.ow-ocard--simple{background:var(--ow-ground)}html.ow-nogap .ow-ocard.ow-ocard--simple>*+*{margin-left:10px}
 .ow-ocard--simple .ow-ocard__face{display:grid;place-items:center;flex:none;width:48px;height:48px;border-radius:50%;box-shadow:none;
   --h:inherit;--h2:inherit;background:rgba(var(--h,var(--ow-h1)),.16);color:var(--ow-ink)}
 .po-card.ow-ocard--simple::before,.po-card.ow-ocard--simple::after{display:none}
@@ -10339,7 +10351,7 @@ html[data-theme="light"]:not([data-simple="1"]) .po-river .po-card>.po-card__fac
 .ow-ocard--simple .ow-ocard__id{flex:none;width:100%;min-width:0}
 .ow-ocard--simple .ow-ocard__name{font:600 14px/1.35 var(--ow-font);letter-spacing:0;white-space:normal;overflow-wrap:anywhere}
 .ow-ocard--simple .ow-ocard__sub{font:400 12px/1.4 var(--ow-font);opacity:1;color:var(--ow-ink-2);margin-top:3px}
-.ow-ocard.ow-ocard--simple:hover{background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 82%,rgb(var(--h,var(--ow-h1))) 18%);box-shadow:inset 0 0 0 1px rgba(var(--h,var(--ow-h1)),.45),0 0 20px -5px rgba(var(--h,var(--ow-h1)),.68)}
+.ow-ocard.ow-ocard--simple:hover{background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 82%,rgb(var(--h,var(--ow-h1))) 18%);box-shadow:inset 0 0 0 1px rgba(var(--h,var(--ow-h1)),.45),0 0 20px -5px rgba(var(--h,var(--ow-h1)),.68)}html.ow-old .ow-ocard.ow-ocard--simple:hover{background:var(--ow-ground)}
 @media(max-width:480px){.po-river .ow-hlband{padding:16px 12px}}
 
 /* ══ A CLUSTER — a city as one count when the read is wide ══════════════════
@@ -10622,7 +10634,7 @@ html.ow-old .ow-linkbar__i:focus{outline:2px solid rgba(var(--ow-h1),.9);outline
 .ow-linkbar--list .ow-linkbar__i{width:auto;height:auto;justify-content:flex-start;gap:14px;
   padding:10px 8px;border-radius:12px;opacity:1}
 .ow-linkbar--list .ow-linkbar__i svg{width:22px;height:22px}
-.ow-linkbar--list .ow-linkbar__i:hover{transform:none;background:var(--ow-tile-base);background:color-mix(in srgb,var(--ow-tile-base) 60%,transparent)}
+.ow-linkbar--list .ow-linkbar__i:hover{transform:none;background:var(--ow-tile-base);background:color-mix(in srgb,var(--ow-tile-base) 60%,transparent)}html.ow-old .ow-linkbar--list .ow-linkbar__i:hover{background:var(--ow-tile-base)}
 .ow-linkbar__w{display:flex;flex-direction:column;gap:1px;min-width:0;text-align:left;padding:0}html.ow-nogap .ow-linkbar__w>*+*{margin-top:1px}
 .ow-linkbar__w b{font-weight:560;font-size:15px;letter-spacing:-.01em;color:var(--ow-ink);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -10732,7 +10744,7 @@ video.ow-viewer__media{width:100%;max-height:100%}
 .ow-toast__dismiss{position:relative;z-index:1;pointer-events:auto;appearance:none;cursor:pointer;
   width:32px;height:32px;margin:-4px -8px -4px 0;padding:0;border:0;background:none;color:var(--ow-ink-2);
   font:400 24px var(--ow-font);border-radius:50%}
-.ow-toast__dismiss:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+.ow-toast__dismiss:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-toast__dismiss:hover{background:rgba(255,255,255,0.08)}
 .ow-toast__a{flex:none;pointer-events:auto;cursor:pointer;
   position:relative;z-index:1;align-self:flex-start;appearance:none;-webkit-appearance:none;
   border:0;border-bottom:1px solid currentColor;padding:6px 0;border-radius:0;
@@ -10764,7 +10776,7 @@ video.ow-viewer__media{width:100%;max-height:100%}
    textarea, so the padding is a floor rather than an exact figure — a floor
    that is too small hides a message, a floor that is slightly large costs a
    few pixels of air. */
-html[data-ow-thread] .ow-composer{position:fixed;left:0;right:0;bottom:0;z-index:120;padding:10px 14px 10px;padding:10px max(14px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--ow-chrome) 78%,transparent)}
+html[data-ow-thread] .ow-composer{position:fixed;left:0;right:0;bottom:0;z-index:120;padding:10px 14px 10px;padding:10px max(14px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--ow-chrome) 78%,transparent)}html.ow-old[data-ow-thread] .ow-composer{padding:10px 14px 10px}
 html[data-ow-thread] .ow-composer > *{max-width:640px}
 html[data-ow-thread] .ow-composer{justify-content:center}
 html[data-ow-thread] .ow-nav{display:none}
@@ -10899,6 +10911,13 @@ html[data-ow-lens] .ow-compose__shutter{flex:none;width:70px;height:70px;border-
   border-radius:999px;text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 12px rgba(0,0,0,.5)}
 .ow-compose__mode[aria-pressed="true"]{color:#fff;background:rgba(255,255,255,.18);
   -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+/* THE STRIP STANDS ON THE CAMERA'S OWN DARK GROUND IN EVERY THEME (PLAN R22, the founder 2026-10-20: "the app i think needs to
+   be perfect"; walked: the one button language's QUIET colours, var(--ow-ink), drew Camera, Write and More near-black on the
+   dark lens in a light theme, so Write, the way to a text post, could not be seen): white words, the chosen one on white */
+html body .ow-compose__modes.ow-compose__modes .ow-compose__mode{color:rgba(255,255,255,.92);
+  text-shadow:0 1px 2px rgba(0,0,0,.6),0 0 12px rgba(0,0,0,.5)}
+html body .ow-compose__modes.ow-compose__modes .ow-compose__mode.ow-compose__mode[aria-pressed="true"]{color:#14131f;background:#fff;
+  text-shadow:none}
 @media (min-width:900px){
   .ow-compose__modes{bottom:calc(env(safe-area-inset-bottom) + 22px)}
   html[data-ow-lens] .ow-compose__bar{bottom:calc(env(safe-area-inset-bottom) + 62px)}
@@ -10983,7 +11002,7 @@ html[data-ow-lens] .ow-compose__write{display:flex;align-items:center;justify-co
    plus the post itself — so it never creeps to 90% and waits. A track and a
    fill, the hue, no percentage printed: the number would invite a person to
    read precision into something that is deliberately coarse. */
-.ow-compose__prog{height:4px;border-radius:3px;overflow:hidden;margin:8px 0 2px;background:rgba(255,255,255,0.12);background:color-mix(in srgb, var(--ow-ink) 12%, transparent)}
+.ow-compose__prog{height:4px;border-radius:3px;overflow:hidden;margin:8px 0 2px;background:rgba(255,255,255,0.12);background:color-mix(in srgb, var(--ow-ink) 12%, transparent)}html.ow-old .ow-compose__prog{background:rgba(255,255,255,0.12)}
 .ow-compose__prog > i{display:block;height:100%;width:0;border-radius:inherit;
   background:linear-gradient(90deg, rgb(var(--ow-h1)), rgb(var(--ow-h2)));
   transition:width .28s var(--ow-ease)}
@@ -11079,7 +11098,7 @@ html[data-ow-marks="mono"] .ow-lnked__i img{filter:grayscale(1) contrast(1.05)}
 .ow-set{max-width:640px;margin:0 auto;padding-bottom:40px}
 .ow-set__h{font-family:var(--ow-font-display);font-weight:700;font-size:22px;
   letter-spacing:-.01em;margin:6px 2px 14px;color:var(--ow-ink)}
-.ow-set__search{display:flex;align-items:center;gap:9px;margin:0 0 18px;padding:10px 13px;border-radius:12px 10px 13px 11px;background:rgba(255,255,255,0.07);background:color-mix(in srgb, var(--ow-ink) 7%, transparent)}html.ow-nogap .ow-set__search>*+*{margin-left:9px}
+.ow-set__search{display:flex;align-items:center;gap:9px;margin:0 0 18px;padding:10px 13px;border-radius:12px 10px 13px 11px;background:rgba(255,255,255,0.07);background:color-mix(in srgb, var(--ow-ink) 7%, transparent)}html.ow-old .ow-set__search{background:rgba(255,255,255,0.07)}html.ow-nogap .ow-set__search>*+*{margin-left:9px}
 .ow-set__search svg{width:17px;height:17px;flex:none;fill:none;stroke:var(--ow-ink-3);stroke-width:1.8;stroke-linecap:round}
 .ow-set__search input{flex:1 1 auto;min-width:0;border:0;outline:0;background:none;
   font-family:var(--ow-font);font-size:15px;color:var(--ow-ink)}
@@ -11094,8 +11113,8 @@ html[data-ow-marks="mono"] .ow-lnked__i img{filter:grayscale(1) contrast(1.05)}
 .ow-set__row + .ow-set__row::before{content:"";position:absolute;left:37px;right:0;top:0;height:1px;
   background:var(--ow-hair,rgba(20,19,31,.10))}
 html[data-theme="dark"] .ow-set__row + .ow-set__row::before{background:rgba(255,255,255,.08)}
-.ow-set__row:active{background:rgba(255,255,255,0.05);background:color-mix(in srgb, var(--ow-ink) 5%, transparent)}
-@media (hover:hover) and (pointer:fine){ .ow-set__row:hover{background:rgba(255,255,255,0.04);background:color-mix(in srgb, var(--ow-ink) 4%, transparent)} }
+.ow-set__row:active{background:rgba(255,255,255,0.05);background:color-mix(in srgb, var(--ow-ink) 5%, transparent)}html.ow-old .ow-set__row:active{background:rgba(255,255,255,0.05)}
+@media (hover:hover) and (pointer:fine){ .ow-set__row:hover{background:rgba(255,255,255,0.04);background:color-mix(in srgb, var(--ow-ink) 4%, transparent)}html.ow-old .ow-set__row:hover{background:rgba(255,255,255,0.04)} }
 .ow-set__ic{flex:none;width:24px;height:24px;display:grid;place-items:center}
 .ow-set__ic svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.7;
   stroke-linecap:round;stroke-linejoin:round}
@@ -11115,7 +11134,7 @@ html[data-theme="dark"] .ow-set__row + .ow-set__row::before{background:rgba(255,
 .ow-set__back{appearance:none;-webkit-appearance:none;border:0;background:none;cursor:pointer;
   width:38px;height:38px;margin-left:-8px;display:grid;place-items:center;color:var(--ow-ink);border-radius:50%}
 .ow-set__back svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.ow-set__back:hover{background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}
+.ow-set__back:hover{background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}html.ow-old .ow-set__back:hover{background:rgba(255,255,255,0.06)}
 .ow-set__pt{font-family:var(--ow-font-display);font-weight:700;font-size:19px;margin:0;color:var(--ow-ink)}
 .ow-set__pb{display:flex;flex-direction:column;gap:12px}html.ow-nogap .ow-set__pb>*+*{margin-top:12px}
 .ow-set__pb > .ow-btn{align-self:flex-start}
@@ -11132,9 +11151,9 @@ input.ow-in,select.ow-in,textarea.ow-in{position:static;flex:1 1 auto;width:100%
 .ow-set__at::after{content:"@";position:absolute;left:12px;bottom:11px;color:var(--ow-ink-3);font-size:15px}
 .ow-set__say{margin:0;font-size:13.5px;color:var(--ow-ink-2)}
 .ow-set__say[data-bad="1"]{color:#e0405a}
-.ow-set__key{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;letter-spacing:.06em;word-break:break-all;color:var(--ow-ink);padding:12px 14px;border-radius:12px 10px 13px 11px;background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}
+.ow-set__key{margin:0;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:15px;letter-spacing:.06em;word-break:break-all;color:var(--ow-ink);padding:12px 14px;border-radius:12px 10px 13px 11px;background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}html.ow-old .ow-set__key{background:rgba(255,255,255,0.06)}
 .ow-set__codes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-.ow-set__codes code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14.5px;text-align:center;padding:9px 6px;border-radius:10px;background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent);color:var(--ow-ink)}
+.ow-set__codes code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:14.5px;text-align:center;padding:9px 6px;border-radius:10px;background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent);color:var(--ow-ink)}html.ow-old .ow-set__codes code{background:rgba(255,255,255,0.06)}
 .ow-set__sess{display:flex;align-items:center;gap:13px;min-height:48px;font-size:14.5px;color:var(--ow-ink)}html.ow-nogap .ow-set__sess>*+*{margin-left:13px}
 .ow-set__seclog{margin-top:18px}
 .ow-set__from{display:block;font-size:12.5px;color:var(--ow-ink-3);margin-top:1px}
@@ -11296,7 +11315,7 @@ html[data-simple="1"] :is(.ow-feedchoice,.ow-feeds__sec){border:0}
 /* ══ ONE POST, MANY PLATFORMS (founder/503) ══════════════════════════════════
    A platform is its own mark, in its own colour when colour logos are on. The
    Settings row and the composer's chip draw the same mark. */
-.ow-reach__mk{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px 9px 11px 10px;color:var(--ow-ink);background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}
+.ow-reach__mk{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px 9px 11px 10px;color:var(--ow-ink);background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}html.ow-old .ow-reach__mk{background:rgba(255,255,255,0.06)}
 .ow-reach__mk svg{width:19px;height:19px;display:block}
 .ow-reach__mk img{width:19px;height:19px}
 html[data-ow-marks="color"] .ow-reach__mk[data-platform]{color:var(--mk, currentColor)}
@@ -11367,11 +11386,11 @@ html[data-theme="dark"][data-ow-marks="color"] .ow-reach__mk[data-platform="thre
    for a setting you turn on and off; this is a promise you make once. */
 .ow-perm{display:flex;flex-direction:column;gap:8px;margin:2px 0 16px 47px}html.ow-nogap .ow-perm>*+*{margin-top:8px}
 .ow-reach__slot .ow-perm{margin-left:0}
-.ow-agree{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;cursor:pointer;font:inherit;color:var(--ow-ink);padding:12px 14px;border-radius:16px 13px 17px 14px;background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,0.14);box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 14%,transparent);-webkit-tap-highlight-color:transparent;transition:box-shadow .16s var(--ow-ease)}html.ow-nogap .ow-agree>*+*{margin-left:14px}
+.ow-agree{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:0;cursor:pointer;font:inherit;color:var(--ow-ink);padding:12px 14px;border-radius:16px 13px 17px 14px;background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,0.14);box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 14%,transparent);-webkit-tap-highlight-color:transparent;transition:box-shadow .16s var(--ow-ease)}html.ow-old .ow-agree{box-shadow:0 0 0 1px rgba(255,255,255,0.14)}html.ow-nogap .ow-agree>*+*{margin-left:14px}
 .ow-agree__b{min-width:0;flex:1 1 auto}
 .ow-agree__b b{display:block;font-family:var(--ow-font-display);font-weight:600;font-size:14.5px;letter-spacing:-.01em}
 .ow-agree__b span{display:block;font-size:12.5px;line-height:1.45;color:var(--ow-ink-3);margin-top:3px}
-.ow-agree__k{flex:none;position:relative;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.45);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ow-ink) 45%,transparent);transition:box-shadow .16s var(--ow-ease)}
+.ow-agree__k{flex:none;position:relative;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.45);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--ow-ink) 45%,transparent);transition:box-shadow .16s var(--ow-ease)}html.ow-old .ow-agree__k{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.45)}
 .ow-agree__k::after{content:"";position:absolute;top:5px;right:5px;bottom:5px;left:5px;inset:5px;border-radius:50%;background:rgb(var(--ow-h1));transform:scale(0);transition:transform .18s var(--ow-spring)}
 .ow-agree[aria-pressed="true"]{box-shadow:0 0 0 1px rgba(var(--ow-h1),.55)}
 .ow-agree[aria-pressed="true"] .ow-agree__k{box-shadow:inset 0 0 0 1.5px rgb(var(--ow-h1))}
@@ -11392,7 +11411,7 @@ html.ow-old .ow-agree:focus{outline:2px solid rgba(var(--ow-h1),.9);outline-offs
 .ow-upload__row{display:flex;gap:12px;align-items:stretch;margin:0 0 10px}html.ow-nogap .ow-upload__row>*+*{margin-left:12px}
 .ow-upload__cap{flex:1 1 auto;min-width:0;display:flex}
 .ow-upload__cap textarea{flex:1 1 auto;min-height:128px;resize:vertical}
-.ow-upload__cover{position:relative;flex:none;width:96px;aspect-ratio:3/4;border-radius:12px 10px 13px 11px;overflow:hidden;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent)}
+.ow-upload__cover{position:relative;flex:none;width:96px;aspect-ratio:3/4;border-radius:12px 10px 13px 11px;overflow:hidden;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent)}html.ow-old .ow-upload__cover{background:rgba(255,255,255,0.08)}
 .ow-upload__cover img,.ow-upload__cover video{width:100%;height:100%;object-fit:cover;display:block}
 .ow-upload__n{position:absolute;right:6px;bottom:6px;min-width:20px;height:20px;padding:0 6px;border-radius:10px;
   display:grid;place-items:center;font-size:11.5px;font-weight:650;color:#fff;background:rgba(0,0,0,.55)}
@@ -11404,7 +11423,8 @@ html.ow-old .ow-agree:focus{outline:2px solid rgba(var(--ow-h1),.9);outline-offs
    clears it on every way out (`ow:navigate`, the camera, the receipt). */
 html[data-ow-make] .ow-compose__stage{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:150;margin:0;border-radius:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:var(--ow-ground,#eceaf3);padding:calc(env(safe-area-inset-top) + 12px) 16px
           calc(env(safe-area-inset-bottom) + 28px) 16px;padding:calc(env(safe-area-inset-top) + 12px) max(16px,env(safe-area-inset-right))
-          calc(env(safe-area-inset-bottom) + 28px) max(16px,env(safe-area-inset-left))}
+          calc(env(safe-area-inset-bottom) + 28px) max(16px,env(safe-area-inset-left))}html.ow-old[data-ow-make] .ow-compose__stage{padding:calc(env(safe-area-inset-top) + 12px) 16px
+          calc(env(safe-area-inset-bottom) + 28px) 16px}
 html[data-ow-make] .ow-nav{display:none}
 html[data-ow-make],html[data-ow-make] body{overflow:hidden}
 html[data-ow-make] .ow-compose__stage > *{max-width:640px;margin-left:auto;margin-right:auto}
@@ -11436,11 +11456,11 @@ html[data-ow-make] .ow-compose__wherelbl{font-family:var(--ow-font);letter-spaci
 .ow-thread-head__more{appearance:none;-webkit-appearance:none;border:0;background:none;cursor:pointer;
   flex:none;width:38px;height:38px;margin-left:auto;display:grid;place-items:center;color:var(--ow-ink);border-radius:50%}
 .ow-thread-head__more svg{width:22px;height:22px;fill:currentColor}
-.ow-thread-head__more:hover{background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}
+.ow-thread-head__more:hover{background:rgba(255,255,255,0.06);background:color-mix(in srgb, var(--ow-ink) 6%, transparent)}html.ow-old .ow-thread-head__more:hover{background:rgba(255,255,255,0.06)}
 [data-chatset="1"] > :not(.ow-chatset){display:none !important}
 .ow-chatset{max-width:640px;margin:0 auto;padding-bottom:40px}
 .ow-chatset__who{display:flex;flex-direction:column;align-items:center;gap:8px;margin:4px 0 22px;text-align:center}html.ow-nogap .ow-chatset__who>*+*{margin-top:8px}
-.ow-chatset__face{width:84px;height:84px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent);color:var(--ow-ink-2)}
+.ow-chatset__face{width:84px;height:84px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent);color:var(--ow-ink-2)}html.ow-old .ow-chatset__face{background:rgba(255,255,255,0.08)}
 .ow-chatset__face img{width:100%;height:100%;object-fit:cover}
 .ow-chatset__face svg{width:52px;height:52px}
 /* People and admins (founder/549): each person's face in their own colour,
@@ -11478,7 +11498,7 @@ html.ow-old .ow-workplace-details summary:focus{outline:2px solid rgba(var(--ow-
 .ow-inbox__h{margin:0;font-family:var(--ow-font-display);font-weight:700;font-size:22px;color:var(--ow-ink)}
 .ow-inbox__top .ow-thread-head__more svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .ow-newmsg__p{min-height:58px}
-.ow-newmsg__face{flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent);color:var(--ow-ink-2)}
+.ow-newmsg__face{flex:none;width:40px;height:40px;border-radius:50%;overflow:hidden;display:grid;place-items:center;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent);color:var(--ow-ink-2)}html.ow-old .ow-newmsg__face{background:rgba(255,255,255,0.08)}
 .ow-newmsg__face img{width:100%;height:100%;object-fit:cover}
 .ow-newmsg__face svg{width:26px;height:26px}
 
@@ -11506,7 +11526,7 @@ html[data-ow-make] .ow-upload__bar{margin-top:auto}
 html[data-ow-make] .ow-upload__rows{margin-bottom:18px}
 .ow-setpick[data-off="1"] .ow-setpick__w b,.ow-setpick[data-off="1"] .ow-reach__mk{opacity:.55}
 .ow-setpick .ow-reach__mk.ow-setpick__face{width:34px;height:34px}
-.ow-dest__face.ow-setpick__face[data-shape="round"]{border-radius:50%;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent);color:var(--ow-ink-2)}
+.ow-dest__face.ow-setpick__face[data-shape="round"]{border-radius:50%;background:rgba(255,255,255,0.08);background:color-mix(in srgb, var(--ow-ink) 8%, transparent);color:var(--ow-ink-2)}html.ow-old .ow-dest__face.ow-setpick__face[data-shape="round"]{background:rgba(255,255,255,0.08)}
 .ow-dest__face.ow-setpick__face svg{width:22px;height:22px}
 /* the small acts keep their own size on the making screen: only the media
    and the bar across the bottom run edge to edge */
@@ -11602,7 +11622,10 @@ html[data-ow-make] .ow-compose__stage > .ow-depth__add{margin-left:0;margin-righ
       max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)));color:rgb(from rgb(var(--ow-h1))
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
-      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}html.ow-old .ow-worlds__b.is-here,html.ow-old .ow-feedswitch button[aria-pressed="true"],html.ow-old .ow-choice .po-act[data-act="on"],html.ow-old .ow-choice .po-act[aria-pressed="true"],html.ow-old .ow-find__chip[aria-pressed="true"],html.ow-old .ow-compose__step[aria-current="step"]{color:rgb(from rgb(var(--ow-h1))
+      20
+      24
+      40)}
   .po-act[data-act="on"],.ow-popit-btn--fill{color:rgb(from rgb(var(--h, var(--ow-h1)))
       20
       24
@@ -11612,7 +11635,10 @@ html[data-ow-make] .ow-compose__stage > .ow-depth__add{margin-left:0;margin-righ
       max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)));color:rgb(from rgb(var(--h, var(--ow-h1)))
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
-      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}html.ow-old .po-act[data-act="on"],html.ow-old .ow-popit-btn--fill{color:rgb(from rgb(var(--h, var(--ow-h1)))
+      20
+      24
+      40)}
   #surface .ow-cv-row__av, .ow-thread__av{color:rgb(from rgb(var(--ow-h1))
       20
       24
@@ -11622,7 +11648,10 @@ html[data-ow-make] .ow-compose__stage > .ow-depth__add{margin-left:0;margin-righ
       max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)));color:rgb(from rgb(var(--ow-h1))
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
-      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}html.ow-old #surface .ow-cv-row__av,html.ow-old .ow-thread__av{color:rgb(from rgb(var(--ow-h1))
+      20
+      24
+      40)}
   /* your own bubble is the hue deepened 82% toward ink; the words ride that */
   .ow-msg[data-mine]{color:rgb(from rgb(var(--ow-h1))
       20
@@ -11633,7 +11662,10 @@ html[data-ow-make] .ow-compose__stage > .ow-depth__add{margin-left:0;margin-righ
       max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)));color:rgb(from color-mix(in oklab, rgb(var(--ow-h1)) 82%, #14131f)
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
-      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}html.ow-old .ow-msg[data-mine]{color:rgb(from rgb(var(--ow-h1))
+      20
+      24
+      40)}
   .ow-msg[data-mine] .ow-rx__c{color:inherit}
 }
 /* THE HUE AS INK, ON A LIGHT GROUND, IS THE DEEP END OF ITSELF. A pressed
@@ -11642,11 +11674,11 @@ html[data-ow-make] .ow-compose__stage > .ow-depth__add{margin-left:0;margin-righ
    halfway to ink: still unmistakably the person's colour, and readable. */
 html[data-theme="light"] .po-card__foot .po-acts .po-act[aria-pressed="true"],
 html[data-theme="light"] .po-acts--rail .po-act[aria-pressed="true"],
-html[data-theme="light"] .ow-cmt__creator{color:#14131f;color:color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f)}
+html[data-theme="light"] .ow-cmt__creator{color:#14131f;color:color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f)}html.ow-old[data-theme="light"] .po-card__foot .po-acts .po-act[aria-pressed="true"],html.ow-old[data-theme="light"] .po-acts--rail .po-act[aria-pressed="true"],html.ow-old[data-theme="light"] .ow-cmt__creator{color:#14131f}
 @media (prefers-color-scheme: light){
   html:not([data-theme="dark"]) .po-card__foot .po-acts .po-act[aria-pressed="true"],
   html:not([data-theme="dark"]) .po-acts--rail .po-act[aria-pressed="true"],
-  html:not([data-theme="dark"]) .ow-cmt__creator{color:#14131f;color:color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f)}
+  html:not([data-theme="dark"]) .ow-cmt__creator{color:#14131f;color:color-mix(in oklab, rgb(var(--h, var(--ow-h1))) 48%, #14131f)}html.ow-old:not([data-theme="dark"]) .po-card__foot .po-acts .po-act[aria-pressed="true"],html.ow-old:not([data-theme="dark"]) .po-acts--rail .po-act[aria-pressed="true"],html.ow-old:not([data-theme="dark"]) .ow-cmt__creator{color:#14131f}
 }
 /* A PRESSED ACT'S FILL IS THE HUE AT .45–.85 OVER THE GROUND, so on a light
    ground it is much lighter than the hue — the Test Hotel's deep pink fills as
@@ -11662,7 +11694,10 @@ html[data-theme="light"] .ow-cmt__creator{color:#14131f;color:color-mix(in oklab
       max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)));color:rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
       clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
       clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
-      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}html.ow-old[data-theme="light"] .po-act[data-act="on"],html.ow-old[data-theme="light"] .ow-popit-btn--fill{color:rgb(from rgb(var(--h, var(--ow-h1)))
+      20
+      24
+      40)}
   @media (prefers-color-scheme: light){
     html:not([data-theme="dark"]) .po-act[data-act="on"],html:not([data-theme="dark"]) .ow-popit-btn--fill{color:rgb(from rgb(var(--h, var(--ow-h1)))
         20
@@ -11673,7 +11708,10 @@ html[data-theme="light"] .ow-cmt__creator{color:#14131f;color:color-mix(in oklab
         max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)));color:rgb(from color-mix(in srgb, rgb(var(--h, var(--ow-h1))) 65%, #eceaf3)
         clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
         clamp(24, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
-        clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}
+        clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}html.ow-old:not([data-theme="dark"]) .po-act[data-act="on"],html.ow-old:not([data-theme="dark"]) .ow-popit-btn--fill{color:rgb(from rgb(var(--h, var(--ow-h1)))
+        20
+        24
+        40)}
   }
 }
 /* a REMOVED message of yours keeps the bubble's shape but not its fill, so
@@ -11762,7 +11800,7 @@ html[data-theme="dark"][data-ow-marks="color"] :is(.ow-linkbar__i,.po-card__from
 .ow-cal2__dhb[data-today] b{color:#fff;background:linear-gradient(150deg,rgba(var(--ow-h1),.95),rgba(var(--ow-h2),.78))}
 .ow-cal2__allday{border-top:1px solid var(--ow-rim);padding:4px 0}
 .ow-cal2__adc{display:flex;flex-direction:column;gap:2px;padding:0 2px;min-width:0}html.ow-nogap .ow-cal2__adc>*+*{margin-top:2px}
-.ow-cal2__chip{border:0;cursor:pointer;text-align:left;font:inherit;font-size:11px;font-weight:600;padding:3px 6px;border-radius:7px;color:#fff;background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),var(--cat,rgb(var(--ow-h2))));background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),color-mix(in srgb,var(--cat,rgb(var(--ow-h2))) 72%,#000));overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ow-cal2__chip{border:0;cursor:pointer;text-align:left;font:inherit;font-size:11px;font-weight:600;padding:3px 6px;border-radius:7px;color:#fff;background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),var(--cat,rgb(var(--ow-h2))));background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),color-mix(in srgb,var(--cat,rgb(var(--ow-h2))) 72%,#000));overflow:hidden;white-space:nowrap;text-overflow:ellipsis}html.ow-old .ow-cal2__chip{background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),var(--cat,rgb(var(--ow-h2))))}
 .ow-cal2__scroll{max-height:62vh;max-height:min(62vh,520px);overflow-y:auto;border-top:1px solid var(--ow-rim);-webkit-overflow-scrolling:touch}
 .ow-cal2__sc{display:grid;grid-template-columns:40px minmax(0,1fr)}
 .ow-cal2__hlabels{position:relative}
@@ -11770,7 +11808,7 @@ html[data-theme="dark"][data-ow-marks="color"] :is(.ow-linkbar__i,.po-card__from
 .ow-cal2__cols{position:relative;background:repeating-linear-gradient(to bottom,transparent 0,transparent 47px,var(--ow-rim) 47px,var(--ow-rim) 48px)}
 .ow-cal2__col{position:absolute;top:0;bottom:0}
 .ow-cal2__hours:not([data-cols="1"]) .ow-cal2__col{box-shadow:inset 1px 0 0 var(--ow-rim)}
-.ow-cal2__blk{position:absolute;border:0;cursor:pointer;text-align:left;font:inherit;padding:3px 5px;border-radius:8px;overflow:hidden;color:#fff;background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),var(--cat,rgb(var(--ow-h2))));background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),color-mix(in srgb,var(--cat,rgb(var(--ow-h2))) 72%,#000));box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 0 0 1px var(--ow-panel-1)}
+.ow-cal2__blk{position:absolute;border:0;cursor:pointer;text-align:left;font:inherit;padding:3px 5px;border-radius:8px;overflow:hidden;color:#fff;background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),var(--cat,rgb(var(--ow-h2))));background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),color-mix(in srgb,var(--cat,rgb(var(--ow-h2))) 72%,#000));box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 0 0 1px var(--ow-panel-1)}html.ow-old .ow-cal2__blk{background:linear-gradient(150deg,var(--cat,rgb(var(--ow-h1))),var(--cat,rgb(var(--ow-h2))))}
 .ow-cal2__blk b{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:12px;font-weight:650;line-height:1.25;overflow:hidden;word-break:break-word}
 .ow-cal2__blk span{display:block;font-size:10.5px;opacity:.92}
 .ow-cal2__blk:disabled,.ow-cal2__chip:disabled{cursor:default}
@@ -11790,10 +11828,10 @@ html[data-theme="dark"][data-ow-marks="color"] :is(.ow-linkbar__i,.po-card__from
 .ow-cal2__cat[aria-pressed="false"]{color:var(--ow-ink-3);background:none;box-shadow:inset 0 0 0 1px var(--ow-rim)}
 .ow-cal2__cat[aria-pressed="false"] i{background:none;box-shadow:inset 0 0 0 2px var(--cat);opacity:.7}
 .ow-cal2__cat[aria-pressed="false"] span{text-decoration:line-through;text-decoration-thickness:1px}
-.ow-cal2__addt{border:0;background:none;padding:4px 2px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:rgb(var(--ow-h1));color:color-mix(in oklab, rgb(var(--ow-h1)) 55%, var(--ow-ink))}
+.ow-cal2__addt{border:0;background:none;padding:4px 2px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;color:rgb(var(--ow-h1));color:color-mix(in oklab, rgb(var(--ow-h1)) 55%, var(--ow-ink))}html.ow-old .ow-cal2__addt{color:rgb(var(--ow-h1))}
 .ow-cal2__addo{display:inline-flex;gap:8px;flex-wrap:wrap}html.ow-nogap .ow-cal2__addo>*{margin-right:8px}html.ow-nogap .ow-cal2__addo>*{margin-bottom:8px}
 .ow-cal2__add{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 4px 14px;font-size:12px;color:var(--ow-ink-3)}html.ow-nogap .ow-cal2__add>*{margin-right:8px}html.ow-nogap .ow-cal2__add>*{margin-bottom:8px}
-.ow-cal2__addb{border:0;background:none;padding:5px 10px;border-radius:999px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;color:rgb(var(--ow-h1));color:color-mix(in oklab, rgb(var(--ow-h1)) 55%, var(--ow-ink));box-shadow:inset 0 0 0 1px rgba(var(--ow-h1),.3)}
+.ow-cal2__addb{border:0;background:none;padding:5px 10px;border-radius:999px;font:inherit;font-size:12px;font-weight:600;cursor:pointer;text-decoration:none;color:rgb(var(--ow-h1));color:color-mix(in oklab, rgb(var(--ow-h1)) 55%, var(--ow-ink));box-shadow:inset 0 0 0 1px rgba(var(--ow-h1),.3)}html.ow-old .ow-cal2__addb{color:rgb(var(--ow-h1))}
 .ow-cal2__out{display:flex;justify-content:center;margin-top:18px}
 
 /* YOUR ACTIVITY (the founder, 2026-10-10: organised like TikTok's): tabs, then the App's own cards; the person's own
@@ -11823,7 +11861,7 @@ html.ow-old[data-ow-view="immersive"] :-webkit-any(.ow-act__h,.ow-act__tabs,.ow-
 /* inside Scroll the page's own tabs and counts step aside: a press on one would take the list out from under it */
 html[data-ow-view="immersive"] :is(.ow-act__h,.ow-act__tabs,.ow-act__sub){display:none}
 /* "What you have coming" names the whole of it on the right: the Calendar */
-.ow-cpage__all{background:none;border:0;padding:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:rgb(var(--ow-h1));color:color-mix(in oklab, rgb(var(--ow-h1)) 55%, var(--ow-ink))}
+.ow-cpage__all{background:none;border:0;padding:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;color:rgb(var(--ow-h1));color:color-mix(in oklab, rgb(var(--ow-h1)) 55%, var(--ow-ink))}html.ow-old .ow-cpage__all{color:rgb(var(--ow-h1))}
 
 /* the rest of a band, one press away (founder/520) */
 .ow-cpage__more{display:inline-flex;align-items:center;border:0;cursor:pointer;font:inherit;font-size:13px;font-weight:600;
@@ -11836,7 +11874,7 @@ html[data-ow-view="immersive"] :is(.ow-act__h,.ow-act__tabs,.ow-act__sub){displa
   box-shadow:inset 0 1px 0 var(--ow-lift),inset 0 0 0 1px var(--ow-rim)}html.ow-nogap .ow-guest>*+*{margin-top:9px}
 .ow-guest__h{font-family:var(--ow-font);font-size:17px;font-weight:650;margin:0;color:var(--ow-ink)}
 .ow-guest__p{font-size:13px;color:var(--ow-ink-2);margin:0 0 4px;line-height:1.45}
-.ow-guest textarea,.ow-guest input{font:inherit;font-size:15px;color:var(--ow-ink);padding:11px 13px;border:0;border-radius:13px;background:var(--ow-tile-base);background:color-mix(in srgb,var(--ow-tile-base) 80%,transparent);box-shadow:inset 0 0 0 1px var(--ow-rim);resize:vertical}
+.ow-guest textarea,.ow-guest input{font:inherit;font-size:15px;color:var(--ow-ink);padding:11px 13px;border:0;border-radius:13px;background:var(--ow-tile-base);background:color-mix(in srgb,var(--ow-tile-base) 80%,transparent);box-shadow:inset 0 0 0 1px var(--ow-rim);resize:vertical}html.ow-old .ow-guest textarea,html.ow-old .ow-guest input{background:var(--ow-tile-base)}
 .ow-guest textarea:focus,.ow-guest input:focus{outline:none;box-shadow:0 0 0 1.5px rgba(var(--ow-h1),.7)}
 .ow-guest__said{font-size:13px;color:var(--ow-ink-2);margin:0;min-height:0}
 .ow-guest__said:empty{display:none}
@@ -11877,7 +11915,7 @@ html.ow-old .ow-set__sec > :-webkit-any(.ow-switch,.ow-rulech) + :-webkit-any(.o
 html.ow-old[data-theme="dark"] .ow-set__sec > :matches(.ow-switch,.ow-rulech) + :matches(.ow-switch,.ow-rulech)::before{background:rgba(255,255,255,.08)}
 html.ow-old[data-theme="dark"] .ow-set__sec > :-webkit-any(.ow-switch,.ow-rulech) + :-webkit-any(.ow-switch,.ow-rulech)::before{background:rgba(255,255,255,.08)}
 html[data-theme="dark"] .ow-set__sec > :is(.ow-switch,.ow-rulech) + :is(.ow-switch,.ow-rulech)::before{background:rgba(255,255,255,.08)}
-.ow-set__sec > .ow-switch:active{background:rgba(255,255,255,0.05);background:color-mix(in srgb, var(--ow-ink) 5%, transparent)}
+.ow-set__sec > .ow-switch:active{background:rgba(255,255,255,0.05);background:color-mix(in srgb, var(--ow-ink) 5%, transparent)}html.ow-old .ow-set__sec > .ow-switch:active{background:rgba(255,255,255,0.05)}
 .ow-set__sec > .ow-switch .ow-switch__b b{font-family:var(--ow-font);font-weight:500;font-size:15px;letter-spacing:0}
 .ow-set__sec > .ow-rulech .ow-rulech__l{font-family:var(--ow-font);font-weight:500;font-size:15px;letter-spacing:0}
 .ow-set__sec > .ow-switch[data-failed]{box-shadow:inset 0 0 0 1.5px rgba(255,170,110,.9);border-radius:10px}
@@ -11930,7 +11968,7 @@ html[data-ow-thread] .ow-thread-head__more{width:40px;height:40px;margin-left:au
    every messenger the newest message is just above where you type, and the
    conversation grows upward from there — so the column is at least the
    screen's height and its messages are pushed to its foot. */
-html[data-ow-thread] .ow-msgs{gap:0;padding:6px 0 10px;justify-content:flex-end;min-height:calc(100vh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:calc(100dvh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
+html[data-ow-thread] .ow-msgs{gap:0;padding:6px 0 10px;justify-content:flex-end;min-height:calc(100vh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:calc(100dvh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}html.ow-old[data-ow-thread] .ow-msgs{min-height:calc(100vh - 150px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
 /* runs: two pixels inside one, a breath between two */
 html[data-ow-thread] .ow-msgs > *{margin-top:3px}
 html[data-ow-thread] .ow-msgs > [data-gap]{margin-top:12px}
@@ -12021,7 +12059,7 @@ html[data-ow-thread] .ow-msg__act[data-armed]{color:#fff;background:rgba(230,70,
    the screen has a top and a bottom and the galaxy between them. The camera,
    the field and send share one height and one shape — round — and every one
    of them is a thumb's width. */
-html[data-ow-thread] .ow-composer{gap:8px;align-items:flex-end;padding:8px 10px 8px;padding:8px max(10px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-bottom));background:rgba(var(--ow-chrome-rgb),.78);-webkit-backdrop-filter:blur(20px) saturate(1.25);backdrop-filter:blur(20px) saturate(1.25);box-shadow:0 -1px 0 rgba(255,255,255,.07)}
+html[data-ow-thread] .ow-composer{gap:8px;align-items:flex-end;padding:8px 10px 8px;padding:8px max(10px,env(safe-area-inset-left)) max(8px,env(safe-area-inset-bottom));background:rgba(var(--ow-chrome-rgb),.78);-webkit-backdrop-filter:blur(20px) saturate(1.25);backdrop-filter:blur(20px) saturate(1.25);box-shadow:0 -1px 0 rgba(255,255,255,.07)}html.ow-old[data-ow-thread] .ow-composer{padding:8px 10px 8px}
 html[data-fx="safe"][data-ow-thread] .ow-composer{background:rgba(var(--ow-chrome-rgb),.95)}
 html[data-ow-thread] .ow-composer textarea{min-height:44px;padding:11px 16px;border-radius:22px;
   font-size:15.5px;line-height:1.4}
@@ -12078,12 +12116,12 @@ html.ow-old[data-ow-thread] .ow-thread-head__b.is-door:focus .ow-thread-head__nm
 html[data-ow-thread] .ow-thread-head__b.is-door:focus-visible .ow-thread-head__nm{text-decoration:underline}
 
 /* 5 · a composer that takes a little less of the screen */
-html[data-ow-thread] .ow-composer{padding-top:6px;padding-bottom:6px;padding-bottom:max(6px,env(safe-area-inset-bottom));gap:7px}
+html[data-ow-thread] .ow-composer{padding-top:6px;padding-bottom:6px;padding-bottom:max(6px,env(safe-area-inset-bottom));gap:7px}html.ow-old[data-ow-thread] .ow-composer{padding-bottom:6px}
 html[data-ow-thread] .ow-composer textarea{min-height:40px;padding:9px 15px;border-radius:20px;font-size:15px}
 html[data-ow-thread] .ow-attach,
 html[data-ow-thread] .ow-send{width:40px;height:40px}
 html[data-ow-thread] .ow-send svg{width:18px;height:18px}
-html[data-ow-thread] .ow-msgs{min-height:calc(100vh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:calc(100dvh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
+html[data-ow-thread] .ow-msgs{min-height:calc(100vh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom));min-height:calc(100dvh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}html.ow-old[data-ow-thread] .ow-msgs{min-height:calc(100vh - 140px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
 
 /* 6 · the chat's controls lead with the three most used */
 .ow-chatset__quick{display:flex;justify-content:center;gap:10px;margin:4px 0 22px}html.ow-nogap .ow-chatset__quick>*+*{margin-left:10px}
@@ -12108,7 +12146,10 @@ html[data-ow-thread] .ow-msgs{min-height:calc(100vh - 140px - env(safe-area-inse
       #14131f);background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
     linear-gradient(150deg,
       color-mix(in oklab,rgb(var(--ch1,var(--ow-h1))) 84%,#14131f),
-      color-mix(in oklab,rgb(var(--ch2,var(--ow-h2))) 44%,#14131f));color:#fff;font-size:26px;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}
+      color-mix(in oklab,rgb(var(--ch2,var(--ow-h2))) 44%,#14131f));color:#fff;font-size:26px;box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}html.ow-old .ow-chatset__face.ow-thread__av{background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,
+      rgb(var(--ch1,var(--ow-h1))),
+      #14131f)}
 .ow-chatset__face.ow-thread__av[data-kind="center"]{border-radius:26px 22px 27px 23px}
 
 /* ── THE ROOM SPEAKING, AND WHAT AN ADMIN CAN DO (founder/549, 556) ───────
@@ -12218,7 +12259,7 @@ html[data-ow-thread] .ow-thread__foot .ow-props{position:fixed;left:0;right:0;z-
   border-radius:16px;font-size:13.5px;color:var(--ow-ink);background:rgba(var(--ow-h1),.10)}html.ow-nogap .ow-day__also>*{margin-right:12px}html.ow-nogap .ow-day__also>*{margin-bottom:12px}
 .ow-day__said{margin:0 2px;font-size:13.5px;color:var(--ow-ink-2)}
 .ow-day__h{margin:10px 2px 0;font:650 15px var(--ow-font);color:var(--ow-ink)}
-.ow-day__rows{display:flex;flex-direction:column;border-radius:18px 15px 19px 16px;overflow:hidden;border:1px solid rgba(255,255,255,0.09);border:1px solid color-mix(in srgb,var(--ow-ink) 9%,transparent);background:rgba(255,255,255,0.03);background:color-mix(in srgb,var(--ow-ink) 3%,transparent)}
+.ow-day__rows{display:flex;flex-direction:column;border-radius:18px 15px 19px 16px;overflow:hidden;border:1px solid rgba(255,255,255,0.09);border:1px solid color-mix(in srgb,var(--ow-ink) 9%,transparent);background:rgba(255,255,255,0.03);background:color-mix(in srgb,var(--ow-ink) 3%,transparent)}html.ow-old .ow-day__rows{border:1px solid rgba(255,255,255,0.09);background:rgba(255,255,255,0.03)}
 .ow-day__row{display:flex;align-items:center;gap:12px;padding:12px 14px;color:var(--ow-ink);
   border:0}html.ow-nogap .ow-day__row>*+*{margin-left:12px}
 .ow-day__row:first-child{border-top:0}
@@ -12232,35 +12273,35 @@ html[data-ow-thread] .ow-thread__foot .ow-props{position:fixed;left:0;right:0;z-
 .ow-day__state{flex:none;padding:5px 11px;border-radius:11px;font:650 12px var(--ow-font)}
 .ow-day__state--requested{color:#b35c00;background:rgba(245,159,0,.16)}
 .ow-day__state--approved{color:#2b8a3e;background:rgba(47,158,68,.15)}
-.ow-day__state--denied{color:var(--ow-ink-2);background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+.ow-day__state--denied{color:var(--ow-ink-2);background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-day__state--denied{background:rgba(255,255,255,0.08)}
 .ow-day__askb{align-self:flex-start;height:40px;padding:0 18px;border-radius:20px;cursor:pointer;font:650 14px var(--ow-font);
   color:var(--ow-ink);background:none;border:1px solid rgba(var(--ow-h1),.45)}
 .ow-day__askb:hover{background:rgba(var(--ow-h1),.08)}
-.ow-day__ask{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:14px;border-radius:18px;background:rgba(255,255,255,0.04);background:color-mix(in srgb,var(--ow-ink) 4%,transparent)}
+.ow-day__ask{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;padding:14px;border-radius:18px;background:rgba(255,255,255,0.04);background:color-mix(in srgb,var(--ow-ink) 4%,transparent)}html.ow-old .ow-day__ask{background:rgba(255,255,255,0.04)}
 .ow-day__ask label{display:flex;flex-direction:column;gap:6px;font:600 12.5px var(--ow-font);color:var(--ow-ink-2)}html.ow-nogap .ow-day__ask label>*+*{margin-top:6px}
 .ow-day__ask label span{font-weight:400}
-.ow-day__ask input,.ow-day__ask select{height:44px;padding:0 12px;border-radius:12px;font:500 14.5px var(--ow-font);color:var(--ow-ink);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);border:1px solid rgba(255,255,255,0.14);border:1px solid color-mix(in srgb,var(--ow-ink) 14%,transparent);min-width:0;width:100%;box-sizing:border-box;color-scheme:light dark}
+.ow-day__ask input,.ow-day__ask select{height:44px;padding:0 12px;border-radius:12px;font:500 14.5px var(--ow-font);color:var(--ow-ink);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);border:1px solid rgba(255,255,255,0.14);border:1px solid color-mix(in srgb,var(--ow-ink) 14%,transparent);min-width:0;width:100%;box-sizing:border-box;color-scheme:light dark}html.ow-old .ow-day__ask input,html.ow-old .ow-day__ask select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14)}
 .ow-day__wide{grid-column:1/-1}
 .ow-day__acts{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap}html.ow-nogap .ow-day__acts>*{margin-right:10px}html.ow-nogap .ow-day__acts>*{margin-bottom:10px}
 .ow-day__acts .ow-day__punch{color:#fff;background:linear-gradient(140deg,rgb(var(--ow-h1)),rgb(var(--ow-h2)))}
 .ow-day__plain{height:44px;padding:0 14px;border:0;background:none;cursor:pointer;font:600 14px var(--ow-font);color:var(--ow-ink-2)}
 .ow-day__btns{flex:none;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}html.ow-nogap .ow-day__btns>*{margin-right:6px}html.ow-nogap .ow-day__btns>*{margin-bottom:6px}
-.ow-day__take--quiet{color:var(--ow-ink-2);background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+.ow-day__take--quiet{color:var(--ow-ink-2);background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-day__take--quiet{background:rgba(255,255,255,0.08)}
 .ow-day__row--stack{flex-wrap:wrap;row-gap:8px}
 .ow-day__row--done{opacity:.62}
 .ow-day__row--stack .ow-day__what{flex:1 1 calc(100% - 104px)}
 .ow-day__rows .ow-day__what small{white-space:normal}
 .ow-day__row--stack .ow-day__btns{flex-basis:100%;justify-content:flex-start;padding-left:104px}
 .ow-day__inask{flex-basis:100%;display:flex;gap:6px;flex-wrap:wrap;align-items:center;padding-left:104px;box-sizing:border-box}html.ow-nogap .ow-day__inask>*{margin-right:6px}html.ow-nogap .ow-day__inask>*{margin-bottom:6px}
-.ow-day__inask input{flex:1 1 200px;min-width:0;height:40px;padding:0 12px;border-radius:12px;font:500 14.5px var(--ow-font);color:var(--ow-ink);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);border:1px solid rgba(255,255,255,0.14);border:1px solid color-mix(in srgb,var(--ow-ink) 14%,transparent);color-scheme:light dark}
+.ow-day__inask input{flex:1 1 200px;min-width:0;height:40px;padding:0 12px;border-radius:12px;font:500 14.5px var(--ow-font);color:var(--ow-ink);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);border:1px solid rgba(255,255,255,0.14);border:1px solid color-mix(in srgb,var(--ow-ink) 14%,transparent);color-scheme:light dark}html.ow-old .ow-day__inask input{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14)}
 .ow-day__what small.ow-day__memory{margin-top:5px;color:var(--ow-ink);font:500 12.5px var(--ow-font);white-space:normal}
-.ow-day__help{margin-top:12px;border-top:0;border-radius:16px 14px 17px 15px;background:rgba(255,255,255,0.04);background:color-mix(in srgb,var(--ow-ink) 4%,transparent)}
+.ow-day__help{margin-top:12px;border-top:0;border-radius:16px 14px 17px 15px;background:rgba(255,255,255,0.04);background:color-mix(in srgb,var(--ow-ink) 4%,transparent)}html.ow-old .ow-day__help{background:rgba(255,255,255,0.04)}
 .ow-day__help .ow-day__btns,.ow-day__help .ow-day__inask{padding-left:0}
 .ow-day__help .ow-day__what small{white-space:normal}
 .ow-day__tally{margin-left:10px;font:500 12.5px var(--ow-font);color:var(--ow-ink-2)}
 .ow-day__notes{display:flex;flex-direction:column;gap:8px}html.ow-nogap .ow-day__notes>*+*{margin-top:8px}
-.ow-day__note{padding:12px 14px;border-radius:16px 14px 17px 15px;background:transparent;background:color-mix(in srgb,rgb(var(--ow-h1)) 10%,transparent);border:1px solid transparent;border:1px solid color-mix(in srgb,rgb(var(--ow-h1)) 22%,transparent);color:var(--ow-ink)}
-.ow-day__note.is-seen{background:rgba(255,255,255,0.03);background:color-mix(in srgb,var(--ow-ink) 3%,transparent);border-color:rgba(255,255,255,0.08);border-color:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+.ow-day__note{padding:12px 14px;border-radius:16px 14px 17px 15px;background:transparent;background:color-mix(in srgb,rgb(var(--ow-h1)) 10%,transparent);border:1px solid transparent;border:1px solid color-mix(in srgb,rgb(var(--ow-h1)) 22%,transparent);color:var(--ow-ink)}html.ow-old .ow-day__note{background:transparent;border:1px solid transparent}
+.ow-day__note.is-seen{background:rgba(255,255,255,0.03);background:color-mix(in srgb,var(--ow-ink) 3%,transparent);border-color:rgba(255,255,255,0.08);border-color:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-day__note.is-seen{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.08)}
 .ow-day__notek{display:block;font:600 12px var(--ow-font);color:var(--ow-ink-2)}
 .ow-day__note p{margin:4px 0 8px;font:500 14.5px/1.4 var(--ow-font)}
 .ow-day__note.is-seen p{margin-bottom:0}
@@ -12542,7 +12583,7 @@ html :is(.po-card__foot,.po-acts--rail) .po-act[aria-pressed="true"] svg .ow-hal
 
 /* Identity display tokens: one 4px rhythm for pages and all card projections. */
 .ow-top>.ow-quickpost{display:none}
-.ow-surface>.ow-quickpost{position:sticky;top:58px;z-index:59;display:flex;align-items:center;gap:12px;box-sizing:border-box;width:calc(100% - 24px);min-height:64px;margin:8px auto -12px;padding:8px 14px;border-radius:20px;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 86%,rgb(var(--ow-h1)) 14%);border:1px solid rgba(var(--ow-h1),.28);box-shadow:0 8px 24px -18px rgba(var(--ow-h1),.72);color:var(--ow-ink)}html.ow-nogap .ow-surface>.ow-quickpost>*+*{margin-left:12px}
+.ow-surface>.ow-quickpost{position:sticky;top:58px;z-index:59;display:flex;align-items:center;gap:12px;box-sizing:border-box;width:calc(100% - 24px);min-height:64px;margin:8px auto -12px;padding:8px 14px;border-radius:20px;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 86%,rgb(var(--ow-h1)) 14%);border:1px solid rgba(var(--ow-h1),.28);box-shadow:0 8px 24px -18px rgba(var(--ow-h1),.72);color:var(--ow-ink)}html.ow-old .ow-surface>.ow-quickpost{background:var(--ow-ground)}html.ow-nogap .ow-surface>.ow-quickpost>*+*{margin-left:12px}
 body:has(.ow-top.is-away) .ow-surface>.ow-quickpost{visibility:hidden;pointer-events:none}
 .ow-quickpost[hidden]{display:none}
 .ow-quickpost__face{width:36px;height:36px;flex:none;display:grid;place-items:center;overflow:hidden;border-radius:50%;
@@ -12551,7 +12592,7 @@ body:has(.ow-top.is-away) .ow-surface>.ow-quickpost{visibility:hidden;pointer-ev
 .ow-quickpost__face svg{width:24px;height:24px}
 .ow-quickpost button{font:500 .9375rem/1.4 var(--ow-font);color:inherit;min-height:40px;cursor:pointer;overflow-wrap:anywhere}
 .ow-quickpost__prompt{flex:1;min-width:0;text-align:left;border:0;background:none;border-radius:12px;padding:8px;color:var(--ow-ink-2)!important}
-.ow-quickpost__post{flex:none;padding:8px 16px;border:1px solid rgba(255,255,255,0.22);border:1px solid color-mix(in srgb,var(--ow-ink) 22%,transparent);border-radius:14px;background:none}
+.ow-quickpost__post{flex:none;padding:8px 16px;border:1px solid rgba(255,255,255,0.22);border:1px solid color-mix(in srgb,var(--ow-ink) 22%,transparent);border-radius:14px;background:none}html.ow-old .ow-quickpost__post{border:1px solid rgba(255,255,255,0.22)}
 .ow-quickpost button:hover{background:rgba(var(--ow-h1),.16)}
 .ow-quickpost button:active{background:rgba(var(--ow-h1),.24)}
 html.ow-old .ow-quickpost button:focus{outline:2px solid currentColor;outline-offset:3px}
@@ -12561,7 +12602,7 @@ html.ow-old .ow-set :matches(button,[role="button"]){cursor:pointer;touch-action
 html.ow-old .ow-set :-webkit-any(button,[role="button"]){cursor:pointer;touch-action:manipulation}
 .ow-set :is(button,[role="button"]){cursor:pointer;touch-action:manipulation}
 .ow-set button:disabled{cursor:default;opacity:.5}
-.ow-setting-save{font:600 .8125rem/1.3 var(--ow-font);min-height:40px;padding:8px 16px;justify-self:start;align-self:start;color:var(--ow-ink);border:1px solid rgba(255,255,255,0.2);border:1px solid color-mix(in srgb,var(--ow-ink) 20%,transparent);border-radius:999px;background:none;cursor:pointer}
+.ow-setting-save{font:600 .8125rem/1.3 var(--ow-font);min-height:40px;padding:8px 16px;justify-self:start;align-self:start;color:var(--ow-ink);border:1px solid rgba(255,255,255,0.2);border:1px solid color-mix(in srgb,var(--ow-ink) 20%,transparent);border-radius:999px;background:none;cursor:pointer}html.ow-old .ow-setting-save{border:1px solid rgba(255,255,255,0.2)}
 .ow-setting-save:not(:disabled):hover{background:rgba(var(--ow-h1),.18)}
 html.ow-old .ow-setting-save:focus{outline:2px solid currentColor;outline-offset:3px}
 .ow-setting-save:focus-visible{outline:2px solid currentColor;outline-offset:3px}
@@ -12590,7 +12631,7 @@ html.ow-old .ow-ocard:matches(.ow-ocard--tile,.ow-ocard--flag) a.ow-ocard__sub:h
 html.ow-old .ow-ocard:-webkit-any(.ow-ocard--tile,.ow-ocard--flag) a.ow-ocard__sub:hover{text-decoration:underline;text-underline-offset:3px;opacity:1}
 .ow-ocard:is(.ow-ocard--tile,.ow-ocard--flag) a.ow-ocard__sub:hover{text-decoration:underline;text-underline-offset:3px;opacity:1}
 .ow-ocard__hero:has(>[data-banner-style="framed"]){--ow-card-banner-height:clamp(64px,20cqw,100px);
-  padding-top:calc(var(--ow-card-banner-height) + 8px - 12px);padding-bottom:12px;color:inherit}{--ow-card-banner-height:64px}
+  padding-top:calc(var(--ow-card-banner-height) + 8px - 12px);padding-bottom:12px;color:inherit}
 .ow-ocard__hero>.ow-ocard__banner[data-banner-style="framed"]{height:var(--ow-card-banner-height);box-shadow:none;overflow:hidden}
 .ow-ocard__hero>.ow-ocard__banner::after{border-radius:inherit}
 .ow-ocard__hero:has(>[data-banner-style="framed"]) .ow-ocard__top{align-items:flex-start}
@@ -12598,7 +12639,7 @@ html.ow-old .ow-ocard:-webkit-any(.ow-ocard--tile,.ow-ocard--flag) a.ow-ocard__s
 .ow-ocard__hero:has(>[data-banner-style="framed"]) .ow-ocard__name{text-shadow:0 1px 3px var(--ow-ground),0 0 6px var(--ow-ground)}
 .ow-ocard__top[data-layout="above"]{align-items:center;text-align:center}
 .ow-ocard__hero:has(>.ow-ocard__top[data-layout="above"]):has(>[data-banner-style="framed"]){
-  --ow-card-banner-height:clamp(88px,22cqw,116px);padding-top:calc(var(--ow-card-banner-height) + 8px - 86px)}{--ow-card-banner-height:88px}
+  --ow-card-banner-height:clamp(88px,22cqw,116px);padding-top:calc(var(--ow-card-banner-height) + 8px - 86px)}
 .ow-ocard__hero:has(>[data-banner-style="framed"]) .ow-ocard__top[data-layout="above"]{align-items:center}
 .ow-ocard__hero:has(>[data-banner-style="framed"]) .ow-ocard__top[data-layout="above"]>.ow-ocard__face{width:64px;height:64px;transform:none}
 .ow-ocard__hero:has(>[data-banner-style="fade"]){padding-top:56px;padding-top:max(56px,min(18cqw,92px));padding-top:clamp(56px,18cqw,92px)}
@@ -12668,7 +12709,7 @@ html.ow-old .ow-ocard[data-projection]:matches(.ow-ocard--tile,.ow-ocard--flag) 
 html.ow-old .ow-ocard[data-projection]:-webkit-any(.ow-ocard--tile,.ow-ocard--flag) .ow-ocard__hero{margin:calc(-1 * var(--id-padding)) calc(-1 * var(--id-padding)) 0;padding:calc(var(--id-banner,100px) - var(--id-overlap)) var(--id-padding) 0;border-radius:inherit;color:inherit}
 .ow-ocard[data-projection]:is(.ow-ocard--tile,.ow-ocard--flag) .ow-ocard__hero{margin:calc(-1 * var(--id-padding)) calc(-1 * var(--id-padding)) 0;
   padding:calc(var(--id-banner,100px) - var(--id-overlap)) var(--id-padding) 0;border-radius:inherit;color:inherit}
-.ow-ocard[data-projection] .ow-ocard__hero:has(>[data-banner-style="framed"]){--id-banner:clamp(84px,20cqw,120px)}{--id-banner:84px}
+.ow-ocard[data-projection] .ow-ocard__hero:has(>[data-banner-style="framed"]){--id-banner:clamp(84px,20cqw,120px)}
 .ow-ocard[data-projection] .ow-ocard__hero>.ow-ocard__banner[data-banner-style="framed"]{top:8px;right:8px;bottom:auto;left:8px;inset:8px 8px auto;height:var(--id-banner);border:1.5px solid var(--ow-banner-edge);border-radius:calc(var(--id-radius) - 7px);mask-image:none;-webkit-mask-image:none}
 .ow-ocard[data-projection] .ow-ocard__hero>.ow-ocard__banner::after{background:linear-gradient(180deg,transparent,rgba(0,0,0,.12))}
 .ow-ocard[data-projection] .ow-ocard__banner--hue:not([style]){background:linear-gradient(120deg,rgb(var(--h,var(--ow-h1))),rgb(var(--h2,var(--ow-h2))))}
@@ -12817,18 +12858,18 @@ html.ow-old :matches(.po-act,.ow-popit-btn,.ow-worlds__b,.ow-feedswitch button,.
   outline:2px solid currentColor;outline-offset:3px}
 html .ow-worlds__b[style*="--w-hue"]{background:transparent;box-shadow:none}
 .ow-feedswitch__label{align-self:center;margin-right:4px;font:600 12px var(--ow-font);color:var(--ow-ink-3)}
-html.ow-old .ow-set :matches(.ow-seg__b,.ow-choice .po-act,.ow-rulech__b,.ow-wmpick .po-act){color:var(--ow-ink);background:transparent;border:1px solid rgba(255,255,255,0.3);border:1px solid color-mix(in srgb,var(--ow-ink) 30%,transparent);box-shadow:none}
-.ow-set :is(.ow-seg__b,.ow-choice .po-act,.ow-rulech__b,.ow-wmpick .po-act){color:var(--ow-ink);background:transparent;border:1px solid rgba(255,255,255,0.3);border:1px solid color-mix(in srgb,var(--ow-ink) 30%,transparent);box-shadow:none}
-html.ow-old .ow-set :matches(.ow-seg__b[data-act="on"],.ow-choice .po-act[aria-pressed="true"],.ow-rulech__b[aria-pressed="true"]){color:var(--ow-ink);background:transparent;border-color:rgba(255,255,255,0.7);border-color:color-mix(in srgb,var(--ow-ink) 70%,transparent);box-shadow:none}
-.ow-set :is(.ow-seg__b[data-act="on"],.ow-choice .po-act[aria-pressed="true"],.ow-rulech__b[aria-pressed="true"]){color:var(--ow-ink);background:transparent;border-color:rgba(255,255,255,0.7);border-color:color-mix(in srgb,var(--ow-ink) 70%,transparent);box-shadow:none}
+html.ow-old .ow-set :matches(.ow-seg__b,.ow-choice .po-act,.ow-rulech__b,.ow-wmpick .po-act){color:var(--ow-ink);background:transparent;border:1px solid rgba(255,255,255,0.3);box-shadow:none;border:1px solid rgba(255,255,255,0.3)}
+.ow-set :is(.ow-seg__b,.ow-choice .po-act,.ow-rulech__b,.ow-wmpick .po-act){color:var(--ow-ink);background:transparent;border:1px solid rgba(255,255,255,0.3);border:1px solid color-mix(in srgb,var(--ow-ink) 30%,transparent);box-shadow:none}html.ow-old .ow-set :matches(.ow-seg__b,.ow-choice .po-act,.ow-rulech__b,.ow-wmpick .po-act){border:1px solid rgba(255,255,255,0.3)}
+html.ow-old .ow-set :matches(.ow-seg__b[data-act="on"],.ow-choice .po-act[aria-pressed="true"],.ow-rulech__b[aria-pressed="true"]){color:var(--ow-ink);background:transparent;border-color:rgba(255,255,255,0.7);box-shadow:none;border-color:rgba(255,255,255,0.7)}
+.ow-set :is(.ow-seg__b[data-act="on"],.ow-choice .po-act[aria-pressed="true"],.ow-rulech__b[aria-pressed="true"]){color:var(--ow-ink);background:transparent;border-color:rgba(255,255,255,0.7);border-color:color-mix(in srgb,var(--ow-ink) 70%,transparent);box-shadow:none}html.ow-old .ow-set :matches(.ow-seg__b[data-act="on"],.ow-choice .po-act[aria-pressed="true"],.ow-rulech__b[aria-pressed="true"]){border-color:rgba(255,255,255,0.7)}
 .ow-set .ow-set__row[aria-current="page"]{background:transparent;box-shadow:inset 2px 0 0 var(--ow-ink)}
-html.ow-old .ow-set :matches(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}
-html.ow-old .ow-set :-webkit-any(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}
-.ow-set :is(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}
-html.ow-old .ow-set .ow-set__sec > :matches(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}
-html.ow-old .ow-set .ow-set__sec > :-webkit-any(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}
-.ow-set .ow-set__sec > :is(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}
-.ow-set .ow-cust__row > .ow-switch:hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}
+html.ow-old .ow-set :matches(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);box-shadow:none;background:rgba(255,255,255,0.05)}
+html.ow-old .ow-set :-webkit-any(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);box-shadow:none;background:rgba(255,255,255,0.05)}
+.ow-set :is(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}html.ow-old .ow-set :matches(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05)}html.ow-old .ow-set :-webkit-any(.ow-set__row,.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05)}
+html.ow-old .ow-set .ow-set__sec > :matches(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);box-shadow:none;background:rgba(255,255,255,0.05)}
+html.ow-old .ow-set .ow-set__sec > :-webkit-any(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);box-shadow:none;background:rgba(255,255,255,0.05)}
+.ow-set .ow-set__sec > :is(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}html.ow-old .ow-set .ow-set__sec > :matches(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05)}html.ow-old .ow-set .ow-set__sec > :-webkit-any(.ow-switch,.ow-rulech):hover{background:rgba(255,255,255,0.05)}
+.ow-set .ow-cust__row > .ow-switch:hover{background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent);box-shadow:none}html.ow-old .ow-set .ow-cust__row > .ow-switch:hover{background:rgba(255,255,255,0.05)}
 html.ow-old .ow-ocard[data-projection]:matches(.ow-ocard--tile,.ow-ocard--flag){box-shadow:none}
 html.ow-old .ow-ocard[data-projection]:-webkit-any(.ow-ocard--tile,.ow-ocard--flag){box-shadow:none}
 .ow-ocard[data-projection]:is(.ow-ocard--tile,.ow-ocard--flag){box-shadow:none}
@@ -12839,8 +12880,8 @@ html.ow-old .ow-ocard[data-projection]:-webkit-any(.ow-ocard--tile,.ow-ocard--fl
 /* ONE EMPTY STATE ON A TAB: the profile's own half stands aside when the canvas above it has said it (canvas.js, me.js
    emptyMarked); an error is never marked */
 .ow-prof__canvas:has(> .ow-door) ~ * > .ow-door[data-empty="profile"]{display:none}
-.ow-cv-empty--act{background:transparent;border:1px solid rgba(255,255,255,0.3);border:1px solid color-mix(in srgb,var(--ow-ink) 30%,transparent);box-shadow:none;border-radius:999px}
-.ow-cv-empty--act:hover{background:transparent;border-color:rgba(255,255,255,0.65);border-color:color-mix(in srgb,var(--ow-ink) 65%,transparent)}
+.ow-cv-empty--act{background:transparent;border:1px solid rgba(255,255,255,0.3);border:1px solid color-mix(in srgb,var(--ow-ink) 30%,transparent);box-shadow:none;border-radius:999px}html.ow-old .ow-cv-empty--act{border:1px solid rgba(255,255,255,0.3)}
+.ow-cv-empty--act:hover{background:transparent;border-color:rgba(255,255,255,0.65);border-color:color-mix(in srgb,var(--ow-ink) 65%,transparent)}html.ow-old .ow-cv-empty--act:hover{border-color:rgba(255,255,255,0.65)}
 
 /* ═══ THE HEADER, THE BANNER AND THE BUTTONS (founder to B, 2026-10-15/16; PLAN §3.4 "The header, the banner and the buttons")
    ONE block, last in the file, decides them for the App profile and Center page (.ow-prof), the OS Center page and the
@@ -12927,7 +12968,7 @@ html.ow-old .ow-prof[data-projection="full"] .ow-prof__id>.ow-prof__about>.ow-pr
 .ow-prof__about .ow-linkbar__i{width:32px;height:32px;padding:0;justify-content:center;flex:none}
 .ow-prof__about .ow-linkbar__i svg{width:18px;height:18px}
 .ow-prof__about .ow-linkbar__i>span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.ow-prof__about .ow-linkbar__i:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+.ow-prof__about .ow-linkbar__i:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-prof__about .ow-linkbar__i:hover{background:rgba(255,255,255,0.08)}
 @media (max-width:480px){
   .ow-prof[data-projection="full"] .ow-prof__id>.ow-prof__about>.ow-prof__bio{font-size:.875rem}
   html.ow-old .ow-prof[data-projection="full"] .ow-prof__id>.ow-prof__about>.ow-prof__details>:matches(.ow-ocard__detail,.ow-prof__detail){font-size:.8125rem}
@@ -12941,7 +12982,7 @@ html.ow-old .ow-prof[data-projection="full"] .ow-prof__id>.ow-prof__about>.ow-pr
 .ow-prof__dirgo{display:inline-flex;align-items:center;gap:5px;margin:0 0 0 -6px;padding:1px 8px 1px 6px;border:0;border-radius:999px;
   background:transparent;color:var(--ow-ink);font:600 .875rem/1.3 var(--ow-font);cursor:pointer;text-decoration:none;justify-self:start}html.ow-nogap .ow-prof__dirgo>*+*{margin-left:5px}
 .ow-prof__dirgo svg{width:16px;height:16px;flex:none;display:block}
-.ow-prof__dirgo:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+.ow-prof__dirgo:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-prof__dirgo:hover{background:rgba(255,255,255,0.08)}
 html.ow-old .ow-prof__dirgo:focus{outline:2px solid currentColor;outline-offset:2px}
 .ow-prof__dirgo:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 
@@ -12981,7 +13022,7 @@ html.ow-old .ow-prof__dirgo:focus{outline:2px solid currentColor;outline-offset:
   padding:8px 8px 0;-webkit-overflow-scrolling:touch}
 .ow-cf__tools::-webkit-scrollbar{display:none}
 .ow-cf__tool,.ow-cf__tool:hover{border:0;background:transparent;text-decoration:none;flex:none;border-radius:999px;color:var(--ow-ink-2);box-shadow:none}
-.ow-cf__tool:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);color:var(--ow-ink)}
+.ow-cf__tool:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);color:var(--ow-ink)}html.ow-old .ow-cf__tool:hover{background:rgba(255,255,255,0.08)}
 
 html.ow-old :matches(.ow-prof[data-projection="full"] .ow-prof__name,.ow-prof[data-projection="full"][data-kind] .ow-prof__name,
     .ow-prof__canonical .ow-ocard__name,.ow-ocard[data-projection] .ow-ocard__name,.ow-place__name){font-family:var(--ow-font,inherit);font-size:var(--ow-hdr-name);font-weight:700;line-height:1.3;letter-spacing:-.005em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;-webkit-line-clamp:unset;min-block-size:0;max-inline-size:100%}
@@ -12999,14 +13040,14 @@ html.ow-old :matches(.ow-prof[data-projection="full"] .ow-prof__bio,.ow-prof__ca
 
 /* ── the quick post box: the feed's first row (Threads), always visible ── */
 body:has(.ow-top.is-away) .ow-surface>.ow-quickpost{position:relative;top:auto;visibility:visible;pointer-events:auto}
-.ow-surface>.ow-quickpost{position:relative;top:auto;z-index:auto;visibility:visible;pointer-events:auto;display:flex;align-items:center;gap:12px;box-sizing:border-box;width:100%;max-width:640px;min-height:68px;margin:12px auto 0;padding:12px 16px;border:0;border-bottom:1px solid rgba(255,255,255,0.1);border-bottom:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}html.ow-nogap .ow-surface>.ow-quickpost>*+*{margin-left:12px}
+.ow-surface>.ow-quickpost{position:relative;top:auto;z-index:auto;visibility:visible;pointer-events:auto;display:flex;align-items:center;gap:12px;box-sizing:border-box;width:100%;max-width:640px;min-height:68px;margin:12px auto 0;padding:12px 16px;border:0;border-bottom:1px solid rgba(255,255,255,0.1);border-bottom:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:0;background:transparent;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}html.ow-old .ow-surface>.ow-quickpost{border-bottom:1px solid rgba(255,255,255,0.1)}html.ow-nogap .ow-surface>.ow-quickpost>*+*{margin-left:12px}
 .ow-surface>.ow-quickpost[hidden]{display:none}
-.ow-quickpost__face{width:40px;height:40px;background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}
+.ow-quickpost__face{width:40px;height:40px;background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-quickpost__face{background:rgba(255,255,255,0.1)}
 .ow-quickpost .ow-quickpost__prompt{padding:8px 0;font-size:.9375rem;color:var(--ow-ink-3)!important;background:none}
 .ow-quickpost .ow-quickpost__prompt:hover{background:none;color:var(--ow-ink-2)!important}
-.ow-quickpost .ow-quickpost__post{min-height:36px;padding:6px 18px;border-radius:12px;font-weight:600;border:1px solid rgba(255,255,255,0.22);border:1px solid color-mix(in srgb,var(--ow-ink) 22%,transparent);background:transparent;color:var(--ow-ink)}
-.ow-quickpost .ow-quickpost__post:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
-html[data-simple="1"] .ow-surface>.ow-quickpost{margin:12px 0 0;width:auto;border:1px solid rgba(255,255,255,0.1);border:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:24px 24px 0 0;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 97%,rgb(var(--ow-h1)) 3%)}
+.ow-quickpost .ow-quickpost__post{min-height:36px;padding:6px 18px;border-radius:12px;font-weight:600;border:1px solid rgba(255,255,255,0.22);border:1px solid color-mix(in srgb,var(--ow-ink) 22%,transparent);background:transparent;color:var(--ow-ink)}html.ow-old .ow-quickpost .ow-quickpost__post{border:1px solid rgba(255,255,255,0.22)}
+.ow-quickpost .ow-quickpost__post:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-quickpost .ow-quickpost__post:hover{background:rgba(255,255,255,0.08)}
+html[data-simple="1"] .ow-surface>.ow-quickpost{margin:12px 0 0;width:auto;border:1px solid rgba(255,255,255,0.1);border:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:24px 24px 0 0;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 97%,rgb(var(--ow-h1)) 3%)}html.ow-old[data-simple="1"] .ow-surface>.ow-quickpost{border:1px solid rgba(255,255,255,0.1);background:var(--ow-ground)}
 html[data-simple="1"] .ow-surface>.ow-quickpost:not([hidden])+.po-river{border-top:0;border-top-left-radius:0;border-top-right-radius:0;padding-top:0}
 /* THE QUICK POST IS THE BUBBLE'S TOP, NOT A BOX OVER IT (founder, 2026-10-17): its sides are the river's own, which
    reaches out 10px a side only on a phone (the @media (max-width:599px) river rule); elsewhere neither does */
@@ -13029,27 +13070,27 @@ html[data-simple="1"] :is(.po-river>.po-card,.ow-fpos) .po-acts>.po-act{flex:0 1
 .ow-cv-tools .ow-cv-add,.ow-cv-tools .ow-cv-done,.ow-cv-tools .ow-cv-cancel{margin:0;border:0!important;background:transparent;
   border-radius:999px!important;min-height:36px;padding:6px 12px;font:600 13px/1.2 var(--ow-font);color:var(--ow-ink-3);
   text-decoration:none;box-shadow:none}
-.ow-cv-tools .ow-cv-add:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);color:var(--ow-ink)}
+.ow-cv-tools .ow-cv-add:hover{background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);color:var(--ow-ink)}html.ow-old .ow-cv-tools .ow-cv-add:hover{background:rgba(255,255,255,0.08)}
 .ow-cv-tools .ow-cv-done[data-on],.ow-cv[data-editing="1"]~.ow-cv-tools .ow-cv-done{color:var(--ow-ink)}
 .ow-home-canvas{padding-bottom:6px}
 .ow-surface>.ow-home-canvas+.ow-claims,.ow-surface>.ow-home-canvas~.ow-worlds{margin-top:18px}
-.ow-surface>.ow-worlds{border-top:1px solid rgba(255,255,255,0.08);border-top:1px solid color-mix(in srgb,var(--ow-ink) 8%,transparent);padding-top:14px}
+.ow-surface>.ow-worlds{border-top:1px solid rgba(255,255,255,0.08);border-top:1px solid color-mix(in srgb,var(--ow-ink) 8%,transparent);padding-top:14px}html.ow-old .ow-surface>.ow-worlds{border-top:1px solid rgba(255,255,255,0.08)}
 html .ow-surface .ow-worlds{gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:8px}
 html .ow-surface .ow-worlds::-webkit-scrollbar{display:none}
 html .ow-surface .ow-worlds .ow-worlds__b{border:0;background:transparent;box-shadow:none;border-radius:999px;min-height:36px;
   padding:6px 14px;font:600 14px/1.2 var(--ow-font);color:var(--ow-ink-3);text-decoration:none}
-html .ow-surface .ow-worlds .ow-worlds__b.is-here{color:var(--ow-ink);font-weight:700;background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}
-html .ow-surface .ow-worlds .ow-worlds__b:not(.is-here):hover{color:var(--ow-ink-2);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent)}
-html .ow-surface .ow-feedswitch{display:inline-flex;gap:0;padding:3px;margin:4px 0 0;border-radius:999px;width:max-content;background:rgba(255,255,255,0.07);background:color-mix(in srgb,var(--ow-ink) 7%,transparent);border:0}
+html .ow-surface .ow-worlds .ow-worlds__b.is-here{color:var(--ow-ink);font-weight:700;background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-surface .ow-worlds .ow-worlds__b.is-here{background:rgba(255,255,255,0.1)}
+html .ow-surface .ow-worlds .ow-worlds__b:not(.is-here):hover{color:var(--ow-ink-2);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent)}html.ow-old .ow-surface .ow-worlds .ow-worlds__b:not(.is-here):hover{background:rgba(255,255,255,0.05)}
+html .ow-surface .ow-feedswitch{display:inline-flex;gap:0;padding:3px;margin:4px 0 0;border-radius:999px;width:max-content;background:rgba(255,255,255,0.07);background:color-mix(in srgb,var(--ow-ink) 7%,transparent);border:0}html.ow-old .ow-surface .ow-feedswitch{background:rgba(255,255,255,0.07)}
 html .ow-surface .ow-feedswitch .ow-feedswitch__label{display:none}
 html .ow-surface .ow-feedswitch button{border:0;background:transparent;box-shadow:none;border-radius:999px;min-height:30px;
   padding:5px 14px;font:600 12.5px/1.2 var(--ow-font);color:var(--ow-ink-3);transform:none}
-html .ow-surface .ow-feedswitch button[aria-pressed="true"]{background:rgba(255,255,255,0.14);background:color-mix(in srgb,var(--ow-ink) 14%,transparent);color:var(--ow-ink)}
+html .ow-surface .ow-feedswitch button[aria-pressed="true"]{background:rgba(255,255,255,0.14);background:color-mix(in srgb,var(--ow-ink) 14%,transparent);color:var(--ow-ink)}html.ow-old .ow-surface .ow-feedswitch button[aria-pressed="true"]{background:rgba(255,255,255,0.14)}
 html .ow-surface .ow-feedswitch button:not([aria-pressed="true"]):hover{color:var(--ow-ink-2);background:transparent}
 
 /* ── the shared primary button (.ow-btn): its words in a hairline, no slab, no shadow, no lift (S20) ── */
-.ow-btn{background:transparent;color:var(--ow-ink);border:1px solid rgba(255,255,255,0.34);border:1px solid color-mix(in srgb,var(--ow-ink) 34%,transparent);box-shadow:none;border-radius:999px;font-weight:650;text-decoration:none}
-.ow-btn:hover:not(:disabled){transform:none;background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);border-color:rgba(255,255,255,0.6);border-color:color-mix(in srgb,var(--ow-ink) 60%,transparent)}
+.ow-btn{background:transparent;color:var(--ow-ink);border:1px solid rgba(255,255,255,0.34);border:1px solid color-mix(in srgb,var(--ow-ink) 34%,transparent);box-shadow:none;border-radius:999px;font-weight:650;text-decoration:none}html.ow-old .ow-btn{border:1px solid rgba(255,255,255,0.34)}
+.ow-btn:hover:not(:disabled){transform:none;background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);border-color:rgba(255,255,255,0.6);border-color:color-mix(in srgb,var(--ow-ink) 60%,transparent)}html.ow-old .ow-btn:hover:not(:disabled){background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.6)}
 html.ow-old .ow-btn:focus{outline:2px solid currentColor;outline-offset:3px}
 .ow-btn:focus-visible{outline:2px solid currentColor;outline-offset:3px}
 a.ow-btn,a.ow-btn:hover{text-decoration:none}
@@ -13064,9 +13105,9 @@ html.ow-old .ow-prof .ow-prof__acts>:matches(.po-act,a,button){border:0!importan
 html.ow-old .ow-prof .ow-prof__acts>:-webkit-any(.po-act,a,button){border:0!important;background:transparent;box-shadow:none;text-decoration:none;min-height:36px;padding:6px 14px;border-radius:999px;font:600 .875rem/1.2 var(--ow-font);color:var(--ow-ink)}
 .ow-prof .ow-prof__acts>:is(.po-act,a,button){border:0!important;background:transparent;box-shadow:none;text-decoration:none;
   min-height:36px;padding:6px 14px;border-radius:999px;font:600 .875rem/1.2 var(--ow-font);color:var(--ow-ink)}
-html.ow-old .ow-prof .ow-prof__acts>:matches(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
-html.ow-old .ow-prof .ow-prof__acts>:-webkit-any(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
-.ow-prof .ow-prof__acts>:is(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+html.ow-old .ow-prof .ow-prof__acts>:matches(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08);background:rgba(255,255,255,0.08)}
+html.ow-old .ow-prof .ow-prof__acts>:-webkit-any(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08);background:rgba(255,255,255,0.08)}
+.ow-prof .ow-prof__acts>:is(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-prof .ow-prof__acts>:matches(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08)}html.ow-old .ow-prof .ow-prof__acts>:-webkit-any(.po-act,a,button):hover:not(:disabled){background:rgba(255,255,255,0.08)}
 .ow-prof .ow-prof__acts>.po-act[aria-pressed="false"]{background:rgb(var(--ow-h1));color:#fff;padding:6px 20px;
   text-shadow:0 1px 1px rgba(0,0,0,.18)}
 .ow-prof .ow-prof__acts>.po-act[aria-pressed="false"]:hover:not(:disabled){background:rgb(var(--ow-h1));filter:brightness(1.08)}
@@ -13080,8 +13121,8 @@ html.ow-old .ow-prof .ow-prof__acts>:-webkit-any(.po-act,a,button):focus{outline
 .ow-prof .ow-tabs .ow-tab,.ow-cf .ow-cf__tabs .ow-cf__tab{border:0;background:transparent;border-radius:999px;min-height:34px;padding:6px 14px;
   color:var(--ow-ink-3);font-weight:600;text-decoration:none;box-shadow:none}
 .ow-prof .ow-tabs .ow-tab::after,.ow-cf .ow-cf__tabs .ow-cf__tab::after{content:none!important;display:none!important}
-.ow-prof .ow-tabs .ow-tab[aria-selected="true"],.ow-cf .ow-cf__tabs .ow-cf__tab[aria-selected="true"]{color:var(--ow-ink);background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}
-.ow-prof .ow-tabs .ow-tab:not([aria-selected="true"]):hover,.ow-cf .ow-cf__tabs .ow-cf__tab:not([aria-selected="true"]):hover{color:var(--ow-ink-2);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent)}
+.ow-prof .ow-tabs .ow-tab[aria-selected="true"],.ow-cf .ow-cf__tabs .ow-cf__tab[aria-selected="true"]{color:var(--ow-ink);background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-prof .ow-tabs .ow-tab[aria-selected="true"],html.ow-old .ow-cf .ow-cf__tabs .ow-cf__tab[aria-selected="true"]{background:rgba(255,255,255,0.1)}
+.ow-prof .ow-tabs .ow-tab:not([aria-selected="true"]):hover,.ow-cf .ow-cf__tabs .ow-cf__tab:not([aria-selected="true"]):hover{color:var(--ow-ink-2);background:rgba(255,255,255,0.05);background:color-mix(in srgb,var(--ow-ink) 5%,transparent)}html.ow-old .ow-prof .ow-tabs .ow-tab:not([aria-selected="true"]):hover,html.ow-old .ow-cf .ow-cf__tabs .ow-cf__tab:not([aria-selected="true"]):hover{background:rgba(255,255,255,0.05)}
 
 /* ═══ ONE BUTTON LANGUAGE, THE WHOLE PLATFORM, BOTH MODES (founder, 2026-10-16: "Make sure the buttons that we are
    implementing are a universal language among the platform. Like some of our buttons are transparent and have a white
@@ -13163,7 +13204,7 @@ html body .ow-prof .ow-prof__acts>.po-act[aria-pressed="true"]{background:transp
 html body .ow-prof .ow-prof__acts>.po-act[aria-pressed="true"]:hover:not(:disabled){background:var(--ow-b-wash);color:var(--ow-ink)}
 
 /* the tab bar keeps its rule (founder, same message: "there still needs to be a bar"); the current tab is the soft fill */
-.ow-prof .ow-tabs,.ow-cf .ow-cf__tabs{border:0!important;border-bottom:1px solid rgba(255,255,255,0.12)!important;border-bottom:1px solid color-mix(in srgb,var(--ow-ink) 12%,transparent)!important;padding-bottom:6px}
+.ow-prof .ow-tabs,.ow-cf .ow-cf__tabs{border:0!important;border-bottom:1px solid rgba(255,255,255,0.12)!important;border-bottom:1px solid color-mix(in srgb,var(--ow-ink) 12%,transparent)!important;padding-bottom:6px}html.ow-old .ow-prof .ow-tabs,html.ow-old .ow-cf .ow-cf__tabs{border-bottom:1px solid rgba(255,255,255,0.12)!important}
 html.ow-old body .ow-prof .ow-prof__acts>:matches(button,a){min-height:var(--ow-b-h);min-block-size:var(--ow-b-h)}
 html.ow-old body .ow-prof .ow-prof__acts>:-webkit-any(button,a){min-height:var(--ow-b-h);min-block-size:var(--ow-b-h)}
 html body .ow-prof .ow-prof__acts>:is(button,a){min-height:var(--ow-b-h);min-block-size:var(--ow-b-h)}
@@ -13214,7 +13255,7 @@ html[data-theme="light"] body:has(#login-btn,#signup-btn) img.ow-hero__logo{cont
    iMessage and Instagram's DMs: your words on a flat pill in your own hue, theirs on a quiet fill, a photo is just the
    photo with rounded corners (no frame), the day is a small quiet word (no gray chip), a removed message is a quiet
    italic line (no box), and the composer is a field with a hairline on the page's own ground with the one hue send. ═══ */
-html[data-simple="1"] .ow-msg{background:rgba(255,255,255,0.09);background:color-mix(in srgb,var(--ow-ink) 9%,transparent);background-image:none;box-shadow:none;border:0;border-radius:18px 18px 18px 6px;padding:8px 13px}
+html[data-simple="1"] .ow-msg{background:rgba(255,255,255,0.09);background:color-mix(in srgb,var(--ow-ink) 9%,transparent);background-image:none;box-shadow:none;border:0;border-radius:18px 18px 18px 6px;padding:8px 13px}html.ow-old[data-simple="1"] .ow-msg{background:rgba(255,255,255,0.09)}
 html[data-simple="1"] .ow-msg[data-mine]{background:rgb(var(--ow-h1));background-image:none;color:#fff;border-radius:18px 18px 6px 18px}
 html[data-simple="1"] .ow-msg::before,html[data-simple="1"] .ow-msg::after{display:none}
 html[data-simple="1"] .ow-msg:has(.ow-msg__media):not(:has(.ow-msg__x)){background:transparent;padding:0}
@@ -13223,10 +13264,10 @@ html[data-simple="1"] .ow-msg:has(.ow-msg__media):not(:has(.ow-msg__x)) .ow-msg_
 html[data-simple="1"] .ow-msg[data-gone],html[data-simple="1"] .ow-msg:has(.ow-msg__gone){background:transparent;padding:2px 4px;opacity:1}
 html[data-simple="1"] .ow-msg__gone{color:var(--ow-ink-3);font-style:italic}
 html[data-simple="1"] .ow-msg-day{background:transparent;box-shadow:none;color:var(--ow-ink-3);font-weight:600;font-size:.75rem}
-html[data-simple="1"] .ow-composer,html[data-simple="1"][data-ow-thread] .ow-composer{background:var(--ow-ground);box-shadow:0 -1px 0 rgba(255,255,255,0.08);box-shadow:0 -1px 0 color-mix(in srgb,var(--ow-ink) 8%,transparent)}
-html[data-simple="1"] .ow-composer textarea{background:transparent;background-image:none;box-shadow:none;border:1px solid rgba(255,255,255,0.16);border:1px solid color-mix(in srgb,var(--ow-ink) 16%,transparent)}
+html[data-simple="1"] .ow-composer,html[data-simple="1"][data-ow-thread] .ow-composer{background:var(--ow-ground);box-shadow:0 -1px 0 rgba(255,255,255,0.08);box-shadow:0 -1px 0 color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old[data-simple="1"] .ow-composer,html.ow-old[data-simple="1"][data-ow-thread] .ow-composer{box-shadow:0 -1px 0 rgba(255,255,255,0.08)}
+html[data-simple="1"] .ow-composer textarea{background:transparent;background-image:none;box-shadow:none;border:1px solid rgba(255,255,255,0.16);border:1px solid color-mix(in srgb,var(--ow-ink) 16%,transparent)}html.ow-old[data-simple="1"] .ow-composer textarea{border:1px solid rgba(255,255,255,0.16)}
 html[data-simple="1"] .ow-send{background:rgb(var(--ow-h1));background-image:none;box-shadow:none;color:#fff}
-html[data-simple="1"] .ow-thread-head{background:var(--ow-ground);box-shadow:0 1px 0 rgba(255,255,255,0.08);box-shadow:0 1px 0 color-mix(in srgb,var(--ow-ink) 8%,transparent)}
+html[data-simple="1"] .ow-thread-head{background:var(--ow-ground);box-shadow:0 1px 0 rgba(255,255,255,0.08);box-shadow:0 1px 0 color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old[data-simple="1"] .ow-thread-head{box-shadow:0 1px 0 rgba(255,255,255,0.08)}
 html[data-simple="1"] .ow-msg,html[data-simple="1"] .ow-msg .ow-msg__media,html[data-simple="1"] .ow-msg .ow-msg__media img{box-shadow:none!important}
 
 /* ═══ THE WORKPLACE (founder, 2026-10-16: "Hello X, You work in X centers. Your Hours Today: Your Assignments Your
@@ -13240,7 +13281,7 @@ html[data-simple="1"] .ow-msg,html[data-simple="1"] .ow-msg .ow-msg__media,html[
 .ow-wk__places::-webkit-scrollbar{display:none}
 .ow-wk__place{flex:none;display:grid;grid-template-columns:36px auto;grid-template-rows:auto auto;column-gap:10px;align-items:center;
   padding:6px 14px 6px 6px;border-radius:999px;text-decoration:none;color:var(--ow-ink);background:transparent}
-.ow-wk__place:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}
+.ow-wk__place:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}html.ow-old .ow-wk__place:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08))}
 .ow-wk__place-face{grid-row:1/span 2;width:36px;height:36px;border-radius:50%;overflow:hidden;display:grid;place-items:center}
 .ow-wk__place-face img{width:100%;height:100%;object-fit:cover}
 .ow-wk__place-n{font:600 .875rem/1.2 var(--ow-font);white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
@@ -13251,23 +13292,23 @@ html.ow-old .ow-wk--desk :matches(.ow-wk__need,.ow-wk__list,.ow-wk__draft){backg
 html.ow-old .ow-wk--desk :-webkit-any(.ow-wk__need,.ow-wk__list,.ow-wk__draft){background:transparent;background-image:none;box-shadow:none;border:0;border-radius:0}
 /* no gray boxes: the cards and lists sit on the page, a hairline between rows (the decision answers keep their buttons) */
 .ow-wk--desk :is(.ow-wk__need,.ow-wk__list,.ow-wk__draft){background:transparent;background-image:none;box-shadow:none;border:0;border-radius:0}
-.ow-wk--desk .ow-wk__need{padding:10px 2px;border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}
+.ow-wk--desk .ow-wk__need{padding:10px 2px;border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-wk--desk .ow-wk__need{border-top:1px solid rgba(255,255,255,0.1)}
 .ow-wk--desk .ow-wk__need::before,.ow-wk--desk .ow-wk__need::after{display:none}
 .ow-wk--desk .ow-wk__row{padding:10px 2px}
-.ow-wk--desk .ow-wk__row + .ow-wk__row,.ow-wk--desk .ow-wk__list{box-shadow:none;border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}
-.ow-wk--desk .ow-wk__row + .ow-wk__row{border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}
+.ow-wk--desk .ow-wk__row + .ow-wk__row,.ow-wk--desk .ow-wk__list{box-shadow:none;border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-wk--desk .ow-wk__row + .ow-wk__row,html.ow-old .ow-wk--desk .ow-wk__list{border-top:1px solid rgba(255,255,255,0.1)}
+.ow-wk--desk .ow-wk__row + .ow-wk__row{border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-wk--desk .ow-wk__row + .ow-wk__row{border-top:1px solid rgba(255,255,255,0.1)}
 .ow-wk--desk .ow-wk__draft{padding:0 2px;width:160px}
 .ow-wk__draft-pic{display:block;width:100%;height:84px;object-fit:cover;border-radius:12px;margin:0 0 8px}
 /* a Center's parts: a list of doors, the count on the right */
-.ow-wk__parts{display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}
-.ow-wk__part{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:0 4px;text-decoration:none;color:var(--ow-ink);font:600 .9375rem/1.2 var(--ow-font);border-bottom:1px solid rgba(255,255,255,0.1);border-bottom:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}
-.ow-wk__part:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}
+.ow-wk__parts{display:flex;flex-direction:column;border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-wk__parts{border-top:1px solid rgba(255,255,255,0.1)}
+.ow-wk__part{display:flex;align-items:center;justify-content:space-between;min-height:44px;padding:0 4px;text-decoration:none;color:var(--ow-ink);font:600 .9375rem/1.2 var(--ow-font);border-bottom:1px solid rgba(255,255,255,0.1);border-bottom:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-wk__part{border-bottom:1px solid rgba(255,255,255,0.1)}
+.ow-wk__part:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}html.ow-old .ow-wk__part:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08))}
 .ow-wk__part::after{content:"\203A";color:var(--ow-ink-3);font-size:1.1rem;margin-left:8px}
 .ow-wk__part-n{flex:1}
 .ow-wk__part-c{font-size:.8125rem;color:var(--ow-ink-3);font-weight:500}
 .ow-wk__allc{align-self:flex-start;margin:0 2px;font:600 .875rem/1.2 var(--ow-font);color:var(--ow-ink);text-decoration:none;
   padding:6px 14px;border-radius:999px}
-.ow-wk__allc:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}
+.ow-wk__allc:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}html.ow-old .ow-wk__allc:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08))}
 .ow-wk__place-face{background:rgb(var(--ow-h1));color:#fff;font:700 .75rem/1 var(--ow-font)}
 /* who you are, with the hello (founder, 2026-10-16): the profile's face, the hello, the @handle */
 .ow-wk__me{display:flex;align-items:center;gap:14px;margin:4px 2px 0}html.ow-nogap .ow-wk__me>*+*{margin-left:14px}
@@ -13283,7 +13324,7 @@ html.ow-old .ow-wk--desk :-webkit-any(.ow-wk__need,.ow-wk__list,.ow-wk__draft){b
 .ow-wk__place .ow-wk__jump{grid-column:3;grid-row:1/span 2;align-self:center;margin-left:6px;padding:8px 12px;font-size:.8125rem}
 .ow-wk__today{display:flex;flex-direction:column;gap:18px}html.ow-nogap .ow-wk__today>*+*{margin-top:18px}
 .ow-wk__jump{flex:none;font:600 .875rem/1 var(--ow-font);color:var(--ow-ink);text-decoration:none;padding:10px 14px;border-radius:999px}
-.ow-wk__jump:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}
+.ow-wk__jump:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08));background:var(--ow-b-wash,color-mix(in srgb,var(--ow-ink) 8%,transparent))}html.ow-old .ow-wk__jump:hover{background:var(--ow-b-wash,rgba(255,255,255,0.08))}
 /* an assignment with its answers on the right; on a phone the answers go under it */
 .ow-wk__row--act{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}html.ow-nogap .ow-wk__row--act>*{margin-right:12px}html.ow-nogap .ow-wk__row--act>*{margin-bottom:12px}
 .ow-wk__row-t{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 180px}html.ow-nogap .ow-wk__row-t>*+*{margin-top:2px}
@@ -13329,11 +13370,11 @@ html[data-ow-make] :is(.ow-compose__send,.ow-upload__bar){bottom:calc(env(safe-a
   background:rgb(var(--ow-h1));color:#fff;font:700 .8125rem/1 var(--ow-font)}
 .ow-sendto__face img{width:100%;height:100%;object-fit:cover}
 .ow-sendto__p .ow-sendto__who{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ow-sendto__tick{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,0.4);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--ow-ink) 40%,transparent)}
+.ow-sendto__tick{width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 2px rgba(255,255,255,0.4);box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--ow-ink) 40%,transparent)}html.ow-old .ow-sendto__tick{box-shadow:inset 0 0 0 2px rgba(255,255,255,0.4)}
 .ow-sendto__p[aria-checked="true"] .ow-sendto__tick{background:rgb(var(--ow-h1));box-shadow:none;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6 12.5 4 4 8-9' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   background-size:16px;background-position:center;background-repeat:no-repeat}
-.ow-sendto__bar{display:flex;align-items:center;gap:12px;padding:10px 0 calc(env(safe-area-inset-bottom) + 84px);border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-nogap .ow-sendto__bar>*+*{margin-left:12px}
+.ow-sendto__bar{display:flex;align-items:center;gap:12px;padding:10px 0 calc(env(safe-area-inset-bottom) + 84px);border-top:1px solid rgba(255,255,255,0.1);border-top:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-sendto__bar{border-top:1px solid rgba(255,255,255,0.1)}html.ow-nogap .ow-sendto__bar>*+*{margin-left:12px}
 .ow-sendto__bar[hidden]{display:none}
 .ow-sendto__names{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:600 .875rem/1.3 var(--ow-font);color:var(--ow-ink-2)}
 .ow-sendto__bar .ow-sendto__go{flex:none;width:auto;margin:0}
@@ -13667,7 +13708,7 @@ html.ow-old .ow-w[data-card="post"]:-webkit-any([data-family="large"],[data-fami
   background:#08070f;color:rgb(var(--ai1));box-shadow:0 1px 2px rgba(0,0,0,.18),0 6px 16px rgba(0,0,0,.14)}
 .ow-appicon__i[data-look="main"]{color:#fff;color:color-mix(in srgb,rgb(var(--ai1)) 38%,#fff);background:radial-gradient(105% 105% at 16% 6%,rgba(var(--ai1),.62),transparent 70%),
     radial-gradient(95% 95% at 90% 92%,rgba(var(--ai2),.46),transparent 70%),
-    radial-gradient(80% 80% at 50% 112%,rgba(var(--ai1),.3),transparent 70%),#08070f}
+    radial-gradient(80% 80% at 50% 112%,rgba(var(--ai1),.3),transparent 70%),#08070f}html.ow-old .ow-appicon__i[data-look="main"]{color:#fff}
 .ow-appicon__i .ow-globe{--g:43px;color:inherit}
 .ow-appicon__i[data-look="dark"] .ow-globe{--g:48px}
 html.ow-old .ow-appicon__i .ow-globe :matches(ellipse,circle,line,path){stroke:currentColor}
@@ -13683,9 +13724,9 @@ html.ow-old .ow-appicon__i .ow-globe :-webkit-any(ellipse,circle,line,path){stro
    - the wordmark steps down from 28px to 20px once the island's inset is there, so it sits under the island as an iOS
      title does (centred, in a 44pt row) instead of hanging from it at its own width. Pure arithmetic on the inset:
      28 - inset*.15 is 28 with no inset and floors at 20 under a 59pt island. */
-html::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);z-index:9998;pointer-events:none;background:var(--ow-ground);background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 78%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px)}
-html .ow-top{min-height:calc(10px + 36px + 8px);min-height:calc(max(10px,env(safe-area-inset-top,0px)) + 36px + min(8px,env(safe-area-inset-top,0px)));box-sizing:border-box}
-html .ow-top .ow-top__mark{height:20px;height:max(20px,min(calc(28px - env(safe-area-inset-top,0px) * .15),28px));height:clamp(20px,calc(28px - env(safe-area-inset-top,0px) * .15),28px)}
+html::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area-inset-top,0px);z-index:9998;pointer-events:none;background:var(--ow-ground);background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 78%,transparent);-webkit-backdrop-filter:saturate(1.4) blur(14px);backdrop-filter:saturate(1.4) blur(14px)}html.ow-old::before{background:var(--ow-ground)}
+html .ow-top{min-height:calc(10px + 36px + 8px);min-height:calc(max(10px,env(safe-area-inset-top,0px)) + 36px + min(8px,env(safe-area-inset-top,0px)));box-sizing:border-box}html.ow-old .ow-top{min-height:calc(10px + 36px + 8px)}
+html .ow-top .ow-top__mark{height:20px;height:max(20px,min(calc(28px - env(safe-area-inset-top,0px) * .15),28px));height:clamp(20px,calc(28px - env(safe-area-inset-top,0px) * .15),28px)}html.ow-old .ow-top .ow-top__mark{height:20px}
 
 /* THE PRESSED FOLLOW JOINS THE OUTLINED SET (codex-audit-2026-10-16, header.json: an Unfollow beside an outlined Message
    read as plain words, and aria-pressed said the opposite state): the profile's Following is the outlined surface, its
@@ -13772,7 +13813,7 @@ html body .po-card > .po-card__known:not(:is(.ow-fpos[data-kind="media"],.ow-w,.
 html body .po-card > .po-card__known > span:not(.po-card__kfaces){min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 html body .po-card > .po-card__known b{font-weight:600}
 .po-card__kfaces{display:inline-flex;flex:none;align-items:center}
-.po-card__kfaces > i{width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;background:center/cover no-repeat rgba(255,255,255,0.16);background:center/cover no-repeat color-mix(in srgb,var(--ow-ink) 16%,transparent);border:1.5px solid var(--ow-ground,#0b0b16);border:1.5px solid color-mix(in srgb,var(--ow-ground,#0b0b16) 88%,transparent);font:600 9px/1 var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);font-style:normal;color:var(--ow-ink)}
+.po-card__kfaces > i{width:20px;height:20px;border-radius:50%;flex:none;display:grid;place-items:center;background:center/cover no-repeat rgba(255,255,255,0.16);background:center/cover no-repeat color-mix(in srgb,var(--ow-ink) 16%,transparent);border:1.5px solid var(--ow-ground,#0b0b16);border:1.5px solid color-mix(in srgb,var(--ow-ground,#0b0b16) 88%,transparent);font:600 9px/1 var(--ow-font,"ONEWAY Sans",system-ui,sans-serif);font-style:normal;color:var(--ow-ink)}html.ow-old .po-card__kfaces > i{background:center/cover no-repeat rgba(255,255,255,0.16);border:1.5px solid var(--ow-ground,#0b0b16)}
 .po-card__kfaces > i + i{margin-left:-7px}
 /* THE CAPTION, under who liked it: the author's name in 600, then their words */
 html body .po-card > .po-card__body--cap{display:block}

@@ -19,6 +19,17 @@
 .sys-shot img{display:block;width:100%;height:auto;border-radius:18px}
 .sys-shot figcaption{margin:14px auto 0;text-align:center}
 
+/* THE VALUE, AT THE TOP (founder/842, 2026-10-20: "the systems that we focus on need to have high quality and value propostion"):
+   what it replaces, then the two or three things it does that they cannot on their own, each under one hairline */
+.sys-value__h{max-width:44ch;margin:var(--mp-gap-act) auto 0}
+.sys-value__why{max-width:52ch;margin:10px auto 0}
+.sys-value{list-style:none;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:var(--mp-gap-cols);
+  max-width:1080px;margin:var(--mp-gap-lead) auto 0;padding:0}
+.sys-value>li{min-width:0;border-top:1px solid rgba(255,255,255,.14);padding:var(--mp-gap-lead) 0 0}
+.sys-value .t-sub{margin:0}
+.sys-value .t-body{max-width:32ch;margin:10px auto 0}
+@media(max-width:700px){.sys-value{grid-template-columns:minmax(0,1fr);row-gap:var(--mp-gap-lead)}}
+
 /* a row that is still being built: one word under its sentence */
 .sys-st{display:block;margin:10px auto 0;font-style:italic}
 

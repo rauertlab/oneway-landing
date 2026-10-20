@@ -62,6 +62,20 @@ main > .lp:last-child,body > .lp:has(~ footer.owfoot):not(:has(~ .lp)){padding-b
 .lp-anchored > .lp-words{grid-area:words;align-self:start}
 .lp-anchored > .lp-anchor{grid-area:anchor;margin:0;align-self:center}
 .lp-anchor--device img{box-shadow:none}
+/* A SMALL DRAWING BESIDE ITS WORDS (the founder, 2026-10-20: "reorder visuals like globe to go beside text not under it on all
+   platforms unless it makes sense"; "like globe should not be under a group of text"): a globe or a mark stands at the left of
+   its section's name, headline and words, on a computer and on a phone alike; what is wide (a list of questions) runs under
+   both. The page's order is unchanged (headline, anchor, words), so the anchor rule still reads it. Wide drawings and
+   screenshots stay under their words, where they read. */
+.lp-beside{display:grid;grid-template-columns:76px minmax(0,1fr);grid-template-columns:max(76px,min(14vw,180px)) minmax(0,1fr);grid-template-columns:clamp(76px,14vw,180px) minmax(0,1fr);column-gap:16px;column-gap:max(16px,min(4vw,56px));column-gap:clamp(16px,4vw,56px);align-items:center;text-align:left;max-width:980px;margin-left:auto;margin-right:auto}
+.lp-beside > *{grid-column:2;min-width:0}
+.lp-beside > .lp-anchor{grid-column:1;grid-row:1 / span 8;align-self:center;margin:0;width:100%;text-align:center}
+.lp-beside > .lp-anchor svg,.lp-beside > .lp-anchor img{width:100%;height:auto;max-width:none}
+.lp-beside > .lp-wide{grid-column:1 / -1}
+.lp-beside--head > .lp-anchor{grid-row:1 / span 2}   /* beside the name and headline only; the wide part runs under both */
+.lp-beside--head > .lp-wide{margin-top:28px;margin-top:max(28px,min(4vw,44px));margin-top:clamp(28px,4vw,44px)}
+.lp-beside .t-heading,.lp-beside .lp-p,.lp-beside .t-lead{margin-left:0;margin-right:0}
+.lp-beside .lp-acts{justify-content:flex-start}
 /* WHAT IT IS, PLAINLY (tools/site_seo.py ANSWERS): the first section's quiet last paragraph below a hero, never the hero */
 .lp-answer{margin-top:16px;max-width:62ch;color:rgba(255,255,255,.58)}
 .os-answer{margin:14px auto 0;text-align:center}
@@ -130,3 +144,4 @@ html body :is(.pill,a.pill.ow-popit-btn):focus-visible{outline:2px solid current
    sizes. A headline's words sat apart. The word space is closed at display
    sizes only; the letters keep the spacing he approved. */
 .lp-h2,.lp-h3{word-spacing:-.04em}
+

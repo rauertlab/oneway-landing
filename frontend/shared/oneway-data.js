@@ -53,6 +53,21 @@
     try { if (OW.offline && OW.offline.purge) OW.offline.purge(); } catch (_) {}
   }
 
+  /* NOTHING IN FLIGHT ACROSS A RENEWAL (PLAN R22, the founder 2026-10-20: "the app i think needs to be perfect"). A
+     renewal ROTATES the session (POST /api/auth/refresh ends the old one at once, on purpose), and the App renews 4 s after
+     a load, while the person is already moving: a read sent with the old cookie came back 401 (walked: GET
+     /api/oneway/me/footsteps on Discovery, a console error), and a 401 here reads as "signed out" (sessionEnded). So every
+     request is counted while it flies, a renewal waits until none is (at most 4 s) and holds every new one until it has
+     answered, and a held request builds its session headers when it is finally sent. */
+  var flying = 0, renewal = null;
+  function lift(send) {
+    function go() {
+      flying++;
+      return send().then(function (r) { flying--; return r; }, function (e) { flying--; throw e; });
+    }
+    return renewal ? renewal.then(go, go) : go();
+  }
+
   /* ANOTHER TAB RENEWED THE SESSION: the App and the OS share this origin's storage, and a refresh
      in one ends the session the other holds in memory (24ee7de0: a refresh ROTATES). */
   try {
@@ -139,13 +154,17 @@
         return Promise.resolve(cache[key].v);
       }
       if (inflight[key]) return inflight[key];
-      var t = token(), h = { 'Accept': 'application/json' }, held = cookieSession() || !!t;
-      if (t && sendsHeader()) { h['X-Session-Token'] = t; h['Authorization'] = 'Bearer ' + t; }
+      var held = cookieSession() || !!token();
+      function send() {
+        var t = token(), h = { 'Accept': 'application/json' };
+        if (t && sendsHeader()) { h['X-Session-Token'] = t; h['Authorization'] = 'Bearer ' + t; }
+        return global.fetch(BASE + path, { headers: h, credentials: 'same-origin' });
+      }
       /* A READ THE PAGE ALREADY STARTED (oneway-app.html's early Home read),
          taken once, and only on the same origin it was asked of */
       var early = !BASE && global.__owEarly && global.__owEarly[path];
       if (early) delete global.__owEarly[path];
-      var p = (early || global.fetch(BASE + path, { headers: h, credentials: 'same-origin' }))
+      var p = (early || lift(send))
         .then(function (r) {
           if (r.status === 401 && held) sessionEnded();
           return r.json().catch(function () { return null; }).then(function (j) {
@@ -200,9 +219,13 @@
          show it waiting, and only when the server honours it (`OW.offline.keyFor` answers '' for anything it does not). */
       var key = (!opts.queueable || !OW.offline || !OW.offline.keyFor) ? '' : OW.offline.keyFor(opts.method || 'POST', path);
       if (key) h['X-Idempotency-Key'] = key;
-      return global.fetch(BASE + path, {
-        method: opts.method || 'POST', headers: h, credentials: 'same-origin',
-        body: body ? JSON.stringify(body) : '{}'
+      return lift(function () {
+        var t2 = token();
+        if (t2 && sendsHeader()) { h['X-Session-Token'] = t2; h['Authorization'] = 'Bearer ' + t2; }
+        return global.fetch(BASE + path, {
+          method: opts.method || 'POST', headers: h, credentials: 'same-origin',
+          body: body ? JSON.stringify(body) : '{}'
+        });
       }).then(function (r) {
         if (r.status === 401 && held) sessionEnded();
         return r.json().catch(function () { return null; }).then(function (j) {
@@ -239,6 +262,18 @@
            whose fault it was (the read path's rule, above) */
         return { ok: false, status: 0, error: 'Oneway did not answer, so nothing was done. Try again.' };
       });
+    },
+    /* A RENEWAL, WHEN NOTHING IS IN FLIGHT (above): `renew` is called once every request already sent has its answer (or
+       after 4 s), and every request made meanwhile waits for its answer. One at a time: a second asks for the first. */
+    renewWhenQuiet: function (renew) {
+      if (renewal) return renewal;
+      var quiet = new Promise(function (done) {
+        var waited = 0;
+        (function look() { if (!flying || waited >= 4000) return done(); waited += 50; global.setTimeout(look, 50); })();
+      });
+      renewal = quiet.then(function () { return renew(); })
+        .then(function (v) { renewal = null; return v; }, function (e) { renewal = null; throw e; });
+      return renewal;
     },
     /* DELETE, PUT — the same request path with a different verb. `post`
        already took `opts.method`; these exist so a caller reads as what it

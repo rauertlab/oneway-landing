@@ -99,13 +99,15 @@
     var began = Date.now();
     try { ls.setItem('ow_refreshing', String(began)); } catch (_) {}
     function unlock() { try { ls.removeItem('ow_refreshing'); } catch (_) {} }
-    return global.fetch(data._session.base() + '/api/auth/refresh', {
+    /* sent when nothing else is in flight, and every request made meanwhile waits for it (OW.data.renewWhenQuiet) */
+    var renew = function () { return global.fetch(data._session.base() + '/api/auth/refresh', {
       method: 'POST', credentials: 'same-origin',
       /* on this origin the answer is the cookie alone: no token in the body (identity/routes._signed_in) */
       headers: data._session.base() ? { 'Content-Type': 'application/json', 'Accept': 'application/json' }
                     : { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-ONEWAY-Session': 'cookie' },
       body: JSON.stringify(exchange ? { refresh_token: t } : {})
-    }).then(function (r) {
+    }); };
+    return (data.renewWhenQuiet ? data.renewWhenQuiet(renew) : renew()).then(function (r) {
       return r.json().catch(function () { return {}; }).then(function (j) {
         unlock();
         if (r.ok && j && (j.access_token || j.session === 'cookie')) {
