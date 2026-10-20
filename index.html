@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/>
-  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script><script>window.owStrip="/frontend/landing/strip-centers.json?v=76767073";</script>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})()</script><script>window.owStrip="/frontend/landing/strip-centers.json?v=a50a3c24";</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <script id="ow-look">
   /* THE LOOK THIS LOAD, CHOSEN ONCE, FIRST (founder/829: "the icon doesnt sync to the landing pages color"). The page's
@@ -1428,7 +1428,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
        form, so reserve.css's .rsv-go is the one place to say it for both. */
     #rsv .rsv-go{height:auto;margin-top:0}
   </style>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=3142d6a9"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=508d2362"/>
 <style>
   /* founder/806: "Invitation Only NYC Beta", plainly, by the map; a label, not a button. Literal font stack (Safari guard). */
   /* the section's name, in the mark role (.t-mark) as every lockup's word: the outlined label and its green dot are gone
@@ -2717,6 +2717,7 @@ html[data-theme="light</style><link rel="preload" as="style" href="/frontend/sha
       <a href="/accessibility">Accessibility</a>
       <a href="/learn">Glossary</a>
     </nav>
+    <nav class="owfoot-more" aria-label="More from Oneway"><a href="https://onewayarcade.com/">Oneway Arcade</a></nav>
     <nav class="owfoot-legal" aria-label="Legal">
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>

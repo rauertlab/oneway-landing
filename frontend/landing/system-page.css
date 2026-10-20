@@ -1,0 +1,72 @@
+/* A SYSTEM'S PAGE (the founder, 2026-10-18: "landing pages on oneway.center for each of our systems that are
+   comprehensive and modern and are simple in layout"; drafts, unpublished, written by tools/system_pages.py).
+   Built on Our Mission's blank slate (site-page.css .mission-page and .ind-page, founder/813, 816): every section is its
+   name (.t-mark) over its headline (.t-heading) over its line (.t-lead), and what it does follows as rows under one
+   hairline (.ind-rows). Every piece of text plays one role from compat.css (.t-*); this sheet sets no size, weight,
+   line-height or letter-spacing. It only places four things the industry pages do not have:
+     · the screenshot's place (.sys-shot), held empty until the Oneway OS front end is final;
+     · a row that is still being built (.sys-st), said in one word, in white like every other word (founder, 2026-10-09:
+       "all white rather then divided into smaller chunks of grey sidetext");
+     · how it works, as numbered steps (.sys-flow);
+     · the Systems a page runs with, as links (.sys-with). */
+.sys-page .lk span{white-space:nowrap}
+.sys-page #top .t-caption{max-width:56ch}
+
+/* THE SCREENSHOT'S PLACE: the Oneway OS screen this System is, at the product's own proportion, once it exists */
+.sys-shot{max-width:1080px;margin:var(--mp-gap-cols) auto 0;padding:0 clamp(20px,5vw,48px)}
+.sys-shot .frame{aspect-ratio:16/10;width:100%;border:1px solid rgba(255,255,255,.14);border-radius:18px;
+  display:flex;align-items:center;justify-content:center;padding:24px;text-align:center}
+.sys-shot img{display:block;width:100%;height:auto;border-radius:18px}
+.sys-shot figcaption{margin:14px auto 0;text-align:center}
+
+/* a row that is still being built: one word under its sentence */
+.sys-st{display:block;margin:10px auto 0;font-style:italic}
+
+/* HOW IT WORKS: the steps, in order, under the same hairline as the rows */
+.sys-flow{list-style:none;counter-reset:sys;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:var(--mp-gap-cols);
+  max-width:1080px;margin:var(--mp-gap-cols) auto 0;padding:0}
+.sys-flow>li{counter-increment:sys;min-width:0;border-top:1px solid rgba(255,255,255,.12);padding:var(--mp-gap-lead) 0 var(--mp-gap-act)}
+.sys-flow>li::before{content:counter(sys);display:block;margin:0 0 10px;font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-style:italic;font-weight:900;font-size:var(--lp-fs-sub);line-height:var(--lp-lh-heading)}
+.sys-flow .t-sub{margin:0}
+.sys-flow .t-body{max-width:30ch;margin:10px auto 0}
+@media(max-width:900px){.sys-flow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.sys-flow{grid-template-columns:minmax(0,1fr)}}
+
+/* THE SYSTEMS IT RUNS WITH: names, each a link when its page exists */
+.sys-with{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 28px;max-width:880px;margin:var(--mp-gap-act) auto 0;padding:0}
+.sys-with a{border-bottom:1px solid rgba(255,255,255,.5)}
+.sys-with a:hover{border-bottom-color:#fff}
+.sys-with-h{margin:var(--mp-gap-cols) auto 0}
+
+/* ── THE SYSTEM ITSELF, FIRST (the founder, 2026-10-19: "very visual with high quality visuals"): its own room in Oneway OS at
+   a PC's width, the phone's beside it; the second screen inside the page; how it works drawn as a map. Pictures captured by
+   tools/probe/system-pages-shots.cjs (assets/systems/<slug>/), sample records put in through the System's own acts. ── */
+.sys-shot--pics{max-width:1180px;padding-bottom:clamp(40px,7vw,96px)}
+.sys-shot__stage{position:relative}
+.sys-shot__pc{border-radius:clamp(10px,1.4vw,16px);overflow:hidden;background:#05050b;
+  box-shadow:0 0 0 1px rgba(255,255,255,.14),0 50px 120px -50px rgba(0,0,0,.9),0 0 80px -30px rgba(var(--ow-h1),.35)}
+.sys-shot__pc img,.sys-shot__phone img{display:block;width:100%;height:auto}
+.sys-shot__phone{position:absolute;right:-1.5%;bottom:calc(-1 * clamp(40px,7vw,96px));width:21%;min-width:112px;padding:clamp(4px,.6vw,8px);
+  border-radius:clamp(20px,3vw,38px);background:#07070d;box-shadow:0 0 0 1px rgba(255,255,255,.18),0 40px 90px -30px rgba(0,0,0,.95)}
+.sys-shot__phone img{border-radius:clamp(16px,2.4vw,30px)}
+.sys-shot--pics figcaption{margin:clamp(20px,3vw,32px) 0 0;text-align:left;max-width:60%}
+.sys-shot--more{max-width:1080px;margin-top:var(--mp-gap-cols)}
+.sys-shot--more figcaption{margin:16px auto 0;max-width:56ch}
+@media (max-width:700px){
+  .sys-shot--pics{padding-bottom:clamp(56px,16vw,96px)}
+  .sys-shot__phone{width:34%;right:2%;bottom:calc(-1 * clamp(56px,16vw,96px))}
+  .sys-shot--pics figcaption{max-width:58%}
+}
+
+/* how it works, drawn: across on a wide screen, down on a phone */
+.sys-map-wrap{max-width:960px;margin:var(--mp-gap-cols) auto 0}
+.sys-map{display:block;width:100%;height:auto;overflow:visible}
+.sys-map--tall{display:none;max-width:360px;margin:0 auto}
+@media (max-width:700px){.sys-map--wide{display:none}.sys-map--tall{display:block}}
+.sys-map__pill{fill:rgba(255,255,255,.05);stroke:rgba(255,255,255,.22);stroke-width:1}
+.sys-map__core{fill:rgba(var(--ow-h1),.16);stroke:rgba(255,255,255,.6);stroke-width:1.5}
+.sys-map__line{fill:none;stroke:rgba(255,255,255,.38);stroke-width:1.5;stroke-dasharray:2 6;stroke-linecap:round}
+.sys-map text{fill:#fff;font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif}
+.sys-map__t{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.sys-map__c{font-size:21px;font-weight:850;letter-spacing:-.02em}

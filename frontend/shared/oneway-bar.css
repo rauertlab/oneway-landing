@@ -152,20 +152,22 @@ html[data-theme="light"] .owbar--room.owbar--scrolled{background:color-mix(in sr
   box-sizing:border-box;padding-left:clamp(20px,5vw,48px);padding-right:clamp(20px,5vw,48px)}
 .owfoot-mark{grid-column:1 / -1;justify-self:start;display:inline-flex;padding:4px 0;opacity:.9}
 .owfoot-mark img{height:14px;width:auto;display:block}
-.owfoot-pages,.owfoot-help,.owfoot-legal{display:flex;flex-wrap:wrap;gap:2px 22px;min-width:0}
+.owfoot-pages,.owfoot-help,.owfoot-more,.owfoot-legal{display:flex;flex-wrap:wrap;gap:2px 22px;min-width:0}
 /* the help row (Support, Safety, Community Guidelines, Accessibility, Glossary) sits under the pages, in the legal links'
    ink, so the footer reads as three rows: where to go, where to get help, the legal pages and the company's line */
-.owfoot-pages,.owfoot-help{grid-column:1 / -1}
+/* ONEWAY'S OTHER SITES, A ROW OF THEIR OWN (the founder, 2026-10-19: onewayarcade.com is named on oneway.center only here,
+   at the bottom, never in the bar or among the products): under the help row, in its ink */
+.owfoot-pages,.owfoot-help,.owfoot-more{grid-column:1 / -1}
 .owfoot a{color:inherit;text-decoration:none;white-space:nowrap}
 .owfoot nav a{display:inline-block;padding:5px 0;transition:opacity .15s}
 .owfoot-pages a{font-size:14px;opacity:.8}
-.owfoot-help a,.owfoot-legal a{opacity:.72}
+.owfoot-help a,.owfoot-more a,.owfoot-legal a{opacity:.72}
 .owfoot nav a:hover{opacity:1;text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px}
 .owfoot a:focus-visible{opacity:1;outline:2px solid currentColor;outline-offset:3px;border-radius:4px}
 .owfoot-line{font-size:13px;font-weight:400;opacity:.62;justify-self:end;white-space:nowrap}
 @media (max-width:640px){
   .owfoot-in{grid-template-columns:minmax(0,1fr);gap:14px}
-  .owfoot-pages,.owfoot-help,.owfoot-legal{gap:2px 18px}
+  .owfoot-pages,.owfoot-help,.owfoot-more,.owfoot-legal{gap:2px 18px}
   .owfoot-line{justify-self:start}
 }
 

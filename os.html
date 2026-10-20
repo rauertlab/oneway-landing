@@ -321,7 +321,7 @@
   .rot-word{display:inline-block;white-space:nowrap;background:linear-gradient(120deg,#f5c76a,#ff9a4a 60%,#ffd27a);
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
 </style>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=3142d6a9"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=508d2362"/>
   <link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=34bac58d">   <!-- THE ONE POPIT SURFACE for the price boxes -->
   <link rel="stylesheet" href="/frontend/landing/compat.css?v=11627ae7">
   <link rel="stylesheet" href="/frontend/landing/landing.css?v=d46ceea8">   <!-- the anchors every site page shares (.lp-anchor and its kinds) -->
@@ -448,10 +448,11 @@
            catalog (api/oneway/systems/registry/catalog.py) named as not built yet, since they offer no act yet ("coming next"
            promised an order of work nobody has set: the truth check, 2026-10-17, on os-business.html's Agents). -->
       <div class="sys-store">
-        <div class="sys-group"><p class="sys-gh">For your kind of place</p><ul class="center-kinds sys-list"><li>Hotel Operations</li><li>Restaurant Operations</li><li>Casino Operations</li><li>Property Management</li><li>Community Management</li></ul></div>
-        <div class="sys-group"><p class="sys-gh">For every Center</p><ul class="center-kinds sys-list"><li>Reservations</li><li>Events</li><li>Scheduling</li><li>Customer Relationships</li><li>Rewards &amp; Membership</li><li>Communications</li><li>People</li><li>Inventory</li><li>Maintenance</li><li>Asset Management</li><li>Marketing</li></ul></div>
+        <div class="sys-group"><p class="sys-gh">For your kind of place</p><ul class="center-kinds sys-list"><li><a href="/systems/hotel-operations">Hotel Operations</a></li><li>Restaurant Operations</li><li>Casino Operations</li><li>Property Management</li><li><a href="/systems/hvac">HVAC Service Operations</a></li><li>Community Management</li></ul></div>
+        <div class="sys-group"><p class="sys-gh">For every Center</p><ul class="center-kinds sys-list"><li>Reservations</li><li>Events</li><li>Scheduling</li><li><a href="/systems/crm">Customer Relationships</a></li><li>Rewards &amp; Membership</li><li>Communications</li><li>People</li><li><a href="/systems/inventory">Inventory</a></li><li>Maintenance</li><li><a href="/systems/asset-management">Asset Management</a></li><li>Marketing</li></ul></div>
       </div>
-      <p class="sys-coming t-caption"><b>Not built yet:</b> Consulting &amp; Advisory, Agency Operations, Summer Camp Operations, Local Government, News Organization, Service Management, Short-Term Rental Operations, HVAC Service Operations, Dental Practice Operations, Mortgage Pipeline, Accounting Firm Client Management, Documents, Finance, Security &amp; Access.</p>
+            <div class="sys-pages-wrap"><p class="sys-gh">Each System, on its own page</p><div class="sys-pages"><a class="sys-page" href="/systems/crm"><img src="/assets/systems/crm/pc.webp" width="1600" height="1007" alt="Oneway CRM in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Oneway CRM</span></a><a class="sys-page" href="/systems/inventory"><img src="/assets/systems/inventory/pc.webp" width="1600" height="1007" alt="Inventory Management in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Inventory Management</span></a><a class="sys-page" href="/systems/asset-management"><img src="/assets/systems/asset-management/pc.webp" width="1600" height="1007" alt="Asset Management in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Asset Management</span></a><a class="sys-page" href="/systems/hotel-operations"><img src="/assets/systems/hotel-operations/pc.webp" width="1600" height="1007" alt="Hotel Operations in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">Hotel Operations</span></a><a class="sys-page" href="/systems/hvac"><img src="/assets/systems/hvac/pc.webp" width="1600" height="1007" alt="HVAC Service Operations in Oneway OS, with sample records" loading="lazy" decoding="async"/><span class="t-sub">HVAC Service Operations</span></a></div></div>
+      <p class="sys-coming t-caption"><b>Not built yet:</b> Consulting &amp; Advisory, Agency Operations, Summer Camp Operations, Local Government, News Organization, Service Management, Short-Term Rental Operations, Dental Practice Operations, Mortgage Pipeline, Accounting Firm Client Management, Documents, Finance, Security &amp; Access.</p>
       <p class="sec-sub t-lead sys-more">Install the Systems your place needs; each adds its tools to your Center and its Popits to the&nbsp;canvas.</p>
     </div>
   </section>
@@ -622,6 +623,7 @@
       <a href="/accessibility">Accessibility</a>
       <a href="/learn">Glossary</a>
     </nav>
+    <nav class="owfoot-more" aria-label="More from Oneway"><a href="https://onewayarcade.com/">Oneway Arcade</a></nav>
     <nav class="owfoot-legal" aria-label="Legal">
       <a href="/privacy">Privacy</a>
       <a href="/terms">Terms</a>
@@ -758,6 +760,18 @@
   @media(max-width:680px){ .owbar-right .nav-os{display:none} }
 
   .sys-list{max-width:none;columns:2;column-gap:40px}
+  .sys-list a{color:#fff;text-decoration:underline;text-decoration-color:rgba(255,255,255,.35);text-underline-offset:3px}
+  .sys-list a:hover{text-decoration-color:#fff}
+  /* EACH SYSTEM ON ITS OWN PAGE (the founder, 2026-10-19: "the systems pages better be good and better be across both landing
+     pages"): the five System pages, each tile its own room in Oneway OS; the same on onewayos.com, built from this page */
+  .sys-pages-wrap{margin-top:40px}
+  .sys-pages{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px;margin-top:14px}
+  .sys-page{display:block;color:#fff;text-decoration:none}
+  .sys-page img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:cover;object-position:left top;border-radius:12px;
+    box-shadow:0 18px 48px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.08);transition:transform .2s ease}
+  .sys-page:hover img{transform:translateY(-3px)}
+  .sys-page span{display:block;margin-top:10px}
+  @media(max-width:900px){ .sys-pages{grid-template-columns:repeat(2,minmax(0,1fr))} }
   .sys-list li{break-inside:avoid}
   @media(max-width:640px){ .sys-list{columns:1} }
   .sys-more{margin-top:18px}
