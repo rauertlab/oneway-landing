@@ -64,10 +64,18 @@ html[data-theme="light"]:not([data-simple="1"]) .ow-crow{
     inset 0 0 14px -6px rgba(var(--h),.22),
     0 0 26px -12px rgba(var(--h),.38),
     0 14px 28px -14px rgba(48,40,80,.3)}
+html.ow-old:not([data-simple="1"]) .ow-crow:matches(:hover,:focus){box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.32),inset 0 0 18px -6px rgba(var(--h),.55),
+    0 0 42px -10px rgba(var(--h),.62),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html.ow-old:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus){box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.32),inset 0 0 18px -6px rgba(var(--h),.55),
+    0 0 42px -10px rgba(var(--h),.62),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
 /* the Center row (oneway-centerrow.css) takes its Center's own pair there, and lights up a little more under the pointer or the keyboard */
 html:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible){
   box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.32),inset 0 0 18px -6px rgba(var(--h),.55),
     0 0 42px -10px rgba(var(--h),.62),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:matches(:hover,:focus){box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
+    inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}
+html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus){box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
+    inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}
 html[data-theme="light"]:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible){
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
     inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}

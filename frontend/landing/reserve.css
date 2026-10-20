@@ -4,8 +4,8 @@
    card is `.ow-popit` and the chosen kind `.ow-popit-btn--fill`, both in oneway-popit.css (C-app, b6ec8b5d). Only the
    card's room and the switch's shape are set here. */
 .rsv{max-width:460px;margin:0 auto;padding:24px;text-align:left;color:#fff}
-.rsv-t{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:850;font-size:clamp(24px,3vw,30px);letter-spacing:-.03em;line-height:1.1;margin:0}
-.rsv form{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.rsv-t{font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-weight:850;font-size:24px;font-size:max(24px,min(3vw,30px));font-size:clamp(24px,3vw,30px);letter-spacing:-.03em;line-height:1.1;margin:0}
+.rsv form{display:flex;flex-direction:column;gap:12px;margin-top:18px}html.ow-nogap .rsv form>*+*{margin-top:12px}
 .rsv form[hidden],.rsv .rsv-done[hidden]{display:none}
 /* THE KIND OF NAME IS A CHOICE OF TWO, S20's QUIET KIND (round 2, 2026-10-16: the chosen one was a full hue pill, the
    same fill as "Reserve your @name" under it, so the form showed two Primaries; both chips were 40px at 650, 13.5px on a
@@ -21,9 +21,10 @@ html body #rsv .rsv-type{display:flex;align-items:center;justify-content:center;
   padding:0 var(--ow-b-px,16px);border:0!important;border-radius:var(--ow-b-r,999px)!important;cursor:pointer;
   background:transparent;background-image:none;box-shadow:none;text-shadow:none;filter:none;transform:none;
   font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);font-size:14px;font-weight:600;line-height:1.2;letter-spacing:0;color:rgba(255,255,255,.72);
-  transition:background .2s,color .2s}
+  transition:background .2s,color .2s}html.ow-nogap body #rsv .rsv-type>*+*{margin-left:7px}
 html body #rsv .rsv-type:hover:not(:disabled){background:rgba(255,255,255,.08);color:#fff;filter:none}
 html body #rsv .rsv-type[aria-pressed="true"],html body #rsv .rsv-type[aria-pressed="true"]:hover:not(:disabled){background:rgba(255,255,255,.12);color:#fff}
+html.ow-old body #rsv .rsv-type:focus{outline:2px solid currentColor;outline-offset:2px}
 html body #rsv .rsv-type:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .rsv-type em{font-style:normal;font-weight:500;color:rgba(255,255,255,.5)}
 .rsv-type[aria-pressed="true"] em{color:rgba(255,255,255,.78)}
@@ -31,6 +32,7 @@ html body #rsv .rsv-type:focus-visible{outline:2px solid currentColor;outline-of
 .rsv-handle:focus-within{box-shadow:inset 0 0 0 1.5px rgba(var(--h2),.8)}
 .rsv-glyph{flex:none;width:46px;text-align:center;font-style:normal;font-weight:800;font-size:22px;line-height:1;font-family:var(--font-display,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);color:rgb(var(--h2))}
 .rsv-handle input{flex:1;min-width:0;height:56px;padding:0 8px 0 0;font-style:normal;font-weight:650;font-size:18px;line-height:1;font-family:var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif);background:transparent;border:0;outline:none;color:#fff}
+html.ow-old .rsv-handle input:focus{outline:none}
 /* ONE FOCUS RING ON THE NAME (round 3, 2026-10-16): the page's own input:focus-visible drew a 2px rectangle, offset 3px,
    inside the field's rounded ring and past its right edge, whenever choosing a kind or a tap focused it. The field's
    focus-within ring above is the indicator; the email field already has only its own. */
@@ -55,7 +57,7 @@ html body #rsv .rsv-type:focus-visible{outline:2px solid currentColor;outline-of
    words (9.13:1 in rendered pixels, round3/fix-3-primary.json); the person's purple keeps white (4.14:1, the shared Primary's own reading, for his eye). A hold: it
    goes when the shared rule decides on the button itself. */
 @supports (color: oklch(from red l c h)){
-  #rsv{--ow-on-h1:oklch(from rgb(var(--ow-h1)) calc(.18 + clamp(0, calc((.7 - l) * 1000), 1) * .82) 0 0)}
+  #rsv{--ow-on-h1:oklch(from rgb(var(--ow-h1)) calc(.18 + clamp(0, calc((.7 - l) * 1000), 1) * .82) 0 0)}html.ow-old #rsv{--ow-on-h1:oklch(from rgb(var(--ow-h1)) calc(.18 + 0 * .82) 0 0)}
 }
 .rsv-note{font-size:13px;line-height:1.5;color:rgba(255,255,255,.62);text-align:center;margin:2px 0 0;min-height:0}
 .rsv-note:empty{display:none}

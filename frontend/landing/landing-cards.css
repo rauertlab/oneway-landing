@@ -21,15 +21,12 @@
 html[data-theme="light"] .lc.lc.lc{--lc-ink:#15131f;--lc-ink-2:rgba(21,19,31,.72);--lc-ink-3:rgba(21,19,31,.54);--lc-line:rgba(21,19,31,.11);--lc-ring:#f6f5fb}
 
 /* THE BANNER: flush with the card's top and sides, its top corners the card's own */
-.lc.lc.lc .lc-banner{display:block;position:relative;margin:calc(-1 * var(--lc-pad)) calc(-1 * var(--lc-pad)) 0;height:clamp(96px,30cqw,140px);
-  border-top-left-radius:inherit;border-top-right-radius:inherit;overflow:hidden;background:hsl(var(--lc-h) 30% 22%)}
+.lc.lc.lc .lc-banner{display:block;position:relative;margin:calc(-1 * var(--lc-pad)) calc(-1 * var(--lc-pad)) 0;height:96px;height:max(96px,min(30cqw,140px));height:clamp(96px,30cqw,140px);border-top-left-radius:inherit;border-top-right-radius:inherit;overflow:hidden;background:hsl(var(--lc-h) 30% 22%)}
 .lc.lc.lc .lc-banner img{display:block;width:100%;height:100%;object-fit:cover}
 /* FADE (the account's choice for its profile, founder/824; "made sure we are supporting fading banners and they look good
    across all surfaces"): the picture melts into the card's own ground from its middle down, the face standing in the melt;
    Framed keeps its edge */
-.lc.lc.lc[data-banner-style="fade"] .lc-banner{height:clamp(112px,36cqw,160px);background:none;
-  -webkit-mask-image:linear-gradient(180deg,#000 0,#000 42%,rgba(0,0,0,.5) 70%,transparent 100%);
-  mask-image:linear-gradient(180deg,#000 0,#000 42%,rgba(0,0,0,.5) 70%,transparent 100%)}
+.lc.lc.lc[data-banner-style="fade"] .lc-banner{height:112px;height:max(112px,min(36cqw,160px));height:clamp(112px,36cqw,160px);background:none;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 42%,rgba(0,0,0,.5) 70%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 42%,rgba(0,0,0,.5) 70%,transparent 100%)}
 
 /* THE HEAD: the face beside the name block; over a banner the face rises half its height onto the banner's edge */
 .lc.lc.lc .ow-ocard__top{display:grid!important;grid-template-columns:var(--lc-face) minmax(0,1fr)!important;grid-template-rows:none!important;
@@ -63,20 +60,20 @@ html[data-theme="light"] .lc.lc.lc{--lc-ink:#15131f;--lc-ink-2:rgba(21,19,31,.72
 /* THE COUNTS: one row, three equal cells, hairlines between, the number over its word */
 .lc.lc.lc .lc-counts{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);margin:16px 0 0;padding:2px 0}
 .lc.lc.lc .lc-counts .ow-ocard__count{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center;gap:1px;
-  font-size:12.5px!important;font-weight:500!important;line-height:1.25!important;color:var(--lc-ink-3)!important;white-space:nowrap!important;letter-spacing:0!important;opacity:1!important}
+  font-size:12.5px!important;font-weight:500!important;line-height:1.25!important;color:var(--lc-ink-3)!important;white-space:nowrap!important;letter-spacing:0!important;opacity:1!important}html.ow-nogap .lc.lc.lc .lc-counts .ow-ocard__count>*+*{margin-top:1px}
 .lc.lc.lc .lc-counts .ow-ocard__count + .ow-ocard__count{border-left:1px solid var(--lc-line)}
 .lc.lc.lc .lc-counts .ow-ocard__count b{font-weight:750!important;font-size:17px!important;line-height:1.2!important;color:var(--lc-ink)!important;letter-spacing:-.01em!important;font-variant-numeric:tabular-nums}
 
 /* THE ABOUT ROW: the bio and the platforms at the left, a Center's details at the right, a hairline between */
 .lc.lc.lc .lc-about{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;margin-top:16px}
 .lc.lc.lc .lc-about[data-cols="2"]{grid-template-columns:minmax(0,.86fr) minmax(0,1.14fr);align-items:start}   /* the details the wider, so each line stays one */
-.lc.lc.lc .lc-left{display:flex;flex-direction:column;gap:12px;min-width:0}
+.lc.lc.lc .lc-left{display:flex;flex-direction:column;gap:12px;min-width:0}html.ow-nogap .lc.lc.lc .lc-left>*+*{margin-top:12px}
 .lc.lc.lc .ow-ocard__bio{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden!important;margin:0!important;width:auto!important;max-width:none!important;
   font-weight:500!important;font-size:14.5px!important;line-height:1.45!important;color:var(--lc-ink)!important;opacity:.94;text-wrap:pretty!important}
 .lc.lc.lc .lc-about[data-cols="1"] .ow-ocard__bio{-webkit-line-clamp:3}
 .lc.lc.lc .lc-about[data-cols="2"] .ow-ocard__bio{-webkit-line-clamp:6}   /* beside the details, as long as their column */
-.lc.lc.lc .lc-facts{display:flex;flex-direction:column;gap:7px;min-width:0;padding-left:14px;border-left:1px solid var(--lc-line)}
-.lc.lc.lc .lc-fact{display:flex;align-items:flex-start;gap:7px;min-width:0;font-size:12.5px;line-height:1.35;color:var(--lc-ink-2)}
+.lc.lc.lc .lc-facts{display:flex;flex-direction:column;gap:7px;min-width:0;padding-left:14px;border-left:1px solid var(--lc-line)}html.ow-nogap .lc.lc.lc .lc-facts>*+*{margin-top:7px}
+.lc.lc.lc .lc-fact{display:flex;align-items:flex-start;gap:7px;min-width:0;font-size:12.5px;line-height:1.35;color:var(--lc-ink-2)}html.ow-nogap .lc.lc.lc .lc-fact>*+*{margin-left:7px}
 .lc.lc.lc .lc-fact > span{min-width:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .lc.lc.lc .lc-fact > span > i{font-style:normal;font-weight:600;color:var(--lc-ink-3)}
 .lc.lc.lc .lc-fact > span > b{font-weight:600;color:var(--lc-ink)}
@@ -84,9 +81,9 @@ html[data-theme="light"] .lc.lc.lc{--lc-ink:#15131f;--lc-ink-2:rgba(21,19,31,.72
 .lc.lc.lc .lc-ic svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 80% 72%)}
 html[data-theme="light"] .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 62% 42%)}
-.lc.lc.lc .lc-where{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;line-height:1.35;color:var(--lc-ink-2)}
+.lc.lc.lc .lc-where{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;line-height:1.35;color:var(--lc-ink-2)}html.ow-nogap .lc.lc.lc .lc-where>*+*{margin-left:6px}
 /* the platforms: their own marks, in round outlined discs, one size, one gap */
-.lc.lc.lc .ow-ocard__links{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:0!important;padding:0!important;width:auto!important;max-width:none!important}
+.lc.lc.lc .ow-ocard__links{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:0!important;padding:0!important;width:auto!important;max-width:none!important}html.ow-nogap .lc.lc.lc .ow-ocard__links>*{margin-right:8px}html.ow-nogap .lc.lc.lc .ow-ocard__links>*{margin-bottom:8px}
 .lc.lc.lc .ow-linkbar__i{width:34px!important;height:34px!important;display:grid!important;place-items:center!important;border-radius:50%!important;margin:0!important;
   background:transparent!important;box-shadow:inset 0 0 0 1px var(--lc-line)!important;pointer-events:none}
 .lc.lc.lc .ow-linkbar__i svg,.lc.lc.lc .ow-linkbar__i[data-platform] svg{width:17px!important;height:17px!important}
@@ -121,7 +118,7 @@ html[data-theme="light"] .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 
 .lc.lc.lc .lc-acts span{display:flex;align-items:center;justify-content:center;height:40px;border-radius:999px;font-weight:650;font-size:14px;line-height:1;cursor:default;user-select:none}
 .lc.lc.lc .lc-acts .lc-follow{background:linear-gradient(135deg,hsl(var(--lc-h) 90% 66%),hsl(calc(var(--lc-h) - 24) 88% 58%));color:#0b0a12}
 .lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{background:linear-gradient(135deg,hsl(var(--lc-h) 74% 56%),hsl(calc(var(--lc-h) - 24) 72% 48%));color:#fff}
-.lc.lc.lc .lc-acts .lc-msg{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc-ink) 34%,transparent);color:var(--lc-ink);background:transparent}
+.lc.lc.lc .lc-acts .lc-msg{box-shadow:inset 0 0 0 1px transparent;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--lc-ink) 34%,transparent);color:var(--lc-ink);background:transparent}
 
 /* TIKTOK'S LAYOUT: the picture over everything, every line centred */
 .lc.lc.lc[data-layout="above"] .ow-ocard__top{grid-template-columns:1fr!important;justify-items:center!important;row-gap:10px!important;text-align:center!important}
@@ -133,9 +130,7 @@ html[data-theme="light"] .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 
 /* SIMPLE MODE: the plain card, Simple's own feed surface (oneway-popit.css "27 · SIMPLE MODE", .po-river): the ground with 3%
    of the account's own hue, a hairline edge, the feed's corners; no light, no grain, no grey (founder, 2026-10-19: "the darker
    tones might have to be a little bit blacker. I don't know if gray cards really work"). The same anatomy as Pop-it. */
-html[data-simple="1"] .lc.lc.lc{--lc-ring:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%);border-radius:24px!important;
-  background:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%)!important;
-  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink,#fff) 10%,transparent)!important}
+html[data-simple="1"] .lc.lc.lc{--lc-ring:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%);border-radius:24px!important;background:var(--ow-ground,#000)!important;background:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink,#fff) 10%,transparent)!important}
 html[data-simple="1"] .lc.lc.lc::before,html[data-simple="1"] .lc.lc.lc::after{display:none!important}
 html[data-simple="1"] .lc.lc.lc .lc-banner{border-top-left-radius:24px;border-top-right-radius:24px}
 html[data-simple="1"] .lc.lc.lc .ow-ocard__face{background:hsl(var(--lc-h) 58% 46%)!important}

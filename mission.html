@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8"/><script>/* OLD BROWSERS (tools/old_browsers.py): html.ow-old where :is() is not understood (Safari before 14, Chrome before 88), html.ow-nogap where a flex row has no gap (Safari before 14.1, Chrome before 84); the published copy's fallbacks wear these */(function(d){var h=d.documentElement,c=' ';try{if(!(window.CSS&&CSS.supports&&CSS.supports('selector(:is(a))')))c+='ow-old '}catch(e){c+='ow-old '}var f=d.createElement('div');f.style.cssText='display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';f.appendChild(d.createElement('div'));f.appendChild(d.createElement('div'));h.appendChild(f);if(f.scrollHeight!==1)c+='ow-nogap ';h.removeChild(f);h.className+=c})(document)</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
   <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,188.7)</script>
@@ -45,12 +45,12 @@
   <script src="/frontend/shared/oneway-popit.js?v=eedfed00"></script>
   <script src="/frontend/shared/oneway-links.js?v=77fb7f61"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=76216ea0"/>
-<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=34bac58d">
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=d46ceea8"/>
-  <link rel="stylesheet" href="/frontend/landing/site-page.css?v=45daf489"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=508d2362"/>
-  <link rel="stylesheet" href="/frontend/landing/platforms.css?v=eee46988"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=d4261bc3"/>
+<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=2110192e">
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=d0b498e9"/>
+  <link rel="stylesheet" href="/frontend/landing/site-page.css?v=617fb9dc"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=d0313851"/>
+  <link rel="stylesheet" href="/frontend/landing/platforms.css?v=9c66a47c"/>
 </head>
 <body class="mission-page">
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
@@ -98,18 +98,18 @@
          wheel on this page too), Profile and Center side by side, the three audiences in a row, and his name in the close.
          Still a blank slate (no card, no box): only the ground, the marks and the words. -->
     <style>
-      #brand .brand-globe{width:min(200px,52vw);aspect-ratio:1;margin:0 auto;display:block}
+      #brand .brand-globe{width:52vw;width:min(200px,52vw);aspect-ratio:1;margin:0 auto;display:block}
       /* each mark stands between its headline and its words, at the anchor's gaps (landing.css .lp-anchor) */
-      #privacy .mission-privacy-mark{margin:clamp(24px,3.4vw,40px) auto clamp(22px,3vw,34px)}
+      #privacy .mission-privacy-mark{margin:24px auto 22px;margin:max(24px,min(3.4vw,40px)) auto max(22px,min(3vw,34px));margin:clamp(24px,3.4vw,40px) auto clamp(22px,3vw,34px)}
       #brand .brand-anchor{text-align:center}
-      #brand .brand-row{display:grid;gap:clamp(20px,4vw,48px);margin:clamp(28px,5vw,48px) auto 0;max-width:1000px;text-align:left}
+      #brand .brand-row{display:grid;gap:20px;gap:max(20px,min(4vw,48px));gap:clamp(20px,4vw,48px);margin:28px auto 0;margin:max(28px,min(5vw,48px)) auto 0;margin:clamp(28px,5vw,48px) auto 0;max-width:1000px;text-align:left}
       #brand .brand-row.two{grid-template-columns:1fr}
       #brand .brand-row.three{grid-template-columns:1fr}
       @media (min-width:760px){#brand .brand-row.two{grid-template-columns:1fr 1fr}#brand .brand-row.three{grid-template-columns:repeat(3,1fr)}}
       #brand .brand-row .t-mark{margin:0 0 8px}
       #brand .brand-row .t-lead{margin:0}
       #brand .brand-by{margin-top:22px;opacity:.72}
-      #brand .lp-wrap + .lp-wrap{margin-top:clamp(64px,10vw,128px)}
+      #brand .lp-wrap + .lp-wrap{margin-top:64px;margin-top:max(64px,min(10vw,128px));margin-top:clamp(64px,10vw,128px)}
     </style>
     <section class="lp mission-sec" id="brand">
       <div class="lp-wrap rv">

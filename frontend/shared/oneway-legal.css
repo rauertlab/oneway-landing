@@ -46,9 +46,8 @@ html,body{min-height:100vh;background:var(--lg-bg);color:var(--lg-ink);font-fami
    make the bar way smaller and keep simply SECUIRTY the small subtext. this should be for all": the red band holds the
    wordmark and the page's name in small capitals, nothing else (the name is the page's one H1). */
 .hero{background:#cc0000;padding:30px 24px 26px;text-align:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;inset:0;pointer-events:none;
-  background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 4px)}
-.hero-mark{display:block;width:min(40vw,190px);height:auto;margin:0 auto 14px}   /* where the wordmark starts its flight (oneway-bar.js) */
+.hero::before{content:'';position:absolute;top:0;right:0;bottom:0;left:0;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.06) 0,rgba(0,0,0,.06) 1px,transparent 1px,transparent 4px)}
+.hero-mark{display:block;width:40vw;width:min(40vw,190px);height:auto;margin:0 auto 14px}   /* where the wordmark starts its flight (oneway-bar.js) */
 .hero-eyebrow{position:relative;font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);text-transform:none;color:rgba(255,255,255,.9);margin:0}   /* the page's name: the caption role, the smallest the type system draws */
 
 /* ── the page: the Settings menu's grammar (oneway-popit.css, SETTINGS AND PRIVACY, founder/501): one flat
@@ -111,7 +110,7 @@ strong{color:var(--lg-ink);font-weight:600}
 /* Data Deletion's word to Meta, at the end of the guide (founder/801: "a message at the end saying we made this page for
    meta, threads, instagram and facebook, hello!"), then the Facebook instructions under it: one hairline above it */
 .meta-hello{margin-top:56px;padding-top:30px;border-top:1px solid var(--lg-rim)}
-.meta-hello h2{font-size:clamp(20px,4.8vw,24px);font-weight:700;letter-spacing:-.01em;line-height:1.3;color:var(--lg-ink);margin:0}
+.meta-hello h2{font-size:20px;font-size:max(20px,min(4.8vw,24px));font-size:clamp(20px,4.8vw,24px);font-weight:700;letter-spacing:-.01em;line-height:1.3;color:var(--lg-ink);margin:0}
 
 /* the footer is THE ONE FOOTER of every landing page (oneway-bar.css .owfoot, founder/801), in this page's ink. These
    pages follow the person's light or dark room, so in the light room its wordmark is the black file (founder/519: a

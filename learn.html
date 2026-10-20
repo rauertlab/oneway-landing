@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8"/>
+  <meta charset="UTF-8"/><script>/* OLD BROWSERS (tools/old_browsers.py): html.ow-old where :is() is not understood (Safari before 14, Chrome before 88), html.ow-nogap where a flex row has no gap (Safari before 14.1, Chrome before 84); the published copy's fallbacks wear these */(function(d){var h=d.documentElement,c=' ';try{if(!(window.CSS&&CSS.supports&&CSS.supports('selector(:is(a))')))c+='ow-old '}catch(e){c+='ow-old '}var f=d.createElement('div');f.style.cssText='display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';f.appendChild(d.createElement('div'));f.appendChild(d.createElement('div'));h.appendChild(f);if(f.scrollHeight!==1)c+='ow-nogap ';h.removeChild(f);h.className+=c})(document)</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
   <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,188.7)</script>
@@ -45,11 +45,11 @@
   <script src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
   <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=76216ea0"/>
-<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=34bac58d">
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=d46ceea8"/>
-  <link rel="stylesheet" href="/frontend/landing/site-page.css?v=45daf489"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=508d2362"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=d4261bc3"/>
+<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=2110192e">
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=d0b498e9"/>
+  <link rel="stylesheet" href="/frontend/landing/site-page.css?v=617fb9dc"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=d0313851"/>
   <style>
   /* LEARN, A BLANK SLATE (founder/813, 816; Our Mission's grammar, site-page.css "OUR MISSION, A BLANK SLATE"). Every
      word plays one role of compat.css (.t-heading .t-sub .t-lead .t-body .t-caption, the lockup's word for the mark);
@@ -57,14 +57,15 @@
      each word sits on the page's own ground, one hairline above it, in one rhythm of spacing. Two columns on a wide
      screen, one on a phone. */
   .learn-page{--lr-gap-lead:20px;--lr-gap-cap:16px;--lr-gap-body:12px;--lr-gap-act:20px;--lr-pad:32px;--lr-line:rgba(255,255,255,.12)}
-  .learn-page #top{padding-top:clamp(112px,15vw,168px)}
+  .learn-page #top{padding-top:112px;padding-top:max(112px,min(15vw,168px));padding-top:clamp(112px,15vw,168px)}
   .learn-page #top h1.t-heading{max-width:16ch;margin:0}
   .learn-page #top .t-lead{max-width:44ch;margin:var(--lr-gap-lead) 0 0}
   .learn-page #top .t-caption{max-width:52ch;margin:var(--lr-gap-cap) 0 0}
   .learn-page .t-caption{color:#fff}
+  html.ow-old .learn-page :matches(.t-lead,.t-body,.t-caption){text-wrap:pretty}
+  html.ow-old .learn-page :-webkit-any(.t-lead,.t-body,.t-caption){text-wrap:pretty}
   .learn-page :is(.t-lead,.t-body,.t-caption){text-wrap:pretty}
-  .lr-terms{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
-    column-gap:clamp(40px,6vw,80px);border-bottom:1px solid var(--lr-line)}
+  .lr-terms{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:40px;column-gap:max(40px,min(6vw,80px));column-gap:clamp(40px,6vw,80px);border-bottom:1px solid var(--lr-line)}
   .lr-term{min-width:0;border-top:1px solid var(--lr-line);padding:var(--lr-pad) 0 calc(var(--lr-pad) + 4px);scroll-margin-top:72px}
   .lr-term .t-sub{margin:0}
   .lr-term .t-body{max-width:46ch;margin:var(--lr-gap-body) 0 0;overflow-wrap:break-word}

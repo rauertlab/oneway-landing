@@ -31,14 +31,10 @@
    PROPOSED, for his eye: two rows in opposite directions, the speed (platforms.js SPEED), the 20px mark beside the
    name, and the near-black marks (X, Threads, GitHub) drawn in the room's ink, as their own guidelines draw them on a
    dark ground. Not yet decided by him (S19/S20): a way to stop the rows on a touch screen, where there is no hover. */
-.owpl{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;max-width:100%;margin:clamp(28px,4vw,44px) 0 0;padding:0;
-  font-family:"ONEWAY Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-size:var(--mp-caption,15px);font-weight:600;font-style:normal;
-  line-height:var(--lp-lh-caption,1.5);letter-spacing:var(--lp-ls-caption,0);text-transform:none;
-  --ow-ink:currentColor;--ow-b-wash:color-mix(in srgb,currentColor 8%,transparent)}
+.owpl{position:relative;display:flex;flex-direction:column;gap:8px;min-width:0;max-width:100%;margin:28px 0 0;margin:max(28px,min(4vw,44px)) 0 0;margin:clamp(28px,4vw,44px) 0 0;padding:0;font-family:"ONEWAY Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:var(--mp-caption,15px);font-weight:600;font-style:normal;line-height:var(--lp-lh-caption,1.5);letter-spacing:var(--lp-ls-caption,0);text-transform:none;--ow-ink:currentColor;--ow-b-wash:color-mix(in srgb,currentColor 8%,transparent)}html.ow-nogap .owpl>*+*{margin-top:8px}
 .owpl-lane{min-width:0}
 .owpl-track{display:flex;min-width:0}
-.owpl-row{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-width:0}
+.owpl-row{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:4px;min-width:0}html.ow-nogap .owpl-row>*{margin-right:4px}html.ow-nogap .owpl-row>*{margin-bottom:4px}
 .owpl-row>li{flex:none;margin:0;padding:0}
 /* the copy the wheel loops on is never read, never focused, and never drawn outside the wheel */
 .owpl-row--echo{display:none}
@@ -48,7 +44,8 @@
    before its name; inside the box the mark is drawn at its optical size (the generator writes its view and its width
    and height) and stands 2px from the box's end, so the space from every mark to its name is the same whatever its
    shape, and a square mark stands centred. A platform with no mark is its name alone, in the same button. */
-.owpl-i{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.owpl-i{display:inline-flex;align-items:center;gap:8px;white-space:nowrap}html.ow-nogap .owpl-i>*+*{margin-left:8px}
+html.ow-old .owpl-i:focus{outline:2px solid currentColor;outline-offset:2px}
 .owpl-i:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 /* ON THE CAP HEIGHT: the box is centred on the name's line, then lifted .12px, which centres it on the capitals as the
    browsers draw them: Chromium sets a line of text on a whole CSS pixel and WebKit on a whole device pixel, so where the

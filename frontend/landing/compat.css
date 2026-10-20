@@ -23,7 +23,7 @@
   --lp-fs-mark:clamp(18px,1.85vw,24px);     /* a section's name above its headline (founder/793's top header) */
   --lp-fs-lead:clamp(18px,1.9vw,22px);      /* the line under a headline */
   --lp-fs-body:17px;                        /* an item's sentence */
-  --lp-fs-caption:15px}                     /* a note under an item: white, sentence case, never smaller */
+  --lp-fs-caption:15px}:root.ow-old{--lp-fs-display:40px;--lp-fs-display-long:32px;--lp-fs-heading:30px;--lp-fs-sub:22px;--lp-fs-mark:18px;--lp-fs-lead:18px}                     /* a note under an item: white, sentence case, never smaller */
 /* THE ROLES, as classes any landing page uses (the same face, weight, size and spacing on every page) */
 .t-display{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}
 .t-display-long{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display-long);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}
@@ -46,8 +46,7 @@ html{-webkit-text-size-adjust:100%;font-family:'ONEWAY Sans',system-ui,-apple-sy
    frontend/shared/oneway-popit.css, which every page with a box loads, so no recipe is written here. This rule gives the
    box only what is its own: the platform's pair (--ow-h1, --ow-h2), the Popit's corners, one padding on every side so the
    words sit evenly. Held by api/oneway/platform/test_site_pricebox.py. */
-.ow-pricebox{--h:var(--ow-h1,139,92,255);--h2:var(--ow-h2,93,226,255);--h3:var(--h2);
-  position:relative;box-sizing:border-box;border-radius:22px 19px 23px 20px;padding:var(--ow-pricebox-pad,clamp(20px,2.6vw,28px))}
+.ow-pricebox{--h:var(--ow-h1,139,92,255);--h2:var(--ow-h2,93,226,255);--h3:var(--h2);position:relative;box-sizing:border-box;border-radius:22px 19px 23px 20px;padding:var(--ow-pricebox-pad,20px);padding:var(--ow-pricebox-pad,max(20px,min(2.6vw,28px)));padding:var(--ow-pricebox-pad,clamp(20px,2.6vw,28px))}
 @media(max-width:560px){.ow-pricebox{--ow-pricebox-pad:20px}}
 /* a price said in a line of words: the box is as wide as the words, never the column */
 p.ow-pricebox{width:fit-content;max-width:100%}
@@ -56,6 +55,7 @@ p.ow-pricebox{width:fit-content;max-width:100%}
 .lp-p,.cards p,.flow p{overflow-wrap:break-word;word-wrap:break-word}
 a:focus,button:focus,input:focus,select:focus,textarea:focus{outline:2px solid currentColor;outline-offset:3px}
 @supports selector(:focus-visible){
+  html.ow-old a:focus:not(:focus),html.ow-old button:focus:not(:focus){outline:none}
   a:focus:not(:focus-visible),button:focus:not(:focus-visible){outline:none}
 }
 @media(max-width:600px){input,select,textarea{font-size:16px}}

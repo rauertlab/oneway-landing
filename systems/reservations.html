@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8"/><script>/* OLD BROWSERS (tools/old_browsers.py): html.ow-old where :is() is not understood (Safari before 14, Chrome before 88), html.ow-nogap where a flex row has no gap (Safari before 14.1, Chrome before 84); the published copy's fallbacks wear these */(function(d){var h=d.documentElement,c=' ';try{if(!(window.CSS&&CSS.supports&&CSS.supports('selector(:is(a))')))c+='ow-old '}catch(e){c+='ow-old '}var f=d.createElement('div');f.style.cssText='display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';f.appendChild(d.createElement('div'));f.appendChild(d.createElement('div'));h.appendChild(f);if(f.scrollHeight!==1)c+='ow-nogap ';h.removeChild(f);h.className+=c})(document)</script>
+  <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
+  <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,188.7)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
+  <!-- /TAB GLOBE -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
+  <title>Oneway Reservations | Booking System</title>
+  <meta name="description" content="Oneway Reservations lets people book your rooms, tables, courts and spaces from the Oneway App, and runs the book from confirmation to check-out.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://onewayos.com/systems/reservations">
+  <link rel="alternate" hreflang="en" href="https://onewayos.com/systems/reservations">
+  <link rel="alternate" hreflang="x-default" href="https://onewayos.com/systems/reservations">
+  <link rel="alternate" type="text/plain" title="Oneway, for assistants" href="/llms.txt">
+  <link rel="alternate" type="text/plain" title="Oneway, every page in words" href="/llms-full.txt">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Oneway">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://onewayos.com/systems/reservations">
+  <meta property="og:title" content="Oneway Reservations | Booking System">
+  <meta property="og:description" content="Bookable rooms, tables, courts and spaces, booked from the Oneway App, and the desk&#x27;s book.">
+  <meta property="og:image" content="https://oneway.center/og-card.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Oneway Reservations | Booking System">
+  <meta name="twitter:description" content="Bookable rooms, tables, courts and spaces, booked from the Oneway App, and the desk&#x27;s book.">
+  <meta name="twitter:image" content="https://oneway.center/og-card.jpg">
+  <meta name="twitter:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
+  <meta name="theme-color" content="#05050b">
+  <meta name="application-name" content="Oneway">
+  <meta name="apple-mobile-web-app-title" content="Oneway">
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="author" href="/.well-known/security.txt" title="Security contact">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","email":"williamrau78@gmail.com","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","publisher":{"@id":"https://oneway.center/#organization"},"mainEntity":{"@id":"https://oneway.center/#app"}},{"@type":"WebPage","@id":"https://onewayos.com/systems/reservations#webpage","url":"https://onewayos.com/systems/reservations","name":"Oneway Reservations","headline":"Oneway Reservations | Booking System","description":"Oneway Reservations lets people book your rooms, tables, courts and spaces from the Oneway App, and runs the book from confirmation to check-out.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-19","breadcrumb":{"@id":"https://onewayos.com/systems/reservations#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://onewayos.com/","isRelatedTo":{"@id":"https://oneway.center/#app"},"sameAs":["https://onewayos.com/"]},{"@type":"SoftwareApplication","@id":"https://onewayos.com/systems/reservations#system","name":"Oneway Reservations","applicationCategory":"BusinessApplication","applicationSubCategory":"Reservations and booking","operatingSystem":"Web","description":"Bookable rooms, tables, courts and spaces, booked from the Oneway App, and the desk's book.","url":"https://onewayos.com/systems/reservations","isPartOf":{"@id":"https://oneway.center/#os"},"publisher":{"@id":"https://oneway.center/#organization"}},{"@type":"BreadcrumbList","@id":"https://onewayos.com/systems/reservations#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway OS","item":"https://onewayos.com/"},{"@type":"ListItem","position":2,"name":"Oneway Reservations","item":"https://onewayos.com/systems/reservations"}]}]}</script>
+  <!-- /SEO -->
+  <!-- A SYSTEM'S PAGE, DRAWN BY tools/system_pages.py FROM tools/system_pages_data.py: edit the data, never this file.
+       A DRAFT: not published (tools/landing_static.py EXTRA does not name it; tools/site_seo.py projects its head as a
+       TEMPLATE_PAGE, outside the sitemap). Every row's evidence: context/audits/system-pages-2026-10/README.md. -->
+  <script src="/frontend/shared/oneway-viewport.js?v=75d2638f"></script>
+  <script src="/frontend/shared/oneway-hue.js?v=538a699d"></script>
+  <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=7a77dd8a"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=d4261bc3"/>
+<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=2110192e">
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=d0b498e9"/>
+  <link rel="stylesheet" href="/frontend/landing/site-page.css?v=617fb9dc"/>
+  <link rel="stylesheet" href="/frontend/landing/system-page.css?v=8f0772ef"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=d0313851"/>
+</head>
+<body class="mission-page ind-page sys-page">
+  <canvas id="hero-canvas" aria-hidden="true"></canvas>
+  <nav class="owbar owbar--fly" id="nav" aria-label="Oneway">
+    <div class="owbar-brand">
+      <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+      <div class="owbar-pages"><a href="/mission">Our Mission</a><a href="/app">App</a><a href="/os">OS</a><a href="/security">Security</a><a href="/contact">Contact</a></div>
+    </div>
+    <div class="owbar-right"><a href="/beta" class="owbar-signin">Sign in</a></div>
+  </nav>
+  <script src="/frontend/shared/oneway-bar.js?v=d5341b18"></script>
+  <main>
+    <header class="lp" id="top">
+      <div class="lp-wrap">
+        <nav class="trail" aria-label="Where this page is"><a href="/os">Oneway OS</a> <i>›</i> <a href="/os-business">Business OS</a> <i>›</i> <span>Reservations</span></nav>
+        <div class="lk"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" data-owbar-hero/><span>Module</span></div>
+        <h1 class="t-display">Reservations.</h1>
+        <p class="t-lead">Oneway Reservations lets people book the things your place offers, a room, a table, a court or a space, from the Oneway App, and runs the book from confirmation to&nbsp;check-out.</p>
+        <p class="t-caption">Part of Business OS, by contact, in the Closed Selective Server Beta. What is still being built is marked Planned.</p>
+        <div class="lp-acts"><a class="pill pill--solid" href="/contact#business">Talk to us</a></div>
+      </div>
+    </header>
+    <figure class="sys-shot sys-shot--pics rv" data-screenshot="reservations">
+      <div class="sys-shot__stage"><div class="sys-shot__pc"><img src="/assets/systems/reservations/pc.webp" width="1600" height="1007" alt="Reservations in Oneway OS at a PC&#x27;s width" decoding="async"></div><div class="sys-shot__phone"><img src="/assets/systems/reservations/phone.webp" width="600" height="1298" alt="Reservations in Oneway OS on a phone" decoding="async"></div></div>
+      <figcaption class="t-caption">Reservations in Oneway OS, with sample records.</figcaption>
+    </figure>
+    <section class="lp mission-sec" id="things">
+      <div class="lp-wrap rv">
+        <p class="t-mark">What is&nbsp;booked</p>
+        <h2 class="t-heading">Anything your place offers, bookable.</h2>
+        <ul class="ind-rows">
+          <li><h3 class="t-sub">Bookable&nbsp;things</h3><p class="t-body">A room, a table, a court, a boat or a space: any of the Center's things takes&nbsp;bookings.</p></li>
+          <li><h3 class="t-sub">Its&nbsp;hours</h3><p class="t-body">When each one takes bookings, day by&nbsp;day.</p></li>
+          <li><h3 class="t-sub">Availability</h3><p class="t-body">What is free and when, read before anyone&nbsp;books.</p></li>
+          <li><h3 class="t-sub">A grid across&nbsp;things</h3><p class="t-body">The day drawn as a timeline across every bookable&nbsp;thing.</p><span class="sys-st t-caption">Planned</span></li>
+          </ul>
+      </div>
+    </section>
+    <figure class="sys-shot sys-shot--more rv">
+      <div class="sys-shot__pc"><img src="/assets/systems/reservations/pc-more.webp" width="1600" height="1007" alt="What can be booked, with its hours and its rules." loading="lazy" decoding="async"></div>
+      <figcaption class="t-caption">What can be booked, with its hours and its&nbsp;rules.</figcaption>
+    </figure>
+    <section class="lp mission-sec" id="booking">
+      <div class="lp-wrap rv">
+        <p class="t-mark">Booking</p>
+        <h2 class="t-heading">Booked from the App, kept in one&nbsp;book.</h2>
+        <ul class="ind-rows">
+          <li><h3 class="t-sub">Booked from the&nbsp;App</h3><p class="t-body">A person books from the Center's page and sees their bookings in their&nbsp;own.</p></li>
+          <li><h3 class="t-sub">Cancelled by the&nbsp;guest</h3><p class="t-body">A guest cancels their own booking, and the time is free&nbsp;again.</p></li>
+          <li><h3 class="t-sub">The desk's&nbsp;book</h3><p class="t-body">The day's bookings, waiting on you and from today&nbsp;on.</p></li>
+          <li><h3 class="t-sub">Confirm, check in, check&nbsp;out</h3><p class="t-body">The desk moves each booking through its&nbsp;day.</p></li>
+          <li><h3 class="t-sub">Deposits and cards on&nbsp;file</h3><p class="t-body">A deposit taken when the booking is&nbsp;made.</p><span class="sys-st t-caption">Planned</span></li>
+          </ul>
+      </div>
+    </section>
+    <section class="lp mission-sec" id="filled">
+      <div class="lp-wrap rv">
+        <p class="t-mark">Filling the&nbsp;time</p>
+        <h2 class="t-heading">Nothing booked is an&nbsp;opportunity.</h2>
+        <ul class="ind-rows">
+          <li><h3 class="t-sub">Idle&nbsp;things</h3><p class="t-body">Every bookable thing with nothing booked in the coming days,&nbsp;said.</p></li>
+          <li><h3 class="t-sub">Offered as a&nbsp;space</h3><p class="t-body">An idle thing proposed as a space opportunity, published by its&nbsp;owner.</p></li>
+          <li><h3 class="t-sub">Shown everywhere</h3><p class="t-body">The same booking facts shaped for a Popit, a Center page, an event and the&nbsp;web.</p></li>
+          </ul>
+      </div>
+    </section>
+    <section class="lp mission-sec" id="difference">
+      <div class="lp-wrap rv">
+        <p class="t-mark">The&nbsp;difference</p>
+        <h2 class="t-heading">Booked where people already&nbsp;are.</h2>
+        <p class="t-lead">A booking widget waits on a website. Here the Center's page in the App is where people&nbsp;book.</p>
+        <ul class="ind-rows">
+          <li><h3 class="t-sub">Every thing is a thing you&nbsp;own</h3><p class="t-body">Bookable things live in Asset Management's register.</p></li>
+          <li><h3 class="t-sub">One book for the&nbsp;desk</h3><p class="t-body">Rooms, tables and courts in one&nbsp;place.</p></li>
+          <li><h3 class="t-sub">Idle time&nbsp;said</h3><p class="t-body">What nobody booked is proposed as something to&nbsp;offer.</p></li>
+          </ul>
+      </div>
+    </section>
+    <section class="lp mission-sec" id="how">
+      <div class="lp-wrap rv">
+        <p class="t-mark">How it&nbsp;works</p>
+        <h2 class="t-heading">From a free hour to a full&nbsp;one.</h2>
+        <div class="sys-map-wrap"><svg class="sys-map sys-map--wide" viewBox="0 0 960 300" role="img" aria-label="How it works: Bookings from the App, The desk, Hours and rules come in; they land on One book, every thing; out come Confirmed, Checked in and out, Idle time offered."><path class="sys-map__line" d="M250 50 C 310 50, 330 150, 380 150"/><rect class="sys-map__pill" x="0" y="22" width="250" height="56" rx="28"/><text class="sys-map__t" x="22" y="56" text-anchor="start">Bookings from the App</text><path class="sys-map__line" d="M250 142 C 310 142, 330 150, 380 150"/><rect class="sys-map__pill" x="0" y="114" width="250" height="56" rx="28"/><text class="sys-map__t" x="22" y="148" text-anchor="start">The desk</text><path class="sys-map__line" d="M250 234 C 310 234, 330 150, 380 150"/><rect class="sys-map__pill" x="0" y="206" width="250" height="56" rx="28"/><text class="sys-map__t" x="22" y="240" text-anchor="start">Hours and rules</text><path class="sys-map__line" d="M580 150 C 630 150, 650 50, 710 50"/><rect class="sys-map__pill" x="710" y="22" width="250" height="56" rx="28"/><text class="sys-map__t" x="732" y="56" text-anchor="start">Confirmed</text><path class="sys-map__line" d="M580 150 C 630 150, 650 142, 710 142"/><rect class="sys-map__pill" x="710" y="114" width="250" height="56" rx="28"/><text class="sys-map__t" x="732" y="148" text-anchor="start">Checked in and out</text><path class="sys-map__line" d="M580 150 C 630 150, 650 234, 710 234"/><rect class="sys-map__pill" x="710" y="206" width="250" height="56" rx="28"/><text class="sys-map__t" x="732" y="240" text-anchor="start">Idle time offered</text><rect class="sys-map__core" x="380" y="92" width="200" height="116" rx="26"/><text class="sys-map__c" x="480" y="142" text-anchor="middle"><tspan x="480" dy="0">One book,</tspan><tspan x="480" dy="1.15em">every thing</tspan></text></svg><svg class="sys-map sys-map--tall" viewBox="0 0 360 640" role="img" aria-label="One book, every thing"><rect class="sys-map__pill" x="20" y="0" width="320" height="56" rx="28"/><text class="sys-map__t" x="180" y="34" text-anchor="middle">Bookings from the App</text><rect class="sys-map__pill" x="20" y="68" width="320" height="56" rx="28"/><text class="sys-map__t" x="180" y="102" text-anchor="middle">The desk</text><rect class="sys-map__pill" x="20" y="136" width="320" height="56" rx="28"/><text class="sys-map__t" x="180" y="170" text-anchor="middle">Hours and rules</text><path class="sys-map__line" d="M180 196 L180 248"/><rect class="sys-map__core" x="60" y="250" width="240" height="116" rx="26"/><text class="sys-map__c" x="180" y="300" text-anchor="middle"><tspan x="180" dy="0">One book,</tspan><tspan x="180" dy="1.15em">every thing</tspan></text><path class="sys-map__line" d="M180 366 L180 418"/><rect class="sys-map__pill" x="20" y="420" width="320" height="56" rx="28"/><text class="sys-map__t" x="180" y="454" text-anchor="middle">Confirmed</text><rect class="sys-map__pill" x="20" y="488" width="320" height="56" rx="28"/><text class="sys-map__t" x="180" y="522" text-anchor="middle">Checked in and out</text><rect class="sys-map__pill" x="20" y="556" width="320" height="56" rx="28"/><text class="sys-map__t" x="180" y="590" text-anchor="middle">Idle time offered</text></svg></div>
+          <ol class="sys-flow">
+          <li><h3 class="t-sub">Make it&nbsp;bookable</h3><p class="t-body">Choose a thing and its&nbsp;hours.</p></li>
+          <li><h3 class="t-sub">People&nbsp;book</h3><p class="t-body">From the Center's page in the Oneway&nbsp;App.</p></li>
+          <li><h3 class="t-sub">The desk runs the&nbsp;day</h3><p class="t-body">Confirm, check in, check&nbsp;out.</p></li>
+          <li><h3 class="t-sub">Idle time&nbsp;offered</h3><p class="t-body">What nobody booked becomes an&nbsp;offer.</p></li>
+          </ol>
+      </div>
+    </section>
+    <section class="lp mission-sec" id="who">
+      <div class="lp-wrap rv">
+        <p class="t-mark">Who it is&nbsp;for</p>
+        <h2 class="t-heading">Anywhere people book a&nbsp;time.</h2>
+        <ul class="ind-rows">
+          <li><h3 class="t-sub">Hotels and&nbsp;resorts</h3><p class="t-body">Rooms, the spa, cabanas and&nbsp;courts.</p></li>
+          <li><h3 class="t-sub">Restaurants</h3><p class="t-body">Tables and private&nbsp;rooms.</p></li>
+          <li><h3 class="t-sub">Clubs and&nbsp;venues</h3><p class="t-body">Courts, lanes and&nbsp;rooms.</p></li>
+          <li><h3 class="t-sub">Communities</h3><p class="t-body">Shared spaces members&nbsp;book.</p></li>
+          </ul>
+        <h3 class="t-sub sys-with-h">Comes with these Systems</h3>
+        <ul class="sys-with t-body"><li>Casino Operations System</li><li><a href="/systems/events">Oneway Events</a></li><li><a href="/systems/hotel-operations">Oneway Hotel Operations</a></li><li>Property Management System</li><li>Restaurant Operations System</li></ul>
+      </div>
+    </section>
+    <div class="close"><div class="lp-wrap rv"><h2 class="t-heading">Every hour,&nbsp;bookable.</h2><div class="lp-acts lp-acts--c"><a class="pill pill--solid" href="/contact#business">Talk to us</a><a class="pill pill--solid" href="/os-business">Business OS</a></div></div></div>
+  </main>
+  <!-- THE ONE FOOTER (founder/801), as every landing page wears it; held by api/test_site_bar.py -->
+<footer class="owfoot">
+  <div class="owfoot-in">
+    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <nav class="owfoot-pages" aria-label="Oneway's pages">
+      <a href="/mission">Our Mission</a>
+      <a href="/app">App</a>
+      <a href="/os">OS</a>
+      <a href="/os-business">Business OS</a>
+      <a href="/contact#developers">Developer OS</a>
+      <a href="/security">Security</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <nav class="owfoot-help" aria-label="Help">
+      <a href="/support">Support</a>
+      <a href="/safety">Safety</a>
+      <a href="/community-guidelines">Community Guidelines</a>
+      <a href="/accessibility">Accessibility</a>
+      <a href="/learn">Glossary</a>
+    </nav>
+    <nav class="owfoot-more" aria-label="More from Oneway"><a href="https://onewayarcade.com/">Oneway Arcade</a></nav>
+    <nav class="owfoot-legal" aria-label="Legal">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="/data-deletion">Data Deletion</a>
+    </nav>
+    <small class="owfoot-line">2027, Oneway Technologies LLC</small>
+  </div>
+</footer>
+  <script src="/frontend/landing/site-page.js?v=f090e348"></script>
+</body>
+</html>
