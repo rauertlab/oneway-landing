@@ -13,23 +13,7 @@ One standard for the whole ecosystem. The same protections cover every part of O
 The Oneway App is Oneway's flagship product; Oneway OS is the operating system behind it.
 
 - [Oneway App](https://oneway.center/app): The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. You see what your friends and the places you love are posting, and what is coming up at each of them.
-- [Oneway OS](https://oneway.center/os): From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
-  - Oneway OS: a free operating environment with the basic capabilities of a Center
-  - Oneway Developer OS: the developer platform for building applications, systems, integrations, agents and custom
-    experiences on Oneway
-- [Oneway Business OS](https://oneway.center/os-business): $330 a month for one Center, by contact: bookings and events, a shop, customers, staff and roles, one inbox, the System Store's Systems, the platforms it connects, and the Brain's map of all of it.
-- [Business OS for Restaurants](https://oneway.center/os-business-restaurants): Run a restaurant's floor from one Center: tables and sections, every seating, a waitlist guests join from the App, bookings, turn times and the 86 board.
-- [Business OS for Hospitality](https://oneway.center/os-business-hospitality): Hotel operations on Oneway OS: rates, group blocks, deposits, the front desk and night audit, guest traces, rewards, and one intake for a property's systems.
-- [Business OS for Entertainment & Venues](https://oneway.center/os-business-entertainment): Events people say Going to in the Oneway App, check-in at the door, spaces to book, and the upkeep behind every night, on Oneway OS.
-- [Business OS for Additional Industries](https://oneway.center/os-business-industries): Rental property on Oneway OS: the rent roll, leases, statements and what is past due. And a Center for museums, schools, clubs, churches and cities.
-
-## Oneway OS Systems
-
-- [Oneway CRM](https://onewayos.com/systems/crm): Oneway CRM: every customer's whole story from real bookings, visits and messages, with a pipeline, follow-ups, lists, consent and import, in Oneway OS.
-- [Oneway Inventory Management](https://onewayos.com/systems/inventory): Inventory management in Oneway OS: stock by place and shelf, counts, par levels, purchase orders and suppliers, in one history tied to the work.
-- [Oneway Asset Management](https://onewayos.com/systems/asset-management): Asset management and maintenance in Oneway OS: a register of every thing, lending, warranties, condition, downtime, work orders and preventive upkeep.
-- [Oneway Hotel Operations](https://onewayos.com/systems/hotel-operations): Hotel Operations in Oneway OS: rates and the book, the front desk, the night audit, folios and house accounts, housekeeping and traces, on one Center.
-- [Oneway HVAC Service Operations](https://onewayos.com/systems/hvac): HVAC software in Oneway OS: calls to job tickets, dispatch with arrival windows, the tech's day on a phone, equipment history and service agreements.
+- [Oneway OS](https://onewayos.com/): From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds. Its pages, Business OS for each industry and every System, are at onewayos.com.
 
 ## About Oneway
 
