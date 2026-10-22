@@ -2334,9 +2334,11 @@
       }
       if (to) { try { global.location.hash = to.replace(/^#/, '#'); } catch (e) {} }
     }
-    if (to) {
-      b.addEventListener('click', open);
-      b.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); } });
+    /* AN UNREAD ROW IS ALWAYS PRESSABLE (the founder, 2026-10-22: "users need something to mark notifcations as read cause clicking
+       on it doesnt work"): a notice that goes nowhere still reads on a press; once read, a row that goes nowhere is no door (Rule 12) */
+    if (to || unread) {
+      b.addEventListener('click', function () { open(); if (!to) { b.setAttribute('aria-disabled', 'true'); b.tabIndex = -1; } });
+      b.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); b.click(); } });
     } else { b.setAttribute('aria-disabled', 'true'); b.tabIndex = -1; }
     return b;
   }
@@ -2391,6 +2393,21 @@
       }
       var folded = foldOthers(rows);
       var list = mk('div', 'ow-notes ow-notes--std');
+      /* MARK ALL READ, while anything is unread: one read up to the newest, every row's tint off at once, the bell re-read */
+      var top = rows.reduce(function (m, n) { return (typeof n.seq === 'number' && !(n.read || n.seen) && n.seq > m) ? n.seq : m; }, 0);
+      if (top) {
+        var all = mk('button', 'ow-notes__all', 'Mark all read'); all.type = 'button';
+        all.addEventListener('click', function () {
+          all.disabled = true;
+          Array.prototype.forEach.call(list.querySelectorAll('[data-unread]'), function (o) { o.removeAttribute('data-unread'); });
+          data.post('/api/me/notifications/read?seq=' + encodeURIComponent(top), {}).then(function () {
+            if (all.parentNode) all.parentNode.removeChild(all);
+            data.invalidate('/api/me/notifications');
+            doc.dispatchEvent(new CustomEvent('ow:notifications-changed'));
+          }).catch(function () { all.disabled = false; if (OW.toast) OW.toast('That did not go through. Try again.'); });
+        });
+        host.appendChild(all);
+      }
       var sec = '';
       folded.forEach(function (n) {
         var s = sectionOf(n);

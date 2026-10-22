@@ -14404,11 +14404,8 @@ html.ow-old .ow-compose__tray :-webkit-any(img,video){width:100%;height:100%;obj
    and Send not ready differed only by how faded it was. Each rule below answers one of those. Spacing and motion use the
    ROOM and MOTION names (S33, S34), never a number of their own. */
 
-/* 1 · A RUN IS ONE SHAPE: the corners toward the sender tighten between messages of one run, the tail on its last */
-html[data-ow-thread] .ow-msgs .ow-msg:not([data-mine]):not([data-first]){border-top-left-radius:6px}
-html[data-ow-thread] .ow-msgs .ow-msg:not([data-mine]):not([data-last]){border-bottom-left-radius:6px}
-html[data-ow-thread] .ow-msgs .ow-msg[data-mine]:not([data-first]){border-top-right-radius:6px}
-html[data-ow-thread] .ow-msgs .ow-msg[data-mine]:not([data-last]){border-bottom-right-radius:6px}
+/* 1 · EVERY MESSAGE ROUND (the founder, 2026-10-22: "want rounded messages again"): a run is separate round bubbles, the
+   tail on its last only; the corners toward the sender no longer tighten between them, which read as one square block */
 html[data-ow-thread] .ow-msgs.ow-msgs > [data-gap]{margin-top:var(--ow-gap,12px)}
 html[data-ow-thread] .ow-msgs.ow-msgs > .ow-msg-day{margin:calc(var(--ow-gap,12px) * 1.6) 0 calc(var(--ow-gap,12px) * .5)}
 
@@ -14914,3 +14911,7 @@ html body .po-act[data-po-respond="like"][aria-pressed="true"] svg.ow-ic{color:v
 .ow-ipick__t[aria-pressed="true"]{background:rgba(var(--ow-h1,124,45,255),.14);box-shadow:inset 0 0 0 2px rgba(var(--ow-h1,124,45,255),.7);
   color:rgb(var(--ow-h1,124,45,255))}
 .ow-ipick__end{grid-column:1/-1;height:1px}
+
+/* MARK ALL READ (the founder, 2026-10-22): a quiet pill at the list's head, at the end of the line */
+.ow-notes__all{display:flex;margin:0 0 8px auto;min-height:36px;padding:0 14px;border:0;border-radius:999px;align-items:center;font:inherit;font-size:14px;font-weight:600;color:var(--ow-ink);background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);cursor:pointer}html.ow-old .ow-notes__all{background:rgba(255,255,255,0.08)}
+.ow-notes__all:disabled{opacity:.5;cursor:default}
