@@ -1559,6 +1559,23 @@ html[da</style><link rel="preload" as="style" href="/frontend/shared/oneway-popi
 <header class="hero" id="hero">
   <div class="hero-inner">
     <img style="aspect-ratio:400/86" src="logo-white.png" srcset="logo-white@2x.png 2x" alt="Oneway" class="hero-mark" data-owbar-hero data-owbar-span="0.62"/>
+    <!-- THE SPLASH BY THE WORDMARK (founder/913, 2026-10-22: "a minecraft style thing on their wordmark with our sticker style saying X IS AS
+         OF NOW OPEN FOR SIGN UP, Go learn the ecosystem! (Selective server test launch)"; then "what ever i chosse i currently live in the
+         server system and publish this chsnge now"): X is what the switch has open, read from the platform's one public read; nothing open,
+         no splash. A sticker laid beside the wordmark, never on its letters: the wordmark itself never changes. -->
+    <a class="ow-splash" id="owSplash" href="/beta" hidden><b class="ow-splash__x"></b><span class="ow-splash__go">Go learn the ecosystem!</span><small>(Selective server test launch)</small></a>
+    <style>
+      .hero-inner{position:relative}
+      .ow-splash{position:absolute;z-index:3;display:flex;flex-direction:column;align-items:center;gap:2px;max-width:62vw;max-width:min(300px,62vw);padding:9px 14px 8px;border-radius:14px;background:#ffffff;color:#14131f;text-decoration:none;text-align:center;transform-origin:50% 50%;box-shadow:0 12px 26px -12px rgba(0,0,0,.75);transform:rotate(-12deg);animation:ow-splash 1.1s ease-in-out infinite alternate;transition:opacity .25s ease;pointer-events:auto}html.ow-nogap .ow-splash>*+*{margin-top:2px}
+      .ow-splash[hidden]{display:none}
+      .ow-splash__x{font-family:'ONEWAY Head','ONEWAY Sans',system-ui,sans-serif;font-weight:1000;font-size:14px;line-height:1.12;letter-spacing:.01em;text-transform:uppercase}
+      .ow-splash__go{font-weight:700;font-size:13px;line-height:1.2;color:rgb(var(--ow-h1,124 45 255))}
+      .ow-splash small{font-size:10.5px;line-height:1.2;opacity:.7}
+      @keyframes ow-splash{from{transform:rotate(-12deg) scale(1)}to{transform:rotate(-12deg) scale(1.07)}}
+      @media (prefers-reduced-motion:reduce){.ow-splash{animation:none}}
+      @media (max-width:640px){.ow-splash{max-width:58vw;padding:7px 11px 6px}.ow-splash__x{font-size:12px}.ow-splash__go{font-size:11.5px}.ow-splash small{font-size:9.5px}}
+    </style>
+    <script defer src="/frontend/landing/static/inline-03-aa2d0deee7.js?v=aa2d0dee"></script>
     <!-- ★ FOUNDER/383 (2026-09-14): the person arriving is being INTRODUCED TO
          THE BRAND; "Your gateway…" *"goes further down for app"* and "Connect
          your x in one place" is *"for os"*. So the hero carries the brand's own
@@ -2032,6 +2049,12 @@ html[da</style><link rel="preload" as="style" href="/frontend/shared/oneway-popi
   @media(max-width:420px){#mission .lp-beside{grid-template-columns:minmax(0,1fr)}#mission .lp-beside > *{grid-column:1}
     #mission .lp-beside > .lp-anchor{grid-row:auto;order:-1;width:72px;margin:0 auto 22px}}
   .hero-sub{margin:16px auto 0;margin:max(16px,min(2.4vh,22px)) auto 0;margin:clamp(16px,2.4vh,22px) auto 0;max-width:34ch;text-align:center;color:rgba(255,255,255,.86);text-wrap:balance;text-shadow:0 2px 24px rgba(0,0,0,.5)}
+  /* MORE ROOM IN THE HERO (the founder, 2026-10-22: "give the wordmark more spacing same thing with everything else"): the wordmark,
+     the headline, its line and the two doors each stand further apart; the splash sits in the wordmark's new room */
+  .hero-mark{margin-bottom:40px;margin-bottom:max(40px,min(6vh,64px));margin-bottom:clamp(40px,6vh,64px)}
+  .hero-sub{margin-top:26px;margin-top:max(26px,min(3.8vh,38px));margin-top:clamp(26px,3.8vh,38px)}
+  .hero-inner .hero-cta{margin-top:32px;margin-top:max(32px,min(4.8vh,48px));margin-top:clamp(32px,4.8vh,48px)}
+  @media (max-width:640px){.hero-mark{margin-bottom:34px}.hero-sub{margin-top:22px}.hero-inner .hero-cta{margin-top:28px}}
 </style>
 
 <!-- ═══ 2 · MISSION — left ══════════════════════════════════════════════ -->
@@ -2584,10 +2607,10 @@ html[da</style><link rel="preload" as="style" href="/frontend/shared/oneway-popi
 
 
 <script defer src="/frontend/shared/brainmap.js?v=6a651abb"></script>
-<script defer src="/frontend/landing/static/inline-03-da8892856b.js?v=da889285"></script>
-<script defer src="/frontend/landing/static/inline-04-ce06580928.js?v=ce065809"></script>
-<script defer src="/frontend/landing/static/inline-05-07b920e839.js?v=07b920e8"></script>
-<script defer src="/frontend/landing/static/inline-06-ced288bedf.js?v=ced288be"></script>
+<script defer src="/frontend/landing/static/inline-04-da8892856b.js?v=da889285"></script>
+<script defer src="/frontend/landing/static/inline-05-ce06580928.js?v=ce065809"></script>
+<script defer src="/frontend/landing/static/inline-06-07b920e839.js?v=07b920e8"></script>
+<script defer src="/frontend/landing/static/inline-07-ced288bedf.js?v=ced288be"></script>
 
 <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
 <!-- ═══ QUESTIONS, ANSWERED (founder, 2026-10-17: "do a full creative and SEO aduit and try to add things that explain parts of
@@ -2691,7 +2714,7 @@ html[da</style><link rel="preload" as="style" href="/frontend/shared/oneway-popi
     <small class="owfoot-who">Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.</small>
   </div>
 </footer>
-<script defer src="/frontend/landing/static/inline-07-df33a0b8ab.js?v=df33a0b8"></script>
+<script defer src="/frontend/landing/static/inline-08-df33a0b8ab.js?v=df33a0b8"></script>
 
 
 
@@ -2732,7 +2755,7 @@ html[da</style><link rel="preload" as="style" href="/frontend/shared/oneway-popi
     letter-spacing:0!important;font-size:13px!important;font-weight:500!important}
 
 </style>
-<script defer src="/frontend/landing/static/inline-08-20828a88be.js?v=20828a88"></script>
+<script defer src="/frontend/landing/static/inline-09-20828a88be.js?v=20828a88"></script>
 
 
 
