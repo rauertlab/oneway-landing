@@ -403,6 +403,7 @@
       <!-- ★ FOUNDER/383: "connect your x in one place for os". ★ FOUNDER/388:
            the OS is opened from here, not only requested. -->
       <div class="hero-sub t-sub">Connect your <span id="rotWord" class="rot-word">casino</span> in one&nbsp;place.</div>
+      <p class="hero-soon t-sub" style="margin:0 0 18px;opacity:.85">Oneway OS is coming soon.</p>
       <div class="hero-cta">
         <a data-ow-go="os" href="/beta" class="btn-primary">Open Oneway OS →</a>
         <a href="#systems" class="btn-ghost">View Systems</a>
@@ -499,130 +500,6 @@
     </div>
   </section>
 
-  <section class="sec cp" id="center-page">
-    <div class="wrap">
-      <div class="sec-eyebrow t-mark">Every Center has a page</div>
-      <h2 class="sec-h2 t-heading">Every Center has a public&nbsp;page.</h2>
-      <div class="cp-split">
-        <div class="cp-shot lp-anchor lp-anchor--shot"><img src="/frontend/site/app-screen-center.webp" width="1179" height="2556" alt="A Center's public page in the Oneway App" loading="lazy" decoding="async"/></div>
-        <div class="cp-say">
-          <p class="sec-sub t-lead">It's what people see when they find you on the map, in search or in a friend's feed, in the Oneway App and on the&nbsp;web.</p>
-          <ul class="cp-list">
-            <li><b class="t-sub">Your layout</b><span class="t-body">Arrange your page your way with Popits: your info, posts, events, offers, photos and&nbsp;more.</span></li>
-            <li><b class="t-sub">Works like a profile</b><span class="t-body">Post updates, get followers and messages. Your followers and members are real people with their own&nbsp;Profiles.</span></li>
-            <li><b class="t-sub">Your content</b><span class="t-body">Posts, events, offers, photos and hours, kept up to date in one&nbsp;place.</span></li>
-            <li><b class="t-sub">Your community</b><span class="t-body">Members, groups, chat and events for the people around your&nbsp;place.</span></li>
-            <li><b class="t-sub">Your website too</b><span class="t-body">The same page can be your website, on your own&nbsp;domain.</span></li>
-            <li><b class="t-sub">Run from Oneway OS</b><span class="t-body">Your team runs the Center in Oneway OS, and what you change there shows on your page right&nbsp;away.</span></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ONEWAY VS. THE STACK (founder/817: "also have to do oneway vs for the business os against compeitors"): what a business
-       runs on today, kind by kind, set beside what Business OS does. The examples are named only as examples of each kind
-       (no claim about them, no price of theirs); each "on Business OS" line is what the running OS does. PROPOSED words. -->
-  <section class="sec" id="vs">
-    <div class="wrap">
-      <div class="sec-head">
-        <div class="sec-eyebrow t-mark">Business OS vs. the stack</div>
-        <h2 class="sec-h2 t-heading">Seven apps, or one&nbsp;Center.</h2>
-        <div class="lp-anchor lp-anchor--number rv d1">7<span class="lp-anchor-label">separate apps, or one Center on one login</span></div>
-        <p class="sec-sub t-lead">Most businesses run on a pile of separate tools that never talk to each other. Business OS puts them in one Center, on one&nbsp;login.</p>
-        <ul class="vs-list" aria-label="What a business uses today, and the same on Business OS">
-          <li class="vs-head" aria-hidden="true"><span>Instead of</span><span>On Business OS</span></li>
-          <li><span class="vs-was"><b>A website builder</b><i>Wix, Squarespace</i></span><span class="vs-now">Your Center itself, as its website</span></li>
-          <li><span class="vs-was"><b>A booking app</b><i>Calendly, OpenTable</i></span><span class="vs-now">Bookings and reservations, in the same Center people follow</span></li>
-          <li><span class="vs-was"><b>An online store</b><i>Shopify, Square Online</i></span><span class="vs-now">A shop beside everything else the place does</span></li>
-          <li><span class="vs-was"><b>A customer list</b><i>HubSpot, Mailchimp</i></span><span class="vs-now">Customers kept from every visit, order and message</span></li>
-          <li><span class="vs-was"><b>A social media scheduler</b><i>Hootsuite, Later</i></span><span class="vs-now">Posts that go to the platforms you connect, from one place</span></li>
-          <li><span class="vs-was"><b>A team chat and staff app</b><i>Slack, Homebase</i></span><span class="vs-now">Staff, roles and every message in one inbox</span></li>
-          <li><span class="vs-was"><b>A link-in-bio page</b><i>Linktree</i></span><span class="vs-now">One Center that people follow, with everything on it</span></li>
-        </ul>
-        <!-- THE STACK CALCULATOR: the visitor's own numbers beside Business OS's price (founder/795: $330 a month for one Center;
-             api/oneway/platform/budgets.py PRICE_ANCHOR_USD). Its rows are the seven kinds of the list above, read from it, so the
-             two never drift; every field starts empty (no price of anyone's is stated). Nothing is sent and nothing is kept:
-             the sum lives in this page only. Under $330 it states the visitor's number and claims nothing. The price itself is
-             said once on this page, in the note under the three products (founder/823), so the calculator keeps it as data
-             (data-calc-price) and says it only as the difference. Hidden until its script runs. PROPOSED words. It wears the
-             pricing box (founder/829: "add boxes around the pricing areas"; then "nothings not in a box that should be"): it is
-             the one place on the page where a price is worked out. -->
-        <div class="vs-calc ow-pricebox" id="vs-calc" data-calc-price="330" hidden>
-          <p class="t-lead vs-calc-lead">Add up your own stack: tick each tool you pay for and type what it costs you a&nbsp;month.</p>
-          <ul class="vs-calc-rows" aria-label="The tools you pay for, and what each costs you a month"></ul>
-          <p class="t-sub vs-calc-total"><span aria-live="polite">Your stack: <b data-calc-sum>$0</b> a month</span></p>
-          <p class="t-body vs-calc-diff" hidden>Your stack costs <b data-calc-diff></b> a month more than Business&nbsp;OS.</p>
-          <p class="t-caption vs-calc-note">Your numbers stay in your browser.</p>
-        </div>
-        <script>
-        (function () {
-          /* the stack calculator: plain arithmetic in this page; no request, no storage */
-          var box = document.getElementById('vs-calc'); if (!box) return;
-          var rows = box.querySelector('.vs-calc-rows'), sumEl = box.querySelector('[data-calc-sum]');
-          var diffLine = box.querySelector('.vs-calc-diff'), diffEl = box.querySelector('[data-calc-diff]');
-          var price = Number(box.getAttribute('data-calc-price'));
-          var kinds = [].map.call(document.querySelectorAll('#vs .vs-list li:not(.vs-head) .vs-was b'), function (b) { return b.textContent.trim(); });
-          if (!kinds.length || !isFinite(price)) return;
-          function cents(n) { return Math.round(n * 100) / 100; }
-          function money(n) {
-            n = cents(n); var whole = n === Math.round(n);
-            return '$' + n.toLocaleString('en-US', { minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: whole ? 0 : 2 });
-          }
-          function amount(text) { var n = parseFloat(String(text).replace(/[^0-9.]/g, '')); return isFinite(n) && n > 0 ? n : 0; }
-          var items = kinds.map(function (kind, i) {
-            var name = kind.replace(/^an?\s+/i, ''); name = name.charAt(0).toUpperCase() + name.slice(1);
-            var li = document.createElement('li');
-            var label = document.createElement('label'); label.className = 'vs-calc-tool';
-            var tick = document.createElement('input'); tick.type = 'checkbox'; tick.id = 'vs-calc-' + i;
-            var words = document.createElement('span'); words.textContent = name;
-            label.appendChild(tick); label.appendChild(words);
-            var cost = document.createElement('input');
-            cost.type = 'text'; cost.inputMode = 'decimal'; cost.autocomplete = 'off'; cost.maxLength = 12;
-            cost.className = 'vs-calc-cost'; cost.placeholder = '$ / month';
-            cost.setAttribute('aria-label', 'What ' + kind.toLowerCase() + ' costs you a month');
-            li.appendChild(label); li.appendChild(cost); rows.appendChild(li);
-            return { li: li, tick: tick, cost: cost };
-          });
-          function update() {
-            var total = 0;
-            items.forEach(function (it) {
-              var a = amount(it.cost.value);
-              it.li.classList.toggle('is-out', !it.tick.checked && a > 0);
-              if (it.tick.checked) total += a;
-            });
-            total = cents(total);
-            sumEl.textContent = money(total);
-            if (total > price) { diffEl.textContent = money(total - price); diffLine.hidden = false; }
-            else diffLine.hidden = true;
-          }
-          items.forEach(function (it) {
-            it.cost.addEventListener('input', function () { if (amount(it.cost.value) > 0) it.tick.checked = true; update(); });
-            it.cost.addEventListener('blur', function () { var a = amount(it.cost.value); if (a > 0) it.cost.value = money(a); });
-            it.tick.addEventListener('change', function () { if (it.tick.checked && !it.cost.value) it.cost.focus(); update(); });
-          });
-          box.hidden = false;
-          update();
-        })();
-        </script>
-        <p class="vs-note t-caption">The names are examples of each kind of tool, and none of them has any affiliation with&nbsp;Oneway.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- FINAL CTA -->
-  <section class="cta-band" id="cta">
-    <h2 class="t-heading">Build your Center on Oneway OS.</h2>
-        <div class="lp-anchor lp-anchor--shot rv d1"><img src="/frontend/site/os-screen.jpg" width="2880" height="1800" alt="Oneway OS: a Center's Today, with what is waiting and what you can do" loading="lazy" decoding="async"/></div>
-    <div class="hero-cta" style="justify-content:center">
-      <a data-ow-go="os" href="/beta" class="btn-primary">Open Oneway OS →</a>
-      <a href="/beta" class="btn-ghost">Create your account</a>
-    </div>
-    <p class="sec-sub t-lead cta-line">Built for communities, organizations, businesses and places.</p>
-    <p class="t-caption cta-site">Oneway OS has its own site, with every System: <a href="https://onewayos.com/">onewayos.com</a></p>
-  </section>
-
-  <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
 <footer class="owfoot">
   <div class="owfoot-in">
     <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
