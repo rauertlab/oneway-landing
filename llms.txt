@@ -24,6 +24,8 @@ The Oneway App is Oneway's flagship product; Oneway OS is the operating system b
 - [Our Mission](https://oneway.center/mission): Oneway aims to bring the web and local community together: one profile for every person, a Center for every place, and Oneway OS to run it.
 - [What Oneway's words mean](https://oneway.center/learn): Oneway's words in plain language: Profile, Center, Canvas, Popit, Systems, Oneway OS, Business OS, Developer OS, the Brain, Cross Projection and more.
 - [Get Oneway OS today](https://oneway.center/contact): Write to Oneway for a business, a developer's project, a community or the App beta. Oneway is in its Closed Selective Server Beta in New York City.
+- [Changelog](https://oneway.center/changelog): What changed on Oneway, newest first: each big update to the platform, the Oneway App and Oneway OS, dated.
+- [Discovery](https://oneway.center/discovery): Discovery in the Oneway App: the places, communities, events and people around you on a map and in a feed, with Waypass and saved lists.
 
 ## Trust and help
 
@@ -43,4 +45,4 @@ The Oneway App is Oneway's flagship product; Oneway OS is the operating system b
 
 - [Every page, in words](https://oneway.center/llms-full.txt)
 
-Read from oneway.center's own pages on 2026-10-20 (tools/site_seo.py).
+Read from oneway.center's own pages on 2026-10-21 (tools/site_seo.py).

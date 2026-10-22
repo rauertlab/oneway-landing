@@ -491,18 +491,20 @@
       /* ── ITS DEPOSIT, PAID ON ONEWAY (PLAN §5.0 unit 1; the hotel canon's money/deposits) ─────────────────────────
          What the house asks of this stay, less what was taken, is the server's (payments/payable, kind stay_deposit),
          offered only to the stay's own guest and only while something is owed; paid on the Center's own Stripe, the
-         hotel records it taken from Stripe's signed event. Nothing is drawn when nothing is owed. */
-      if (!/cancelled|no_show|checked_out/i.test(b.status || '')) {
+         hotel records it taken from Stripe's signed event. Nothing is drawn when nothing is owed. A booking whose thing
+         asks a deposit (founder/853, reservations/deposits.py) carries `deposit` and is paid as kind booking_deposit. */
+      var depKind = b.deposit ? 'booking_deposit' : 'stay_deposit';
+      if (!/cancelled|no_show|checked_out/i.test(b.status || '') && !(b.deposit && !(b.deposit.due > 0))) {
         var payBox = mk('div', 'ow-bk__row');
         wrap.appendChild(payBox);
-        data.get('/api/oneway/places/' + encodeURIComponent(centerId) + '/pay/stay_deposit/' + encodeURIComponent(id), { fresh: true }).then(function (pr) {
+        data.get('/api/oneway/places/' + encodeURIComponent(centerId) + '/pay/' + depKind + '/' + encodeURIComponent(id), { fresh: true }).then(function (pr) {
           var o = pr && pr.ok && pr.data;
           if (!o || !o.pays_here) return;
           var pay = mk('button', 'po-act', esc('Pay the deposit \u00b7 ' + o.price));
           pay.type = 'button';
           pay.addEventListener('click', function () {
             pay.disabled = true;
-            data.post('/api/oneway/places/' + encodeURIComponent(centerId) + '/pay', { kind: 'stay_deposit', ref: id, quantity: 1 }).then(function (r) {
+            data.post('/api/oneway/places/' + encodeURIComponent(centerId) + '/pay', { kind: depKind, ref: id, quantity: 1 }).then(function (r) {
               var url = r && r.ok && r.data && r.data.url;
               if (url && /^https?:\/\//i.test(url)) { global.location.assign(url); return; }
               pay.disabled = false;
@@ -1090,10 +1092,8 @@
          does nothing."* The place-and-clock line is gone from the header: the
          city is in the bio when it matters, and a clock only means something
          when the reader is in another zone. Directions are one press in the
-         link bar (below), built from the Center's own point, and they open the
-         person's own maps app. */
-      var whereRead = data.get('/api/oneway/centers/' + encodeURIComponent(centerId) + '/where')
-        .catch(function () { return { ok: false }; });
+         header's information, built from the Center's own point (the card
+         read's), and they open the person's own maps app. */
 
       /* ── "WHAT IS HAPPENING" IS THE UPCOMING TAB ─────────────────────────
          A second list of this Center's events stood here, below the tabs,
@@ -1166,6 +1166,17 @@
            kind's order and never "whichever read came back first". */
         var page = mk('div', 'ow-cpage');
         pane.appendChild(page);
+        /* YOUR HOME HERE (systems/leasing/residents.py; founder/853, the resident portal): a person who rents a home at this
+           property finds it first, with what is owed and the way in; anyone else is shown nothing */
+        if (signedIn && signedIn() && data && data.get) data.get('/api/oneway/me/homes').then(function (r) {
+          var cid = String((app.identity && (app.identity.center_id || app.identity.id)) || centerId);
+          var hm = ((r && r.ok && r.data && r.data.homes) || []).filter(function (x) { return x.center && (x.center.id === cid || x.center.id === centerId || x.center.handle === centerId); })[0];
+          if (!hm || !page.parentNode) return;
+          var pin = mk('button', 'ow-home__pin', '<b>Your home here \u00b7 ' + esc(hm.unit) + '</b><span>' + esc(hm.balance > 0 ? '$' + Number(hm.balance).toFixed(2) + ' owed' : 'Nothing owed') + ' \u00b7 Open your home</span>');
+          pin.type = 'button';
+          pin.addEventListener('click', function () { global.location.hash = '#residence/' + encodeURIComponent(hm.center.id) + '/' + encodeURIComponent(hm.lease_id); });
+          page.insertBefore(pin, page.firstChild);
+        });
         var kindWord = String((app.identity && app.identity.kind) || ident.category || '').toLowerCase();
         function sec(title, doorLabel, doorTab) {
           var h = mk('div', 'ow-cpage__h');
@@ -1279,6 +1290,35 @@
               }).catch(function () { more.disabled = false; more.textContent = 'Could not load more. Try again'; });
           });
           sb.appendChild(more);
+        }
+
+        /* ── THE MENU (systems/restaurant/menu.py, the one menu; the dispatcher, 2026-10-21: "the Center page's Menu section
+           draws it, visually (founder/854)") ───────────────────────────────────────────────────────────────────────
+           Read from GET /api/oneway/centers/{id}/menu, never a copy: its sections in their order, each dish at its price
+           for the daypart now, its photo (or the Center's own hue and the dish's initial, never a grey square), Sold out
+           and Not served now said on the dish. A section's chip shows only it; pressing a dish opens it as the Shop's do.
+           A Center with no menu has no Menu (S18). */
+        var menu = { d: null, asked: false };
+        var menuP = data.get('/api/oneway/centers/' + encodeURIComponent(centerId) + '/menu')
+          .then(function (r) { menu.d = (r && r.ok && r.data) || null; }).catch(function () {})
+          .then(function () { menu.asked = true; if (drawn) drawMenu(); });
+        function drawMenu() {
+          var d = menu.d;
+          if (!menu.asked || !d || !(d.sections || []).length || page.__owMenu || !(OW.menu && OW.menu.draw)) return;
+          page.__owMenu = true;
+          var mb = sec('Menu', '', '');
+          OW.menu.draw(mb, d, { hue: (app.identity && app.identity.hue) || '', open: function (it, el) {
+            /* a dish opens as order-pickup's sheet (frontend/shared/oneway-pickup.js: what it is, when it is served and, where the
+               Center takes pickup, Order for pickup, paid at the counter); the Shop's product sheet only when that cannot load */
+            function asProduct() {
+              if (OW.openProduct) OW.openProduct({ id: it.product_id, name: it.name, description: it.description, price_minor: it.price_minor,
+                                                   pictures: (it.photos || []).map(function (u) { return { url: u }; }), available: it.available,
+                                                   sold_out: it.sold_out }, el);
+            }
+            (OW.need ? OW.need('pickup') : Promise.resolve()).then(function () {
+              if (OW.pickup && OW.pickup.dish) OW.pickup.dish(it, centerId, (app.identity && app.identity.name) || '', el); else asProduct();
+            }, asProduct);
+          } });
         }
 
         /* ── WHAT IS ON ─────────────────────────────────────────────────── */
@@ -1454,6 +1494,77 @@
           if (profNow) profNow.addEventListener('ow:header-card', sayOnce);
         }
 
+        /* ── A VISITOR NEVER MEETS AN EMPTY MAIN (founder/873, with Golden Fortune's page: a community-listed restaurant whose
+           Main was "Report a problem" twice, a globe, "No posts yet" and a sentence) ─────────────────────────────────────
+           When nothing else on the page has anything to say, its Blueprint's Visit card leads with what is known (where it
+           is, its hours or that they are not added, Directions, Call) and, while the community listed it and nobody runs
+           it, Improve this place: a photo and its website, through the contributor's own door (contributed.improve). Nothing
+           is invented: a menu is its owner's to add, so it is not offered here. */
+        function drawFloor() {
+          var w = _cnA.where || {}, place = String(w.address || w.label || '').trim();
+          var hrs = facts.hours, has = hrs && typeof hrs === 'object' && Object.keys(hrs).some(function (d) { return (hrs[d] || []).length; });
+          var vb = sec('Visit', '', '');
+          var rows = [{ k: 'Where', v: place || 'Address not added' }];
+          if (has) {
+            var all = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'], firstSay = doorSign(hrs[all.filter(function (d) { return (hrs[d] || []).length; })[0]]);
+            var same = all.every(function (d) { return doorSign(hrs[d] || []) === firstSay; });
+            rows.push({ k: 'Hours', v: same ? 'Every day · ' + firstSay : 'See the hours above' });
+          } else rows.push({ k: 'Hours', v: 'Hours not added' });
+          lines(vb, rows);
+          var go = mk('div', 'ow-cpage__go');
+          var dest = (w.lat != null && w.lng != null) ? (w.lat + ',' + w.lng) : [head.name, place].filter(Boolean).join(', ');
+          if (dest) {
+            var dir = doc.createElement('a'); dir.className = 'ow-btn ow-btn--outline'; dir.textContent = 'Directions';
+            dir.href = 'https://www.google.com/maps/dir/?api=1&destination=' + encodeURIComponent(dest);
+            dir.target = '_blank'; dir.rel = 'noopener noreferrer'; go.appendChild(dir);
+          }
+          var tel = String(facts.phone || '').replace(/[^0-9+]/g, '');
+          if (tel.length >= 7) { var call = doc.createElement('a'); call.className = 'ow-btn ow-btn--outline'; call.textContent = 'Call'; call.href = 'tel:' + tel; go.appendChild(call); }
+          if (go.childNodes.length) vb.appendChild(go);
+          var com = app.community || {};
+          if (!(app.listing && signedIn() && !(part.viewer || {}).operates)) return;
+          var acts = [];
+          if (!com.photo) acts.push({ label: 'Add photos', icon: 'popit', fn: addPhoto });
+          if (!(com.website_assumed && com.website_assumed.url)) acts.push({ label: 'Add its website', icon: 'post', fn: addSite });
+          if (!acts.length || !(OW.canvas && OW.canvas.beginRow)) return;
+          var ib = sec('Improve this place', '', '');
+          var said = mk('p', 'ow-cpage__said');
+          OW.canvas.beginRow(ib, '', acts);
+          ib.appendChild(said);
+          function improve(give) {
+            return data.post('/api/oneway/contributed/' + encodeURIComponent(centerId) + '/improve', give).then(function (r) {
+              said.textContent = (r && r.ok) ? ((r.data && r.data.words) || 'Thank you.') : ((r && r.error) || 'That could not be saved. Try again.');
+              if (r && r.ok && data.invalidate) data.invalidate('/api/oneway/centers/' + encodeURIComponent(centerId) + '/app');
+            });
+          }
+          function addPhoto() {
+            var f = doc.createElement('input'); f.type = 'file'; f.accept = 'image/*';
+            f.addEventListener('change', function () {
+              var file = f.files && f.files[0]; if (!file) return;
+              var rd = new global.FileReader();
+              rd.onload = function () {
+                said.textContent = 'Adding it…';
+                data.post('/api/oneway/media', { data: rd.result, origin: 'uploaded' }).then(function (m) {
+                  var u = m && m.ok && m.data && ((m.data.media || m.data.item || m.data).url);
+                  if (!u) { said.textContent = (m && m.error) || 'That photo could not be added.'; return; }
+                  return improve({ photo: u });
+                });
+              };
+              rd.readAsDataURL(file);
+            });
+            f.click();
+          }
+          function addSite() {
+            if (ib.querySelector('.ow-cpage__site')) return;
+            var row = mk('div', 'ow-cpage__site'), inp = doc.createElement('input');
+            inp.type = 'url'; inp.className = 'ow-bk__in'; inp.placeholder = 'https://'; inp.setAttribute('aria-label', 'Its website');
+            var sv = mk('button', 'po-act', 'Save'); sv.type = 'button';
+            sv.addEventListener('click', function () { if (inp.value.trim()) improve({ website: inp.value.trim() }); });
+            row.appendChild(inp); row.appendChild(sv); ib.insertBefore(row, said);
+            try { inp.focus(); } catch (e) {}
+          }
+        }
+
         var ORDER = {
           hotel: ['book', 'events', 'shop', 'inside', 'known', 'visit'],
           resort: ['book', 'events', 'shop', 'inside', 'known', 'visit'],
@@ -1462,9 +1573,9 @@
           club: ['events', 'book', 'shop', 'inside', 'known', 'visit'],
           museum: ['events', 'book', 'shop', 'known', 'inside', 'visit'],
           gallery: ['events', 'book', 'shop', 'known', 'inside', 'visit'],
-          restaurant: ['book', 'events', 'shop', 'known', 'inside', 'visit'],
-          bar: ['book', 'events', 'shop', 'known', 'inside', 'visit'],
-          cafe: ['book', 'events', 'shop', 'known', 'inside', 'visit'],
+          restaurant: ['menu', 'book', 'events', 'shop', 'known', 'inside', 'visit'],
+          bar: ['menu', 'book', 'events', 'shop', 'known', 'inside', 'visit'],
+          cafe: ['menu', 'book', 'events', 'shop', 'known', 'inside', 'visit'],
           store: ['shop', 'events', 'book', 'inside', 'known', 'visit'],
           shop: ['shop', 'events', 'book', 'inside', 'known', 'visit'],
           retail: ['shop', 'events', 'book', 'inside', 'known', 'visit'],
@@ -1476,9 +1587,13 @@
         function drawReport() {
           data.get('/api/oneway/centers/' + encodeURIComponent(centerId) + '/requests').then(function (r) {
             var d = (r && r.ok && r.data) || null;
-            if (!d || !d.may_report) return;
-            var body = sec('Report a problem', '', '');
-            var open = mk('button', 'po-act', 'Report a problem'); open.type = 'button';
+            /* the place's own people run its work in the OS (Work, Maintenance): reporting to themselves is not a door */
+            if (!d || !d.may_report || (part.viewer || {}).operates) return;
+            /* ONCE, AT THE PAGE'S FOOT (founder/873: "Report a problem" twice over a blank place's Main, a heading and its button):
+               one control under everything the page has, its form and one's own reports beneath it */
+            var body = mk('div', 'ow-cpage__foot');
+            pane.appendChild(body);
+            var open = mk('button', 'po-act ow-cpage__report', 'Report a problem'); open.type = 'button';
             var formHost = mk('div');
             body.appendChild(open); body.appendChild(formHost);
             var STATE = { 'new': 'Waiting for the people who fix things', accepted: 'Being fixed', merged: 'Already being fixed',
@@ -1656,22 +1771,92 @@
           var onNote = function () { if (!box.isConnected) { doc.removeEventListener('ow:notifications-changed', onNote); return; } read(); };
           doc.addEventListener('ow:notifications-changed', onNote);
         }
-        var DRAW = { events: drawEvents, book: drawBook, shop: drawShop, inside: drawInside, known: drawKnown, visit: drawVisit };
+        /* ── PHOTOS (founder/865: a restaurant's, a hotel's, a park's Blueprint names them) ───────────────────────────
+           The Place's own photos (the Photos tab's read, its first page) and the one its contributor gave a community-listed
+           place: a row of them, each opening its post, and the door to all of them. Fewer than one, nothing (S18). */
+        var PHOTOS_ON_MAIN = 6;
+        var photos = { rows: [], more: false };
+        var photosP = data.get('/api/oneway/social/places/' + encodeURIComponent(centerId) + '/photos')
+          .then(function (r) { var d = (r && r.ok && r.data) || {}; photos.rows = d.photos || []; photos.more = !!d.next_cursor; })
+          .catch(function () {});
+        function drawPhotos() {
+          var com = app.community || {};
+          var rows = (com.photo ? [{ src: com.photo, alt: '', kind: 'image' }] : []).concat(photos.rows.filter(function (x) {
+            return x && x.src && x.kind !== 'video'; }));
+          if (!rows.length) return;
+          var shown = rows.slice(0, PHOTOS_ON_MAIN);
+          var pb = sec('Photos', (rows.length > shown.length || photos.more) ? 'All photos' : '', 'photos');
+          var strip = mk('div', 'ow-cpage__photos');
+          shown.forEach(function (ph) {
+            var t = mk(ph.post_id ? 'button' : 'span', 'ow-cpage__photo');
+            if (ph.post_id) {
+              t.type = 'button';
+              t.setAttribute('aria-label', ph.alt || 'A photo');
+              t.addEventListener('click', function () { if (typeof global.openPost === 'function') global.openPost(ph.post_id); });
+            }
+            var im = doc.createElement('img');
+            im.src = assetUrl(ph.src); im.alt = ph.alt || ''; im.loading = 'lazy'; im.decoding = 'async';
+            t.appendChild(im);
+            strip.appendChild(t);
+          });
+          pb.appendChild(strip);
+        }
+        /* ── PAID MEMBERSHIPS (systems/rewards/membership, charged through commerce/recurring) ─────────────────────────────
+           What the Center sells to be paid each month or year: its name, its price, what it gives; Join opens Stripe's own page
+           in this tab, on the Center's own account. Stripe's test mode until Oneway turns it on, said under the plans. Nothing
+           is drawn when nothing is on sale or the Center takes no payments on Oneway. */
+        var members = { offers: [], test: false };
+        var memP = data.get('/api/oneway/centers/' + encodeURIComponent(centerId) + '/recurring/membership').then(function (r) {
+          var d = (r && r.ok && r.data) || {};
+          if (d.pays_here) { members.offers = d.offers || []; members.test = !!d.test_mode; }
+        }).catch(function () {});
+        function drawMembers() {
+          memP.then(function () {
+            if (!members.offers.length || page.__owMembers) return;
+            page.__owMembers = true;
+            var mb = sec('Memberships', '', '');
+            members.offers.forEach(function (o) {
+              var row = thingRow(o.name, o.price_words + (o.benefits.length ? ' \u00b7 ' + o.benefits.join(' \u00b7 ') : ''), '', function (e) {
+                var b = e.currentTarget; b.disabled = true;
+                data.post('/api/oneway/centers/' + encodeURIComponent(centerId) + '/recurring', { kind: 'membership', ref: o.ref }).then(function (r) {
+                  var url = r && r.ok && r.data && r.data.url;
+                  if (url && /^https?:\/\//i.test(url)) { global.location.assign(url); return; }
+                  b.disabled = false;
+                  if (OW.toast) OW.toast((r && r.error) || 'Stripe\u2019s page did not open. Nothing was charged.', { tone: 'bad' });
+                });
+              });
+              row.setAttribute('data-po-member', o.ref);
+              mb.appendChild(row);
+            });
+            if (members.test) mb.appendChild(mk('p', 'ow-cpage__note', 'Joined on Stripe\u2019s page. Test mode: no real money is charged yet.'));
+          });
+        }
+        var DRAW = { events: drawEvents, book: drawBook, shop: drawShop, inside: drawInside, known: drawKnown, visit: drawVisit, menu: drawMenu,
+                     photos: drawPhotos, here: drawHere };
         var drawn = false;
         function draw() {
           if (drawn) return; drawn = true;
-          (ORDER[kindWord] || ORDER._).forEach(function (k) { try { DRAW[k](); } catch (e) { console.warn('[app/center] section', k, e && e.message); } });
+          /* ITS BLUEPRINT'S ORDER (founder/865; centers/blueprints.py, the app read's `blueprint`): what its kind leads with,
+             a restaurant its Menu, a hotel its Rooms, a park its Facilities. Each section still draws only what it has; the
+             feed is not one of these (it is under them, or above them where it leads). ORDER stands while the read has none. */
+          var bp = (app.blueprint && app.blueprint.order) || null;
+          var order = bp ? bp.filter(function (k) { return !!DRAW[k]; }) : (ORDER[kindWord] || ORDER._);
+          if (order.indexOf('menu') < 0) order = ['menu'].concat(order);     /* any Center that keeps a menu shows it first */
+          order.forEach(function (k) { var n0 = page.children.length; try { DRAW[k](); } catch (e) { console.warn('[app/center] section', k, e && e.message); }
+            var h0 = page.children[n0]; if (h0 && h0.setAttribute) h0.setAttribute('data-sec', k); });   /* a page of its structure opens Main here (founder/876) */
           try { drawDone(); } catch (e) { console.warn('[app/center] section done', e && e.message); }
+          try { drawMembers(); } catch (e) { console.warn('[app/center] section memberships', e && e.message); }
           try { drawWait(); } catch (e) { console.warn('[app/center] section waitlist', e && e.message); }
-          try { drawHere(); } catch (e) { console.warn('[app/center] section here', e && e.message); }
+          if (order.indexOf('here') < 0) { try { drawHere(); } catch (e) { console.warn('[app/center] section here', e && e.message); } }
           try { drawWhere(); } catch (e) { console.warn('[app/center] section where', e && e.message); }
+          if (!page.childNodes.length) { try { drawFloor(); } catch (e) { console.warn('[app/center] section floor', e && e.message); } }
           try { drawReport(); } catch (e) { console.warn('[app/center] section report', e && e.message); }
           page.__owHas = page.childNodes.length > 0;
         }
         var nowP = data.get('/api/oneway/places/' + encodeURIComponent(centerId) + '/now')
           .then(function (r) { nowOpen = (r && r.ok && r.data && r.data.open) || null; nowWait = (r && r.ok && r.data && r.data.waitlist) || null; }).catch(function () {});
         /* the Shop and today take their place in the order, never last by accident */
-        function whenRead() { Promise.all([shopP, nowP]).then(draw, draw); }
+        function whenRead() { Promise.all([shopP, nowP, menuP, photosP]).then(draw, draw); }
         data.get('/api/oneway/centers/' + encodeURIComponent(centerId) + '/about')
           .then(function (r) {
             var art = (r && r.ok && r.data) || null;
@@ -1697,6 +1882,65 @@
          the arrangement, under the page — and the Posts tab is gone. The
          stream draws NOTHING when there is nothing: no "Nothing public yet"
          (S17), the page above already says what the place is. */
+      function setupCard(su) {
+        var card = mk('section', 'ow-csetup');
+        var hd = mk('div', 'ow-csetup__h');
+        hd.appendChild(mk('b', '', esc('Set up ' + (head.name || 'your Center'))));
+        var count = mk('span', 'ow-csetup__n', esc(su.done + ' of ' + su.of));
+        hd.appendChild(count); card.appendChild(hd);
+        var list = mk('div', 'ow-csetup__list'); card.appendChild(list);
+        var done = su.done;
+        var url = '/api/oneway/centers/' + encodeURIComponent(centerId);
+        function finished(row) {
+          row.classList.add('is-done'); row.querySelector('.ow-csetup__go').innerHTML = '';
+          row.querySelector('.ow-csetup__go').appendChild(mk('span', 'ow-csetup__ok', 'Done'));
+          done += 1; count.textContent = done + ' of ' + su.of;
+          if (data.invalidate) data.invalidate(url + '/app');
+        }
+        function said(row, r) { var w = row.querySelector('.ow-csetup__said'); w.textContent = (r && r.error) || 'That was not saved. Try again.'; }
+        (su.essentials || []).filter(function (e) { return !e.done; }).forEach(function (e) {
+          var row = mk('div', 'ow-csetup__row'); row.setAttribute('data-essential', e.key);
+          row.appendChild(mk('span', 'ow-csetup__k', esc(e.label)));
+          var go = mk('div', 'ow-csetup__go'); row.appendChild(go);
+          row.appendChild(mk('p', 'ow-csetup__said'));
+          if (e.key === 'line') {
+            var ta = doc.createElement('textarea'); ta.className = 'ow-bk__in'; ta.rows = 2; ta.maxLength = 280; ta.setAttribute('aria-label', e.label);
+            var sv = mk('button', 'ow-btn ow-btn--outline', 'Save'); sv.type = 'button';
+            sv.addEventListener('click', function () { var v = ta.value.trim(); if (!v) return; sv.disabled = true;
+              data.put(url + '/about', { description: v }).then(function (r) { sv.disabled = false; if (r && r.ok) finished(row); else said(row, r); }); });
+            go.appendChild(ta); go.appendChild(sv);
+          } else if (e.key === 'picture') {
+            var pick = mk('button', 'ow-btn ow-btn--outline', 'Choose a picture'); pick.type = 'button';
+            pick.addEventListener('click', function () {
+              var f = doc.createElement('input'); f.type = 'file'; f.accept = 'image/*';
+              f.addEventListener('change', function () {
+                var file = f.files && f.files[0]; if (!file) return;
+                var rd = new global.FileReader();
+                rd.onload = function () { data.put(url + '/look', { picture: rd.result }).then(function (r) { if (r && r.ok) finished(row); else said(row, r); }); };
+                rd.readAsDataURL(file);
+              });
+              f.click();
+            });
+            go.appendChild(pick);
+          } else if (e.key === 'hours') {
+            var a = doc.createElement('input'), z = doc.createElement('input');
+            a.type = z.type = 'time'; a.value = '09:00'; z.value = '17:00'; a.className = z.className = 'ow-bk__in';
+            a.setAttribute('aria-label', 'Opens'); z.setAttribute('aria-label', 'Closes');
+            var hs = mk('button', 'ow-btn ow-btn--outline', 'Save'); hs.type = 'button';
+            hs.addEventListener('click', function () {
+              if (!a.value || !z.value) return; hs.disabled = true;
+              var week = {}; ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'].forEach(function (d) { week[d] = [[a.value, z.value]]; });
+              data.put(url + '/about', { hours: week }).then(function (r) { hs.disabled = false; if (r && r.ok) finished(row); else said(row, r); });
+            });
+            go.appendChild(mk('span', 'ow-csetup__w', 'Every day')); go.appendChild(a); go.appendChild(mk('span', 'ow-csetup__w', 'to')); go.appendChild(z); go.appendChild(hs);
+          } else {
+            var os = doc.createElement('a'); os.className = 'ow-btn ow-btn--outline'; os.href = '/oneway-os.html'; os.textContent = 'Add it in Oneway OS';
+            go.appendChild(os);
+          }
+          list.appendChild(row);
+        });
+        return card;
+      }
       function mountCenterPosts(p) {
         var first = app.posts || {};
         var firstRows = first.items || first.feed || [];
@@ -1709,10 +1953,20 @@
              to post"). Where the posts would be, every Center the same way;
              the one act offered only to someone who can post here. */
           var _v = (part && part.viewer) || {};
-          /* the server's words when its feed carries nothing either: no post of its own, of the places inside it,
-             about it or from a feed merged with it (founder/759: "so inactive centers dont have deadfeeds") */
+          /* AN EMPTY FEED NEVER TAKES THE PLACE (founder/865: "Instead of showing: Posts — No posts yet" · "Unpopulated:
+             Hide from public view by default" · "For owners, the Canvas editor can show empty sections as setup
+             opportunities"): a visitor sees nothing where no post is; someone who can post here is offered it, once. */
+          if (!(_v.member || _v.operates)) return 0;
+          /* one who runs it is offered Make a post in Main's own row (canvas.js), once; a member, Post here, as a row, never
+             the globe and its sentence (founder/866 §14: "Replace oversized empty-state presentations with useful creation
+             actions") */
+          if (_v.operates && centerMayArrange && OW.canvas && OW.canvas.mount) return 0;
+          if (OW.canvas && OW.canvas.beginRow) {
+            OW.canvas.beginRow(p, '', [{ label: 'Post here', icon: 'post', fn: function () { if (typeof global.go === 'function') global.go('lightbulb'); } }]);
+            return 0;
+          }
           nothing(p, first.said || ('Nothing has been posted to ' + (head.name || 'this Center') + ' yet.'), 'No posts yet',
-                  (_v.member || _v.operates) ? [{ label: 'Post here', go: 'lightbulb' }] : []);
+                  [{ label: 'Post here', go: 'lightbulb' }]);
           return 0;
         }
         var wrap = mk('div', 'ow-cfeed');
@@ -1818,14 +2072,25 @@
                · Nothing is duplicated from the header (name, category,
                  location and the Center's own sentence live there).
                · Every fact is a read. Nothing here is composed prose. */
+            /* COMMUNITY-LISTED · NOT YET CLAIMED (founder/865): said once, small, over everything a place the community
+               listed shows, while nobody runs it (the app read's `listing`, centers/blueprints.LISTED_WORDS) */
+            if (app.listing && app.listing.words) pane.insertBefore(mk('p', 'ow-clisted', esc(app.listing.words)), faceSlot);
+            /* SET IT UP FIRST (founder/873: "info centers that are blank and have no template should force owners to flush them
+               out"): to the people who run it, while its Blueprint's essentials are not all there, Main opens on them, each
+               filled where it stands (a line, a picture, its hours) or, for what Oneway OS keeps (a menu), opened there */
+            var su = app.setup;
+            if (su && su.of && su.done < su.of) pane.insertBefore(setupCard(su), faceSlot);
             var pageNode = pageSections(pane);
             /* the Center's own stream, last — under the arrangement and the
-               page (founder/459) */
+               page (founder/459); first of them where its Blueprint leads with its feed (a community, founder/865) */
             var feedSlot = mk('div', 'ow-center-feed');
-            pane.appendChild(feedSlot);
+            var bpo = (app.blueprint && app.blueprint.order) || [];
+            if (bpo[0] === 'posts' && pageNode && pageNode.parentNode === pane) pane.insertBefore(feedSlot, pageNode);
+            else pane.appendChild(feedSlot);
             var fed = mountCenterPosts(feedSlot);
             var faceMounted = false;
-            if (centerPlacements && OW.canvas && OW.canvas.mount) {
+            /* an owner's empty Main is mounted too: it draws what they can put there (canvas.js) */
+            if ((centerPlacements || centerMayArrange) && OW.canvas && OW.canvas.mount) {
               try {
                 OW.canvas.mount(faceSlot, 'center:' + centerId);
                 faceMounted = true;
@@ -2899,6 +3164,20 @@
       if (_opT) tabs.push(_opT);
       if (OW.site && OW.site.arrange) tabs = OW.site.arrange(tabs, app && app.website);
       tabs = sectionedStrip(tabs, app && app.sections);
+      /* ITS PAGES IN THEIR CATEGORIES (founder/876): a page no tab draws (a guide, a forum, a page of its words) is a tab of
+         its own, drawn by the shared component (frontend/shared/oneway-structure.js) */
+      var _st = app && app.structure;
+      var _stCtx = { manages: !!(_st && _st.manages), save: null };
+      if (_st && _st.configured) {
+        var _own = {}; ['guide', 'custom', 'forum'].forEach(function (k) { _own[k] = 1; });
+        [].concat(_st.loose || [], [].concat.apply([], (_st.categories || []).map(function (c) { return c.pages || []; })))
+          .forEach(function (p) {
+            if (!p || (SECTION_TAB[p.kind] || ['menu', 'photos', 'posts', 'shop', 'visit'].indexOf(p.kind) >= 0)) return;
+            tabs.push({ id: 'pg-' + p.id, label: p.label, render: function (pane) {
+              OW.need('structure').then(function () { OW.structure.drawOwn(pane, p, _stCtx); });
+            } });
+          });
+      }
       /* MAIN LEADS (the OS's cold walk, 2026-10-17: on a Center whose site has 39 pages, Main was the last of 41 tabs, about
          5,400px along the row). The site's pages go before the Center's own tabs; unless the Center chose its strip's order
          itself (founder/681, arranged above; or its Sections), its Main comes first and the site's pages after it. */
@@ -2974,56 +3253,37 @@
             } });
           }
           var bar = OW.links.bar(raw, extra, { words: true });
-          /* DIRECTIONS ARRIVE WHEN THE PLACE IS KNOWN — from the Center's
-             own point, never a name a maps app has to guess at. iOS and
-             Macs get Apple Maps, everyone else Google Maps: the person's own
-             navigation with their own saved places. The icon is added only
-             when `/where` resolves, so nothing here can be pressed and do
-             nothing (founder/442: "clicking take me there does nothing"). */
-          whereRead.then(function (r) {
-            var w = (r && r.ok && r.data) || {};
-            if (!w.resolved) return;
-            var pt = (w.point && w.point.lat != null && w.point.lng != null) ? w.point
-                   : ((w.lat != null && w.lng != null) ? w : null);
-            var dest;
-            if (pt) dest = encodeURIComponent(String(pt.lat) + ',' + String(pt.lng));
-            else {
-              var parts = (w.chain || []).map(function (c) { return c && c.name; }).filter(Boolean);
-              if (!parts.length) return;
-              dest = encodeURIComponent([head.name].concat(parts).filter(Boolean).join(', '));
-            }
-            var href = 'https://www.google.com/maps/dir/?api=1&destination=' + dest;
-            /* DIRECTIONS IS A ROW OF THE RIGHT-HAND BLOCK (founder, 2026-10-16: "Location: Directions: then THE LOGO OF THE
-               CONNECTED APP ... Category: all directly on top and below each other ... on the RIGHT SIDE"). It names the map app
-               it opens and wears that app's mark: Apple Maps where Apple Maps is the phone's own app (iPhone, iPad), Google
-               Maps everywhere else, a desktop Mac included (maps:// there did nothing). */
-            var ua = global.navigator.userAgent || '';
-            var apple = /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && (global.navigator.maxTouchPoints || 0) > 1);
-            var MARK = apple
-              ? '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="1" y="1" width="22" height="22" rx="6" fill="#34c759"/><path d="M1 15 L23 9 V17 A6 6 0 0 1 17 23 H7 A6 6 0 0 1 1 17Z" fill="#f2f2f7"/><path d="M12 5.5 17 17.5 12 15.2 7 17.5Z" fill="#0a84ff"/></svg>'
-              : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5a7.5 7.5 0 0 0-7.5 7.5c0 5.4 7.5 13.5 7.5 13.5s7.5-8.1 7.5-13.5A7.5 7.5 0 0 0 12 1.5z" fill="#ea4335"/><path d="M4.9 6.6 12 1.5A7.5 7.5 0 0 0 4.9 6.6z" fill="#4285f4"/><path d="M19.1 6.6A7.5 7.5 0 0 0 12 1.5L9 4.2z" fill="#fbbc04"/><path d="M12 22.5s3.6-3.9 5.7-7.8L7.8 10.4C9.1 14.6 12 22.5 12 22.5z" fill="#34a853"/><circle cx="12" cy="9" r="2.8" fill="#fff"/></svg>';
-            var row = doc.createElement('span');
-            row.className = 'ow-ocard__detail ow-prof__dir'; row.title = 'Directions';
-            var go = doc.createElement('button');
-            go.type = 'button'; go.className = 'ow-prof__dirgo';
-            go.setAttribute('aria-label', 'Directions in ' + (apple ? 'Apple Maps' : 'Google Maps'));
-            go.innerHTML = MARK + '<span>' + (apple ? 'Apple Maps' : 'Google Maps') + '</span>';
-            go.addEventListener('click', function () {
-              if (apple) { try { global.location.href = 'maps://?daddr=' + dest; return; } catch (_) {} }
-              global.open(href, '_blank', 'noopener');
-            });
-            row.appendChild(go);
-            var information = host.querySelector('.ow-prof__details');
-            if (information) {
-              information.insertBefore(row, information.querySelector(':scope > .ow-linkbar'));
-              if (OW.profileInformationOrder) OW.profileInformationOrder(information);
-            }
-          });
+          /* DIRECTIONS are the card's (api/oneway/cards carries the Center's point; pages.js profileHeader draws it through
+             OW.cards.directions): this bar no longer adds a row of its own that raced the card's (sys-assets, 2026-10-21) */
           return bar;
         })(),
         live: live,
         stats: stats, acts: acts, tabs: tabs
       });
+      /* THE SIDEBAR, once its owner arranged it, and for its owner or an admin to arrange (founder/876): it stands where the
+         tab strip stood, beside the page on a wide screen, and drives the same tabs */
+      if (_st && (_st.configured || _st.manages) && OW.need) {
+        OW.need('structure').then(function () {
+          var root = host.querySelector('.ow-prof'), panel = root && root.querySelector(':scope > .ow-panel');
+          if (!root || !panel || root.querySelector('.ow-st')) return;
+          var wrap = mk('div', 'ow-st-wrap');
+          panel.parentNode.insertBefore(wrap, panel);
+          var nav = OW.structure.mount(wrap, { centerId: centerId, structure: _st, manages: !!_st.manages, tabs: tabs,
+            current: (root.querySelector('.ow-tabs [aria-selected="true"]') || {}).dataset ? root.querySelector('.ow-tabs [aria-selected="true"]').dataset.t : 'main',
+            show: function (tabId, p) {
+              if (host.__owShowTab) host.__owShowTab(tabId);
+              var at = p && OW.structure.onMain(p.kind);
+              if (at) global.setTimeout(function () {
+                var h = host.querySelector('.ow-cpage [data-sec="' + at + '"]');
+                if (h) try { h.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) { h.scrollIntoView(); }
+              }, 60);
+            },
+            onChange: function () { if (data.invalidate) data.invalidate('/api/oneway/centers/' + encodeURIComponent(centerId) + '/app'); } });
+          _stCtx.save = nav.savePage;
+          wrap.appendChild(panel);
+          root.setAttribute('data-st', '1');
+        });
+      }
       return tabs.length;
     });
   };

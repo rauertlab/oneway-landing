@@ -60,6 +60,48 @@
   var esc = _u.esc;
   var loading = _u.loading;
   var mk = _u.mk;
+
+  /* ── WORDS THAT CAN ALWAYS BE READ ON A PERSON'S HUE (founder/863: "reply and message text need to always be visible
+     from users hue") ─────────────────────────────────────────────────────────────────────────────────────────────────
+     A sent bubble is the person's own hue and a sender's name is theirs; a light hue (yellow, mint) under white ink, or a
+     pale name on a light ground, could not be read (measured: a yellow hue's bubble ran from lightness 0.74 to 0.52 under one
+     ink, under 4.5:1 at one end; Simple mode put white on the raw yellow). The hue keeps its colour; its ground is moved
+     only as far as it must go for WCAG's 4.5:1: a light hue is lifted under dark ink, a dark one deepened under white. */
+  var INK = [20, 19, 31], WHITE = [255, 255, 255];
+  function rgbOf(v) {
+    var p = String(v || '').split(',').map(function (x) { return parseFloat(x); });
+    return p.length >= 3 && !isNaN(p[0]) && !isNaN(p[1]) && !isNaN(p[2]) ? p.slice(0, 3) : null;
+  }
+  function lumOf(c) {
+    var a = c.map(function (v) { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    return 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
+  }
+  function contrastOf(a, b) { var x = lumOf(a), y = lumOf(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); }
+  function mixOf(c, d, t) { return [0, 1, 2].map(function (i) { return Math.round(c[i] * (1 - t) + d[i] * t); }); }
+  function readableOn(c, toward, against) {
+    for (var t = 0; t <= 1.0001; t += 0.04) { var m = mixOf(c, toward, Math.min(1, t)); if (contrastOf(m, against) >= 4.6) return m; }
+    return toward;
+  }
+  function rgbStr(c) { return 'rgb(' + c.join(',') + ')'; }
+  /* the sent bubble's two stops and its ink, from the hue in force on `el` */
+  function inkTheThread(el) {
+    try {
+      var cs = global.getComputedStyle(el);
+      var h1 = rgbOf(cs.getPropertyValue('--ow-h1')), h2 = rgbOf(cs.getPropertyValue('--ow-h2')) || h1;
+      if (!h1) return;
+      var light = lumOf(h1) > 0.4, ink = light ? INK : WHITE, toward = light ? WHITE : INK;
+      el.style.setProperty('--ow-mine-a', rgbStr(readableOn(h1, toward, ink)));
+      el.style.setProperty('--ow-mine-b', rgbStr(readableOn(h2, toward, ink)));
+      el.style.setProperty('--ow-mine-ink', rgbStr(ink));
+    } catch (e) {}
+  }
+  /* a sender's name in their own hue, moved only as far as the theme's ground needs */
+  function nameInk(hue) {
+    var c = rgbOf(hue); if (!c) return '';
+    var light = (doc.documentElement.getAttribute('data-theme') || '') === 'light';
+    var ground = light ? [250, 249, 253] : [30, 29, 52];
+    return rgbStr(readableOn(c, light ? INK : WHITE, ground));
+  }
   /* earlier pages a found message may be read back through before the thread stops and says so (search inside chats) */
   var JUMP_PAGES_MAX = 10;
   var nothing = _u.nothing;
@@ -132,6 +174,12 @@
                  passing: !r.status || r.status >= 500 };
       }
       var d = r.data || {};
+      /* A HELD FIRST MESSAGE OPENS ITS THREAD (founder/863: "messaging on profile does not work"): the sender writes at once,
+         and it waits in the other person's Requests until they accept, as the leaders' messengers do */
+      if (d.held && d.conversation && d.conversation.id) {
+        return { state: 'open', pending: true, conversation: d.conversation, request: d.request,
+                 why: d.why || 'Waiting for them to accept. They see your messages in their requests.' };
+      }
       if (d.held) {
         return { state: 'held', request: d.request,
                  why: d.why || 'your first message is waiting for them to accept it' };
@@ -270,6 +318,12 @@
          and sent to Discovery to find somebody to talk to. B's audit found
          it. Both halves now read the same word. */
       var _unr = _s.unreadable || [];
+      /* WHO IS HERE NOW (founder/863: "show users online status in messaging"): the screen read's people carry each one's
+         status, already only where that person lets their presence be seen (people/policy.may_see_presence) */
+      ONLINE = {};
+      (_s.people || []).forEach(function (p) {
+        if (p && p.email && p.status === 'online') ONLINE[String(p.email).toLowerCase()] = 1;
+      });
       var ib = { ok: _unr.indexOf('inbox') < 0, data: _s.inbox || {} };
       var rq = { ok: _unr.indexOf('requests') < 0, data: _s.requests || {} };
 
@@ -284,6 +338,15 @@
       nw.setAttribute('aria-label', 'New message');
       nw.innerHTML = OW.setIcon ? OW.setIcon('plus') : '+';
       nw.addEventListener('click', function () { newMessage(host, opts); });
+      /* EMAIL, ONE TAP FROM MESSAGES (the founder, 2026-10-19: "make it to where you could see all mail more easily"): the
+         universal inbox of every address the person links (frontend/app/mail/mail.js) */
+      if (OW.openMail) {
+        var ml = mk('button', 'ow-thread-head__more ow-inbox__mail'); ml.type = 'button';
+        ml.setAttribute('aria-label', 'Mail');
+        ml.innerHTML = '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4zM4 7l8 6 8-6"/></svg>';
+        ml.addEventListener('click', function () { OW.openMail(); });
+        top.appendChild(ml);
+      }
       top.appendChild(nw);
       host.appendChild(top);
 
@@ -368,14 +431,7 @@
           'Your conversations could not be read just now. They are still there.'));
       }
       if (!list.length) {
-        if (!reqs.length && ib.ok) {
-          host.classList.add('po-grid');
-          nothing(host,
-            'No conversations yet. Messages start where something is happening — '
-            + 'a person, a place, or a thing you are both looking at.',
-            'Nothing to read',
-            [{ label: 'Find people and places', go: 'discovery' }]);
-        }
+        if (!reqs.length && ib.ok) emptyInbox(host, opts);
         return reqs.length;
       }
 
@@ -413,6 +469,9 @@
         if (seenPair[key]) return false;
         seenPair[key] = 1; return true;
       });
+      /* EVERY THREAD UNSPOKEN IS STILL AN EMPTY INBOX: they are not listed (above), and an empty list under the search
+         was a blank page with nothing to do on it (founder/866 §14) */
+      if (!spoken.length && !reqs.length) { emptyInbox(host, opts); return 0; }
       var wrap = mk('div', 'ow-threads');
       spoken.forEach(function (c) { wrap.appendChild(threadRow(c, opts)); });
       host.appendChild(wrap);
@@ -426,6 +485,96 @@
      in. Choosing a person starts the conversation the same way a profile's
      Message button does (OW.messaging.start: opened · held · refused), so a
      request that waits for acceptance is said, never walked into. */
+  /* ── AN EMPTY INBOX SAYS WHAT TO DO HERE (founder/866 §14: empty states should "explain the purpose of the area briefly",
+     "offer one clear primary action", "avoid excessive decorative graphics", "avoid long explanatory paragraphs",
+     "preserve layout consistency") ────────────────────────────────────────────────────────────────────────────────────
+     It was the App's empty door: an 84px turning globe, "Nothing to read", two lines on where messages start, and a button
+     to Discovery, centred in the page under a header whose + was the real way in. It is one panel in the list's own place,
+     in the requests panel's material: what Messages is for in a line, New message, and the people this person follows as
+     faces to start with, each one tap from a conversation. Somebody who follows nobody has nobody to message yet, so their
+     one act is finding people and places. */
+  var EMPTY_FACES_MAX = 8;
+  function emptyInbox(host, opts) {
+    host.classList.remove('po-grid');
+    var box = mk('section', 'ow-reqs ow-inbox-empty');
+    var mark = mk('span', 'ow-inbox-empty__mark');
+    mark.innerHTML = OW.setIcon ? OW.setIcon('chat') : '';
+    mark.setAttribute('aria-hidden', 'true');
+    box.appendChild(mark);
+    box.appendChild(mk('h2', 'ow-inbox-empty__t', 'Start a conversation'));
+    var why = mk('p', 'ow-inbox-empty__why', 'Message the people and places you follow.');
+    box.appendChild(why);
+    var faces = mk('div', 'ow-inbox-empty__faces');
+    faces.hidden = true;
+    box.appendChild(faces);
+    var said = mk('p', 'ow-inbox-empty__said', '');
+    said.setAttribute('aria-live', 'polite');
+    var acts = mk('div', 'ow-inbox-empty__acts');
+    var go1 = mk('button', 'po-act po-act--primary', 'New message'); go1.type = 'button';
+    go1.addEventListener('click', function () { newMessage(host, opts); });
+    acts.appendChild(go1);
+    box.appendChild(acts);
+    box.appendChild(said);
+    host.appendChild(box);
+    var me = String(data.me() || '');
+    if (!me) return box;
+    data.get('/api/oneway/graph/' + encodeURIComponent(me) + '/following?limit=' + EMPTY_FACES_MAX).then(function (r) {
+      if (!box.isConnected || !r || !r.ok) return;
+      var people = ((r.data && r.data.people) || []).slice(0, EMPTY_FACES_MAX);
+      if (!people.length) {
+        why.textContent = 'Follow people and places to message them here.';
+        go1.textContent = 'Find people and places';
+        var go1b = go1.cloneNode(true);
+        go1b.addEventListener('click', function () { if (typeof global.go === 'function') global.go('discovery'); });
+        go1.parentNode.replaceChild(go1b, go1);
+        return;
+      }
+      people.forEach(function (pp) {
+        var em = String(pp.ref || pp.email || pp.id || '').toLowerCase();
+        if (!em) return;
+        var b = mk('button', 'ow-inbox-empty__p'); b.type = 'button';
+        var f = mk('span', 'ow-thread__av ow-inbox-empty__face');
+        var pic = pp.picture || pp.image || '';
+        OW.cards.fill(f, { kind: 'person', name: pp.name || '', picture: pic });
+        var who = { email: em, name: pp.name || pp.display_name || '', image: pic };
+        var nm = mk('span', 'ow-inbox-empty__nm', esc(String(who.name).split(' ')[0] || 'Someone'));
+        b.appendChild(f); b.appendChild(nm);
+        b.setAttribute('aria-label', 'Message ' + (pp.name || pp.display_name || 'this person'));
+        /* the follow list carries addresses only; each face fills its own picture and name from the person's light read */
+        if (!pic || !(pp.name || pp.display_name)) {
+          data.get('/api/oneway/people/' + encodeURIComponent(em)).then(function (x) {
+            var d = (x && x.ok && x.data) || null;
+            if (!d || !b.isConnected) return;
+            var full = d.display_name || d.name || '';
+            if (full) { nm.textContent = full.split(' ')[0]; b.setAttribute('aria-label', 'Message ' + full); who.name = full; }
+            var pc = d.picture && (d.picture.url || d.picture);
+            if (typeof pc === 'string' && pc) who.image = pc;
+            OW.cards.fill(f, { kind: 'person', name: full, picture: typeof pc === 'string' ? pc : '' });
+          });
+        }
+        b.addEventListener('click', function () {
+          b.disabled = true; said.textContent = 'Opening…';
+          OW.messaging.start([em]).then(function (out) {
+            b.disabled = false;
+            /* the chat as just opened carries no roster; it is me and the person whose face was pressed, named from what
+               is in hand (the accept path's rule), so its bar and its start say who, not "Conversation" */
+            if (out.state === 'open' && out.conversation && opts.onOpen) {
+              var oc = out.conversation;
+              if (!oc.participants || !oc.participants.length) oc.participants = [data.me(), who].filter(Boolean);
+              said.textContent = ''; opts.onOpen(oc); return;
+            }
+            said.textContent = out.state === 'held'
+              ? 'Request sent. ' + (out.why || 'They see it once they accept.')
+              : (out.why || 'They cannot be messaged right now.');
+          });
+        });
+        faces.appendChild(b);
+      });
+      faces.hidden = !faces.children.length;
+    });
+    return box;
+  }
+
   function newMessage(host, opts) {
     host.innerHTML = '';
     var pg = mk('div', 'ow-set ow-set__page is-in');
@@ -560,44 +709,146 @@
       if (!live) return;
       data.post(path(live.cid, '/' + encodeURIComponent(live.id) + '/signal'), Object.assign({ type: type }, extra || {})).catch(function () {});
     }
-    function surface(name, kind) {
+    /* ── A SKY OF PARTICLES IN THE PERSON'S HUE (the founder, 2026-10-21: "nicer centered interface with particle animations
+       like seen on apples icloud site") ──────────────────────────────────────────────────────────────────────────────
+       Behind the call: a few soft glows that drift and many small motes rising slowly and twinkling, as iCloud's welcome
+       moves, in the person's two hue colours. One canvas the size of the screen, one frame loop that stops with the call
+       (and while the page is hidden); under reduced motion they are drawn once, still. */
+    function sky(cv, el) {
+      var ctx = cv.getContext && cv.getContext('2d');
+      if (!ctx) return function () {};
+      var cs = global.getComputedStyle(doc.documentElement);
+      var rgb = function (v, d) { var p = String(v || '').trim().split(/[\s,]+/).filter(Boolean); return p.length >= 3 ? p.slice(0, 3).join(',') : d; };
+      var c1 = rgb(cs.getPropertyValue('--ow-h1'), '168,85,247'), c2 = rgb(cs.getPropertyValue('--ow-h2'), c1);
+      var dpr = Math.min(2, global.devicePixelRatio || 1), W = 0, H = 0, run = true, raf = 0, last = 0, t0 = 0;
+      var P = [], G = [];
+      function size() {
+        W = el.clientWidth || global.innerWidth; H = el.clientHeight || global.innerHeight;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+      size();
+      var n = Math.round(Math.max(36, Math.min(110, (W * H) / 8000)));
+      for (var i = 0; i < n; i++) {
+        P.push({ x: Math.random() * W, y: Math.random() * H, r: 0.6 + Math.random() * 2.2, vy: -(0.006 + Math.random() * 0.02),
+                 vx: (Math.random() - 0.5) * 0.008, a: 0.25 + Math.random() * 0.6, tw: Math.random() * 6.283, c: Math.random() < 0.55 ? c1 : c2 });
+      }
+      [[0.28, 0.3, 0.55, c1, 9000], [0.75, 0.62, 0.5, c2, 11000], [0.45, 0.85, 0.42, c1, 13000]].forEach(function (g) {
+        G.push({ x: g[0], y: g[1], r: g[2], c: g[3], p: g[4] });
+      });
+      function draw(t) {
+        ctx.clearRect(0, 0, W, H);
+        var m = Math.max(W, H);
+        G.forEach(function (o) {
+          var x = (o.x + 0.06 * Math.sin((t - t0) / o.p * 6.283)) * W, y = (o.y + 0.05 * Math.cos((t - t0) / o.p * 6.283)) * H, r = o.r * m;
+          var gr = ctx.createRadialGradient(x, y, 0, x, y, r);
+          gr.addColorStop(0, 'rgba(' + o.c + ',0.26)'); gr.addColorStop(1, 'rgba(' + o.c + ',0)');
+          ctx.fillStyle = gr; ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+        });
+        P.forEach(function (p) {
+          var tw = 0.55 + 0.45 * Math.sin(t / 900 + p.tw);
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283);
+          ctx.fillStyle = 'rgba(' + p.c + ',' + (p.a * tw).toFixed(3) + ')'; ctx.fill();
+        });
+      }
+      function frame(t) {
+        if (!run) return;
+        var dt = last ? Math.min(50, t - last) : 16; last = t;
+        P.forEach(function (p) {
+          p.y += p.vy * dt; p.x += p.vx * dt;
+          if (p.y < -6) { p.y = H + 6; p.x = Math.random() * W; }
+          if (p.x < -6) p.x = W + 6; else if (p.x > W + 6) p.x = -6;
+        });
+        draw(t);
+        raf = global.requestAnimationFrame(frame);
+      }
+      var still = (global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches)
+        || doc.documentElement.getAttribute('data-motion') === 'reduced';
+      t0 = global.performance ? global.performance.now() : 0;
+      if (still) draw(t0); else raf = global.requestAnimationFrame(frame);
+      var onSize = function () { size(); if (still) draw(t0); };
+      global.addEventListener('resize', onSize);
+      return function stop() { run = false; global.cancelAnimationFrame(raf); global.removeEventListener('resize', onSize); };
+    }
+    function surface(name, kind, cid) {
       var el = mk('div', 'ow-call', '');
       el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', (kind === 'video' ? 'Video call' : 'Voice call') + ' with ' + name);
-      el.style.cssText = 'position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:14px;padding:24px 16px calc(28px + env(safe-area-inset-bottom));background:var(--ow-ground);color:var(--ow-ink)';
+      /* CENTERED, AS A PHONE'S OWN CALL SCREEN AND iCLOUD ARE: the person, what is happening and the controls together in the
+         middle of the screen, over the sky; a video call under way puts its controls at the foot of the pictures */
+      el.style.cssText = 'position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:30px;padding:24px 16px calc(28px + env(safe-area-inset-bottom));color:var(--ow-ink);'
+        + 'background:radial-gradient(120% 80% at 50% 28%,rgba(var(--ow-h1),.22),transparent 62%),radial-gradient(90% 70% at 80% 92%,rgba(var(--ow-h2,var(--ow-h1)),.16),transparent 60%),var(--ow-ground)';
+      var cv = doc.createElement('canvas'); cv.className = 'ow-call__sky'; cv.setAttribute('aria-hidden', 'true');
+      cv.style.cssText = 'position:absolute;inset:0;pointer-events:none';
+      el.appendChild(cv);
       /* THE OTHERS' PICTURES: one fills the screen, two to three share it, as WhatsApp's small group calls tile them */
       var grid = mk('div', 'ow-call__grid', '');
       grid.style.cssText = 'position:absolute;inset:0;display:grid;gap:2px;grid-template-columns:1fr;' + (kind === 'video' ? '' : 'display:none');
       var local = doc.createElement('video'); local.autoplay = true; local.muted = true; local.playsInline = true; local.className = 'ow-call__local';
       local.style.cssText = 'position:absolute;top:16px;right:16px;width:28%;max-width:180px;border-radius:14px;object-fit:cover;z-index:1;' + (kind === 'video' ? '' : 'display:none');
+      el.setAttribute('data-kind', kind === 'video' ? 'video' : 'voice');
       var face = mk('div', 'ow-call__who', '');
-      face.style.cssText = 'position:relative;margin:auto 0 0;text-align:center';
-      face.appendChild(mk('b', '', esc(name))); face.firstChild.style.cssText = 'display:block;font-size:26px;font-weight:650';
+      face.style.cssText = 'position:relative;text-align:center';
+      /* THE PERSON, NOT ONLY THEIR NAME: their face over the name, as the chat's bar draws it (founder/866 §11) */
+      var pic = mk('span', 'ow-msg-face ow-call__face');
+      if (OW.cards && OW.cards.fill) OW.cards.fill(pic, { kind: 'person', name: name || '?', picture: '' }, { letters: 'i' });
+      face.appendChild(pic);
+      face.appendChild(mk('b', '', esc(name))); face.lastChild.style.cssText = 'display:block;font-size:26px;font-weight:650';
       var st = mk('p', 'ow-call__state', ''); st.style.cssText = 'margin:6px 0 0;color:var(--ow-ink-2)';
       face.appendChild(st);
-      var acts = mk('div', 'ow-call__acts', ''); acts.style.cssText = 'position:relative;display:flex;gap:12px;flex-wrap:wrap;justify-content:center';
+      var acts = mk('div', 'ow-call__acts', ''); acts.style.cssText = 'position:relative;display:flex;gap:22px;flex-wrap:wrap;justify-content:center';
       el.appendChild(grid); el.appendChild(local); el.appendChild(face); el.appendChild(acts);
       doc.body.appendChild(el);
-      return { el: el, grid: grid, local: local, say: st, acts: acts };
+      var stopSky = sky(cv, el);
+      /* THEIR OWN FACE AND COLOUR, from the chat's own read (the bar's face): the picture when they have one */
+      if (cid) data.get('/api/oneway/messaging/conversations/' + encodeURIComponent(cid) + '?limit=1').then(function (r) {
+        var fc = (((r && r.data) || {}).conversation || {}).face || {};
+        if (fc.image && OW.cards && OW.cards.fill) OW.cards.fill(pic, { kind: 'person', name: name || '?', picture: fc.image }, { letters: 'i' });
+        if (typeof fc.hue === 'number' && OW.hue && OW.hue.fromAngle) {
+          var hp = OW.hue.fromAngle(fc.hue); pic.style.setProperty('--h', hp[0]); pic.style.setProperty('--h2', hp[1] || hp[0]);
+        }
+      }).catch(function () {});
+      return { el: el, grid: grid, local: local, say: st, acts: acts, stopSky: stopSky };
     }
     function retile() {
       if (!live) return;
       var n = live.ui.grid.children.length;
       live.ui.grid.style.gridTemplateColumns = n > 1 ? '1fr 1fr' : '1fr';
     }
-    function button(label, fn) {
-      var b = mk('button', 'po-act', esc(label)); b.type = 'button'; b.addEventListener('click', fn); live.ui.acts.appendChild(b); return b;
+    /* ONE SET OF CALL CONTROLS (founder/866 §11: "Keep voice and video call controls consistent"): the call is started by
+       the bar's phone and camera, and runs on the same marks — round buttons with their word under them, as a phone's own
+       call screen has: the microphone and the camera light when they are off, ending is red, answering is green. They were
+       a row of text pills that looked like nothing else in a chat. */
+    var CALL_ICON = {
+      mic: '<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/>',
+      micOff: '<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5M4 4l16 16"/>',
+      cam: '<rect x="3" y="6.5" width="12.5" height="11" rx="2.2"/><path d="m15.5 10.5 5-3v9l-5-3z"/>',
+      camOff: '<rect x="3" y="6.5" width="12.5" height="11" rx="2.2"/><path d="m15.5 10.5 5-3v9l-5-3zM3 4l18 16"/>',
+      voice: '<path d="M6.6 3.5h2.6l1.4 4.1-1.9 1.3a12 12 0 0 0 6.4 6.4l1.3-1.9 4.1 1.4v2.6a2.1 2.1 0 0 1-2.3 2.1A17 17 0 0 1 4.5 5.8a2.1 2.1 0 0 1 2.1-2.3z"/>',
+      end: '<path d="M3.2 13.8c4.9-4.4 12.7-4.4 17.6 0l-1.8 2.9-3.9-1.2-.4-2.5a10.6 10.6 0 0 0-5.4 0l-.4 2.5-3.9 1.2z"/>'
+    };
+    function button(label, fn, icon, tone) {
+      var b = mk('button', 'ow-call__b'); b.type = 'button';
+      if (tone) b.setAttribute('data-tone', tone);
+      b.innerHTML = '<span class="ow-call__bi"><svg viewBox="0 0 24 24" aria-hidden="true">' + (CALL_ICON[icon] || '') + '</svg></span><span class="ow-call__bl"></span>';
+      b.querySelector('.ow-call__bl').textContent = label;
+      b.addEventListener('click', fn); live.ui.acts.appendChild(b); return b;
+    }
+    function relabel(b, label, icon, on) {
+      b.querySelector('.ow-call__bl').textContent = label;
+      b.querySelector('svg').innerHTML = CALL_ICON[icon] || '';
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     function controls() {
       live.ui.acts.innerHTML = '';
       button('Mute', function () {
         var t = live && live.stream && live.stream.getAudioTracks()[0]; if (!t) return;
-        t.enabled = !t.enabled; this.textContent = t.enabled ? 'Mute' : 'Unmute';
-      });
+        t.enabled = !t.enabled; relabel(this, t.enabled ? 'Mute' : 'Unmute', t.enabled ? 'mic' : 'micOff', !t.enabled);
+      }, 'mic');
       if (live.kind === 'video') button('Camera off', function () {
         var t = live && live.stream && live.stream.getVideoTracks()[0]; if (!t) return;
-        t.enabled = !t.enabled; this.textContent = t.enabled ? 'Camera off' : 'Camera on';
-      });
-      var end = button(live.group ? 'Leave' : 'End', function () { hangUp(); }); end.setAttribute('data-call-end', '1');
+        t.enabled = !t.enabled; relabel(this, t.enabled ? 'Camera off' : 'Camera on', t.enabled ? 'cam' : 'camOff', !t.enabled);
+      }, 'cam');
+      var end = button(live.group ? 'Leave' : 'End', function () { hangUp(); }, 'end', 'end'); end.setAttribute('data-call-end', '1');
     }
     function media() {
       return global.navigator.mediaDevices.getUserMedia({ audio: true, video: live.kind === 'video' }).then(function (s) {
@@ -662,7 +913,8 @@
       var d = (e && e.detail) || {}, x = d.data || {};
       if (!live || x.conversation !== live.cid) return;
       if (d.kind === 'call' && x.id === live.id) {
-        if (/^(ended|missed|declined)$/.test(x.state)) { close(x.state === 'declined' ? 'Declined' : x.state === 'missed' ? 'No answer' : 'Call ended'); return; }
+        if (/^(ended|missed|declined)$/.test(x.state)) { close(endWords(x.state)); return; }
+        if (x.state === 'active' && elsewhere()) { close('Answered on another device'); return; }
         if (x.state === 'active' && !Object.keys(live.pcs).length && live.you === 'p1') say('Connecting…');
         (x.peers || []).forEach(function (p) { if (p.left && live.pcs[p.peer]) drop(p.peer); });
         return;
@@ -689,10 +941,39 @@
       if (OW.realtime && OW.realtime.watchTopics) OW.realtime.watchTopics('call', ['conv:' + live.cid]);
       doc.addEventListener('ow:conv', onConv);
     }
+    /* ── A CALL'S SCREEN NEVER OUTLIVES THE CALL (founder/882: "the notfcations lag and hover when user gives voice call") ──
+       It closed only on the call's live event. When that event was missed (a reconnect, a sleeping tab) or never meant this
+       screen (the call answered on the person's phone), a ringing screen hung over the page. Now three things end it: the
+       event; the call itself, asked every CALL_CHECK_MS while the screen is up; and, for a call that rings here, the ring's
+       own time. A 1:1 call answered on another of the person's devices closes here and says so. */
+    var CALL_CHECK_MS = 4000;
+    function endWords(state) {
+      if (state === 'declined') return 'Declined';
+      if (state === 'missed') return live && live.role === 'callee' ? 'Missed call' : 'No answer';
+      return 'Call ended';
+    }
+    function elsewhere() { return !!(live && live.role === 'callee' && !live.you && !live.answering && !live.group); }
+    function watchdog() {
+      if (!live) return;
+      var l = live;
+      data.get(path(l.cid, '/current'), { fresh: true }).then(function (r) {
+        if (live !== l) return;
+        var c = r && r.ok && r.data && r.data.call;
+        /* the server answers only a call still ringing or under way: gone, it ended; for the person rung and not in it, missed */
+        if (!c || c.id !== l.id || /^(ended|missed|declined)$/.test(c.state)) {
+          close(c && c.id === l.id ? endWords(c.state) : (l.role === 'callee' && !l.you ? 'Missed call' : 'Call ended')); return;
+        }
+        if (c.state === 'active' && elsewhere()) close('Answered on another device');
+      }).catch(function () {});
+    }
+    /* A TAB LOOKED AT AGAIN ASKS AT ONCE: a browser holds back a tab that is not in front (Safari most of all), so its timer
+       and its live events wait; the moment it is in front again, the call is asked */
+    doc.addEventListener('visibilitychange', function () { if (live && doc.visibilityState === 'visible') watchdog(); });
     function begin(cid, c, ice) {
       live = { cid: cid, id: c.id, kind: c.kind, you: c.you || '', group: !!c.group, ice: ice || [],
                pcs: {}, pending: {}, offers: {}, answered: {} };
-      live.ui = surface(c['with'] || 'Someone', c.kind);
+      live.ui = surface(c['with'] || 'Someone', c.kind, cid);
+      live.watch = global.setInterval(watchdog, CALL_CHECK_MS);
     }
     function close(words) {
       var l = live; live = null;
@@ -702,9 +983,12 @@
       if (l.timer) global.clearInterval(l.timer);
       if (l.ready) global.clearInterval(l.ready);
       if (l.ring) global.clearTimeout(l.ring);
+      if (l.watch) global.clearInterval(l.watch);
+      if (l.ringStop) global.clearTimeout(l.ringStop);
       if (l.stream) l.stream.getTracks().forEach(function (t) { t.stop(); });
       Object.keys(l.pcs).forEach(function (k) { try { l.pcs[k].close(); } catch (e) {} });
       l.ui.say.textContent = words || 'Call ended'; l.ui.acts.innerHTML = '';
+      if (l.ui.stopSky) global.setTimeout(l.ui.stopSky, 1500);
       l.ui.el.setAttribute('data-ended', '1');
       global.setTimeout(function () { if (l.ui.el.parentNode) l.ui.el.parentNode.removeChild(l.ui.el); }, 1500);
     }
@@ -721,27 +1005,39 @@
         var c = (r.data || {}).call || {};
         if (!c['with']) c['with'] = name;
         begin(cid, c, (r.data || {}).ice);
+        live.role = 'caller';
         live.ui.el.setAttribute('data-role', 'caller');
         say('Calling…'); controls(); listen();
         media();
         live.ring = global.setTimeout(function () { if (live && !Object.keys(live.pcs).length) hangUp(); }, ((c.ring_seconds || 45) + 2) * 1000);
       });
     }
+    /* ONE SCREEN FOR ONE CALL: the App's own ringing hook and this module's can both ask at once */
+    var asking = {};
     function incoming(cid) {
-      if (live) return;
+      if (live || asking[cid]) return;
+      asking[cid] = 1;
       data.get(path(cid, '/current'), { fresh: true }).then(function (r) {
+        delete asking[cid];
         var c = r && r.ok && r.data && r.data.call;
         if (!c || !/^(ringing|active)$/.test(c.state) || c.you_called || c.you || live) return;
         begin(cid, c, r.data.ice);
+        live.role = 'callee';
         live.ui.el.setAttribute('data-role', 'callee');
+        /* a call that rings here stops ringing here when its time is up, whatever was or was not heard */
+        if (c.state === 'ringing') live.ringStop = global.setTimeout(function () {
+          if (live && live.role === 'callee' && !live.you && !live.answering) close('Missed call');
+        }, ((c.ring_seconds || 45) + 5) * 1000);
         say((c.group ? 'Group ' : '') + (c.kind === 'video' ? 'video call' : 'voice call'));
         listen();
         button('Decline', function () {
           data.post(path(cid, '/' + encodeURIComponent(c.id) + '/decline'), {}).catch(function () {});
           close('Declined');
-        });
-        button(c.state === 'active' ? 'Join' : 'Accept', function () {
-          live.ui.acts.innerHTML = ''; say('Connecting…');
+        }, 'end', 'end');
+        /* PICK UP AND DECLINE, ALWAYS (the founder, 2026-10-21: "Pick up decline options always"): a call that rings
+           offers both, in the words a phone uses; a group call already under way offers Join */
+        button(c.state === 'active' ? 'Join' : 'Pick up', function () {
+          live.ui.acts.innerHTML = ''; say('Connecting…'); live.answering = true;
           data.post(path(cid, '/' + encodeURIComponent(c.id) + '/answer'), {}).then(function (rr) {
             if (!rr || !rr.ok) { close((rr && rr.error) || 'That call ended.'); return; }
             live.you = ((rr.data || {}).call || {}).you || '';
@@ -759,8 +1055,8 @@
               }, 1000);
             });
           });
-        }).setAttribute('data-call-accept', '1');
-      }, function () {});
+        }, c.kind === 'video' ? 'cam' : 'voice', 'go').setAttribute('data-call-accept', '1');
+      }, function () { delete asking[cid]; });
     }
     /* A RING, from the notifier, while Messages is open: the line names the chat it opens */
     doc.addEventListener('ow:notification', function (e) {
@@ -871,6 +1167,7 @@
     return d.toLocaleDateString([], { month: 'short', day: 'numeric' });
   }
 
+  var ONLINE = {};
   function threadRow(c, opts) {
     var b = mk('button', 'ow-thread'); b.type = 'button';
     if (c.unread) b.setAttribute('data-unread', String(c.unread));
@@ -894,6 +1191,21 @@
       ? OW.hue.fromAngle(c.face.hue) : null;
     if (_fh) { av.style.setProperty('--ch1', _fh[0]); av.style.setProperty('--ch2', _fh[1] || _fh[0]); }
     b.appendChild(av);
+    /* THE ONLINE DOT, on a direct line whose other person is here now (Instagram's and Messenger's green dot on the face) */
+    if (isDirect(c)) {
+      var _me2 = String(data.me() || '').toLowerCase();
+      var _on = (c.participants || []).map(personOf).filter(function (p) {
+        return p && p.email && String(p.email).toLowerCase() !== _me2 && ONLINE[String(p.email).toLowerCase()];
+      })[0];
+      if (_on) {
+        av.style.position = 'relative'; av.style.overflow = 'visible';
+        var dot = mk('i', 'ow-thread__on');
+        dot.setAttribute('aria-label', 'Online'); dot.setAttribute('role', 'img');
+        dot.style.cssText = 'position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;' +
+          'background:#2fd27a;box-shadow:0 0 0 2.5px var(--ow-ground,#000),0 0 8px rgba(47,210,122,.6)';
+        av.appendChild(dot);
+      }
+    }
     /* ── THE OTHER PERSON, BY NAME AND FACE, NOT BY ADDRESS ──────────────
        The inbox read names a participant by email only, so a DM row said
        "ada.ops@ow.test" over an initial — measured on the founder's pane,
@@ -1227,6 +1539,28 @@
     head.appendChild(headFace);
     /* the bar's own name and face, redrawn when the room is renamed or given
        a picture (founder/556) */
+    /* ── ONE PERSON, ONE FACE (founder/866 §11: "Maintain consistent sender identity") ─────────────────────────────
+       The bar drew the other person from the room's title ("@bowalk": one letter, "B") on the room's colour, while every
+       bubble drew them from their own record ("Bo Walk": "BW") on another, so one person wore two faces a centimetre apart.
+       In a chat of two, the bar is filled from the same record and in the same way as the faces beside their messages, and
+       when that record names no colour, both wear the room's, the one the inbox row wears. */
+    function faceTheBar() {
+      if (!isDirect(conv) || !headFace) return;
+      var other = null;
+      Object.keys(peopleOf() || {}).forEach(function (k) {
+        var w = (peopleOf() || {})[k];
+        if (k !== me && w && String(w.email || k).toLowerCase() !== me && !isBrain(w)) other = other || w;
+      });
+      if (!other) return;
+      var fc = conv.face || {};
+      if (typeof other.hue !== 'number' && typeof fc.hue === 'number') other.hue = fc.hue;
+      OW.cards.fill(headFace, { kind: 'person', name: other.name || headNm.textContent || '?', picture: other.image || fc.image }, { letters: 'i' });
+      if (typeof other.hue === 'number' && OW.hue && OW.hue.fromAngle) {
+        var hp = OW.hue.fromAngle(other.hue);
+        ['--ch1', '--h'].forEach(function (k) { headFace.style.setProperty(k, hp[0]); });
+        ['--ch2', '--h2'].forEach(function (k) { headFace.style.setProperty(k, hp[1] || hp[0]); });
+      }
+    }
     function paintHead() {
       var fc = conv.face || {};
       if (!isDirect(conv) && conv.title && headNm) headNm.textContent = conv.title;
@@ -1250,7 +1584,7 @@
       if (!isDirect(conv) || other.length !== 1 || !other[0].email || !/@/.test(other[0].email)) return;
       data.get('/api/oneway/people/' + encodeURIComponent(other[0].email)).then(function (r) {
         var d = (r && r.ok && r.data) || null;
-        if (d && (d.display_name || d.name) && headNm.isConnected) headNm.textContent = d.display_name || d.name;
+        if (d && (d.display_name || d.name) && headNm.isConnected) { headNm.textContent = d.display_name || d.name; faceTheBar(); }
       }).catch(function () {});
     })();
     /* ── WHETHER THEY ARE THERE ───────────────────────────────────────────
@@ -1333,6 +1667,15 @@
     }
     head.appendChild(moreB);
     host.appendChild(head);
+    inkTheThread(host);
+    /* A REQUEST THAT WAITS SAYS SO, ONCE, UNDER THE HEAD (founder/863): the sender's own pending thread */
+    if (conv.request && conv.request.state === 'pending') {
+      var pend = mk('p', 'ow-thread-pending', esc(conv.request.words || 'Waiting for them to accept. They see your messages in their requests.'));
+      pend.setAttribute('role', 'status');
+      pend.style.cssText = 'margin:0 0 10px;padding:9px 12px;border-radius:12px;font-size:13.5px;line-height:1.4;' +
+        'background:color-mix(in srgb,var(--ow-ink,#fff) 8%,transparent);color:var(--ow-ink-2,rgba(255,255,255,.75))';
+      host.appendChild(pend);
+    }
     var chatSet = mk('div', 'ow-chatset'); chatSet.hidden = true;
     host.appendChild(chatSet);
     /* what the page reads — filled by the same reads the chips used */
@@ -1344,8 +1687,68 @@
     var msgs = mk('div', 'ow-msgs');
     host.appendChild(msgs);
 
-    var typing = mk('div', 'ow-typing'); typing.hidden = true;
-    host.appendChild(typing);
+    /* ── SOMEBODY IS TYPING (founder/882: "typing status on messages from comments need to be brought over") ─────────
+       It was a grey sentence that the comments' own rule then faded out: `.ow-typing` is opacity 0 until `data-on`, which
+       comments set and Messages never did, so nobody ever saw anybody typing in a conversation. It is the comments' three
+       dots now, in the other person's bubble beside their face, at the foot of the thread where their message is about to
+       land. It lives in the thread's own column, so it wears the bubble's material in Popit and in Simple; `paint()`
+       empties that column, so it is put back at the foot after every paint. It opens by its height (nothing hops) and a
+       reader at the foot stays at the foot. In a group the names are written over it, the way comments say them. */
+    var typing = mk('div', 'ow-typing-row');
+    var typingIn = mk('div', 'ow-typing-row__in');
+    var typingWho = mk('div', 'ow-typing__who');
+    typingWho.setAttribute('aria-live', 'polite');
+    typingWho.setAttribute('aria-atomic', 'true');
+    typing.appendChild(typingIn);
+    typingIn.appendChild(typingWho);
+    var typingLine = mk('div', 'ow-msg-line');
+    typingIn.appendChild(typingLine);
+    var typingNow = [], typingAt = 0, typingGone = null, typingHold = null;
+    var TYPING_CLOSE_MS = 380;          /* --ow-dur-state, the row's own height change */
+    function typingNames(list) {
+      var named = function (t) { var w = (peopleOf() || {})[t.person] || {}; return w.name || t.name || bare(t.person); };
+      return list.length === 1 ? named(list[0]) + ' is typing'
+        : (list.length === 2 ? named(list[0]) + ' and ' + named(list[1]) + ' are typing'
+                             : list.length + ' people are typing');
+    }
+    function showTyping(list) {
+      var was = typingNow.map(function (t) { return t.person; }).join(',');
+      typingNow = list;
+      typingAt = Date.now();
+      if (list.map(function (t) { return t.person; }).join(',') === was) return;
+      if (typingGone) { global.clearTimeout(typingGone); typingGone = null; }
+      if (!list.length) {
+        typing.removeAttribute('data-on');
+        typingWho.textContent = '';
+        /* the dots stay while the row closes by its height, then go, so nothing is left for a screen reader or a test */
+        typingGone = global.setTimeout(function () {
+          typingGone = null;
+          if (!typingNow.length) { typingLine.innerHTML = ''; typing.removeAttribute('data-gap'); }
+        }, TYPING_CLOSE_MS);
+        return;
+      }
+      var stay = atBottom();
+      typingLine.innerHTML = '';
+      var f = faceFor({ author: list[0].person });
+      if (f) typingLine.appendChild(f);
+      var bub = mk('div', 'ow-msg ow-typing__bub');
+      bub.setAttribute('data-first', '1'); bub.setAttribute('data-last', '1');
+      bub.innerHTML = '<span class="ow-typing__dots" aria-hidden="true"><i></i><i></i><i></i></span>';
+      var w = (peopleOf() || {})[list[0].person] || {};
+      var hp = (typeof w.hue === 'number' && OW.hue && OW.hue.fromAngle) ? OW.hue.fromAngle(w.hue) : null;
+      if (hp) { bub.style.setProperty('--h', hp[0]); bub.style.setProperty('--h2', hp[1] || hp[0]); }
+      typingLine.appendChild(bub);
+      typingWho.textContent = typingNames(list);
+      if (isDirect(conv)) typingWho.setAttribute('data-quiet', '1'); else typingWho.removeAttribute('data-quiet');
+      typing.setAttribute('data-gap', '1');
+      if (typing.parentNode !== msgs) msgs.appendChild(typing);
+      typing.setAttribute('data-on', '1');
+      /* the row grows over a quarter of a second; a reader at the foot is kept there the whole way */
+      if (stay) {
+        var until = Date.now() + TYPING_CLOSE_MS + 60;
+        (function keep() { toBottom(); if (Date.now() < until && !closed) global.requestAnimationFrame(keep); })();
+      }
+    }
 
     var foot = mk('div', 'ow-thread__foot');
     host.appendChild(foot);
@@ -1362,6 +1765,50 @@
     }
     function toBottom() {
       try { global.scrollTo(0, doc.documentElement.scrollHeight); } catch (e) {}
+    }
+
+    /* ── A CONVERSATION NOBODY HAS WRITTEN IN YET (founder/866 §14) ───────────────────────────────────────────────
+       It was the empty door inside the thread: an 84px turning globe, "A new conversation", "Nothing said yet." — what is
+       missing, where the first message goes. It is who this is with now, the way a messenger opens a new chat: their face
+       and name, one line on what to do, and Say hi, which puts a greeting in the composer for the person to send or change
+       (nothing is sent for them). A new chat already holds the room's own line ("Messages in this chat disappear…"), so it
+       shows until somebody has written, under those lines; the first message paints over it. */
+    function spokenIn() { return rows.some(function (m) { return m.author && !m.deleted; }); }
+    function emptyThread() {
+      var st = mk('div', 'ow-thread-start');
+      var other = null;
+      if (isDirect(conv)) {
+        Object.keys(peopleOf() || {}).forEach(function (k) { if (k !== me && !other) other = k; });
+      }
+      var w = other ? ((peopleOf() || {})[other] || {}) : {};
+      var fc = other ? faceFor({ author: other }) : null;
+      if (fc) {
+        fc.removeAttribute('role'); fc.removeAttribute('tabindex'); fc.removeAttribute('aria-label');
+        fc.classList.add('ow-thread-start__face');
+      } else {
+        fc = headFace.cloneNode(true);
+        fc.className = 'ow-thread__av ow-thread-start__face';
+        fc.removeAttribute('role'); fc.removeAttribute('tabindex'); fc.removeAttribute('title');
+      }
+      fc.setAttribute('aria-hidden', 'true');
+      st.appendChild(fc);
+      st.appendChild(mk('b', 'ow-thread-start__nm', esc(w.name || (headNm && headNm.textContent) || 'New conversation')));
+      st.appendChild(mk('p', 'ow-thread-start__why', isDirect(conv) ? 'Say hello to start the conversation.' : 'Say hello to the group.'));
+      /* Say hi only where there is a composer to fill; on a chat's first read it is built just after this paint */
+      function addHi() {
+        if (!st.isConnected || st.querySelector('.ow-thread-start__hi') || !foot.querySelector('textarea')) return;
+        var hi = mk('button', 'po-act ow-thread-start__hi', 'Say hi \uD83D\uDC4B'); hi.type = 'button';
+        hi.addEventListener('click', function () {
+          var ta = foot.querySelector('textarea');
+          if (!ta) return;
+          if (!ta.value.trim()) { ta.value = 'Hi! \uD83D\uDC4B'; ta.dispatchEvent(new Event('input', { bubbles: true })); }
+          try { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } catch (e) {}
+        });
+        st.appendChild(hi);
+      }
+      msgs.appendChild(st);
+      addHi();
+      if (!st.querySelector('.ow-thread-start__hi')) global.setTimeout(addHi, 0);
     }
 
     /* ══ RENDERING ONE MESSAGE ═══════════════════════════════════════════ */
@@ -1400,6 +1847,7 @@
       if (_au && _au !== me && _w && typeof _w.hue === 'number' && OW.hue && OW.hue.fromAngle) {
         var _hp = OW.hue.fromAngle(_w.hue);
         n.style.setProperty('--h', _hp[0]); n.style.setProperty('--h2', _hp[1] || _hp[0]);
+        var _ni = nameInk(_hp[0]); if (_ni) n.style.setProperty('--who-ink', _ni);
       }
       n.setAttribute('data-mid', m.id || '');
       if (m.seq) n.setAttribute('data-seq', String(m.seq));
@@ -1449,7 +1897,7 @@
            original still means something — and that is why it has a name of
            its own. */
         q.appendChild(mk('span', 'ow-msg__q-b',
-          esc(String(m.replying_to.excerpt || '').slice(0, 140))));
+          esc(String(m.replying_to.excerpt || '').slice(0, 140) || 'Photo or attachment')));
         q.addEventListener('click', function (ev) { ev.stopPropagation(); jumpTo(m.replying_to.id); });
         n.appendChild(q);
       } else if (m.reply_to) {
@@ -1467,7 +1915,22 @@
       if (!isPic) atts.forEach(function (a) { n.appendChild(attachment(a, m)); });
 
       var meta = mk('span', 'ow-msg__t');
-      meta.appendChild(mk('span', 'ow-msg__tt', esc(clockOf(m.created_at))));
+      /* SENDING IS SAID WHERE THE TIME WILL BE (founder/866 §11: "understandable sending and failure states"; S23: waiting
+         is a quiet state on the message, a refusal is the toast). Written down offline, it says it waits for a connection. */
+      if (m.pending) {
+        meta.setAttribute('data-sending', '1');
+        meta.appendChild(mk('span', 'ow-msg__tt', m.queued ? 'Waiting for a connection' : 'Sending…'));
+      } else {
+        /* A MESSAGE THAT WILL DISAPPEAR WEARS A SMALL TIMER BY ITS TIME, as WhatsApp's do, so the room's setting is seen
+           where it acts and not only in its settings (founder/866 §11: "Make the current retention setting understandable") */
+        if (m.expires_at) {
+          var tm = mk('span', 'ow-msg__timer', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.3 1.6M9.5 3.5h5"/></svg>');
+          tm.title = 'Disappears ' + whenWords(m.expires_at);
+          tm.setAttribute('aria-label', 'Disappears');
+          meta.appendChild(tm);
+        }
+        meta.appendChild(mk('span', 'ow-msg__tt', esc(clockOf(m.created_at))));
+      }
       if (m.edited) meta.appendChild(mk('i', 'ow-msg__ed', 'edited'));
       n.appendChild(meta);
 
@@ -1531,7 +1994,7 @@
         box.appendChild(v);
       } else {
         var im = doc.createElement('img'); im.src = url; im.alt = a.alt || ''; im.loading = 'lazy'; im.decoding = 'async';
-        im.addEventListener('error', function () { box.setAttribute('data-gone', '1'); im.remove(); box.textContent = 'This photo is no longer available'; }, { once: true });
+        im.addEventListener('error', function () { box.setAttribute('data-gone', '1'); im.remove(); box.textContent = ''; box.appendChild(goneLine('This photo is no longer available')); }, { once: true });
         box.appendChild(im);
       }
       box.addEventListener('click', function (ev) {
@@ -1566,8 +2029,7 @@
            so is the whole value of it being a reference rather than a copy of
            words its author has since removed. */
         box.setAttribute('data-empty', '1');
-        box.appendChild(mk('span', 'ow-att__gone',
-          esc(res.reason || 'this is no longer available')));
+        box.appendChild(goneLine(goneWords((a && a.subject_type) || 'post', res.reason)));
         return box;
       }
 
@@ -1586,28 +2048,52 @@
       var obj = res && (res[kind] || res.subject || null);
 
       if (obj) {
+        /* ★ FOUNDER/866 §11: "Redesign shared-post previews. Display the original author. Include a meaningful content
+           excerpt. Show media when available. Make the entire preview open the original content. Preserve attribution."
+           One card on the ground's own surface (never a dark box inside a coloured bubble): the picture first, edge to edge,
+           then the author's face and name, once, with the Place it was posted to when that is not the author's own name,
+           then the words, three lines at most. The whole card is the door. */
         var card = mk('button', 'ow-att__card'); card.type = 'button';
-        var who = (obj.author && (obj.author.name || obj.author.email)) || '';
-        if (who) card.appendChild(mk('span', 'ow-att__who', esc(who)));
-        var words = obj.title || obj.body || '';
-        if (words) card.appendChild(mk('span', 'ow-att__b',
-          esc(String(words).slice(0, 200))));
+        card.setAttribute('data-kind', kind);
+        var au = obj.author || {};
+        var who = String(au.name || au.ref || '').trim();
         var pic = (obj.media || [])[0];
-        var picUrl = pic && (pic.url || pic.src || (typeof pic === 'string' ? pic : ''));
+        var picUrl = pic && (typeof pic === 'string' ? pic : (pic.url || pic.src || ''));
+        var isVid = !!(pic && typeof pic === 'object' && pic.kind === 'video');
         if (picUrl) {
-          var im = doc.createElement('img');
-          im.loading = 'lazy'; im.alt = '';
-          /* THE SAME FAILURE PATH THE FEED USES. A share whose picture is gone
-             collapses to its words rather than leaving a picture-shaped hole. */
-          im.addEventListener('error', function () {
-            try { im.remove(); } catch (_) {}
-          }, { once: true });
-          im.src = OW.imageUrl ? OW.imageUrl(picUrl) : picUrl;
-          card.insertBefore(im, card.firstChild);
+          var fig = mk('span', 'ow-att__pic');
+          if (isVid) fig.setAttribute('data-video', '1');
+          var still = isVid ? (pic.thumb || pic.poster || '') : picUrl;
+          var shown = null;
+          if (still) {
+            shown = doc.createElement('img'); shown.loading = 'lazy'; shown.decoding = 'async'; shown.alt = (pic && pic.alt) || '';
+            shown.src = OW.imageUrl ? OW.imageUrl(still) : still;
+          } else {
+            shown = doc.createElement('video'); shown.muted = true; shown.playsInline = true; shown.preload = 'metadata';
+            shown.src = OW.imageUrl ? OW.imageUrl(picUrl) : picUrl; shown.setAttribute('aria-hidden', 'true');
+          }
+          /* THE SAME FAILURE PATH THE FEED USES. A share whose picture is gone collapses to its words rather than leaving a
+             picture-shaped hole (§11: "Avoid oversized empty attachment containers"). */
+          shown.addEventListener('error', function () { try { fig.remove(); } catch (_) {} }, { once: true });
+          fig.appendChild(shown);
+          card.appendChild(fig);
         }
-        if (obj.destination_name) {
-          card.appendChild(mk('span', 'ow-att__where', esc(obj.destination_name)));
+        var by = mk('span', 'ow-att__by');
+        var aface = mk('span', 'ow-msg-face ow-att__face');
+        if (OW.cards && OW.cards.fill) OW.cards.fill(aface, { kind: 'person', name: who || '?', picture: au.image || '' }, { letters: 'i' });
+        if (typeof au.hue === 'number' && OW.hue && OW.hue.fromAngle) {
+          var ah = OW.hue.fromAngle(au.hue); aface.style.setProperty('--h', ah[0]); aface.style.setProperty('--h2', ah[1] || ah[0]);
         }
+        by.appendChild(aface);
+        var byw = mk('span', 'ow-att__byw');
+        byw.appendChild(mk('span', 'ow-att__who', esc(who || 'A post')));
+        var place = String(obj.destination_name || '').trim();
+        if (place && place.toLowerCase() !== who.toLowerCase()) byw.appendChild(mk('span', 'ow-att__where', esc(place)));
+        by.appendChild(byw);
+        card.appendChild(by);
+        var words = String(obj.title || obj.body || '').trim();
+        if (words) card.appendChild(mk('span', 'ow-att__b', esc(words.slice(0, 280))));
+        card.setAttribute('aria-label', 'Open the post' + (who ? ' by ' + who : ''));
         /* A SHARE IS A DOOR TO THE ORIGINAL, which is the point of it being a
            reference. The App already routes `#post/<id>`; this uses that
            rather than teaching the thread how to open a Post. */
@@ -1630,7 +2116,7 @@
         im2.addEventListener('error', function () {
           box.setAttribute('data-empty', '1');
           try { im2.remove(); } catch (_) {}
-          box.appendChild(mk('span', 'ow-att__gone', 'this picture could not be loaded'));
+          box.appendChild(goneLine('This picture could not be loaded'));
         }, { once: true });
         im2.src = OW.imageUrl ? OW.imageUrl(url) : url;
         box.appendChild(im2);
@@ -1640,9 +2126,22 @@
       /* NOTHING RESOLVED AND NOTHING TO SHOW. It says that, in words — never
          the attachment's own type name, which is what it used to do. */
       box.setAttribute('data-empty', '1');
-      box.appendChild(mk('span', 'ow-att__gone',
-        esc((a && a.name) || (a && a.preview) || 'a shared item')));
+      box.appendChild(goneLine((a && a.name) || (a && a.preview) || 'A shared item'));
       return box;
+    }
+    /* WHAT IS NO LONGER THERE IS ONE QUIET LINE WITH A MARK, the size of its words (founder/866 §11: "Handle unavailable
+       or deleted content gracefully"), never a box the size of the thing that went */
+    function goneWords(kind, reason) {
+      var what = kind === 'post' ? 'This post' : 'This';
+      var r = String(reason || '');
+      if (/could not/i.test(r)) return what + ' could not be loaded';
+      if (/cannot be resolved|yet/i.test(r)) return what + ' can\'t be shown here';
+      return what + ' is no longer available';
+    }
+    function goneLine(words) {
+      var g = mk('span', 'ow-att__gone', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M6 18 18 6"/></svg>');
+      g.appendChild(doc.createTextNode(String(words)));
+      return g;
     }
 
     var EMOJI = ['❤️', '👍', '😂', '😮', '😢'];
@@ -1657,7 +2156,7 @@
         if (who.indexOf(me) >= 0) chip.setAttribute('aria-pressed', 'true');
         else chip.setAttribute('aria-pressed', 'false');
         chip.appendChild(doc.createTextNode(e));
-        chip.appendChild(mk('b', '', String(who.length)));
+        if (who.length > 1) chip.appendChild(mk('b', '', String(who.length)));
         chip.setAttribute('aria-label', e + ', ' + who.length);
         chip.addEventListener('click', function () { react(m.id, e); });
         row.appendChild(chip);
@@ -1796,6 +2295,16 @@
        there before is marked as arriving. The first paint marks nothing — a
        thread opens, it does not perform. */
     var _seenMsg = null;
+    /* ONE ARRIVAL PER MESSAGE (the founder, 2026-10-21, on the live site: "bubble animation can not appear to resend idk if
+       thats a recent thing or something that is happening twice but its annoying me"). My message is drawn twice by design:
+       the optimistic bubble at once (its id tmp_...), then the server's row (its real id) when the send is confirmed or its
+       realtime echo comes first. Each was new to the thread, so each played the arrival: the second looked like a resend. My
+       own words, with what they answer, shown as arriving in the last two minutes, are that same message when the server's
+       copy comes: it carries on the bubble's arrival instead of starting another.
+       AND AN ARRIVAL IS NEVER CUT. paint() rebuilds every bubble on every change, so a second send, a reaction or a receipt
+       within the arrival's time replaced a growing bubble with a still one (it snapped to full size). Each message's arrival
+       has a start; a bubble drawn again while it runs carries on from where it was (a negative delay), and only then stops. */
+    var _sentSig = {}, _arriving = {};
     /* A MESSAGE'S SENDING STATE LIVES ON THE MESSAGE, NOT ON ITS BUBBLE.
        It was written onto the DOM node only, and every paint() rebuilds every
        node — so the next send, a reply arriving, or "Earlier messages" wiped
@@ -1863,15 +2372,32 @@
         /* A SYSTEM LINE is the room speaking ("Maya made Jordan an admin"):
            centred and quiet, never a bubble from nobody */
         if (m.system || (!m.author && !m.deleted && m.body && !(m.attachments || []).length)) {
-          msgs.appendChild(mk('div', 'ow-msg-sys', esc(m.body || '')));
+          var cl = callOf(m);
+          msgs.appendChild(cl ? callRow(m, cl) : mk('div', 'ow-msg-sys', esc(m.body || '')));
           return;
         }
         var b = bubble(m, run);
         markState(b, m);
         var _mid = m.id || m.message_id || ((m.created_at || '') + '|' + (m.author || ''));
         _seenMsg[_mid] = 1;
-        if (!first && !was[_mid]) b.classList.add('ow-msg--new');
         var mine = m.mine != null ? !!m.mine : (String(m.author || '').toLowerCase() === me);
+        var _now = Date.now(), _dur = OW.motion ? OW.motion.ms('settle') : 800, _t0 = _arriving[_mid];
+        if (!_t0 && !first && !was[_mid]) {
+          var _sig = mine && !m.deleted ? (m.body || '') + '\u0001' + (m.reply_to || (m.replying_to && m.replying_to.id) || '') : '';
+          var _q = _sig && _sentSig[_sig];
+          while (_q && _q.length && _now - _q[0] > 120000) _q.shift();
+          if (_q && _q.length && String(_mid).indexOf('tmp_') !== 0) {
+            _t0 = _q.shift();                       /* the server's copy of a bubble already shown: its arrival carries on */
+          } else {
+            _t0 = _now;
+            if (_sig && String(_mid).indexOf('tmp_') === 0) (_sentSig[_sig] = _q || []).push(_now);   /* the same words twice: two */
+          }
+          _arriving[_mid] = _t0;
+        }
+        if (_t0 && _now - _t0 < _dur) {
+          b.classList.add('ow-msg--new');
+          if (_now - _t0 > 16) b.style.animationDelay = -(_now - _t0) + 'ms';
+        } else if (_t0) delete _arriving[_mid];
         if (mine || m.deleted) {
           if (run.first) b.setAttribute('data-gap', '1');
           msgs.appendChild(b); return;
@@ -1885,6 +2411,54 @@
         msgs.appendChild(line);
       });
       paintDelivery();
+      if (!spokenIn()) emptyThread();
+      msgs.appendChild(typing);          /* the typing bubble is the thread's last row, after every paint */
+    }
+
+    /* ── A CALL IS A ROW OF ITS OWN (founder/866 §11: "Present missed calls clearly", "Keep voice and video call controls
+       consistent") ─────────────────────────────────────────────────────────
+       The room's line about a call ("Missed voice call") was the same grey sentence as "Maya made Jordan an admin", so a
+       missed call was easy to scroll past. It is a row now: the call's own mark (the bar's phone or camera), what happened
+       as the reader takes it (missed, to the person rung; no answer, to the caller), its time, and Call back, which starts
+       the same kind of call the bar's buttons do. A line kept before calls carried what happened is read from its words. */
+    var CALL_RE = /^(missed )?(group )?(voice|video) call( declined| · .+)?$/i;
+    var CALL_MARK = {
+      voice: '<path d="M6.6 3.5h2.6l1.4 4.1-1.9 1.3a12 12 0 0 0 6.4 6.4l1.3-1.9 4.1 1.4v2.6a2.1 2.1 0 0 1-2.3 2.1A17 17 0 0 1 4.5 5.8a2.1 2.1 0 0 1 2.1-2.3z"/>',
+      video: '<rect x="3" y="6.5" width="12.5" height="11" rx="2.2"/><path d="m15.5 10.5 5-3v9l-5-3z"/>'
+    };
+    function callOf(m) {
+      if (m.call && typeof m.call === 'object') return m.call;
+      var x = CALL_RE.exec(String(m.body || '').trim());
+      if (!x) return null;
+      return { kind: x[3].toLowerCase(), group: !!x[2], yours: null, said: String(m.body || ''),
+               state: x[1] ? 'missed' : (/declined/i.test(x[4] || '') ? 'declined' : 'ended') };
+    }
+    function callTook(s) { return s >= 60 ? Math.max(1, Math.round(s / 60)) + ' min' : Math.max(1, s) + ' s'; }
+    function callRow(m, c) {
+      var kindW = (c.group ? 'Group ' : '') + (c.kind === 'video' ? 'video call' : 'voice call');
+      var Kind = kindW.charAt(0).toUpperCase() + kindW.slice(1);
+      var words;
+      if (c.yours == null) words = c.said || Kind;
+      else if (c.state === 'missed') words = c.yours ? Kind + ' · No answer' : 'Missed ' + kindW;
+      else if (c.state === 'declined') words = c.yours ? Kind + ' · Declined' : Kind + ' · You declined';
+      else words = c.secs ? Kind + ' · ' + callTook(c.secs) : Kind;
+      var row = mk('div', 'ow-msg-sys ow-msg-call');
+      row.setAttribute('data-state', c.state || 'ended');
+      if (c.state === 'missed' && c.yours === false) row.setAttribute('data-missed', '1');
+      row.setAttribute('data-mid', m.id || '');
+      var ic = mk('span', 'ow-msg-call__ic', '<svg viewBox="0 0 24 24" aria-hidden="true">' + (CALL_MARK[c.kind] || CALL_MARK.voice) + '</svg>');
+      var b = mk('span', 'ow-msg-call__b');
+      b.appendChild(mk('b', 'ow-msg-call__w', esc(words)));
+      b.appendChild(mk('span', 'ow-msg-call__t', esc(clockOf(m.created_at))));
+      row.appendChild(ic); row.appendChild(b);
+      if (OW.call && !closed && (!c.group || (conv.participants || []).length <= 16)) {
+        var again = mk('button', 'ow-msg-call__back', esc(c.state === 'missed' && c.yours === false ? 'Call back' : 'Call again'));
+        again.type = 'button';
+        again.setAttribute('aria-label', (c.state === 'missed' && c.yours === false ? 'Call back' : 'Call again') + ', ' + kindW);
+        again.addEventListener('click', function () { OW.call.start(cid, c.kind === 'video' ? 'video' : 'voice', headNm.textContent || ''); });
+        row.appendChild(again);
+      }
+      return row;
     }
 
     /* ── SENT · DELIVERED · READ, ON THE ONE MESSAGE IT IS ABOUT ──────────
@@ -2003,6 +2577,7 @@
         policy = d.policy || {};
         myRole = d.my_role || '';
         if (d.people) _people = d.people;
+        faceTheBar();
         /* the page read's `people` is keyed by address and carries no
            presence; the screen read carries presence for everyone this person
            can reach. Asked once, for the people in THIS room. */
@@ -2027,8 +2602,7 @@
         more = d.next_cursor != null;
         addDoor_(policy, myRole);
         if (!rows.length) {
-          msgs.classList.add('po-grid');
-          nothing(msgs, 'Nothing said yet.', 'A new conversation');
+          emptyThread();
         } else {
           msgs.classList.remove('po-grid');
           paint();
@@ -2164,7 +2738,10 @@
       x.setAttribute('aria-label', 'Stop replying');
       x.addEventListener('click', function () { replyTo = null; c.remove(); });
       c.appendChild(x);
-      foot.insertBefore(c, foot.firstChild);
+      /* IN THE COMPOSER, ABOVE THE FIELD (founder/866 §11): the composer is fixed to the foot of the screen, so a chip put
+         before it in the page sat under it, out of sight, at the end of the conversation */
+      var over = foot.querySelector('.ow-composer__over');
+      if (over) over.insertBefore(c, over.firstChild); else foot.insertBefore(c, foot.firstChild);
       var ta = foot.querySelector('textarea');
       if (ta) ta.focus();
     }
@@ -2188,13 +2765,33 @@
       if (foot.querySelector('.ow-composer')) return;
 
       var comp = mk('div', 'ow-composer');
+      /* what rides above the field: the message being answered, the photo or video chosen to send */
+      var over = mk('div', 'ow-composer__over');
+      comp.appendChild(over);
       var ta = doc.createElement('textarea');
       ta.rows = 1; ta.placeholder = 'Message';
       ta.setAttribute('aria-label', 'Write a message');
+      /* ── WHAT WAS WRITTEN AND NOT SENT IS KEPT (founder/866 §11: "Preserve unsent drafts") ───────────────────────
+         On this device, per conversation, as Messenger and Instagram keep one: leaving the chat, a reload or the App
+         closing keeps it, and it is back in the box the next time the chat opens. Sending, or emptying the box, clears it. */
+      var DRAFT = 'ow:draft:' + cid;
+      function draftPut(v) {
+        try { if (v) global.localStorage.setItem(DRAFT, v); else global.localStorage.removeItem(DRAFT); } catch (e) {}
+      }
+      var kept = '';
+      try { kept = global.localStorage.getItem(DRAFT) || ''; } catch (e) { kept = ''; }
       var send = mk('button', 'ow-send',
         '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 8 6 8z"/></svg>');
       send.type = 'button'; send.disabled = true;
       send.setAttribute('aria-label', 'Send');
+      /* ── SEND IS READY OR IT IS NOT, AND LOOKS IT (founder/866 §11: "Clearly distinguish enabled and disabled Send
+         states. Activate Send when valid text or attachments are present.") ── words or a chosen photo make it ready; an
+         upload on its way holds it, so one press is one message. */
+      var staged = null, busy = false;
+      function ready() {
+        send.disabled = !(ta.value.trim() || staged) || (busy && !!staged);
+        if (send.disabled) send.removeAttribute('data-ready'); else send.setAttribute('data-ready', '1');
+      }
       /* ── A PHOTO OR A VIDEO, FROM THE CAMERA OR THE ROLL ─────────────────
          ★ FOUNDER/438. The door has taken image and video kinds since the
          contract was written; nothing in the App could send one. The file
@@ -2209,24 +2806,57 @@
       attach.type = 'button'; attach.setAttribute('aria-label', 'Send a photo or video');
       var pick = doc.createElement('input'); pick.type = 'file'; pick.accept = 'image/*,video/*'; pick.hidden = true;
       attach.addEventListener('click', function () { pick.click(); });
+      /* ── A CHOSEN PHOTO WAITS IN THE COMPOSER UNTIL SEND (founder/866 §11: "Support reliable attachment selection") ──
+         It went the moment it was chosen, before a caption could be written or a wrong one taken back. Now it sits above the
+         field, small, with a mark to take it away; the words typed are its caption, and Send sends both as one message, as
+         iMessage and WhatsApp do. Choosing again replaces it. Anything but a photo or a video is refused in words. */
+      function drawTray() {
+        var old = over.querySelector('.ow-composer__tray'); if (old) old.remove();
+        if (!staged) return;
+        var tray = mk('div', 'ow-composer__tray');
+        var th = mk('span', 'ow-composer__thumb');
+        if (staged.isVideo) {
+          th.setAttribute('data-video', '1');
+          var v = doc.createElement('video'); v.src = staged.local; v.muted = true; v.playsInline = true; v.preload = 'metadata';
+          th.appendChild(v);
+        } else {
+          var im = doc.createElement('img'); im.src = staged.local; im.alt = ''; th.appendChild(im);
+        }
+        var x = mk('button', 'ow-composer__unstage', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7l10 10M17 7 7 17"/></svg>');
+        x.type = 'button'; x.setAttribute('aria-label', staged.isVideo ? 'Remove the video' : 'Remove the photo');
+        x.addEventListener('click', function () { unstage(true); ta.focus(); });
+        tray.appendChild(th); tray.appendChild(x);
+        over.appendChild(tray);
+      }
+      function unstage(revoke) {
+        if (staged && revoke) { try { URL.revokeObjectURL(staged.local); } catch (e) {} }
+        staged = null; drawTray(); ready();
+      }
+      function stage(dataUrl, isVideo, local) {
+        if (staged) { try { URL.revokeObjectURL(staged.local); } catch (e) {} }
+        staged = { dataUrl: dataUrl, isVideo: isVideo, local: local };
+        drawTray(); ready();
+        try { ta.focus({ preventScroll: true }); } catch (e) {}
+      }
       pick.addEventListener('change', function () {
         var f = pick.files && pick.files[0]; pick.value = '';
         if (!f) return;
+        if (!/^(image|video)\//.test(f.type || '')) { note('Choose a photo or a video.'); return; }
         if (f.size > 60 * 1024 * 1024) { note('That file is over 60 MB.'); return; }
         var isVideo = /^video\//.test(f.type);
         /* A PHOTO OPENS IN THE EDITOR FIRST (founder/831), with a free crop, as a photo sent in iMessage can be cut
-           before it goes; Cancel sends nothing. A GIF keeps its movement and a clip plays whole, so both go as they are. */
+           before it goes; Cancel keeps nothing. A GIF keeps its movement and a clip plays whole, so both go as they are. */
         if (!isVideo && !/gif/i.test(f.type) && typeof OW.editMedia === 'function') {
-          OW.editMedia(f, { frame: 'chat', kinds: ['image'], done: 'Send' }).then(function (r) {
+          OW.editMedia(f, { frame: 'chat', kinds: ['image'], done: 'Done' }).then(function (r) {
             if (!r) return;
-            sendMedia(r.dataUrl, false, URL.createObjectURL(r.blob), ta.value.trim());
+            stage(r.dataUrl, false, URL.createObjectURL(r.blob));
           });
           return;
         }
         var local = URL.createObjectURL(f);
         var rd = new FileReader();
-        rd.onload = function () { sendMedia(String(rd.result || ''), isVideo, local, ta.value.trim()); };
-        rd.onerror = function () { note('That file could not be read.'); };
+        rd.onload = function () { stage(String(rd.result || ''), isVideo, local); };
+        rd.onerror = function () { try { URL.revokeObjectURL(local); } catch (e) {} note('That file could not be read.'); };
         rd.readAsDataURL(f);
       });
       function sendMedia(dataUrl, isVideo, local, caption) {
@@ -2239,12 +2869,13 @@
         var node = msgs.querySelector('[data-mid="' + cssq(tmp.id) + '"]');
         if (node) node.setAttribute('data-pending', '1');
         toBottom();
-        ta.value = ''; ta.style.height = 'auto'; send.disabled = true; attach.disabled = true;
+        ta.value = ''; ta.style.height = 'auto'; draftPut(''); attach.disabled = true; busy = true; ready();
         data.post('/api/oneway/media', { data: dataUrl, origin: 'uploaded' }).then(function (up) {
-          attach.disabled = false;
+          attach.disabled = false; busy = false; ready();
           var item = up && up.ok && up.data && (up.data.media || up.data.item || up.data);
           var url = item && (item.url || (item.media && item.media.url));
-          var again = function () { dropRow(tmp.id); sendMedia(dataUrl, isVideo, local, caption); };
+          var tried = false;
+          var again = function () { if (tried) return; tried = true; dropRow(tmp.id); sendMedia(dataUrl, isVideo, local, caption); };
           if (!url) { fail(tmp, (up && up.error) || 'That could not be uploaded.', again); return; }
           var att = { type: 'media', kind: kind, url: url, width: item.width || null, height: item.height || null };
           return data.post(conv_(cid) + '/messages', { body: caption, kind: kind, attachments: [att] }).then(function (r) {
@@ -2261,8 +2892,8 @@
         });
       }
       function fail(tmp, why_, retry) {
-        attach.disabled = false;
-        refused(tmp, why_, retry);
+        attach.disabled = false; busy = false; ready();
+        refused(tmp, why_, retry, tmp.body);
       }
       /* A REFUSED SEND (S23): the bubble that was never stored leaves the thread, so nothing on screen looks sent
          (founder/502: a failed message must never sit there looking sent), and the toast says why, once, with Try
@@ -2271,15 +2902,17 @@
         dropRow(tmp.id);
         paint();
         if (words && !ta.value.trim()) {
-          ta.value = words; send.disabled = false;
+          ta.value = words; draftPut(words); ready();
           ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px';
         }
+
         if (OW.toast) OW.toast('Not sent. ' + (why_ || 'Try again.'),
                                typeof retry === 'function' ? { action: 'Try again', onAction: retry } : {});
       }
 
       ta.addEventListener('input', function () {
-        send.disabled = !ta.value.trim();
+        ready();
+        draftPut(ta.value.trim() ? ta.value : '');
         ta.style.height = 'auto';
         ta.style.height = Math.min(120, ta.scrollHeight) + 'px';
         /* THE THROTTLE LIVES IN THE CLIENT, not here — founder: *"Do not write
@@ -2287,6 +2920,10 @@
         if (OW.realtime && OW.realtime.typing) OW.realtime.typing('conv:' + cid);
       });
       ta.addEventListener('keydown', function (e) {
+        /* AN ENTER THAT ENDS A WORD IS NOT A SEND (founder/866 §11: "Prevent accidental duplicate sends"): while a Japanese,
+           Chinese or Korean keyboard is composing, Enter chooses the word; sending then sent half of it, and the rest as a
+           second message */
+        if (e.isComposing || e.keyCode === 229) return;
         if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); post(); }
       });
       /* WRAPPED, NOT PASSED. `post` grew a `reuse` parameter for the retry
@@ -2296,13 +2933,23 @@
          worked, the field kept its text, and nothing anywhere said no. */
       send.addEventListener('click', function () { post(); });
 
+      var retried = {};
       function post(reuse) {
+        /* A CHOSEN PHOTO GOES WITH THE WORDS AS ITS CAPTION, one message; one upload at a time */
+        if (!reuse && staged) {
+          if (busy) return;
+          var s0 = staged; staged = null; drawTray();
+          sendMedia(s0.dataUrl, s0.isVideo, s0.local, ta.value.trim());
+          return;
+        }
         var body = reuse ? reuse.body : ta.value.trim();
         if (!body) return;
+        /* ONE TRY AGAIN IS ONE SEND: a second press on the same toast sent the same words twice */
+        if (reuse) { if (retried[reuse.tmpId]) return; retried[reuse.tmpId] = 1; }
         var aim = reuse ? reuse.aim : replyTo;
         if (reuse) dropRow(reuse.tmpId);
         /* a retry from the toast clears the box only when the box still holds these words: what was typed since stays */
-        if (!reuse || ta.value.trim() === body) { ta.value = ''; ta.style.height = 'auto'; send.disabled = true; }
+        if (!reuse || ta.value.trim() === body) { ta.value = ''; ta.style.height = 'auto'; draftPut(''); ready(); }
         var chip = foot.querySelector('.ow-reply-aim');
         if (chip) chip.remove();
         replyTo = null;
@@ -2375,6 +3022,7 @@
           if (r.queued) {
             /* WRITTEN DOWN, NOT YET SENT (PLAN G6). The bubble is already there and already marked pending; it stays that way
                — not failed, because nothing was refused — and it becomes the real message when the outbox delivers it, once. */
+            tmp.queued = true; paint();
             OW.outbox.watch(r.pending_id, function (d) { landed(d.result); }, failedSend);
             if (OW.toast) OW.toast('Saved on this device. It will send when you are back online.', { tone: 'ok' });
             return;
@@ -2386,6 +3034,21 @@
 
       comp.appendChild(attach); comp.appendChild(pick); comp.appendChild(ta); comp.appendChild(send);
       foot.appendChild(comp);
+      if (kept) {
+        ta.value = kept;
+        global.requestAnimationFrame(function () { ta.style.height = 'auto'; ta.style.height = Math.min(120, ta.scrollHeight) + 'px'; });
+      }
+      ready();
+      /* THE CONVERSATION ENDS ABOVE THE COMPOSER, however tall it grows (a reply above the field, a photo chosen, four lines
+         of words): its height is measured, and the page keeps that much room under the last message (§11: "Prevent content
+         from colliding with the message composer") */
+      if (global.ResizeObserver) {
+        var ro = new global.ResizeObserver(function () {
+          if (closed) { ro.disconnect(); return; }
+          doc.documentElement.style.setProperty('--ow-composer-h', Math.round(comp.getBoundingClientRect().height) + 'px');
+        });
+        ro.observe(comp);
+      }
     }
 
     function react(mid, emoji) {
@@ -2481,6 +3144,23 @@
         apply(d.kind, d.data);
       };
       doc.addEventListener('ow:conv', onConv);
+      /* OPENED WHILE SOMEBODY IS MID-SENTENCE: the stream said so once, at connect, before this thread was listening.
+         Comments ask for it on attach; Messages never did, and waited for the person to stop and start again. */
+      var held = OW.realtime.typingFor && OW.realtime.typingFor('conv:' + cid);
+      if (held) apply('typing', held);
+      doc.addEventListener('ow:realtime-live', onTypingLive);
+    }
+    /* A DROPPED STREAM CANNOT SAY THAT SOMEBODY STOPPED. The server announces only edges, and a person who stopped while
+       this tab was offline is never announced again; the stream's connect frame re-sends whoever is STILL typing. So a
+       bubble that the new stream does not confirm within a moment is taken down rather than left saying so forever. */
+    function onTypingLive() {
+      if (closed || !typingNow.length) return;
+      var at = Date.now();
+      if (typingHold) global.clearTimeout(typingHold);
+      typingHold = global.setTimeout(function () {
+        typingHold = null;
+        if (!closed && typingNow.length && typingAt < at) showTyping([]);
+      }, 1500);
     }
     /* ── SCREENSHOT NOTICES (founder/160) ───────────────────────────────
        A browser cannot see a screenshot. It can see the keys that take one —
@@ -2504,11 +3184,16 @@
     doc.addEventListener('ow:landon', onLand);
     function teardown() {
       closed = true;
+      global.removeEventListener('scroll', onJumpScroll);
+      if (jump.parentNode) jump.parentNode.removeChild(jump);
       doc.removeEventListener('ow:landon', onLand);
       doc.removeEventListener('pointerdown', onOutside, true);
       doc.removeEventListener('keydown', onShot);
       doc.removeEventListener('keyup', onShotUp);
       if (onConv) doc.removeEventListener('ow:conv', onConv);
+      doc.removeEventListener('ow:realtime-live', onTypingLive);
+      if (typingGone) global.clearTimeout(typingGone);
+      if (typingHold) global.clearTimeout(typingHold);
       if (OW.realtime && OW.realtime.unwatch) OW.realtime.unwatch('conv');
       if (OW.realtime && OW.realtime.stopTyping) OW.realtime.stopTyping('conv:' + cid);
     }
@@ -2518,7 +3203,12 @@
       if (closed) return;
       if (kind === 'message') {
         if (d.internal) return;          /* a note is not a message */
-        if (d.author && String(d.author).toLowerCase() === me) return;
+        /* MINE FROM ANOTHER DEVICE IS STILL NEWS HERE (founder/866 §11: "Ensure replies, reactions, and shared content work
+           reliably"). Every message of mine was skipped, so one written on the phone, or a post shared from its own sheet,
+           never reached the thread open on the laptop until it was reopened (measured 2026-10-21). Only a message this thread
+           already holds is skipped; a send of mine from THIS screen that the read brings back before its own answer does
+           replaces its bubble on the way (`pull`), so the two are never drawn side by side. */
+        if (d.message && byId[d.message]) return;
         pull(d.seq);
         return;
       }
@@ -2566,14 +3256,9 @@
            two of them at once and would race on whose event landed last.
            Reading it as `d.typing` truthy would have shown "typing" forever:
            an empty array is truthy in JavaScript. */
-        var who = (d.typing || []).map(function (t) {
-          return String((t && t.person) || t || '').toLowerCase();
-        }).filter(function (e) { return e && e !== me; });
-        typing.hidden = !who.length;
-        typing.textContent = !who.length ? ''
-          : (who.length === 1
-              ? bare(who[0]) + ' is typing…'
-              : who.length + ' people are typing…');
+        showTyping((d.typing || []).map(function (t) {
+          return { person: String((t && t.person) || t || '').toLowerCase(), name: (t && t.name) || '' };
+        }).filter(function (t) { return t.person && t.person !== me; }));
         return;
       }
     }
@@ -2581,29 +3266,72 @@
     /* ONE READ IN FLIGHT AT A TIME, and it is bounded by how far behind we
        are — never by the corpus. A burst of twenty messages is one catch-up
        read, not twenty. */
+    var pullAgain = 0;
     function pull(uptoSeq) {
-      if (pulling || closed) return;
+      if (closed) return;
+      /* AN ARRIVAL WHILE A READ IS OUT IS KEPT, NOT DROPPED: the read may have left before the second message was stored, and
+         the event that said so was thrown away, so a burst could end one message short until the next one came (§11). */
+      if (pulling) { pullAgain = Math.max(pullAgain, Number(uptoSeq) || 1); return; }
       pulling = true;
       var top = rows.reduce(function (a, m) { return Math.max(a, m.seq || 0); }, 0);
       var behind = uptoSeq ? Math.max(1, Math.ceil(uptoSeq) - Math.floor(top)) : 8;
       var want = Math.min(60, Math.max(5, behind + 3));
-      var stick = atBottom();
       data.get(conv_(cid) + '?limit=' + want, { fresh: true }).then(function (r) {
         pulling = false;
-        if (closed || !r.ok) return;
-        var d = r.data || {};
-        policy = d.policy || policy;
-        myRole = d.my_role || myRole;
-        if (d.people) _people = Object.assign(_people || {}, d.people);
-        if (d.proposals) { openProps = d.proposals; paintProps(); }
-        merge(d.messages || []);
-        paint();
-        /* A MESSAGE ARRIVING MUST NOT MOVE SOMEBODY READING HISTORY. Only
-           follow the bottom if they were already at it. */
-        if (stick) toBottom();
-        seenIt();
+        var again = pullAgain; pullAgain = 0;
+        if (closed) return;
+        if (r.ok) {
+          /* WHERE THE PERSON IS WHEN THE READ COMES BACK, not when it left: asked at the start, a read that came back after
+             they had scrolled up to read took them back down (measured 2026-10-21: the second read of a burst landed a
+             second after the person left the bottom, and moved them 800px) */
+          var stick = atBottom();
+          var d = r.data || {};
+          policy = d.policy || policy;
+          myRole = d.my_role || myRole;
+          if (d.people) _people = Object.assign(_people || {}, d.people);
+          if (d.proposals) { openProps = d.proposals; paintProps(); }
+          var had = {};
+          rows.forEach(function (x) { if (x.id) had[x.id] = 1; });
+          var added = merge(d.messages || []);
+          /* MY OWN SEND, BACK BEFORE ITS ANSWER: a stored message of mine this read brought for the first time, with the
+             words of a bubble still on its way, is that bubble; the bubble goes, so it is never drawn twice */
+          (d.messages || []).forEach(function (x) {
+            if (!x || !x.id || had[x.id] || !(x.mine || String(x.author || '').toLowerCase() === me)) return;
+            var twin = rows.filter(function (t) { return t.pending && !t.queued && String(t.body || '') === String(x.body || ''); })[0];
+            if (twin) { dropRow(twin.id); twin.landedAs = x.id; added--; }
+          });
+          paint();
+          /* A MESSAGE ARRIVING MUST NOT MOVE SOMEBODY READING HISTORY. Only
+             follow the bottom if they were already at it; otherwise the pill
+             above the composer says something new is below (§11: "Preserve
+             scroll position appropriately"). */
+          if (stick) toBottom();
+          else if (added) newBelow(added);
+          seenIt();
+        }
+        if (again) pull(again === 1 ? null : again);
       });
     }
+
+    /* ── SOMETHING NEW IS BELOW ─────────────────────────────────────────────
+       Read further up and a message arrives: the words under the eyes stay where they are, and one pill over the composer
+       says it, as iMessage and WhatsApp do; a press takes the person down, and reaching the bottom puts it away. */
+    var jump = mk('button', 'ow-jump'); jump.type = 'button'; jump.hidden = true;
+    var jumpN = 0;
+    jump.addEventListener('click', function () {
+      jumpN = 0; jump.hidden = true; toBottom();
+      /* and again once the frame has laid out what arrived (a picture growing the page after the first scroll) */
+      global.requestAnimationFrame(function () { global.requestAnimationFrame(toBottom); });
+    });
+    function newBelow(n) {
+      jumpN += n;
+      jump.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6"/></svg>';
+      jump.appendChild(doc.createTextNode(jumpN === 1 ? 'New message' : jumpN + ' new messages'));
+      if (!jump.isConnected) host.appendChild(jump);
+      jump.hidden = false;
+    }
+    var onJumpScroll = function () { if (!jump.hidden && atBottom()) { jumpN = 0; jump.hidden = true; } };
+    global.addEventListener('scroll', onJumpScroll, { passive: true });
 
     /* ── WHAT THIS ROOM DOES WITH WHAT IS SAID IN IT ─────────────────────
        Retention and notification are answerable BEFORE anything happens, which
@@ -2637,9 +3365,17 @@
         if (!t.preserve && (t.source || 'default') === 'default') return;
         var line = t.preserve
           ? 'Kept' + (t.preserve_reason ? ' — ' + t.preserve_reason : '')
-          : 'Messages disappear after ' + human(ttl);
+          : 'Disappearing · ' + human(ttl);
         var chip = mk('span', 'ow-fact', esc(line));
         if (t.locked) chip.setAttribute('data-locked', '1');
+        /* THE SETTING SAYS WHAT IT IS AND OPENS WHERE IT IS CHANGED (founder/866 §11: "Make the current retention setting
+           understandable"): the timer every disappearing message wears, the span in the words the room's lines use, and a
+           press on it opens the chat's settings like a press on the name */
+        if (!t.preserve) {
+          chip.setAttribute('data-ttl', '1');
+          chip.insertAdjacentHTML('afterbegin', '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.3 1.6M9.5 3.5h5"/></svg>');
+          chip.setAttribute('aria-label', 'Messages disappear after ' + human(ttl));
+        }
         chip.title = 'Set by ' + (t.source || 'the platform');
         facts.appendChild(chip);
         retInfo = { ttl: ttl, preserve: !!t.preserve, reason: t.preserve_reason || '', source: t.source || '' };
@@ -3458,9 +4194,14 @@
     }
 
     function human(sec) {
-      if (sec >= 86400) { var d = Math.round(sec / 86400); return d + (d === 1 ? ' day' : ' days'); }
-      if (sec >= 3600) { var h = Math.round(sec / 3600); return h + (h === 1 ? ' hour' : ' hours'); }
-      var m = Math.max(1, Math.round(sec / 60)); return m + (m === 1 ? ' minute' : ' minutes');
+      /* THE SERVER'S WORDS FOR A SPAN (messaging/service.py span_words), so the bar, the settings and the room's own line
+         agree: the bar said "1 day" over a line that said "24 hours" (founder/866 §11). Minutes under an hour, hours under
+         two days, then days. */
+      sec = Math.max(0, Number(sec) || 0);
+      if (sec < 3600) { var m = Math.max(1, Math.round(sec / 60)); return m + (m === 1 ? ' minute' : ' minutes'); }
+      var h = Math.round(sec / 3600);
+      if (h < 48) return h + (h === 1 ? ' hour' : ' hours');
+      return Math.round(sec / 86400) + ' days';
     }
 
     /* facts are drawn from the page read in load(); the separate reads run

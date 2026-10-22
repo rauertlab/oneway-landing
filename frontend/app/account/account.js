@@ -10,7 +10,6 @@
       doc = _u.doc,
       esc = _u.esc,
       factList = _u.factList,
-      groupRuns = _u.groupRuns,
       imageUrl = _u.imageUrl,
       leaving = _u.leaving,
       loading = _u.loading,
@@ -989,111 +988,38 @@
          A control that cannot reach a state the system has is a control that
          lies about the system's shape. Three choices, and Device is the one
          they arrived with — so it is listed first and it is not a fallback. */
+      /* ── THE LOOK MENU, THE OS'S OWN (founder/863, 2026-10-21: "brought to app in place of current lackluster option. exact
+         menu"). The theme (Light, Dark, Match device) and, for each theme, its cards and its background, each a tile that shows the
+         room it makes: frontend/shared/oneway-lookmenu.js, the one component the OS's Appearance draws too, written through the
+         App's own writers (OW.theme, OW.simple, OW.world, kept on the account by OW.look.save). It replaces the Theme segments and
+         the Light mode and Dark mode rows that stood here. */
       (function () {
-        var T = global.OW && global.OW.theme;
-        var row = mk('div', 'ow-cust__row ow-cust__row--stack');
-        row.appendChild(mk('span', 'ow-cust__lbl', 'Theme'));
-        var seg = mk('div', 'ow-seg');
-        if (!T) {
-          /* honest rather than a switch that pretends: the writer is missing */
-          seg.appendChild(mk('span', 'po-acts__wait', 'The theme writer did not load.'));
-          row.appendChild(seg); box.appendChild(row); n++;
+        var T = global.OW && global.OW.theme, S = global.OW && global.OW.simple, W = global.OW && global.OW.world;
+        var row = mk('div', 'ow-cust__row ow-cust__row--stack ow-lm-host');
+        /* its name for Settings' Appearance page, which gathers its rows by this label (move: ['Theme']); the tiles say it themselves */
+        row.appendChild(mk('span', 'ow-cust__lbl ow-lm-lbl', 'Theme'));
+        if (!(global.OW && OW.lookMenu) || !T || !S || !W) {
+          row.appendChild(mk('span', 'po-acts__wait', 'The theme menu did not load. Reload the page.'));
+          box.appendChild(row); n++;
           return;
         }
-        var CHOICES = [
-          ['light', 'Light', ''],
-          ['dark', 'Dark', ''],
-          ['', 'Match device', 'follows your phone or computer']
-        ];
-        var btns = [];
-        function paint() {
-          var cur = T.get() || '';
-          btns.forEach(function (b) {
-            var on = b.getAttribute('data-v') === cur;
-            b.setAttribute('aria-pressed', String(on));
-            b.setAttribute('data-act', on ? 'on' : 'off');
-          });
-          /* WHAT DEVICE CURRENTLY MEANS, said out loud. "Device" alone does not
-             tell somebody whether they are about to get light or dark, and the
-             answer is knowable — so it is stated rather than left to be
-             discovered by pressing it. */
-          note.textContent = cur ? '' :
-            ('Your device is asking for ' + (T.isDark() ? 'dark' : 'light') + ' right now.');
-        }
-        CHOICES.forEach(function (c) {
-          var b = mk('button', 'ow-seg__b', esc(c[1]));
-          b.type = 'button';
-          b.setAttribute('data-v', c[0]);
-          if (c[2]) b.setAttribute('title', c[2]);
-          b.addEventListener('click', function () { T.set(c[0] || null); paint(); });
-          btns.push(b); seg.appendChild(b);
+        var inner = mk('div', 'ow-lm-in'); row.appendChild(inner);
+        var lm = OW.lookMenu.mount(inner, {
+          read: function () { return { theme: T.get() || '', simple: function (t) { return !!(S.of && S.of(t)); }, world: function (t) { return W.of ? W.of(t) : (t === 'light' ? 'plain' : 'galaxy'); } }; },
+          theme: function (v) { T.set(v || null); },
+          cards: function (t, simple) { S.setFor(t, simple); if (global.OW && OW.look) OW.look.save(); },
+          world: function (t, w) { W.setFor(t, w); if (global.OW && OW.look) OW.look.save(); }
         });
-        var note = mk('p', 'ow-seg__note', '');
-        row.appendChild(seg); row.appendChild(note);
-        paint();
-
-        /* AND IT FOLLOWS THE DEVICE WHILE THE APP IS OPEN, not only at boot.
-           A phone that switches to dark at sunset must take the App with it —
-           otherwise "Device" means "device, as it was when you last loaded",
-           which is a different and much weaker promise. */
+        /* the account's look can arrive after this page is drawn (a fresh device): drawn again when it does */
+        try { document.addEventListener('ow:look', function () { if (row.isConnected) lm.paint(); }); } catch (e) {}
+        /* Match device follows the device while the App is open, not only at boot (the rule the Theme row kept) */
         try {
           var mq = global.matchMedia && global.matchMedia('(prefers-color-scheme: dark)');
-          if (mq && mq.addEventListener) {
-            mq.addEventListener('change', function () {
-              if (!T.get()) { T.set(null); paint(); }
-            });
-          }
+          if (mq && mq.addEventListener) mq.addEventListener('change', function () { if (!T.get()) T.set(null); });
         } catch (e) {}
-
         box.appendChild(row);
         n++;
       })();
-
-      /* ── EACH THEME, ITS OWN CARDS AND ITS OWN BACKGROUND ─────────────────────
-         ★ THE FOUNDER, 2026-10-20: *"simple mode, popit mode on both cards and background and let users set which one
-           it defaults too for light and dark mode and also let them then set it to device basically the theme
-           customization for both light and dark mode"*. For Light mode and for Dark mode: the cards Simple or Popit
-           (OW.simple, the one writer; Simple keeps a compact feed, Popit wears your hue and Popit frames) and the
-           background Simple (a plain ground) or Popit (the galaxy; OW.world). Each is kept on the account
-           (OW.look.save), so on Match device the person meets their own choice in whichever room the device is in.
-           These replace one Plain background switch and one Post presentation for both themes. */
-      ['light', 'dark'].forEach(function (t) {
-        var S = global.OW && global.OW.simple, W = global.OW && global.OW.world;
-        var name = t === 'light' ? 'Light mode' : 'Dark mode';
-        var row = mk('div', 'ow-cust__row ow-cust__row--stack');
-        row.setAttribute('data-theme-mode', t);
-        row.appendChild(mk('span', 'ow-cust__lbl', name));
-        var paints = [];
-        [['Cards', function () { return !!(S && S.of && S.of(t)); }, function (simple) { S.setFor(t, simple); }],
-         ['Background', function () { return !!(W && W.of && W.of(t) === 'plain'); }, function (simple) { W.setFor(t, simple ? 'plain' : 'galaxy'); }]
-        ].forEach(function (part) {
-          var seg = mk('div', 'ow-seg');
-          seg.setAttribute('role', 'group'); seg.setAttribute('aria-label', name + ' ' + part[0].toLowerCase());
-          var key = mk('span', 'ow-seg__k', part[0]);
-          key.style.cssText = 'min-width:96px;font-size:14px;font-weight:600;opacity:.72;align-self:center';
-          seg.appendChild(key);
-          var btns = [];
-          ['Simple', 'Popit'].forEach(function (label, i) {
-            var btn = mk('button', 'ow-seg__b', label); btn.type = 'button';
-            btn.disabled = !(S && W && S.setFor);
-            btn.addEventListener('click', function () {
-              part[2](i === 0);
-              if (global.OW && OW.look) OW.look.save();
-              paints.forEach(function (f) { f(); });
-            });
-            btns.push(btn); seg.appendChild(btn);
-          });
-          paints.push(function () {
-            var simple = part[1]();
-            btns.forEach(function (btn, i) { var on = (i === 0) === simple; btn.setAttribute('aria-pressed', String(on)); btn.setAttribute('data-act', on ? 'on' : 'off'); });
-          });
-          row.appendChild(seg);
-        });
-        paints.forEach(function (f) { f(); });
-        /* the account's look can arrive after this page is drawn (a fresh device): drawn again when it does */
-        try { document.addEventListener('ow:look', function () { paints.forEach(function (f) { f(); }); }); } catch (e) {}
-        box.appendChild(row); n++;
-      });
 
       /* WHICH SUBSCRIPTION IS YOURS, named so it cannot be mistaken for the
          other one (founder, 2026-08-02). ONEWAY+ is a PERSON's subscription;
@@ -1195,7 +1121,8 @@
           })
         : SETTING_GROUPS;
       GROUPS.forEach(function (grp) {
-        var rows = grp[1].filter(function (s) { return s[0] in cur; });
+        /* a switch only for a setting that is on or off: one with a value of its own (quiet hours) has its own control in the OS */
+        var rows = grp[1].filter(function (s) { return s[0] in cur && typeof cur[s[0]] === 'boolean'; });
         if (!rows.length) return;          /* a setting the runtime lacks is absent */
         var sec = mk('div', 'ow-cust__row');
         sec.appendChild(mk('span', 'ow-cust__lbl', esc(grp[0])));
@@ -1715,30 +1642,22 @@
        the phone — and clearing the stored choice is how it is expressed, which
        is why it cannot be a two-way switch. */
     if (!(opts && opts.look)) {
-      choiceRow('Theme',
-        [{ label: 'Light', value: 'light' },
-         { label: 'Dark', value: 'dark' },
-         { label: 'Match device', value: '' }],
-        function () { try { return localStorage.getItem('ow_theme') || ''; } catch (e) { return ''; } },
-        function (v) { if (OW.theme) OW.theme.set(v || null); });
-
-      /* ── EACH THEME, ITS OWN CARDS AND ITS OWN BACKGROUND ───────────────────
-         ★ THE FOUNDER, 2026-10-20: *"simple mode, popit mode on both cards and background and let users set which one
-           it defaults too for light and dark mode and also let them then set it to device basically the theme
-           customization for both light and dark mode"*. For Light and for Dark: the cards Simple or Popit (OW.simple)
-           and the background Simple (plain) or Popit (the galaxy, OW.world), each kept on the account (OW.look.save),
-           so a person on Match device meets their own choice in whichever room the device is in. */
-      ['light', 'dark'].forEach(function (t) {
-        var name = t === 'light' ? 'Light mode' : 'Dark mode';
-        choiceRow(name + ': cards',
-          [{ label: 'Simple', value: 'simple' }, { label: 'Popit', value: 'popit' }],
-          function () { return (OW.simple && OW.simple.of(t)) ? 'simple' : 'popit'; },
-          function (v) { if (OW.simple) { OW.simple.setFor(t, v === 'simple'); if (OW.look) OW.look.save(); } });
-        choiceRow(name + ': background',
-          [{ label: 'Simple', value: 'simple' }, { label: 'Popit', value: 'popit' }],
-          function () { return (OW.world && OW.world.of(t) === 'plain') ? 'simple' : 'popit'; },
-          function (v) { if (OW.world) { OW.world.setFor(t, v === 'simple' ? 'plain' : 'galaxy'); if (OW.look) OW.look.save(); } });
-      });
+      /* THE LOOK MENU, THE OS'S OWN (founder/863): the theme, and each theme's cards and background, as tiles that show the room
+         each makes (frontend/shared/oneway-lookmenu.js), written through the App's own writers. It replaces the Theme choice and
+         the Light mode and Dark mode rows that stood here. */
+      (function () {
+        var T = global.OW && global.OW.theme, S = global.OW && global.OW.simple, W = global.OW && global.OW.world;
+        var row = mk('div', 'ow-cust__row ow-cust__row--stack ow-lm-host');
+        if (!(global.OW && OW.lookMenu) || !T || !S || !W) { row.appendChild(mk('span', 'po-acts__wait', 'The theme menu did not load. Reload the page.')); box.appendChild(row); return; }
+        var lm = OW.lookMenu.mount(row, {
+          read: function () { return { theme: T.get() || '', simple: function (t) { return !!(S.of && S.of(t)); }, world: function (t) { return W.of ? W.of(t) : (t === 'light' ? 'plain' : 'galaxy'); } }; },
+          theme: function (v) { T.set(v || null); },
+          cards: function (t, simple) { S.setFor(t, simple); if (global.OW && OW.look) OW.look.save(); },
+          world: function (t, w) { W.setFor(t, w); if (global.OW && OW.look) OW.look.save(); }
+        });
+        try { document.addEventListener('ow:look', function () { if (row.isConnected) lm.paint(); }); } catch (e) {}
+        box.appendChild(row);
+      })();
     }
 
     /* ── HOW YOUR NAME IS SET ─────────────────────────────────────────────
@@ -2243,6 +2162,185 @@
     }).catch(function () { return {}; });
   }
 
+  /* ── THE BELL'S LIST: ITS SECTIONS, ITS FOLDING, ITS ROW (founder/866, 871) ─────────────────────────────────── */
+  /* EVERY MARK IS THE APP'S OWN (founder, 2026-10-21: "icons that match the icons on side bar"): the settings and side
+     bar's outline set (OW.setIcon) first, then the feed's (OW.glyph: the like, the comment, the call), the same 24-unit
+     grid and stroke as the dock. Never a set of its own. */
+  function iconOf(name) {
+    var a = OW.setIcon ? OW.setIcon(name) : '';
+    if (a && /<(path|circle|rect)/.test(a)) return a;
+    return (OW.glyph && OW.glyph(name)) || '';
+  }
+  /* the App's own rows (nobody did them): what kind of thing it is */
+  function noteMark(kind) {
+    var k = String(kind || '');
+    if (/^(signed_in|account_|copyright|supervision)/.test(k)) return iconOf('shield');
+    if (/^places_near/.test(k)) return iconOf('pin');
+    if (/^(daily_limit|alerts_paused|shift_soon|work_due|follow_up_due|license_|warranty_|time_corrected)/.test(k)) return iconOf('clock');
+    if (/^(event_|book|waitlist|lease_|host_guest)/.test(k)) return iconOf('calendar');
+    if (/^(payments_|pickup_|drawing_won)/.test(k)) return iconOf('cart');
+    if (/^(stock_|asset_|data_ready)/.test(k)) return iconOf('inbox');
+    if (/^(work_|vendor_job|tech_on_way|assigned|decision_|room_check|sent_back)/.test(k)) return iconOf('check');
+    if (/^(messaged|message_request)/.test(k)) return iconOf('chat');
+    return iconOf('bell');
+  }
+  /* a person's row: what they did, as a small mark on their face (Facebook's and LinkedIn's way) */
+  function noteBadge(kind) {
+    var k = String(kind || '');
+    if (/^(liked|disliked)$/.test(k)) return iconOf(OW.likes && OW.likes.glyph ? OW.likes.glyph() : 'heart');
+    if (k === 'commented') return iconOf('talk');
+    if (/^(messaged|message_request)$/.test(k)) return iconOf('chat');
+    if (k === 'followed') return iconOf('person');
+    if (/^(calling|call_waiting)$/.test(k)) return iconOf('phone');
+    if (k === 'mentioned') return iconOf('at');
+    if (k === 'reposted') return iconOf('repost');
+    if (k === 'saved') return iconOf('bookmark');
+    if (/^(joined|invited|join_)/.test(k)) return iconOf('people');
+    return '';
+  }
+  /* New is what is unread; then by when, the way Instagram's Activity reads */
+  function sectionOf(n) {
+    if (!(n.read || n.seen)) return 'New';
+    var t = Date.parse(n.created_at || n.at || '');
+    if (!isFinite(t)) return 'Earlier';
+    var d0 = new Date(); d0.setHours(0, 0, 0, 0);
+    if (t >= d0.getTime()) return 'Today';
+    if (t >= d0.getTime() - 6 * 86400000) return 'This week';
+    return 'Earlier';
+  }
+  function shortWhen(iso) {
+    var t = Date.parse(iso || '');
+    if (!isFinite(t)) return '';
+    var s = Math.max(0, (Date.now() - t) / 1000);
+    if (s < 60) return 'now';
+    if (s < 3600) return Math.floor(s / 60) + 'm';
+    if (s < 86400) return Math.floor(s / 3600) + 'h';
+    if (s < 7 * 86400) return Math.floor(s / 86400) + 'd';
+    return Math.floor(s / (7 * 86400)) + 'w';
+  }
+  /* THE SAME THING DONE BY SEVERAL PEOPLE IS ONE ROW ("Bo and 3 others liked your post"), within one section, as
+     Instagram folds likes; one person doing the same thing again is one row too ("· 3 times"), and one person's messages
+     in one conversation are one row ("· 7 messages", the newest said). Never across sections, which would move somebody's
+     history. A follow stays its own row (each offers Follow back); a call or anything that needs an answer is never folded. */
+  var FOLDS = /^(liked|disliked|reposted|saved|commented|joined|mentioned)$/;
+  function foldOthers(rows) {
+    var out = [], at = {};
+    rows.forEach(function (n) {
+      var who = String((n.actor && (n.actor.ref || n.actor.name)) || '');
+      var key = FOLDS.test(n.kind || '') ? sectionOf(n) + '|' + n.kind + '|' + (n.subject || '')
+        : (n.kind === 'messaged' ? sectionOf(n) + '|messaged|' + (n.subject || '') + '|' + who : '');
+      if (key && at[key]) {
+        var f = at[key];
+        if (f._who.indexOf(who) < 0) { f._who.push(who); f._others = f._who.length - 1; }
+        else f._n = (f._n || 1) + 1;
+        if (!(n.read || n.seen)) f.read = false;
+        return;
+      }
+      var c = Object.assign({}, n, { _who: [who], _others: 0, _n: 1 });
+      if (key) at[key] = c;
+      out.push(c);
+    });
+    return out;
+  }
+  var CALL_RINGS_MS = 60000;      /* Answer only while a call can still be ringing (messaging/calls.py RING_SECONDS is 45) */
+  var LIST_SETTLE_MS = 350;       /* the list is read again this long after the last notice of a burst */
+  function noteRow(n, list) {
+    var b = mk('div', 'ow-note');
+    b.setAttribute('role', 'button'); b.tabIndex = 0;
+    b.setAttribute('data-kind', String(n.kind || ''));
+    var unread = !(n.read || n.seen);
+    if (unread) b.setAttribute('data-unread', 'true');
+    if (typeof n.seq === 'number') b.setAttribute('data-seq', String(n.seq));
+    var a = n.actor || {};
+    var person = /^@/.test(String(a.ref || ''));
+    var name = String(a.name || '').trim();
+    /* THE FACE: the person's own (picture, initials, their colour) or the App's mark in the reader's hue */
+    var fw = mk('span', 'ow-note__fw');
+    var face = mk('span', 'ow-note__face');
+    face.setAttribute('aria-hidden', 'true');
+    fw.appendChild(face);
+    if (person) {
+      face.setAttribute('data-person', '1');
+      OW.cards.fill(face, { kind: 'person', name: name || a.ref || '?', picture: a.picture || '' }, { letters: 'i' });
+      if (typeof a.hue === 'number' && OW.hue && OW.hue.fromAngle) {
+        var hp = OW.hue.fromAngle(a.hue); face.style.setProperty('--h', hp[0]); face.style.setProperty('--h2', hp[1] || hp[0]);
+      }
+      var badge = noteBadge(n.kind);
+      if (badge) {
+        var bg = mk('span', 'ow-note__badge', badge);
+        bg.setAttribute('data-k', String(n.kind || '')); bg.setAttribute('aria-hidden', 'true');
+        fw.appendChild(bg);
+      }
+    } else {
+      face.setAttribute('data-mark', '1');
+      face.innerHTML = noteMark(n.kind);
+    }
+    b.appendChild(fw);
+    /* THE WORDS: the name in bold, what they did (the server's own sentence), what they said, and when */
+    var t = mk('span', 'ow-note__t');
+    var line = String(n.line || n.text || n.body || n.title || n.kind || 'Something happened');
+    var rest = line;
+    if (person && name && line.indexOf(name) === 0) {
+      t.appendChild(mk('b', 'ow-note__who', esc(name)));
+      rest = line.slice(name.length);
+      if (n._others) {
+        var o = mk('span', 'ow-note__others', esc(' and ' + n._others + (n._others === 1 ? ' other' : ' others')));
+        o.title = n._who.slice(1, 6).join(', ');
+        t.appendChild(o);
+      }
+    }
+    t.appendChild(doc.createTextNode(rest + (n._n > 1 && !n._others ? ' · ' + n._n + (n.kind === 'messaged' ? ' messages' : ' times') : '')));
+    if (n.preview) t.appendChild(mk('span', 'ow-note__p', esc(': ' + String(n.preview).slice(0, 90))));
+    var w = shortWhen(n.created_at || n.at || '');
+    if (w) t.appendChild(mk('span', 'ow-note__w', esc(' ' + w)));
+    b.appendChild(t);
+    /* WHAT IT IS ABOUT, AT ITS END */
+    var to = n.link || n.href || '';
+    if (n.thumb) {
+      var th = mk('span', 'ow-note__thumb');
+      var im = doc.createElement('img'); im.alt = ''; im.loading = 'lazy'; im.decoding = 'async';
+      im.src = imageUrl ? imageUrl(n.thumb) : n.thumb;
+      im.addEventListener('error', function () { th.remove(); }, { once: true });
+      th.appendChild(im); b.appendChild(th);
+    } else if (n.kind === 'followed' && person && n.you_follow === false) {
+      var fb = mk('button', 'ow-note__act', 'Follow back'); fb.type = 'button';
+      fb.addEventListener('click', function (ev) {
+        ev.stopPropagation(); fb.disabled = true;
+        data.post('/api/oneway/graph/follow/' + encodeURIComponent(a.ref), {}).then(function (r) {
+          if (r && r.ok) { fb.textContent = 'Following'; fb.setAttribute('data-done', '1'); }
+          else { fb.disabled = false; if (OW.toast) OW.toast((r && r.error) || 'That did not go through. Try again.'); }
+        });
+      });
+      b.appendChild(fb);
+    } else if (/^(calling|call_waiting)$/.test(n.kind || '') && to && Date.now() - Date.parse(n.created_at || '') < CALL_RINGS_MS) {
+      var an = mk('button', 'ow-note__act', 'Answer'); an.type = 'button'; an.setAttribute('data-go', '1');
+      an.addEventListener('click', function (ev) { ev.stopPropagation(); open(); });
+      b.appendChild(an);
+    }
+    /* ONE CLICK, ONE READ (2026-09-21): the row drops its tint at once, every older one with it, and the bell re-reads its
+       count; the domain stays the authority. A row that goes nowhere is no door (Rule 12). */
+    function open() {
+      if (unread && typeof n.seq === 'number') {
+        b.removeAttribute('data-unread');
+        Array.prototype.forEach.call(list.querySelectorAll('[data-unread]'), function (o) {
+          var os = parseInt(o.getAttribute('data-seq') || '0', 10);
+          if (os && os <= n.seq) o.removeAttribute('data-unread');
+        });
+        data.post('/api/me/notifications/read?seq=' + encodeURIComponent(n.seq), {})
+          .then(function () {
+            data.invalidate('/api/me/notifications');
+            doc.dispatchEvent(new CustomEvent('ow:notifications-changed'));
+          }).catch(function () {});
+      }
+      if (to) { try { global.location.hash = to.replace(/^#/, '#'); } catch (e) {} }
+    }
+    if (to) {
+      b.addEventListener('click', open);
+      b.addEventListener('keydown', function (ev) { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); } });
+    } else { b.setAttribute('aria-disabled', 'true'); b.tabIndex = -1; }
+    return b;
+  }
+
   OW.live.notifications = function (host, opts) {
     /* THE LIST CHANGES WHILE IT IS OPEN (S22; walk handpay-call, 2026-10-11): a notice that arrives while a person looks
        at their notifications is in the list at once (the bell already heard `ow:notifications-changed`; the list did not,
@@ -2250,9 +2348,13 @@
        quietly: no loading flash. */
     if (!host.__owLiveList) {
       host.__owLiveList = true;
+      /* A BURST IS ONE READ (founder/882: twenty notices arriving together read the list twenty times, each with every face and
+         post picture, and the screen lagged behind them): the list is read again once the notices stop for a moment */
+      var later = 0;
       var again = function () {
         if (!host.isConnected) { doc.removeEventListener('ow:notifications-changed', again); return; }
-        OW.live.notifications(host, { quiet: true });
+        global.clearTimeout(later);
+        later = global.setTimeout(function () { if (host.isConnected) OW.live.notifications(host, { quiet: true }); }, LIST_SETTLE_MS);
       };
       doc.addEventListener('ow:notifications-changed', again);
     }
@@ -2265,118 +2367,37 @@
       host.innerHTML = '';
       if (!r.ok) { refused(host, r, 'Your notifications'); return 0; }
       var d = r.data || {};
-      var rows = (d.needs_you || []).concat(d.social || []);
-      if (!rows.length) rows = d.notifications || [];
+      /* ══ THE BELL'S LIST, AS PEOPLE ALREADY KNOW IT (founder/866, 871: "no grey boxes needs to be more visual and
+         standard") ══════════════════════════════════════════════════════════════════════════════════════════════
+         Measured on the live list (the founder's screenshot, 2026-10-21): every row the same dark grey-purple box, every
+         face an empty grey circle (the row started as a placeholder and was filled only when a picture loaded, so a
+         person without one, and anyone whose read failed, stayed a blank), the App's own rows (a new sign-in, places near
+         you, time today) with no mark, unread a small dot, and the read's two halves (needs_you, social) pasted one after
+         the other, so the list was not even newest first. It is Instagram's Activity and iOS's list now:
+           * one list, newest first, in New (unread), Today, This week and Earlier;
+           * a person's row wears their real face (the read carries it, from the one face reader) or their initials in
+             their colour; the App's own rows wear a mark in the person's hue (a shield, a pin, a clock, a calendar...);
+           * the name in bold, what they did, what they said, and the time, inline;
+           * at its end, what it is about: the post's picture, Follow back for a follow, Answer for a call;
+           * unread is the row tinted in the person's hue, never a dot;
+           * the same thing done by several people is one row: "Bo and 3 others liked your post".
+         Simple draws clear rounded rows, Popit draws them as Popits in the hue (oneway-popit.css, NOTIFICATIONS 871). */
+      var rows = (d.notifications || []).slice();
+      if (!rows.length) rows = (d.needs_you || []).concat(d.social || []);
+      rows.sort(function (a, b) { return (b.seq || 0) - (a.seq || 0); });
       if (!rows.length) {
-        nothing(host, 'When somebody answers you, mentions you or something '
-              + 'happens where you belong, it arrives here.', 'Nothing yet');
+        nothing(host, 'Likes, comments, follows and messages show up here.', 'Nothing yet');
         return 0;
       }
-      /* ── THE SERVER ALREADY WROTE THE SENTENCE ─────────────────────────
-         Every row carries `line` — "loop.bo sent you a message" — rendered from
-         the closed `KNOWN` vocabulary in `activity/contracts.py`, plus a
-         `preview` and `created_at`. This read `n.text || n.body || n.title ||
-         n.kind`, NONE of which the contract has, so it fell through to the raw
-         kind and printed "messaged" thirty times. The timestamp read `n.at`;
-         the field is `created_at`, so no row ever showed when it happened.
-
-         A contract mismatch that parses cleanly and renders nonsense — the
-         producer and the consumer never disagreed loudly enough to notice. */
-
-      /* ── AND THIRTY OF THE SAME LINE IS NOT THIRTY THINGS TO KNOW ───────
-         Consecutive rows from the SAME person about the SAME thing collapse
-         into one, carrying a count. Thirty messages in one conversation are one
-         fact about that conversation; listing them thirty times buries the
-         follow and the reply underneath them, which are the rows that actually
-         need answering.
-
-         CONSECUTIVE ONLY, never platform-wide: the list is newest-first, so
-         grouping across a gap would silently reorder somebody's history. */
-      var grouped = groupRuns(rows);
-
-      var list = mk('div', 'ow-notes');
-      grouped.forEach(function (n) {
-        var b = mk('button', 'ow-note'); b.type = 'button';
-        var unread = !(n.read || n.seen);
-        if (unread) b.setAttribute('data-unread', 'true');
-        var who = (n.actor && (n.actor.name || n.actor.email)) || n.from || '';
-        /* `line` FIRST — it is the server's own sentence and already names the
-           actor. The raw `kind` is the last resort and reads like a database
-           column, which is what a person was being shown. */
-        var txt = n.line || n.text || n.body || n.title || n.kind || 'Something happened';
-        if (n._n > 1) txt += ' · ' + n._n + ' times';
-        var at = n.created_at || n.at || '';
-        /* ── WHO, BEFORE WHAT (founder/513 tour) ─────────────────────────
-           Every row began with an empty gutter — the unread dot's slot, blank
-           on every read row — so thirty rows read as thirty grey boxes. The
-           row names its actor; the actor's face goes where the eye starts, as
-           in every notification list a person already knows, and the dot
-           moves to the far edge. Filled below from each person's light read,
-           once per person. */
-        /* the actor by @handle — a notification carries no address (people/refs.py) */
-        var aem = String((n.actor && (n.actor.ref || n.actor.email)) || '').toLowerCase();
-        if (aem) b.setAttribute('data-actor', aem);
-        b.innerHTML =
-          '<span class="ow-note__face" aria-hidden="true">' + OW.cards.inside({ kind: 'person' }) + '</span>'
-          + '<span class="ow-note__dot" aria-hidden="true"></span>'
-          + '<span class="ow-note__b">'
-          + '<span class="ow-note__t">' + esc(txt) + '</span>'
-          /* THE PREVIEW IS WHAT WAS ACTUALLY SAID, and it is the difference
-             between "somebody messaged you" and knowing whether to open it. */
-          + (n.preview ? '<span class="ow-note__p">' + esc(String(n.preview).slice(0, 90)) + '</span>' : '')
-          + (at ? '<span class="ow-note__w">' + esc(OW.when(at)) + '</span>' : '')
-          + '</span>';
-        /* only where the runtime actually said where this goes — a row that
-           navigates nowhere is a dead control (Rule 12) */
-        var to = n.link || n.href || '';
-        if (to) b.addEventListener('click', function () {
-          /* ── ONE CLICK, ONE READ ─────────────────────────────────────────
-             MEASURED 2026-09-21: a row opened its conversation and `unread`
-             stayed 289 — the App never told the domain anything was read
-             (its only writer, /api/me/notifications/read, had no caller in
-             the App). The door is a watermark: read up to a `seq`, which is
-             this row and everything older — the same thing every inbox means
-             by "read down to here". The row drops its mark at once and the
-             bell re-reads its count; the domain stays the authority. */
-          if (unread && typeof n.seq === 'number') {
-            b.removeAttribute('data-unread');
-            Array.prototype.forEach.call(list.querySelectorAll('[data-unread]'), function (o) {
-              var os = parseInt(o.getAttribute('data-seq') || '0', 10);
-              if (os && os <= n.seq) o.removeAttribute('data-unread');
-            });
-            data.post('/api/me/notifications/read?seq=' + encodeURIComponent(n.seq), {})
-              .then(function () {
-                data.invalidate('/api/me/notifications');
-                doc.dispatchEvent(new CustomEvent('ow:notifications-changed'));
-              }).catch(function () {});
-          }
-          try { global.location.hash = to.replace(/^#/, '#'); } catch (e) {}
-        }); else b.disabled = true;
-        if (typeof n.seq === 'number') b.setAttribute('data-seq', String(n.seq));
-        list.appendChild(b);
+      var folded = foldOthers(rows);
+      var list = mk('div', 'ow-notes ow-notes--std');
+      var sec = '';
+      folded.forEach(function (n) {
+        var s = sectionOf(n);
+        if (s !== sec) { sec = s; list.appendChild(mk('h3', 'ow-notes__h', esc(s))); }
+        list.appendChild(noteRow(n, list));
       });
       host.appendChild(list);
-      /* one light read per person, however many rows they have */
-      var faces = {};
-      Array.prototype.forEach.call(list.querySelectorAll('[data-actor]'), function (row) {
-        var em = row.getAttribute('data-actor');
-        (faces[em] = faces[em] || []).push(row);
-      });
-      Object.keys(faces).forEach(function (em) {
-        data.get('/api/oneway/people/' + encodeURIComponent(em)).then(function (r) {
-          var d = (r && r.ok && r.data) || null;
-          var pc = d && d.picture && (d.picture.url || d.picture);
-          if (!pc || typeof pc !== 'string') return;
-          var src = OW.imageUrl ? OW.imageUrl(pc) : pc;
-          faces[em].forEach(function (row) {
-            var f = row.querySelector('.ow-note__face');
-            if (!f) return;
-            f.innerHTML = '';
-            var im = doc.createElement('img'); im.src = src; im.alt = ''; im.decoding = 'async';
-            f.appendChild(im);
-          });
-        }).catch(function () {});
-      });
       return rows.length;
     });
   };
@@ -2473,7 +2494,7 @@
             value: (doc.documentElement.getAttribute('data-theme') === 'light' ? 'Light' : 'Dark'),
             keys: 'dark light mode theme galaxy background plain colour color logos icons black white mono simple '
               + 'appearance look hue banner popits widgets avatar shape name font wordmark hearts thumbs likes dislikes customize style',
-            move: ['Theme', 'Light mode', 'Dark mode'],
+            move: ['Theme'],                  /* the look menu (founder/863): the theme and each theme's cards and background, one row */
             extra: function (body) { marksRow(body); likesRow(body); lookRows(body); } }
         ]],
         ['Account', [
@@ -4021,20 +4042,33 @@
       /* COLOUR LOGOS — one switch for links and posts (founder/496) */
       function marksRow(body) {
         var sec = mk('div', 'ow-cust__row');
-        sec.appendChild(mk('span', 'ow-cust__lbl', 'Platform logos'));
-        var row = mk('button', 'ow-switch'); row.type = 'button';
-        var on = !(OW.marks && OW.marks.get() === 'mono');
-        row.setAttribute('aria-pressed', String(on));
-        row.innerHTML = '<span class="ow-switch__b"><b>Colour logos</b>'
-          + '<span>On your links and posts. Off shows them in black and white.</span></span>'
-          + '<span class="ow-switch__k" aria-hidden="true"></span>';
-        row.addEventListener('click', function () {
-          var next = row.getAttribute('aria-pressed') !== 'true';
-          row.setAttribute('aria-pressed', String(next));
-          if (OW.marks) OW.marks.set(next ? 'color' : 'mono');
-        });
-        sec.appendChild(row);
-        body.appendChild(sec);
+        /* drawn as the theme menu draws (S32): each tile shows the same platforms' marks as they will look on links and posts */
+        var marksPic = function (mono) {
+          return ['instagram', 'tiktok', 'youtube'].map(function (k) {
+            var ic = OW.links && OW.links.icon ? OW.links.icon(k) : '';
+            var hue = !mono && OW.links && OW.links.hueOf ? OW.links.hueOf(k) : '';
+            return '<span style="display:grid;color:' + (hue || 'currentColor') + '">' + ic + '</span>';
+          }).join('');
+        };
+        if (OW.lookMenu && OW.lookMenu.choice && OW.marks) {
+          OW.lookMenu.choice(sec, { title: 'Platform logos', get: function () { return OW.marks.get(); }, set: function (v) { OW.marks.set(v); },
+            options: [{ value: 'color', label: 'Colour', note: 'Each in its own colour', picture: marksPic(false) },
+                      { value: 'mono', label: 'Black and white', note: 'All in your ink', picture: marksPic(true) }] });
+          body.appendChild(sec);
+        } else {
+          sec.appendChild(mk('span', 'ow-cust__lbl', 'Platform logos'));
+          var row = mk('button', 'ow-switch'); row.type = 'button';
+          var on = !(OW.marks && OW.marks.get() === 'mono');
+          row.setAttribute('aria-pressed', String(on));
+          row.innerHTML = '<span class="ow-switch__b"><b>Colour logos</b></span><span class="ow-switch__k" aria-hidden="true"></span>';
+          row.addEventListener('click', function () {
+            var next = row.getAttribute('aria-pressed') !== 'true';
+            row.setAttribute('aria-pressed', String(next));
+            if (OW.marks) OW.marks.set(next ? 'color' : 'mono');
+          });
+          sec.appendChild(row);
+          body.appendChild(sec);
+        }
       }
 
       /* ── LIKES AND DISLIKES (the founder, 2026-10-09: "give users the option in settings and appeance to choose
@@ -4042,18 +4076,25 @@
          row, each option drawn with the marks it gives; pressing one redraws every like on screen (OW.likes). */
       function likesRow(body) {
         if (!OW.likes) return;
-        var sec = mk('div', 'ow-cust__row');
+        /* drawn as the theme menu draws (S32; founder/863 of that menu: "want to see more like it"): each tile is the pair of
+           marks it gives, lit as on a Post, with no sentence about it */
+        var sec = mk('div', 'ow-cust__row'); body.appendChild(sec);
+        var lit = function (g, hue) { return '<span class="ow-ap__gl" style="color:' + hue + '">' + OW.glyph(g) + '</span><b>12</b><span class="ow-ap__gl">' + OW.glyph('thumbdown') + '</span><b>1</b>'; };
+        if (OW.lookMenu && OW.lookMenu.choice) {
+          OW.lookMenu.choice(sec, { title: 'Likes', get: function () { return OW.likes.get(); }, set: function (v) { OW.likes.set(v); },
+            options: [{ value: 'instagram', label: 'Hearts', note: 'A heart to like', picture: lit('heart', '#ff3b5c') },
+                      { value: 'facebook', label: 'Thumbs', note: 'A thumb up to like', picture: lit('thumbup', '#2d88ff') }] });
+          return;
+        }
         sec.appendChild(mk('span', 'ow-cust__lbl', 'Likes and dislikes'));
         var row = mk('div', 'ow-choice ow-likepick');
         row.setAttribute('role', 'group'); row.setAttribute('aria-label', 'Likes and dislikes');
         /* the keys stay what the App stored ('instagram', 'facebook'); no other app's name is said to a person */
-        [['instagram', 'Hearts', 'A heart to like, a thumb down to dislike', 'heart'],
-         ['facebook', 'Thumbs', 'A thumb up to like, down to dislike', 'thumbup']].forEach(function (o) {
+        [['instagram', 'Hearts', 'heart'], ['facebook', 'Thumbs', 'thumbup']].forEach(function (o) {
           var b = mk('button', 'po-act'); b.type = 'button';
           var on = OW.likes.get() === o[0];
           b.setAttribute('aria-pressed', String(on)); b.setAttribute('data-act', on ? 'on' : 'off');
-          b.innerHTML = '<span class="ow-likepick__g">' + OW.glyph(o[3]) + OW.glyph('thumbdown') + '</span>'
-            + '<b>' + esc(o[1]) + '</b><em>' + esc(o[2]) + '</em>';
+          b.innerHTML = '<span class="ow-likepick__g">' + OW.glyph(o[2]) + OW.glyph('thumbdown') + '</span><b>' + esc(o[1]) + '</b>';
           b.addEventListener('click', function () {
             OW.likes.set(o[0]);
             Array.prototype.forEach.call(row.children, function (x) {
@@ -4063,7 +4104,6 @@
           row.appendChild(b);
         });
         sec.appendChild(row);
-        body.appendChild(sec);
       }
 
       /* THE PERSON'S OWN LOOK: name font, colour, banner and picture.

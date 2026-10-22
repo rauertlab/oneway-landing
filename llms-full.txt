@@ -1,6 +1,6 @@
 # Oneway, every page in words
 
-> The words of every page on oneway.center, read on 2026-10-20 from the pages themselves (tools/site_seo.py).
+> The words of every page on oneway.center, read on 2026-10-21 from the pages themselves (tools/site_seo.py).
 
 Oneway is a social network and a business platform in one: the Oneway App gives every person one profile, a For You feed, messages and a map of the people and places near them, and Oneway OS runs the businesses, communities and places behind them. It is in a closed beta, by invitation, in New York City and Long Island. Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
 
@@ -10,7 +10,7 @@ Oneway Technologies LLC, Oneway's phone: +1 (516) 261-2413.
 
 ## Oneway
 
-Source: https://oneway.center/ (last changed 2026-10-20)
+Source: https://oneway.center/ (last changed 2026-10-21)
 
 Our Mission
 App
@@ -52,6 +52,34 @@ A Center can represent a neighborhood, an organization, a business, or an entire
 What a Center is
 
 These profiles and Centers are examples, until the beta's own arrive.
+
+App
+
+Introducing
+Your fully customizable social network.
+
+See what your friends and the places you love are posting, and what is coming up at each of them.
+
+For You
+Your feed, who you follow, and feeds you make.
+
+Messages
+Chats and groups, with friends and places.
+
+Discovery
+The people and places around you.
+
+Open the App The Oneway App
+
+Invitation Only NYC Beta
+
+Our first launch is New York City.
+
+Closed Selective Server Beta
+
+Sign up
+
+Coming soon
 
 Compatibility & Integration
 
@@ -193,33 +221,7 @@ DeepSeek
 
 OpenRouter
 
-Connections are built platform by platform. Availability depends on each service's supported capabilities and permissions.
-
-App
-
-Introducing
-Your fully customizable social network.
-
-See what your friends and the places you love are posting, and what is coming up at each of them.
-
-For You
-A feed ranked to what you like, a Following feed of only who you follow, and custom feeds you make from people, places and words, pinned as tabs on Home.
-
-Messages
-Messaging of its own: chats one to one and in groups that set their own rules, with friends and with places.
-
-Discovery
-A map of the people, places and Centers around you. A Center can start as an information page, checked by a person, and be followed before its owner claims it.
-
-Open the App The Oneway App
-
-Invitation Only NYC Beta
-
-Our first launch is New York City.
-
-Closed Selective Server Beta
-
-Coming soon
+Connections arrive platform by platform.
 
 OS
 
@@ -229,7 +231,7 @@ OS Brain
 
 iMac and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries and regions. Oneway is not affiliated with Apple.
 
-A Center is a canvas: place its posts, events, links and website where you want them, and everyone who opens it sees it your way. Oneway OS is the AI business management side of the same social network, so the place people follow and the place you run are one.
+A canvas for your posts, events, links and website, arranged your way.
 
 See how deep it goes.
 
@@ -242,30 +244,17 @@ Write it from your words,
 Business OS). PROPOSED words, for his eye. -->
 
 Build your Center
-Make its page, its look and its own website, arranged as a canvas of Popits, from layouts made for your kind of place.
+Its page, its look and its own website.
 
 Run it from one place
-Bookings and events, a shop, customers, staff and roles, and every message in one inbox.
+Bookings, a shop, customers, staff and one inbox.
 
 Grow it as you go
-Add Systems when you need them, connect the platforms you already use, and on Business OS see how all of it connects through the Brain.
+Add Systems and see it all in the Brain.
 
 From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.
 
 Open Oneway OS Oneway OS
-
-Reserve your name.
-
-Individual @you
-Organization .yourplace
-
-@
-
-Reserve your @name
-
-@you Reserved
-Held for · —
-Reserve another name
 
 Plans and pricing.
 
@@ -390,7 +379,7 @@ Contact
 
 Get Oneway OS today.
 
-Tell us what you run or what you want to build, and we set it up with you. We reply almost instantly to any business inquiry and adapt Oneway to any use case. Build this model of the internet with us.
+We reply almost instantly and adapt to any use case. Build this model of the internet with us.
 
 Buy Business OS today Talk to us about Enterprise OS Start on Developer OS
 
@@ -423,6 +412,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -444,7 +435,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Oneway App
 
-Source: https://oneway.center/app (last changed 2026-10-20)
+Source: https://oneway.center/app (last changed 2026-10-21)
 
 Our Mission
 App
@@ -453,7 +444,7 @@ Security
 Contact
 
 Sign in
-Claim your @name
+Sign up
 
 App
 
@@ -461,14 +452,14 @@ Go anywhere. Connect everywhere.
 
 Follow your friends, discover places you love, and bring your favorite parts of the internet together.
 
-Claim your @name Open the App
+Sign up Open the App
 
 Discovery
 Discover people, places, and communities. Your way.
 
-Explore Oneway through an interactive map or a personalized grid of posts. Find local businesses, events, and communities, follow the places you love, and see what is happening around you.
-Connect with other Oneway users passing the same local Centers, quietly, with Waypass. You control whether you take part.
-Create Info Centers to populate our ecosystem and win monthly rewards and ranking in your area.
+A map or a grid of posts. Follow the places you love and see what is happening around you.
+Waypass: meet people who pass the same places, only if you take part.
+Add Info Centers and win monthly rewards in your area.
 The Oneway App is a social app with a For You feed, a Following feed and custom feeds, stories, messages with group chats, and a map of the people and places near you, made by Oneway Technologies LLC in New York.
 
 Monthly rewards and eligibility rules are planned.
@@ -476,16 +467,16 @@ Monthly rewards and eligibility rules are planned.
 Home
 For You, and you get to choose.
 
-Oneway is a customizable social media app for photos, videos, and posts. Explore a ranked For You feed, follow people and places, switch to Following, or create custom feeds that shape what you see.
-Import posts from supported connected platforms and arrange Popits on your in-app Home. iOS Home Screen widgets are planned, not available yet.
+Photos, videos and posts. For You, Following, and feeds you make.
+Bring in your posts from other platforms and arrange your Home with Popits.
 
 Messages
 
 Messages, Your Way.
 
-Most messaging apps decide how your conversations work. Oneway lets you and your groups choose the rules.
+You and your groups choose the rules.
 
-Choose privacy, membership, posting, and notifications. An admin can manage the chat, or members can vote by majority, two thirds, or unanimous agreement.
+Privacy, members, posting and alerts: set by an admin or by a vote.
 
 Explore messaging controls
 Keep messages or set them to disappear
@@ -519,36 +510,25 @@ Screenshot notices apply to detected shortcuts. The web App cannot detect phone 
 Lightbulb
 Capture it. Import it. Make it yours.
 
-Capture photos, videos, and posts, bring in content from supported platforms, save it to your Workspace, and share it with friends and communities.
+Save it to your Workspace and share it with friends.
 
 My profile and workspace
 
 Your profile. Your work. Your choice.
 
-Your Oneway profile brings your identity, connections, and experiences together in one customizable space. Choose how it looks and what people can see.
+Choose how it looks and what people can see.
 
-Workplace identity is optional. It keeps professional connections and activity separate from your personal life while you continue to use one Oneway account.
+Keep work apart from your personal life, on one account.
 
-Claim your name.
-
-Personal @name
-Organization .name
-
-@
-
-Claim my @name
-
-@you Reserved
-Your name is reserved. It is held for your email while Oneway opens in stages. · —
-Open the App
+Sign up
 
 Oneway remembers the people and places you care about, and that memory is private by default.
 
 Your name. Your place on Oneway.
 
-Claim your @name, personalize your profile, and get ready to connect with the people, places, and communities that matter to you.
+Connect with the people, places, and communities that matter to you.
 
-Claim your @name Oneway OS for organizations
+Sign up Oneway OS for organizations
 
 Our Mission
 App
@@ -557,6 +537,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -574,13 +556,13 @@ Corporate Charter
 2027, Oneway Technologies LLC
 Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
 
-Claim your @name
+Sign up
 
 ---
 
 ## Our Mission
 
-Source: https://oneway.center/mission (last changed 2026-10-20)
+Source: https://oneway.center/mission (last changed 2026-10-21)
 
 Our Mission App OS Security Contact
 
@@ -614,6 +596,8 @@ Built around experiences people want to return to.
 Oneway began with an interest in entertainment, hospitality, and the places that bring people together. Originally envisioned as a modern arcade and social destination, the concept gradually expanded beyond locations into a larger ambition to connect physical experiences with the digital world.
 
 That vision became Oneway Technologies, a company developing a connected ecosystem for people, communities, and businesses.
+
+Changelog
 
 One ecosystem. Your way.
 
@@ -796,6 +780,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -817,7 +803,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Get Oneway OS today
 
-Source: https://oneway.center/contact (last changed 2026-10-20)
+Source: https://oneway.center/contact (last changed 2026-10-21)
 
 Our Mission
 App
@@ -907,6 +893,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -928,7 +916,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Privacy Policy
 
-Source: https://oneway.center/privacy (last changed 2026-10-20)
+Source: https://oneway.center/privacy (last changed 2026-10-21)
 
 Our Mission
 App
@@ -1136,7 +1124,7 @@ Resend Your email address and the message, to send account email
 
 Stripe, Twilio Only if a business turns on payments or texting
 
-OpenStreetMap Nominatim The words you search for and the map area, not who you are
+OpenStreetMap Nominatim The words you search for and the map area, not who you are. For a Center's dispatch map, the street address of a booked job, once per address, from our server: no name, phone or job. A Center can turn this off (Keep addresses on Oneway).
 
 GitHub Hosts oneway.center and may log visits. Where the App itself is hosted will be named here before it opens to the public.
 
@@ -1265,6 +1253,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -1286,7 +1276,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Terms of Service
 
-Source: https://oneway.center/terms (last changed 2026-10-20)
+Source: https://oneway.center/terms (last changed 2026-10-21)
 
 Our Mission
 App
@@ -1518,6 +1508,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -1539,7 +1531,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Data Deletion
 
-Source: https://oneway.center/data-deletion (last changed 2026-10-20)
+Source: https://oneway.center/data-deletion (last changed 2026-10-21)
 
 Our Mission
 App
@@ -1694,6 +1686,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -1715,7 +1709,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## What Oneway's words mean
 
-Source: https://oneway.center/learn (last changed 2026-10-20)
+Source: https://oneway.center/learn (last changed 2026-10-21)
 
 Our Mission App OS Security Contact
 
@@ -1821,6 +1815,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -1842,7 +1838,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Community Guidelines
 
-Source: https://oneway.center/community-guidelines (last changed 2026-10-20)
+Source: https://oneway.center/community-guidelines (last changed 2026-10-21)
 
 Our Mission App OS Security Contact
 
@@ -1938,6 +1934,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -1959,7 +1957,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Safety
 
-Source: https://oneway.center/safety (last changed 2026-10-20)
+Source: https://oneway.center/safety (last changed 2026-10-21)
 
 Our Mission App OS Security Contact
 
@@ -2106,6 +2104,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -2127,7 +2127,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Support
 
-Source: https://oneway.center/support (last changed 2026-10-20)
+Source: https://oneway.center/support (last changed 2026-10-21)
 
 Our Mission App OS Security Contact
 
@@ -2210,6 +2210,126 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Oneway Arcade
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
+
+---
+
+## Discovery
+
+Source: https://oneway.center/discovery (last changed 2026-09-18)
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Discovery
+
+The places and people around you.
+
+A map and a feed of what is near, in the Oneway App.
+
+Sign up The Oneway App
+
+What it does
+
+Find it, open it, add it.
+
+Map and Explore
+One search, two views: the map, or a feed of places, communities, events and people around you.
+
+Place cards
+Tap a pin for its card. Open it to go into the place.
+
+Add a place
+From either view, or hold a spot on the map to add what is there.
+
+Improve this place
+Already on the map? Add a line, a photo or its website instead of a second one.
+
+Waypass
+Who you passed and where, between people who both turn it on.
+
+Saved
+Save places into lists, private until you share them.
+
+Contribute
+What you added and improved, and what is missing near you.
+
+Controls on the map
+You, People, Layers, Near me, Waypass and Help, each one tap away.
+
+Invitation Only NYC Beta
+
+Start with what is around you.
+
+Sign up
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+Discovery
+Changelog
+
+Support
+Safety
+Community Guidelines
+Accessibility
+Glossary
+
+Oneway Arcade
+
+Privacy
+Terms
+Data Deletion
+Corporate Charter
+
+2027, Oneway Technologies LLC
+Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New York.
+
+---
+
+## Changelog
+
+Source: https://oneway.center/changelog (last changed 2026-10-21)
+
+Our Mission App OS Security Contact
+
+Sign in
+
+Changelog
+
+What's new on Oneway.
+
+Our Mission
+App
+OS
+Business OS
+Developer OS
+Security
+Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -2231,7 +2351,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Accessibility
 
-Source: https://oneway.center/accessibility (last changed 2026-10-20)
+Source: https://oneway.center/accessibility (last changed 2026-10-21)
 
 Our Mission App OS Security Contact
 
@@ -2308,6 +2428,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety
@@ -2329,7 +2451,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Security
 
-Source: https://oneway.center/security (last changed 2026-10-20)
+Source: https://oneway.center/security (last changed 2026-10-21)
 
 Our Mission
 App
@@ -2456,6 +2578,8 @@ Business OS
 Developer OS
 Security
 Contact
+Discovery
+Changelog
 
 Support
 Safety

@@ -105,6 +105,9 @@ html.ow-old .owbar-pages a:focus{outline:2px solid rgba(255,255,255,.7);outline-
   pointer-events:none;transition:box-shadow .2s}
 .owbar-you:hover .owbar-face::after{box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)}
 .owbar-face img{width:100%;height:100%;object-fit:cover;display:block}
+/* no picture: the person's initials on the hue (founder/816, 883), as every face on the platform */
+.owbar-face--ini{background:radial-gradient(58% 46% at 32% 22%,rgba(255,255,255,.4),transparent 70%),hsl(var(--ow-user-hue,265) 72% 54%)}   /* their own hue, solid */
+.owbar-face--ini i{font:700 13px/1 'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-style:normal;color:#fff;letter-spacing:.01em}
 .owbar-face .ow-facemark{width:62%;height:62%;display:block;margin:auto;opacity:.86}
 /* asking who is signed in: the slot keeps still (2.5 s at most) rather than show a Sign in that turns into a face.
    for his eye: still and empty while it asks, never a placeholder face */

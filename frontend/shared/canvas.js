@@ -197,6 +197,8 @@
     return true;
   }
 
+  function signedInHere() { try { return !!(OW.data && OW.data.me && OW.data.me()); } catch (e) { return false; } }
+
   function cardsInto(root, a, family) {
     if (appRowsInto(root, a, family)) return true;
     if (!a || !a.card_data || !a.card_data.length || !OW.cards || !OW.cards.node) return false;
@@ -230,6 +232,19 @@
     list.forEach(function (card) {
       box.appendChild(OW.cards.node(card, mode ? { mode: mode } : { as: 'chip' }));
     });
+    /* HERE NOW ON THE SLIM CARDS (founder/863: "show users online status in messaging and cards slim ones"): the widget's
+       cards are the same for every reader, so who is online is asked as this person, once for the Popit's people, through
+       the App's card read (it answers `presence` only where they may see it); an online face is drawn again with its dot */
+    var people = mode && mode !== 'standard' && OW.cards.read && signedInHere() ? list.filter(function (c) {
+      return c && c.kind === 'person' && /^@/.test(c.ref || ''); }) : [];
+    if (people.length) {
+      OW.cards.read(people.map(function (c) { return 'person:' + c.ref; })).then(function (got) {
+        list.forEach(function (c, i) {
+          var fresh = c && got && got['person:' + c.ref], old = box.children[i];
+          if (fresh && fresh.presence === 'online' && old && old.parentNode === box) box.replaceChild(OW.cards.node(fresh, { mode: mode }), old);
+        });
+      }).catch(function () {});
+    }
     root.setAttribute('data-mode', 'card');
     root.appendChild(box);
     var status = one ? (a.lines || [])[1] : '';
@@ -1188,9 +1203,11 @@
       h.appendChild(self.tile(it));
     });
     /* AS TALL AS WHAT IS ON IT (walk-center-page, 2026-10-18: three Popits ending at 954px, and Add and Arrange at
-       1,896px: six device rows were kept whatever the canvas held, about 940px of nothing at 1366 and 500px at 390). An
-       empty canvas keeps its six rows for the invitation; one being arranged keeps one row more to drop into. */
-    h.style.setProperty('--cv-rows', shown.length ? Math.ceil(maxY) + (this.editing ? 1 : 0) : 6);
+       1,896px: six device rows were kept whatever the canvas held, about 940px of nothing at 1366 and 500px at 390). One
+       being arranged keeps one row more to drop into, and an empty one being arranged six. An empty one that is not is as
+       tall as its invitation, a row of actions (founder/866 §3, §14: a new person's Home held 1,128px of nothing at 390
+       under one "Add a Popit", and the places around them and the feed began at 1,278px on a 664px screen). */
+    h.style.setProperty('--cv-rows', shown.length ? Math.ceil(maxY) + (this.editing ? 1 : 0) : (this.editing ? 6 : 0));
     if (keepId) {
       /* after paint — the tile must be in the document before it can be
          measured, and the box measures the tile */
@@ -1228,10 +1245,21 @@
          tools/canvas_render_check.cjs (api/test_canvas.py). */
       if (this.mayArrange && this.arranged === false && /^profile:/.test(this.surface || '') && OW.states && OW.states.nothing) {
         var mineHere = self.isMyProfile();
+        /* ★ FOUNDER/866 §6, §14: "Replace oversized empty-state presentations with useful creation actions" · "Allow users to
+           populate Main without first publishing a traditional post" · "Avoid excessive decorative graphics. Avoid long
+           explanatory paragraphs." Your own empty Main is the things you can put there, as a row: Add a Popit leads,
+           Make a post, and your Home's layout when you have one; no globe, no paragraph, nothing under the dock. */
+        if (mineHere) {
+          var begin = [{ label: 'Add a Popit', icon: 'popit', fn: function () { self.pick(); } }];
+          if (typeof global.go === 'function') begin.push({ label: 'Make a post', icon: 'post', fn: function () { global.go('lightbulb'); } });
+          begin.push({ label: 'Use my Home layout', icon: 'layout', fn: function () { self.offerRepublish(); } });
+          this.host.innerHTML = '';
+          this.grid = null;
+          this.paintNote();
+          beginRow(this.host, 'Your Main', begin);
+          return;
+        }
         var acts = [{ label: 'Add a Popit', fn: function () { self.pick(); } }];
-        if (mineHere) acts.push({ label: 'Show my Home layout here', fn: function () { self.offerRepublish(); } });
-        /* the profile half under it stands aside when it is empty too (me.js emptyMarked): its one door comes here */
-        if (mineHere && typeof global.go === 'function') acts.unshift({ label: 'Make a post', fn: function () { global.go('lightbulb'); } });
         this.host.innerHTML = '';
         this.grid = null;
         this.paintNote();
@@ -1244,6 +1272,19 @@
          canvas"). Never arranged, it offers the catalog's own Center Popits (the rows whose subjects name a Center, the same
          rule the picker keeps), each one press to place, with the whole picker one press away. A placed Popit is the
          canonical projection the App shows; placing one publishes nothing else, and an emptied Main stays empty (above). */
+      if (this.mayArrange && this.arranged === false && /^center:/.test(this.surface || '') && this.shell !== 'os') {
+        /* THE APP'S EMPTY CENTER MAIN IS WHAT ITS OWNER CAN PUT THERE (founder/866 §6, §14: "Replace oversized empty-state
+           presentations with useful creation actions" · "Allow users to populate Main without first publishing a traditional
+           post"): the row Home and one's own profile draw, Add a Popit leading, Make a post beside it. The OS's Main editor
+           keeps its start below. */
+        this.host.innerHTML = '';
+        this.grid = null;
+        this.paintNote();
+        var cbegin = [{ label: 'Add a Popit', icon: 'popit', fn: function () { self.pick(); } }];
+        if (typeof global.go === 'function') cbegin.push({ label: 'Make a post', icon: 'post', fn: function () { global.go('lightbulb'); } });
+        beginRow(this.host, '', cbegin);
+        return;
+      }
       if (this.mayArrange && this.arranged === false && /^center:/.test(this.surface || '')) {
         this.host.innerHTML = '';
         this.grid = null;
@@ -1284,12 +1325,8 @@
            is worse than shipping nothing: it tells a person the product has a
            feature and then refuses to open it. The first version of this said
            "Add a Popit or a sticker" and there was no way to. */
-        var empty = doc.createElement('button');
-        empty.type = 'button';
-        empty.className = 'ow-cv-empty ow-cv-empty--act';
-        empty.textContent = 'Nothing here yet — add a Popit';
-        empty.addEventListener('click', function () { self.pick(); });
-        h.appendChild(empty);
+        /* what you can do, never what is missing (founder/866 §14): one action, drawn as the profile's begin row draws it */
+        beginRow(h, '', [{ label: 'Add a Popit', icon: 'popit', fn: function () { self.pick(); } }]);
 
         /* ── PUBLISHING YOUR ARRANGEMENT IS A TAP, NOT A DEFAULT ───────────
            ★ FOUNDER RULING, 2026-09-04: the public face is `profile:{email}`.
@@ -1494,6 +1531,32 @@
      something; it does not establish that the person OWNS it. Placement must
      never be the only record of Popit ownership, and this picker deliberately
      does not pretend to be one. */
+  /* AN EMPTY CANVAS AS ITS ACTIONS (founder/866 §6, §14): a short heading and a row of tiles, the first the lead */
+  var BEGIN_ICONS = { popit: 'squares-four', post: 'pencil-simple', layout: 'layout' };   /* Phosphor, Bold (founder/886) */
+
+  function beginRow(host, title, acts) {
+    var box = doc.createElement('div');
+    box.className = 'ow-cv-begin';
+    if (title) { var hd = doc.createElement('p'); hd.className = 'ow-cv-begin__h'; hd.textContent = title; box.appendChild(hd); }
+    var row = doc.createElement('div');
+    row.className = 'ow-cv-begin__acts';
+    row.setAttribute('data-n', String(acts.length));
+    acts.forEach(function (a, k) {
+      var b = doc.createElement('button');
+      b.type = 'button';
+      b.className = 'ow-cv-begin__a' + (k === 0 ? ' is-lead' : '');
+      b.innerHTML = OW.glyph(BEGIN_ICONS[a.icon] || BEGIN_ICONS.popit, { sel: false });
+      var lb = doc.createElement('span');
+      lb.textContent = a.label;
+      b.appendChild(lb);
+      b.addEventListener('click', a.fn);
+      row.appendChild(b);
+    });
+    box.appendChild(row);
+    host.appendChild(box);
+    return box;
+  }
+
   Canvas.prototype.pick = function () {
     var self = this;
     var sheet = doc.createElement('div');
@@ -1504,8 +1567,17 @@
        Measured 2026-08-24 in the Center hub. Same stylesheet, same tokens; it
        just has to be told which ground it is standing on. */
     sheet.className = 'ow-cv-pick' + (this.shell === 'os' ? ' ow-cv--os' : '');
-    sheet.innerHTML = '<div class="ow-cv-pick__bar"><span>Add to your canvas</span>' +
-      '<button type="button" class="ow-cv-pick__x">Close</button></div>' +
+    /* ★ FOUNDER/863, 2026-10-21: "add a popit needs a much nicer visual redeisng with final designs make that work across both
+       apple and oneway devices and platforms". THE GALLERY APPLE'S HOME SCREEN HAS: each Popit shown as the widget it will be,
+       drawn from this person's own world by the one widget renderer (OW.popitForms, the anatomy OnewayKit draws natively),
+       in WidgetKit's families; a press opens it large with its sizes, and Add places the size chosen. No paragraphs (S28):
+       a name under each. */
+    sheet.setAttribute('role', 'dialog');
+    sheet.setAttribute('aria-label', 'Add a Popit');
+    sheet.className += ' ow-cv-gal';
+    sheet.innerHTML = '<div class="ow-cv-pick__bar"><span>Add a Popit</span>' +
+      '<button type="button" class="ow-cv-pick__x" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M6 6l12 12M18 6L6 18"/></svg></button></div>' +
       '<div class="ow-cv-pick__list"><div class="ow-cv-pick__wait">Loading</div></div>';
     doc.body.appendChild(sheet);
     var close = function () { if (sheet.parentNode) sheet.parentNode.removeChild(sheet); };
@@ -1583,18 +1655,43 @@
         return;
       }
       list.innerHTML = '';
+      var FOOT = { small: [3, 3], medium: [6, 3], large: [6, 6], extra_large: [12, 6] };
+      var SIZE = { small: 'Small', medium: 'Medium', large: 'Large', extra_large: 'Extra large' };
+      var famOf = function (w, h) {
+        w = w || 3; h = h || 3;
+        return (w <= 3 && h <= 3) ? 'small' : (w >= 12 ? 'extra_large' : (h <= 3 ? 'medium' : 'large'));
+      };
+      /* a Popit as its tile: the canvas tile's own frame and face, drawn by the one widget renderer; its mark and name until
+         its preview arrives, and then this person's own content */
+      var tileOf = function (ref, name, fam, pv) {
+        var t = doc.createElement('div');
+        t.className = 'ow-cv-t ow-cv-gal__tile';
+        t.setAttribute('data-family', fam);
+        var f = doc.createElement('div');
+        f.className = 'ow-cv-face ow-cv-face--w';
+        t.appendChild(f);
+        try {
+          OW.popitForms.draw(f, { ref: ref, name: name, family: fam, state: pv ? pv.state : '', say: '',
+                                  anatomy: pv ? pv.anatomy : null }, { glyph: glyph(ref) });
+        } catch (_) {}
+        return t;
+      };
+      var surf = encodeURIComponent(self.surface || '');
+      var previews = function (ref, family) {
+        var q = [ref ? 'ref=' + encodeURIComponent(ref) : '', family ? 'family=' + family : ''].filter(Boolean).join('&');
+        return req('/api/canvas/' + surf + '/previews' + (q ? '?' + q : '')).then(function (r) {
+          return (r && r.ok && r.data && r.data.previews) || [];
+        }, function () { return []; });
+      };
 
-      /* ── A STICKER IS AN UPLOAD, NOT A CATALOG ROW (§20) ────────────────
-         It sits at the top of the same list because it is the same act from
-         the person's side — "put something on my canvas" — while being a
-         different act underneath: a Popit is CHOSEN from what exists, a sticker
-         is BROUGHT. The upload mints the only kind of ref `normalize()` will
-         accept, so the loop is closed rather than two rules that can drift. */
+      /* ── MAKE: what a person brings or writes ── */
+      var make = doc.createElement('div');
+      make.className = 'ow-cv-gal__make';
       var up = doc.createElement('label');
-      up.className = 'ow-cv-pick__row ow-cv-pick__row--up';
-      up.innerHTML = '<span class="ow-cv-pick__name">Upload a sticker</span>' +
-        '<span class="ow-cv-pick__blurb">An image of your own. Drag it, resize ' +
-        'it, and it reacts when you tap it.</span>';
+      up.className = 'ow-cv-gal__mk';
+      up.setAttribute('data-make', 'sticker');
+      up.innerHTML = '<span class="ow-cv-gal__art" data-art="sticker" aria-hidden="true"><i></i></span>' +
+        '<span class="ow-cv-gal__nm">Sticker</span>';
       var file = doc.createElement('input');
       file.type = 'file';
       file.accept = 'image/*';
@@ -1603,24 +1700,24 @@
       file.addEventListener('change', function () {
         var f0 = file.files && file.files[0];
         if (!f0) return;
-        /* EVERY UPLOAD OPENS ONEWAY'S EDITOR FIRST (founder/831): a sticker crops free, its own shape */
         if (OW.editMedia) {
           OW.editMedia(f0, { frame: 'sticker' }).then(function (out) { if (out && out.blob) send(out.blob); });
         } else send(f0);
       });
       function send(f) {
-        var say = up.querySelector('.ow-cv-pick__blurb');
+        var say = up.querySelector('.ow-cv-gal__nm');
         say.textContent = 'Uploading';
+        up.setAttribute('aria-busy', 'true');
         var fr = new global.FileReader();
         fr.onload = function () {
           req('/api/canvas/sticker',
               { method: 'POST', body: { data: String(fr.result || '') } })
             .then(function (r) {
+              up.removeAttribute('aria-busy');
               if (!r || !r.ok || !r.data || !r.data.placement) {
-                /* SAY WHY, AND CHANGE NOTHING. A refused upload must not leave
-                   a placeholder on somebody's canvas. */
-                say.textContent = (r && r.error) ? String(r.error)
-                  : 'That image could not be added. Nothing has changed.';
+                /* A REFUSAL IS SAID, in the platform's words, and nothing lands on the canvas (S23) */
+                say.textContent = 'Sticker';
+                if (OW.toast) OW.toast((r && r.error) ? String(r.error) : 'That image could not be added. Nothing has changed.');
                 return;
               }
               self.add(r.data.placement);
@@ -1628,22 +1725,21 @@
             });
         };
         fr.onerror = function () {
-          say.textContent = 'That file could not be read.';
+          up.removeAttribute('aria-busy');
+          say.textContent = 'Sticker';
+          if (OW.toast) OW.toast('That file could not be read.');
         };
         fr.readAsDataURL(f);
       }
-      list.appendChild(up);
-
-      /* A TEXT BOX AND A SHAPE (founder/831): made here, not chosen from the catalog; a text box opens for writing at once */
-      [{ kind: 'text', name: 'Text box', blurb: 'Your own words on the canvas: a title, a heading, a line, a quote.',
-         w: 6, h: 1, config: { text: '', style: 'heading', align: 'left', color: 'ink', ground: 'none' } },
-       { kind: 'shape', name: 'Shape', blurb: 'A block of colour to group things on the page: square, rounded, pill or circle.',
-         w: 4, h: 2, config: { form: 'round', fill: 'soft' } }].forEach(function (mk0) {
+      make.appendChild(up);
+      [{ kind: 'text', name: 'Text', w: 6, h: 1, config: { text: '', style: 'heading', align: 'left', color: 'ink', ground: 'none' } },
+       { kind: 'shape', name: 'Shape', w: 4, h: 2, config: { form: 'round', fill: 'soft' } }].forEach(function (mk0) {
         var b0 = doc.createElement('button');
         b0.type = 'button';
-        b0.className = 'ow-cv-pick__row ow-cv-pick__row--make';
+        b0.className = 'ow-cv-gal__mk';
         b0.setAttribute('data-make', mk0.kind);
-        b0.innerHTML = '<span class="ow-cv-pick__name">' + esc(mk0.name) + '</span><span class="ow-cv-pick__blurb">' + esc(mk0.blurb) + '</span>';
+        b0.innerHTML = '<span class="ow-cv-gal__art" data-art="' + mk0.kind + '" aria-hidden="true">' +
+          (mk0.kind === 'text' ? '<b>Aa</b>' : '<i></i><i></i>') + '</span><span class="ow-cv-gal__nm">' + esc(mk0.name) + '</span>';
         b0.addEventListener('click', function () {
           self.add({ place: mk0.kind, ref: mk0.kind, w: mk0.w, h: mk0.h, config: JSON.parse(JSON.stringify(mk0.config)) });
           close();
@@ -1658,8 +1754,109 @@
             try { tile0.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (_) {}
           }, 60);
         });
-        list.appendChild(b0);
+        make.appendChild(b0);
       });
+      list.appendChild(make);
+
+      /* ── THE GALLERY: every Popit this surface takes, as the widget it will be ── */
+      var popits = rows.filter(function (r0) { return r0.place === 'popit'; });
+      var tiles = {};
+      if (popits.length) {
+        group('Popits');
+        var gal = doc.createElement('div');
+        gal.className = 'ow-cv-gal__grid';
+        popits.forEach(function (entry) {
+          var fam = 'small';                    /* the overview shows each one small, as a gallery's first glance does; its sizes are inside */
+          var c0 = doc.createElement('button');
+          c0.type = 'button';
+          c0.className = 'ow-cv-gal__card';
+          c0.setAttribute('data-family', fam);
+          c0.setAttribute('data-ref', entry.id);
+          c0.setAttribute('aria-label', entry.name);
+          var t0 = tileOf(entry.id, entry.name, fam, null);
+          tiles[entry.id] = { tile: t0, entry: entry };
+          c0.appendChild(t0);
+          c0.appendChild(mkName(entry.name));
+          c0.addEventListener('click', function () { detail(entry, famOf(entry.w, entry.h)); });
+          gal.appendChild(c0);
+        });
+        list.appendChild(gal);
+        previews('', 'small').then(function (pvs) {
+          pvs.forEach(function (pv) {
+            var hit = tiles[pv.ref];
+            if (!hit || !hit.tile.isConnected) return;
+            hit.tile.replaceWith(hit.tile = tileOf(pv.ref, hit.entry.name, pv.family, pv));
+          });
+        });
+      }
+      function mkName(nm) {
+        var n0 = doc.createElement('span');
+        n0.className = 'ow-cv-gal__nm';
+        n0.textContent = nm || '';
+        return n0;
+      }
+
+      /* ── ONE POPIT, LARGE, WITH ITS SIZES; Add places the size on screen ── */
+      function detail(entry, fam0) {
+        var old0 = sheet.querySelector('.ow-cv-gal__detail');
+        if (old0) old0.remove();
+        var wide = (global.innerWidth || 0) >= 760;
+        var fams = ['small', 'medium', 'large'].concat(wide ? ['extra_large'] : []);
+        var at = Math.max(0, fams.indexOf(fam0));
+        var view = doc.createElement('div');
+        view.className = 'ow-cv-gal__detail';
+        view.innerHTML = '<div class="ow-cv-gal__dbar"><button type="button" class="ow-cv-gal__back" aria-label="Back">' +
+          '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button><b></b></div>' +
+          '<div class="ow-cv-gal__pager"></div><div class="ow-cv-gal__sizes" role="tablist"></div>' +
+          '<button type="button" class="ow-btn ow-cv-gal__add">Add</button>';
+        view.querySelector('.ow-cv-gal__dbar b').textContent = entry.name || '';
+        var pager = view.querySelector('.ow-cv-gal__pager'), sizes = view.querySelector('.ow-cv-gal__sizes');
+        var slides = fams.map(function (f1, k) {
+          var sl = doc.createElement('div');
+          sl.className = 'ow-cv-gal__slide';
+          sl.setAttribute('data-family', f1);
+          sl.appendChild(tileOf(entry.id, entry.name, f1, null));
+          pager.appendChild(sl);
+          var sb = doc.createElement('button');
+          sb.type = 'button';
+          sb.setAttribute('role', 'tab');
+          sb.textContent = SIZE[f1];
+          sb.addEventListener('click', function () { show(k, true); });
+          sizes.appendChild(sb);
+          return sl;
+        });
+        function show(k, scroll) {
+          at = k;
+          [].forEach.call(sizes.children, function (b2, i2) { b2.setAttribute('aria-selected', String(i2 === k)); });
+          if (scroll) { try { pager.scrollTo({ left: slides[k].offsetLeft - pager.offsetLeft, behavior: 'smooth' }); } catch (_) { pager.scrollLeft = slides[k].offsetLeft; } }
+        }
+        /* a swipe between sizes moves the choice with it */
+        var settle = 0;
+        pager.addEventListener('scroll', function () {
+          clearTimeout(settle);
+          settle = global.setTimeout(function () {
+            var mid = pager.scrollLeft + pager.clientWidth / 2, best = 0, bd = 1e9;
+            slides.forEach(function (sl, k) { var d = Math.abs(sl.offsetLeft - pager.offsetLeft + sl.offsetWidth / 2 - mid); if (d < bd) { bd = d; best = k; } });
+            show(best, false);
+          }, 80);
+        }, { passive: true });
+        view.querySelector('.ow-cv-gal__back').addEventListener('click', function () { view.remove(); });
+        view.querySelector('.ow-cv-gal__add').addEventListener('click', function () {
+          var fp = FOOT[fams[at]] || [entry.w, entry.h];
+          self.add({ place: 'popit', id: entry.id, name: entry.name, blurb: entry.blurb, w: fp[0], h: fp[1] });
+          close();
+        });
+        sheet.appendChild(view);
+        global.requestAnimationFrame(function () { show(at, true); });
+        previews(entry.id).then(function (pvs) {
+          pvs.forEach(function (pv) {
+            var k = fams.indexOf(pv.family);
+            if (k < 0 || !slides[k].isConnected) return;
+            slides[k].innerHTML = '';
+            slides[k].appendChild(tileOf(pv.ref, entry.name, pv.family, pv));
+          });
+        });
+      }
 
       function row(entry) {
         var b = doc.createElement('button');
@@ -1667,19 +1864,6 @@
         b.className = 'ow-cv-pick__row';
         b.innerHTML = '<span class="ow-cv-pick__name">' + esc(entry.name) + '</span>' +
           (entry.blurb ? '<span class="ow-cv-pick__blurb">' + esc(entry.blurb) + '</span>' : '');
-        /* ── AND ITS MARK, SO THE ROW IS RECOGNISABLE BEFORE IT IS READ ────
-           Every Popit carries a glyph on its tile — the same one, drawn here.
-           A gallery of twelve rows that differ only in their words makes a
-           person read twelve sentences to find the thing they already know
-           the shape of; the mark is how you find Places without reading
-           "Places". It is the tile's own glyph rather than a set of icons
-           invented for this screen, so what you pick is marked the way what
-           you get is marked.
-
-           NOT A PREVIEW OF THE CONTENT, deliberately. A real preview would
-           need a live read per kind before a person has chosen anything, and
-           a FAKE one would be the miniature fake feed the founder's ruling is
-           against. The mark is true without asking the server a question. */
         var gp = glyph(entry.kind || entry.id);
         if (gp) { gp.className += ' ow-cv-pick__gl'; b.appendChild(gp); }
         b.addEventListener('click', function () {
@@ -1694,7 +1878,9 @@
         g.textContent = label;
         list.appendChild(g);
       }
-      rows.forEach(row);
+      /* a person's own collections and a Center's apps: theirs, by name */
+      var own = rows.filter(function (r0) { return r0.place !== 'popit'; });
+      if (own.length) { group('Yours'); own.forEach(row); }
 
       /* ── THE OTHER TWO KINDS A CENTER CAN SHOW ───────────────────────────
          ★ FOUNDER, 2026-08-24: *"He clicks Add, chooses an Event, Center,
@@ -1843,104 +2029,17 @@
      acceptance test made structural — strip every word and the forms still say
      which is which.
 
-     Line geometry on purpose. It inherits the Popit's hue, scales to any tile
-     without resampling, and sits in the same instrument language as the dial
-     and the locator rather than importing a second icon style. */
+     Phosphor's Two-tone (founder/886, 2026-10-21: "more detailed and dynamic icons ... universal across here and the
+     center pages"; oneway-popit.js "ONE ICON SET"): the shape in the Popit's hue with a soft fill of the same hue inside
+     it, so a tile reads at a glance and still scales to any size without resampling. */
   var GLYPH = {
-    /* presence — rings around a live core */
-    now:      '<circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/>' +
-              '<circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="10.6" opacity=".45"/>',
-    /* a dated page with the day marked */
-    next:     '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/>' +
-              '<path d="M8 3v4M16 3v4"/><rect x="7.4" y="13" width="4.6" height="4" rx="1.2" fill="currentColor" stroke="none"/>',
-    /* a month grid — many days, not one */
-    calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18"/>' +
-              '<path d="M8 3v4M16 3v4"/><circle cx="8" cy="14" r="1.1" fill="currentColor" stroke="none"/>' +
-              '<circle cx="12" cy="14" r="1.1" fill="currentColor" stroke="none"/>' +
-              '<circle cx="16" cy="18" r="1.1" fill="currentColor" stroke="none"/>' +
-              '<circle cx="8" cy="18" r="1.1" opacity=".4" fill="currentColor" stroke="none"/>',
-    /* a globe */
-    /* ── THE 2026-09-12 TWELVE ─────────────────────────────────────────
-       Same mark as the reader each one came from: Places IS what Visited was,
-       Events IS what Next was, Location IS what World was. A new glyph would
-       claim a new object, and these are renames — `test_popits` requires every
-       registered kind to declare one, which is how the gap was found. */
-    places:   '<path d="M7 10.5c0 3-3 5.5-3 5.5S1 13.5 1 10.5a3 3 0 0 1 6 0z" transform="translate(3 -1)"/>' +
-              '<path d="M14 15.5c0 3-3 5.5-3 5.5s-3-2.5-3-5.5a3 3 0 0 1 6 0z" transform="translate(5 -3)"/>',
-    events:   '<rect x="3.5" y="5" width="17" height="15" rx="3"/>' +
-              '<path d="M8 3v4M16 3v4M3.5 10h17"/>',
-    location: '<path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11z"/>' +
-              '<circle cx="12" cy="10" r="2.6"/>',
-    following:'<circle cx="9" cy="9" r="3.4"/>' +
-              '<path d="M3.2 19.2a6.2 6.2 0 0 1 11.6 0"/><path d="M16.5 7.5l2 2 3.5-3.5"/>',
-    saved:    '<path d="M7 4.5h10a1 1 0 0 1 1 1V20l-6-3.4L6 20V5.5a1 1 0 0 1 1-1z"/>',
-    people:   '<circle cx="8.5" cy="9" r="3.2"/><circle cx="16" cy="10" r="2.6"/>' +
-              '<path d="M2.8 19a5.9 5.9 0 0 1 11.4 0"/><path d="M15 19a4.6 4.6 0 0 1 6.4-2.6"/>',
-    about:    '<circle cx="12" cy="12" r="9"/><path d="M12 11v5.5"/><circle cx="12" cy="7.9" r="1.1"/>',
-    /* a window onto a site — founder/590 */
-    website:  '<rect x="3" y="4.5" width="18" height="15" rx="3"/><path d="M3 9h18"/>' +
-              '<circle cx="6.2" cy="6.8" r=".8" fill="currentColor" stroke="none"/><circle cx="8.7" cy="6.8" r=".8" fill="currentColor" stroke="none"/>',
-    world:    '<circle cx="12" cy="12" r="9"/><path d="M3 12h18"/>' +
-              '<path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18"/>',
-    /* two places and the way between them */
-    visited:  '<path d="M7 10.5c0 3-3 5.5-3 5.5S1 13.5 1 10.5a3 3 0 0 1 6 0z" transform="translate(3 -1)"/>' +
-              '<path d="M20 6.5c0 2.4-2.4 4.4-2.4 4.4S15.2 8.9 15.2 6.5a2.4 2.4 0 0 1 4.8 0z"/>' +
-              '<path d="M8 18.5c3.5 1.6 7 .6 9-2" stroke-dasharray="2 3"/>',
-    /* a flag planted */
-    marks:    '<path d="M6 21V4"/><path d="M6 4.5h11l-2.6 3.6L17 12H6z" fill="currentColor" fill-opacity=".22"/>',
-    /* an open book */
-    guestbook:'<path d="M12 6.5C10.2 5 7.6 4.4 4 4.6v13c3.6-.2 6.2.4 8 1.9 1.8-1.5 4.4-2.1 8-1.9v-13c-3.6-.2-6.2.4-8 1.9z"/>' +
-              '<path d="M12 6.5v12.9"/>',
-    /* chain links */
-    links:    '<path d="M10.5 13.5a4 4 0 0 0 5.7 0l2.3-2.3a4 4 0 0 0-5.7-5.7L11.5 6.8"/>' +
-              '<path d="M13.5 10.5a4 4 0 0 0-5.7 0l-2.3 2.3a4 4 0 0 0 5.7 5.7l1.3-1.3"/>',
-    /* an hourglass */
-    since:    '<path d="M6 3h12M6 21h12"/><path d="M7 3c0 5 5 6 5 9s-5 4-5 9"/>' +
-              '<path d="M17 3c0 5-5 6-5 9s5 4 5 9"/>',
-    /* a tally */
-    count:    '<path d="M5 20V9M10 20V4M15 20v-8M20 20V6"/>',
-    /* ── THE FOUR THE PICKER EXPOSED ──────────────────────────────────
-       ★ MEASURED 2026-09-12 in the Add sheet: ten of fifteen rows carried a
-         mark and five did not, and a gallery where some rows have one and
-         some do not reads as broken rather than as restrained.
-
-       These four are the CLIENT-DRAWN kinds. On a tile each draws a real
-       instrument — a clock face, a date medallion, a post — and the
-       instrument IS the mark, which is why none of them ever needed a glyph
-       and why none was noticed missing. The picker has no instrument to draw,
-       because a preview there would need a live read before the person has
-       chosen anything. So they get the mark they never needed until now.
-
-       DRAWN IN THE EXISTING HAND: 24x24, 1.5 stroke, no fill except where the
-       set already fills a small solid to mark a focal point. `clock` and
-       `countdown` are both round and are deliberately told apart by what is
-       INSIDE — hands that tell you the time, against a ring that is winding
-       down and tells you how much is left. */
-    /* a stack, the newest on top */
-    posts:    '<rect x="6" y="7.5" width="14" height="12" rx="2.6"/>' +
-              '<path d="M4 15.5V6.2A2.2 2.2 0 0 1 6.2 4h9.3" opacity=".5"/>' +
-              '<path d="M9.5 12h7M9.5 15.4h4.4"/>',
-    /* something going on right now — a source and what is coming off it */
-    happening:'<circle cx="8" cy="12" r="2.4" fill="currentColor" stroke="none"/>' +
-              '<path d="M12.6 8.2a5.4 5.4 0 0 1 0 7.6"/>' +
-              '<path d="M16 4.8a10.2 10.2 0 0 1 0 14.4" opacity=".45"/>',
-    /* a ring winding down */
-    countdown:'<circle cx="12" cy="12" r="8.6" opacity=".35"/>' +
-              '<path d="M12 3.4a8.6 8.6 0 0 1 8.6 8.6"/><path d="M12 8.4V12"/>',
-    /* the time, told by hands */
-    clock:    '<circle cx="12" cy="12" r="8.6"/><path d="M12 7.2V12l3.4 2"/>',
-    /* overlapping pigment */
-    colours:  '<circle cx="9.2" cy="10" r="5.2" fill="currentColor" fill-opacity=".22"/>' +
-              '<circle cx="14.8" cy="10" r="5.2" fill="currentColor" fill-opacity=".22"/>' +
-              '<circle cx="12" cy="15" r="5.2" fill="currentColor" fill-opacity=".22"/>',
-    /* a star */
-    favourite:'<path d="M12 3.6l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 17l-5.3 2.8 1.1-5.9L3.5 9.8l5.9-.8z"/>',
-    /* speech, with the quote inside it */
-    said:     '<path d="M21 12a8 8 0 0 1-8 8H7l-4 3 1.2-4.2A8 8 0 1 1 21 12z"/>' +
-              '<path d="M9 10.5h1.6M13.4 10.5H15" stroke-linecap="round"/>',
-    /* a waveform */
-    rhythm:   '<path d="M3 12h2.4l2-5.5 2.6 12L13 8l2 6 1.6-3H21" stroke-linejoin="round"/>'
+    now: 'broadcast', next: 'calendar-check', calendar: 'calendar-dots', places: 'map-trifold', events: 'calendar-star',
+    location: 'map-pin', following: 'user-check', saved: 'bookmark-simple', people: 'users-three', about: 'info',
+    website: 'browser', world: 'globe-hemisphere-west', visited: 'path', marks: 'flag', guestbook: 'book-open-text',
+    links: 'link-simple', since: 'hourglass', count: 'chart-bar', posts: 'cards', happening: 'lightning',
+    countdown: 'timer', clock: 'clock', colours: 'palette', favourite: 'star', said: 'quotes', rhythm: 'waveform'
   };
+
 
   function glyph(ref) {
     var d = GLYPH[ref];
@@ -1948,8 +2047,7 @@
     var g = doc.createElement('span');
     g.className = 'ow-gl ow-gl--' + esc(ref);
     g.setAttribute('aria-hidden', 'true');
-    g.innerHTML = '<svg viewBox="0 0 24 24" class="ow-gl-svg" fill="none" ' +
-      'stroke="currentColor" stroke-width="1.5" stroke-linecap="round">' + d + '</svg>';
+    g.innerHTML = OW.glyph(d, { w: 'd', sel: false }).replace('class="ow-ic', 'class="ow-gl-svg ow-ic');
     return g;
   }
 
@@ -9175,6 +9273,13 @@
   Canvas.prototype.save = function () {
     var self = this;
     clearTimeout(this.saveTimer);
+    /* A CHANGE NOT YET WRITTEN IS PENDING FROM THIS MOMENT, not from when the write is sent (founder/863, "the upload a
+       sticker freezes your whole google"; walked 2026-10-21 at 390 with the CPU slowed 4x). The sticker upload's own
+       `changed` comes back as remote inside the 450 ms below; `keepFresh` re-read every canvas not marked dirty, which put
+       the server's list (without the sticker) back over this one, and this save then wrote that empty list: the sticker was
+       gone and the canvas was recorded as deliberately emptied, so Home stopped drawing it, Add a Popit and all. Marked
+       here, the re-read waits (`_staleRemote`) and happens once this write lands. */
+    this.dirty = true;
     /* AN ANSWER OLDER THAN THE LAST CHANGE IS NOT APPLIED. A save in flight that answers after the person changed more (a
        drag, a word typed, a style picked) replaced every item with what it had sent, undoing the newer change locally and
        then in the save that followed (measured 2026-10-17: a text box dragged right after adding a shape went back to 0).
@@ -9580,6 +9685,7 @@
 
   OW.canvas = {
     place: place,
+    beginRow: beginRow,   /* an empty area as its actions: (host, title, [{label, icon, fn}]) (founder/866 §14) */
     mount: function (host, surface, opts) {
       opts = opts || {};
       /* THE HONEST FAULT. Without the contract this cannot rank or word an
@@ -11694,6 +11800,18 @@
     '.ow-cv-t--sticker:hover .ow-cv-turn,',
     '.ow-cv-turn:focus-visible{opacity:1}',
     '@media (pointer:coarse){.ow-cv-turn{opacity:1}}',
+    '.ow-cv-begin{display:flex;flex-direction:column;gap:10px;margin:6px 0 14px}',
+    '.ow-cv-begin__h{margin:0;font-size:15px;font-weight:700;color:var(--ow-ink,#f3f2f8)}',
+    '.ow-cv-begin__acts{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:10px}',
+    '.ow-cv-begin__acts[data-n="1"]{grid-template-columns:minmax(0,220px)}',
+    '.ow-cv-begin__acts[data-n="2"]{--n:2}',
+    '.ow-cv-begin__a{display:flex;flex-direction:column;align-items:flex-start;justify-content:space-between;gap:14px;min-height:92px;',
+    '  padding:14px;border-radius:18px 15px 19px 16px;border:1px solid var(--ow-seam,rgba(255,255,255,.1));background:none;',
+    '  font:inherit;font-size:14px;font-weight:650;color:var(--ow-ink,#f3f2f8);text-align:left;cursor:pointer}',
+    '.ow-cv-begin__a.is-lead{border-color:transparent;color:#fff;',
+    '  background:linear-gradient(135deg,rgb(var(--ow-h1)),rgb(var(--ow-h2)))}',
+    '.ow-cv-begin__a svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}',
+    '.ow-cv-begin__a:active{transform:scale(.97)}',
     '.ow-cv-empty,.ow-cv-fault{color:var(--ow-ink-3,#6f6b85);font-size:14px;',
     '  padding:26px 0}',
     '.ow-cv-empty--act{display:block;width:100%;text-align:left;background:none;',
@@ -11849,6 +11967,67 @@
     '.ow-cv-pick__grp:first-child{border-top:0;margin-top:0;padding-top:4px}',
     '.ow-cv-pick__wait{color:var(--ow-ink-3,#6f6b85);font-size:14px;padding:24px 0;',
     '  text-align:center;line-height:1.5}',
+    /* ── ADD A POPIT, AS A GALLERY (founder/863): the Make row, then each Popit as its widget on a grid the families span the
+       way they do on a Home Screen, then one Popit large with its sizes. Tokens only, so the OS's light ground remaps it. ── */
+    '.ow-cv-gal .ow-cv-pick__bar{border-bottom:0;padding:16px 18px 6px;font-size:18px;font-weight:700;letter-spacing:-.01em;',
+    '  width:100%;max-width:1000px;margin:0 auto;box-sizing:border-box}',
+    '.ow-cv-gal .ow-cv-pick__x{width:36px;height:36px;padding:0;display:grid;place-items:center;border:0;border-radius:50%;',
+    '  background:var(--ow-panel-2,rgba(255,255,255,.08))}',
+    '.ow-cv-gal .ow-cv-pick__x svg,.ow-cv-gal__back svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;',
+    '  stroke-linecap:round;stroke-linejoin:round}',
+    '.ow-cv-gal .ow-cv-pick__list{max-width:1000px;gap:0;padding:6px 18px 56px}',
+    '.ow-cv-gal .ow-cv-pick__grp{border-top:0;margin-top:14px;padding:12px 0 10px;text-transform:none;letter-spacing:0;',
+    '  font-size:15px;font-weight:700;color:var(--ow-ink,#f3f2f8)}',
+    '.ow-cv-gal__make{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:6px 0 4px}',
+    '.ow-cv-gal__mk,.ow-cv-gal__card{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;border:0;',
+    '  padding:0;font:inherit;color:inherit;cursor:pointer;min-width:0;-webkit-tap-highlight-color:transparent}',
+    '.ow-cv-gal__art{position:relative;width:100%;aspect-ratio:1.5;border-radius:20px 17px 21px 18px;overflow:hidden;',
+    '  display:grid;place-items:center;transition:transform .18s ease;',
+    '  background:radial-gradient(120% 120% at 18% 0%,rgba(var(--ow-h1),.30),transparent 62%),var(--ow-panel-2,rgba(255,255,255,.05));',
+    '  box-shadow:inset 0 0 0 1px var(--ow-seam,rgba(255,255,255,.08))}',
+    '.ow-cv-gal__mk:hover .ow-cv-gal__art,.ow-cv-gal__card:hover .ow-cv-gal__tile{transform:translateY(-2px)}',
+    '.ow-cv-gal__mk:active .ow-cv-gal__art,.ow-cv-gal__card:active .ow-cv-gal__tile{transform:scale(.97)}',
+    '.ow-cv-gal__mk[aria-busy] .ow-cv-gal__art{opacity:.6}',
+    '.ow-cv-gal__art[data-art="text"] b{font-size:32px;font-weight:800;letter-spacing:-.04em;color:var(--ow-ink,#f3f2f8)}',
+    '.ow-cv-gal__art[data-art="sticker"] i{width:42%;aspect-ratio:1;border-radius:50%;transform:rotate(-8deg);',
+    '  background:linear-gradient(135deg,rgb(var(--ow-h1)),rgb(var(--ow-h2)));',
+    '  clip-path:polygon(0 0,100% 0,100% 64%,64% 100%,0 100%)}',
+    '.ow-cv-gal__art[data-art="shape"] i{position:absolute;width:30%;aspect-ratio:1;left:27%;top:20%;border-radius:28%;',
+    '  background:rgba(var(--ow-h1),.9)}',
+    '.ow-cv-gal__art[data-art="shape"] i+i{left:45%;top:36%;border-radius:50%;background:rgba(var(--ow-h2),.9);mix-blend-mode:screen}',
+    '.ow-cv-gal__nm{font-size:13px;font-weight:600;line-height:1.2;color:var(--ow-ink-2,#9793ad);text-align:center;',
+    '  max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}',
+    '.ow-cv-gal__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-flow:dense;gap:16px 12px}',
+    '@media (min-width:760px){.ow-cv-gal__grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:22px 18px}',
+    '  .ow-cv-gal__make{grid-template-columns:repeat(3,minmax(0,200px))}}',
+    '.ow-cv-gal__card[data-family="medium"],.ow-cv-gal__card[data-family="large"]{grid-column:span 2}',
+    '.ow-cv-gal__card[data-family="extra_large"]{grid-column:1/-1}',
+    '.ow-cv-gal .ow-cv-gal__tile{position:relative;inset:auto;left:auto;top:auto;width:100%;height:auto;margin:0;',
+    '  transition:transform .18s ease;container-type:size;pointer-events:none}',   /* a preview is a picture of the Popit: the card is the press */
+    '.ow-cv-gal__tile[data-family="small"]{aspect-ratio:1}',
+    '.ow-cv-gal__tile[data-family="medium"]{aspect-ratio:2.14}',
+    '.ow-cv-gal__tile[data-family="large"]{aspect-ratio:.955}',
+    '.ow-cv-gal__tile[data-family="extra_large"]{aspect-ratio:2.12}',
+    '.ow-cv-gal .ow-cv-gal__tile > .ow-cv-face{position:absolute;inset:0;width:auto;height:auto}',
+    '.ow-cv-gal__detail{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;gap:18px;',
+    '  padding:14px 18px calc(28px + env(safe-area-inset-bottom,0px));background:var(--ow-ground,#08070f)}',
+    '.ow-cv-gal__dbar{align-self:center;width:100%;max-width:964px;display:flex;align-items:center;gap:12px;font-size:18px;font-weight:700}',
+    '.ow-cv-gal__back{width:36px;height:36px;flex:none;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;',
+    '  color:inherit;background:var(--ow-panel-2,rgba(255,255,255,.08))}',
+    '.ow-cv-gal__pager{align-self:stretch;flex:1;min-height:0;display:flex;overflow-x:auto;overflow-y:hidden;',
+    '  scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain}',
+    '.ow-cv-gal__pager::-webkit-scrollbar{display:none}',
+    '.ow-cv-gal__slide{flex:0 0 100%;scroll-snap-align:center;display:grid;place-items:center;padding:8px;min-width:0}',
+    '.ow-cv-gal__slide .ow-cv-gal__tile[data-family="small"]{width:min(52%,240px)}',
+    '.ow-cv-gal__slide .ow-cv-gal__tile[data-family="medium"]{width:min(100%,520px)}',
+    '.ow-cv-gal__slide .ow-cv-gal__tile[data-family="large"]{width:min(100%,520px,48vh)}',
+    '.ow-cv-gal__slide .ow-cv-gal__tile[data-family="extra_large"]{width:min(100%,900px)}',
+    '.ow-cv-gal__sizes{display:flex;gap:4px;padding:4px;border-radius:999px;background:var(--ow-panel-2,rgba(255,255,255,.07))}',
+    '.ow-cv-gal__sizes button{border:0;background:none;font:inherit;font-size:13px;font-weight:600;padding:8px 14px;',
+    '  border-radius:999px;color:var(--ow-ink-2,#9793ad);cursor:pointer}',
+    '.ow-cv-gal__sizes button[aria-selected="true"]{background:var(--ow-ink,#f3f2f8);color:var(--ow-ground,#08070f)}',
+    '.ow-cv-gal__add{width:100%;max-width:360px;flex:none}',
+    '@media (prefers-reduced-motion:reduce){.ow-cv-gal__art,.ow-cv-gal__tile{transition:none}}',
     /* The Center surface's event rows — the discover -> place path. */
     '.ow-center-events{margin-top:22px;display:flex;flex-direction:column;gap:8px}',
     '.ow-center-ev{display:flex;flex-direction:column;gap:3px;align-items:flex-start;',

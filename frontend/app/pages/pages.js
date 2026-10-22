@@ -134,7 +134,7 @@
     btn.type = 'button';
     var relabel = function (note) {
       var t = note && note.text ? String(note.text) : '';
-      btn.textContent = t || 'Leave a note';
+      btn.textContent = t || 'Add a note';   /* the owner's own place for one, where it shows (founder/878) */
       /* when a note EXISTS the badge is already drawn by `OW.noteOn`, so the
          button must not draw a second copy of the same words on top of it —
          it becomes the affordance to CHANGE the one that is showing */
@@ -1073,8 +1073,8 @@
      own buttons moved into it (Follow, Message, or the owner's own). NO BANNER OR COVER IS EVER IN IT: the account's banner
      is drawn as the account chose in Settings (founder/824, banner_style): Fade, across the whole top of the screen behind
      the header; Framed, its own picture above it (profile-header.css; red in api/test_profile_header.py and
-     oneway/cards/test_profile_banner.py). Until the card read answers, the shell's own header stands; a read that fails
-     leaves it standing. */
+     oneway/cards/test_profile_banner.py). Until the card read answers, the header's place is held and the shell's own header
+     is never painted; a read that fails draws this header from what the shell was told (founder/878: ONE layout). */
   function angleOf(rgb) {
     var m = String(rgb || '').match(/(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)/);
     if (!m) return 262;
@@ -1117,6 +1117,9 @@
     var C = OW.cards, center = c.kind === 'center';
     var el = mk('section', 'ow-ph');
     el.setAttribute('data-kind', center ? 'center' : 'person');
+    /* THE PICTURE ABOVE THE NAME OR BESIDE IT, the account's own choice (founder/878, 2026-10-21: "profile over name does not
+       work over the new profile view"): TikTok's profile, the picture centred over the name, is this header too */
+    el.setAttribute('data-layout', c.layout === 'above' ? 'above' : 'beside');
     el.setAttribute('aria-label', (c.title || 'This') + (center ? '' : '’s profile'));
     /* a person is round, as their picture is everywhere in the App (founder/471: a circle is the default); a Center keeps the
        cut its mark was given (a logo is often rounded or square) */
@@ -1178,7 +1181,10 @@
     if (place && !rows.some(function (r) { return r.place; })) rows.push({ label: 'Location', value: place, place: true });
     rows.sort(function (x, y) { return (x.place ? 1 : 0) - (y.place ? 1 : 0); });   /* where it is, last */
     if (left.childNodes.length) about.appendChild(left);
-    if (rows.length) {
+    /* DIRECTIONS, FROM THE CARD (sys-assets' walk, 2026-10-21: the header's own row raced the card's and whichever came last
+       won): the card read carries the Center's point, and the renderer's one rule says which map app opens it */
+    var dir = center && C.directions ? C.directions(c) : null;
+    if (rows.length || dir) {
       var info = mk('ul', 'ow-ph__info');
       rows.forEach(function (r) {
         var li = mk('li', 'ow-ph__row' + (r.place ? ' ow-ph__row--place' : ''),
@@ -1186,9 +1192,15 @@
         li.title = r.label + ': ' + r.value;
         info.appendChild(li);
       });
+      if (dir) {
+        var dli = mk('li', 'ow-ph__row ow-ph__row--dir', '<i class="ow-ph__ic">' + dir.mark + '</i><span><i>Directions:</i> <a dir="auto" href="' +
+          esc(dir.href) + '" target="_blank" rel="noopener noreferrer">' + esc(dir.app) + '</a></span>');
+        dli.title = 'Directions in ' + dir.app;
+        info.appendChild(dli);
+      }
       about.appendChild(info);
     }
-    about.setAttribute('data-cols', left.childNodes.length && rows.length ? '2' : '1');
+    about.setAttribute('data-cols', left.childNodes.length && (rows.length || dir) ? '2' : '1');
     el.appendChild(about);
     if (lb) el.appendChild(C.lineMarks ? C.lineMarks(lb) : lb);   /* one straight line, never a second row (the founder, 2026-10-19) */
     el.appendChild(mk('div', 'ow-ph__acts'));
@@ -1200,16 +1212,31 @@
     o = o || {};
     var root = host.querySelector('.ow-prof');
     var ref = o.cardRef ? (o.kind === 'center' ? 'center:' + o.cardRef : 'person:@' + String(o.cardRef).replace(/^@/, '')) : '';
-    if (!root || !ref || !OW.cards || !OW.cards.read) return;
-    var events = o.kind === 'center'
+    if (!root || !OW.cards) return;
+    /* ONE PROFILE LAYOUT, FROM THE FIRST FRAME (founder/878, 2026-10-21: "the old profile view with the name over banner
+       breifly popped up over it. both must be merged into ONE dominant profile layout. i like the new cards"). The shell's
+       own header is only the carrier of the acts and the note this header takes in, and is never painted: until the header
+       lands, its place is held at its height (profile-header.css, data-header="pending"), and where the card cannot be read
+       the header is drawn from what the shell was told. */
+    root.setAttribute('data-header', 'pending');
+    var hero0 = root.querySelector('.ow-prof__hero');
+    if (hero0 && !root.querySelector('.ow-ph')) hero0.parentNode.insertBefore(mk('div', 'ow-ph ow-ph--wait'), hero0.nextSibling);
+    var events = o.kind === 'center' && o.cardRef
       ? data.get('/api/oneway/places/' + encodeURIComponent(o.cardRef) + '/events?limit=' + HEADER_EVENTS_READ).then(function (r) {
           var list = ((r && r.ok && r.data && r.data.events) || []).filter(function (e) {
             return e && ['draft', 'cancelled', 'ended'].indexOf(String(e.state || '').toLowerCase()) < 0; });
           return { n: list.length, more: !!(r && r.data && r.data.next_after) };
         }, function () { return null; })
       : Promise.resolve(null);
-    Promise.all([OW.cards.read([ref]), events]).then(function (res) {
-      var card = (res[0] || {})[ref], ev = res[1];
+    var told = function () {
+      var im = root.querySelector('.ow-prof__id img, .ow-prof__face img, .ow-prof__avatar img');
+      return { kind: o.kind === 'center' ? 'center' : 'person', title: o.name || '', handle: o.sub || '', counts: {}, details: [],
+               picture: { url: im ? (im.getAttribute('src') || '') : '' }, line: o.kind === 'center' ? '' : (o.bio || ''),
+               blurb: o.kind === 'center' ? (o.bio || '') : '' };
+    };
+    var read = ref && OW.cards.read ? Promise.all([OW.cards.read([ref]), events]) : Promise.resolve([{}, null]);
+    read.then(function (res) { land((res[0] || {})[ref] || told(), res[1]); }, function () { land(told(), null); });
+    function land(card, ev) {
       if (!card || host.querySelector('.ow-prof') !== root) return;
       var c = JSON.parse(JSON.stringify(card));
       c.layout = root.getAttribute('data-layout') === 'above' ? 'above' : 'beside';
@@ -1298,7 +1325,7 @@
         if (/^more$/i.test((b.textContent || '').trim())) { b.classList.add('ow-ph__more'); b.setAttribute('aria-label', 'More'); }
         /* a third way onward on one's own profile (Create your Center) is a compact control beside the two, as Instagram's own
            header has one; its words are its label and its tip */
-        else if (acts.children.length === 3) { var w3 = (b.textContent || '').trim(); b.classList.add('ow-ph__more', 'ow-ph__plus'); b.setAttribute('aria-label', w3); b.title = w3; }
+        else if (acts.children.length === 3) { var w3 = (b.textContent || '').trim(); b.classList.add('ow-ph__more', 'ow-ph__plus'); b.setAttribute('aria-label', w3); b.title = w3; acts.setAttribute('data-plus', '1'); }
       });
       if (acts.children.length) {
         acts.setAttribute('data-n', String(acts.children.length));
@@ -1315,55 +1342,41 @@
           if (here && !here.__owOwn) { here.remove(); b.setAttribute('aria-expanded', 'false'); e.stopImmediatePropagation(); }
         }, true);
       });
-      /* A PERSON'S NOTE STANDS TO THE RIGHT OF THEIR NAME (founder/832: "when a user has an attached note, it must go to the
-         right of the card. It shouldn't extend the card upwards"). The note, its "Leave a note" and its editor are written
-         into the shell's header (OW.noteOn, noteComposer), which is hidden: each is brought into this header's identity,
-         a pill after the name with its tether toward the picture, now and whenever the composer writes it again. */
+      /* A PERSON'S NOTE, ABOVE THEIR NAME (founder/878, 2026-10-21: "notes are still not appearing above the name closley and
+         cleanly"; it rode the face for 863 and stood after the name for 832). The note, its "Add a note" and its editor are
+         written into the shell's header (OW.noteOn, noteComposer), which is never painted: each is brought into this
+         header's identity, the bubble and "Add a note" directly above the name, the editor under it, now and whenever the
+         composer writes it again. In the flow, so it covers no face and no banner and the header makes its own room. */
       var idBox = el.querySelector('.ow-ph__id');
       var noteNode = function (n) { return n.nodeType === 1 && (n.classList.contains('po-note') || n.classList.contains('ow-note-set') || n.classList.contains('ow-note-edit')); };
+      var homeOf = function (n) {
+        if (n.classList.contains('ow-note-edit')) { idBox.appendChild(n); return; }
+        idBox.insertBefore(n, idBox.querySelector(':scope > .ow-ph__name'));
+      };
+      var placeNotes = function () {};
       var shell = root.querySelector('.ow-prof__id');
-      if (shell && idBox) [].forEach.call(shell.querySelectorAll('.po-note, .ow-note-set, .ow-note-edit'), function (n) { idBox.appendChild(n); });
+      if (shell && idBox) [].forEach.call(shell.querySelectorAll('.po-note, .ow-note-set, .ow-note-edit'), function (n) { homeOf(n); });
       if (shell && global.MutationObserver) new global.MutationObserver(function (list) {
         list.forEach(function (m) { [].forEach.call(m.addedNodes, function (n) {
           if (n.nodeType === 1 && n.classList.contains('po-acts__more') && acts.isConnected) acts.appendChild(n);
-          else if (idBox && noteNode(n)) { var old = idBox.querySelector(':scope > .' + n.classList[0]); if (old && old !== n) old.remove(); idBox.appendChild(n); }
+          else if (idBox && noteNode(n)) { var old = idBox.querySelector(':scope > .' + n.classList[0]); if (old && old !== n) old.remove(); homeOf(n); }
         }); });
       }).observe(shell, { childList: true, subtree: true });
+      /* your own note is still the press that changes it */
+      el.addEventListener('click', function (e) {
+        var hit = e.target.closest && e.target.closest('.ow-ph__id > .po-note'), set = idBox && idBox.querySelector(':scope > .ow-note-set');
+        if (hit && set) set.click();
+      });
       var hero = root.querySelector('.ow-prof__hero');
       var old = root.querySelector('.ow-ph'); if (old) old.remove();
       hero.parentNode.insertBefore(el, hero.nextSibling);
       root.setAttribute('data-header', 'profile');
-      /* THE FILLED BUTTON'S WORDS READ ON ITS LIGHT (a cold judge: white on a mint Center's gradient was "close to unreadable"):
-         dark words on a light pair, white on a deep one. First from the account's own hue (OW.hue.fromAngle, the pair the page
-         derives), then from the pair the header actually wears once the page's colour has settled (it crossfades in, and a
-         Center's authored pair wins over the derivation) */
-      (function () {
-        var lum = function (v) {
-          var m = String(v || '').match(/(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)/); if (!m) return -1;
-          var f = function (x) { x = x / 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); };
-          return 0.2126 * f(+m[1]) + 0.7152 * f(+m[2]) + 0.0722 * f(+m[3]);
-        };
-        /* the button's ends as they show under its veil (profile-header.css: 38% of rgb(10,8,20)); the ink that reads better
-           on the worse end */
-        var VEIL = 0.38, veiled = function (v) {
-          var m = String(v || '').match(/(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)\D+(\d+(?:\.\d+)?)/); if (!m) return '';
-          return [+m[1] * (1 - VEIL) + 10 * VEIL, +m[2] * (1 - VEIL) + 8 * VEIL, +m[3] * (1 - VEIL) + 20 * VEIL].join(',');
-        };
-        var ratio = function (p, q) { return (Math.max(p, q) + 0.05) / (Math.min(p, q) + 0.05); };
-        var ink = function (a, b) {
-          var x = lum(veiled(a)), y = lum(veiled(b)); if (x < 0 || y < 0) return;
-          var white = Math.min(ratio(1, x), ratio(1, y)), dark = Math.min(ratio(lum('21,19,29'), x), ratio(lum('21,19,29'), y));
-          el.setAttribute('data-ink', dark > white ? 'dark' : 'light');
-        };
-        if (typeof c.hue === 'number' && OW.hue && OW.hue.fromAngle) { var pr = OW.hue.fromAngle(c.hue); ink(pr[0], pr[1]); }
-        var worn = function () { if (!el.isConnected) return; var cs = global.getComputedStyle(el); ink(cs.getPropertyValue('--h'), cs.getPropertyValue('--h2')); };
-        [400, 1200, 2500].forEach(function (ms) { global.setTimeout(worn, ms); });
-      })();
+      /* the filled button's words are the one primary's (--ow-on-h1, profile-header.css; founder/890): nothing measured here */
       /* what the header says, so the page under it says it once (center.js drawVisit): its details by their labels */
       root.setAttribute('data-card-says', (c.details || []).map(function (d) { return String(d.label || '').toLowerCase().replace(/\s+/g, '-'); }).join(' '));
       try { root.dispatchEvent(new global.CustomEvent('ow:header-card')); } catch (e) {}
       if (hero.getAttribute('data-picture')) { root.setAttribute('data-has-banner', '1'); bleedBanner(root); }
-    }, function () { /* the shell's own header stands */ });
+    }
   }
 
   _u.failSaid = failSaid;

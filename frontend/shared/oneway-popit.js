@@ -32,6 +32,99 @@
   var RM = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   var OW = {};
 
+  /* ══ MOTION, READ FROM THE ONE SET OF NAMES (S33; founder/865: "smooth, slow, drawn out, and bubbly") ══════════
+     The durations and the springs are named once, in oneway-popit.css's :root (--ow-dur-*, --ow-spring, ...). A
+     moment that is moved from script (an element.animate, a timer that waits for a leave) asks here rather than
+     writing a number of its own, so a change to a name reaches the CSS moments and the scripted ones together.
+       OW.motion.ms('open')        a duration in ms (1 when the person asked for less motion)
+       OW.motion.ease('spring')    an easing by its token name ('spring', 'spring-soft', 'ease-out', 'ease-leave')
+       OW.motion.still()           the system's or the App's own Reduce motion
+       OW.motion.arrive(host)      a surface arriving: its rows flow in for one beat (.ow-arrive), and only then, so a
+                                   list that redraws itself later does not replay it
+       OW.motion.bounce(el, k, r)  a held icon pressed on ('on') or off ('off'), or a change in place ('bump'), from what is on
+                                   screen now to rest (r), so a press in the middle of one carries on from it */
+  OW.motion = (function () {
+    var EASE = { 'spring': 'cubic-bezier(.34,1.56,.64,1)', 'spring-soft': 'cubic-bezier(.22,1.12,.36,1)',
+                 'ease-out': 'cubic-bezier(.22,1,.36,1)', 'ease-leave': 'cubic-bezier(.55,0,.45,1)', 'ease': 'cubic-bezier(.4,0,.2,1)' };
+    var DUR = { press: 280, state: 360, enter: 600, open: 720, settle: 800, flow: 640, leave: 420, stagger: 55 };
+    function still() {
+      try {
+        return !!((global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches)
+          || root.getAttribute('data-motion') === 'reduced' || root.getAttribute('data-ow-motion') === 'reduce');
+      } catch (_) { return false; }
+    }
+    function token(name) {
+      try { return global.getComputedStyle(root).getPropertyValue('--ow-' + name).trim(); } catch (_) { return ''; }
+    }
+    function ms(name) {
+      if (still()) return 1;
+      var v = token(name === 'stagger' ? 'stagger' : 'dur-' + name), n = parseFloat(v);
+      if (!isFinite(n)) return DUR[name] || 0;
+      return /ms$/.test(v) ? n : n * 1000;
+    }
+    var scripted = null;    /* does element.animate() take linear()? asked once, on a detached element */
+    function ease(name) {
+      var v = token(name);
+      /* the stylesheet hands a browser without linear() the cubic-bezier already; a browser that draws linear() in CSS
+         but refuses it in element.animate() (which would throw, and an open would never run) gets the cubic-bezier */
+      if (v && v.indexOf('linear(') === 0) {
+        if (scripted === null) {
+          try { doc.createElement('i').animate([{ opacity: 1 }, { opacity: 1 }], { duration: 1, easing: 'linear(0,1)' }).cancel(); scripted = true; }
+          catch (_) { scripted = false; }
+        }
+        if (!scripted) v = '';
+      }
+      return v || EASE[name] || EASE.ease;
+    }
+    var timers = typeof WeakMap === 'function' ? new WeakMap() : null;
+    function arrive(host) {
+      if (!host || !host.classList) return;
+      var was = timers && timers.get(host);
+      if (was) global.clearTimeout(was);
+      host.classList.remove('ow-arrive');
+      /* jshint expr:true */ host.offsetWidth;
+      host.classList.add('ow-arrive');
+      /* removed only once the last row (the eighth waits seven beats) has come to rest, so removing it cuts nothing */
+      var t = global.setTimeout(function () { host.classList.remove('ow-arrive'); },
+                                ms('flow') + 7 * ms('stagger') + 200);
+      if (timers) timers.set(host, t);
+    }
+    /* A BOUNCE THAT NEVER JUMPS (the founder, 2026-10-21: "like change ... button change ... should be smooth and consistent
+       and shouldnt break under pressure"). Measured before at 390: nine quick taps on a heart made 21 frames on which it
+       jumped (its CSS keyframes began at scale .62 and restarted from there on every tap, wherever the last one had got to).
+       Script starts each bounce from what is on screen this frame, so a tap in the middle of a bounce carries on from it, and
+       only one runs per element. `rest` is the transform the element rests at ('' for none; a toast rests translated). */
+    var SHAPES = {   /* [transform, offset]; the founder's four gestures (2026-08-29: "expressive ... for like dislike repost
+                        and favorite"), each its own meaning, then giving back and a change in place */
+      like:    [['scale(.84) rotate(-6deg)', .16], ['scale(1.3) rotate(6deg)', .4], ['scale(.94) rotate(-2deg)', .62], ['scale(1.05) rotate(1deg)', .82]],
+      dislike: [['translateY(3px) scale(1.14)', .34], ['translateY(1px) scale(.95)', .66]],
+      repost:  [['rotate(200deg) scale(1.16)', .45], ['rotate(360deg) scale(1)', .999]],
+      save:    [['translateY(-6px) scale(1.14)', .3], ['translateY(1px) scale(.96)', .62]],
+      off:     [['scale(.8)', .3], ['scale(1.06)', .64]],
+      bump:    [['scale(.97)', .22], ['scale(1.025)', .55]]
+    };
+    SHAPES.on = SHAPES.like;
+    function bounce(el, kind, rest) {
+      if (!el || typeof el.animate !== 'function' || still()) return null;
+      var shape = SHAPES[kind] || SHAPES.bump, base = rest || '';
+      var from = 'none';
+      try { from = global.getComputedStyle(el).transform || 'none'; } catch (_) {}
+      if (el.__owBounce) { try { el.__owBounce.cancel(); } catch (_) {} }
+      var frames = [{ transform: from === 'none' ? (base || 'none') : from, offset: 0, easing: 'cubic-bezier(.22,1,.36,1)' }];
+      shape.forEach(function (f) {
+        frames.push({ transform: (base ? base + ' ' : '') + f[0], offset: f[1], easing: 'cubic-bezier(.45,0,.55,1)' });
+      });
+      frames.push({ transform: base || 'none', offset: 1 });
+      try {
+        var a = el.animate(frames, { duration: ms(kind === 'bump' ? 'enter' : 'settle') });
+        el.__owBounce = a;
+        a.onfinish = a.oncancel = function () { if (el.__owBounce === a) el.__owBounce = null; };
+        return a;
+      } catch (_) { return null; }
+    }
+    return { still: still, ms: ms, ease: ease, arrive: arrive, bounce: bounce };
+  })();
+
   /* ── tiny helpers ────────────────────────────────────────────────────── */
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
@@ -794,91 +887,123 @@
        { id, label, kind_label, glance, signal, icon, image:{url,source},
          time_back:[{at,text}], time_forward:[{text,why}], hue:{h1,h2} } */
 
-  /* A small, neutral icon set. Icons NAME a role, they never decorate — and a
-     Popit whose object gives no icon simply has none (nothing is invented). */
+  /* ═══ ONE ICON SET: PHOSPHOR (founder/886, 2026-10-21: "more detailed and dynamic icons, the icons should be universal across
+     here and the center pages and have a huge selection ... they must have no geommetric errors or misspaced overlapping
+     lines"; his word ~16:45Z: "download Phosphor and use it as Oneway's icon set"). Phosphor Icons 2.1.1, MIT
+     (assets/icons/phosphor/LICENSE), each icon drawn exactly as Phosphor ships it on its 256 grid: Bold for the interface (the
+     old 2px line), Fill for the selected one (it springs in over the outline, oneway-popit.css "ONE ICON SET"), Two-tone for
+     page icons, tiles and empty states. tools/phosphor_build.py builds the data from the npm package: the few Home's first
+     screen draws ride here (PH_BOOT), the rest of what Oneway draws loads at idle (oneway-icons.js), and any other of the set's
+     1,512 a letter at a time (assets/icons/phosphor/all/), so a Center's chosen icon draws for every visitor. Icons NAME a
+     role, they never decorate; a Popit whose object gives no icon has none. ICONS are the roles asked for by name
+     (OW.glyph('heart')); any Phosphor name works as well (OW.glyph('coffee', {w: 'd'})). */
   var ICONS = {
-    home:    '<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>',
-    compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2.2 5.3-5.3 2.2 2.2-5.3z"/>',
-    layers:  '<path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/>',
-    people:  '<circle cx="9" cy="8" r="3"/><path d="M3 19a6 6 0 0 1 12 0"/><path d="M16 6a3 3 0 0 1 0 6"/>',
-    place:   '<path d="M12 21s7-6.3 7-11a7 7 0 1 0-14 0c0 4.7 7 11 7 11z"/><circle cx="12" cy="10" r="2.4"/>',
-    event:   '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 9h18M8 3v4M16 3v4"/>',
-    /* THE SPEECH BUBBLE IS ROUND (the founder, 2026-10-10: "round the comments button and give it three dots like the
-       typing animation when its open"): an oval with a tail, and three dots that only show, and only move, while the
-       conversation is open (`aria-expanded` on the control; oneway-popit.css, ".ow-dot"). */
-    talk:    '<path d="M12 3.4c4.8 0 8.6 3.3 8.6 7.4s-3.8 7.4-8.6 7.4c-.95 0-1.85-.1-2.7-.32L5.2 20.2l.85-3.55'
-             + 'C4.3 15.4 3.4 13.2 3.4 10.8 3.4 6.7 7.2 3.4 12 3.4z"/>'
-             + '<circle class="ow-dot" cx="8.2" cy="10.8" r="1.2"/><circle class="ow-dot" cx="12" cy="10.8" r="1.2"/>'
-             + '<circle class="ow-dot" cx="15.8" cy="10.8" r="1.2"/>',
-    doc:     '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
-    building:'<path d="M4 21V7l8-4 8 4v14"/><path d="M3 21h18M9 21v-5h6v5M9 11h.01M15 11h.01"/>',
-    spark:   '<circle cx="12" cy="12" r="3"/><path d="M12 3v4M12 17v4M3 12h4M17 12h4"/>',
-    link:    '<path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/>',
-    music:   '<circle cx="7" cy="18" r="3"/><circle cx="18" cy="15" r="3"/><path d="M10 18V6l11-2v11"/>',
-    video:   '<rect x="2" y="6" width="14" height="12" rx="2.5"/><path d="M16 11l6-3v8l-6-3z"/>',
-    camera:  '<rect x="2.5" y="6.5" width="19" height="13" rx="3"/><circle cx="12" cy="13" r="3.6"/><path d="M8 6.5l1.4-2h5.2L16 6.5"/>',
-    cart:    '<circle cx="9" cy="20" r="1.6"/><circle cx="18" cy="20" r="1.6"/><path d="M2 3h3l3 12h11l2-8H7"/>',
-    mail:    '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6"/>',
-    globe:   '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.4 3 14.2 0 18M12 3c-3 3.4-3 14.2 0 18"/>',
-    write:   '<path d="M4 20l4-1 11-11-3-3L5 16z"/><path d="M13.5 6.5l3 3"/>',
-    /* a Center's details on its card name their role with these (landing-cards.js, founder/835's screenshot) */
-    clock:   '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
-    tag:     '<path d="M3 12.2V4.5A1.5 1.5 0 0 1 4.5 3h7.7l8.8 8.8-9.2 9.2z"/><circle cx="8" cy="8" r="1.6"/>',
-    parking: '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M10 17V7.5h3.2a2.8 2.8 0 0 1 0 5.6H10"/>',
-    card:    '<rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/>',
-    phone:   '<path d="M6.6 3.5h2.6l1.6 4.2-2 1.3a11 11 0 0 0 6.2 6.2l1.3-2 4.2 1.6v2.6a2 2 0 0 1-2.2 2A16.8 16.8 0 0 1 4.6 5.7a2 2 0 0 1 2-2.2z"/>',
-    /* THE RESPONSE GLYPHS. The runtime stores MEANING ("like"), never a glyph —
-       so the heart lives here, in presentation, and changing it needs no
-       migration (the response primitive keeps the two apart on purpose). */
-    /* ── THE RESPONSE GLYPHS, REDRAWN ────────────────────────────────────
-       ★ FOUNDER, 2026-08-29: *"icons still look really weird and aren't shaped
-         well enough, like and dislike."*
-
-       THE HEART WAS NOT A HEART. Its two lobes started at y=7 while the point
-       sat at y=20 — a 13-unit drop from a 5-unit shoulder — so it read as a
-       narrow shield with a dent in the top. A heart's lobes have to be nearly
-       circular and sit high, and its widest point is ABOVE the vertical middle.
-       This one is drawn from two arcs of equal radius meeting at a centre
-       notch, on the 24-unit grid the rest of the set uses.
-
-       THE THUMB WAS NOT A THUMB. `M7 3h9l3 8h-4v6.5…` is a wedge with a
-       rectangle beside it: no thumb, no knuckle, no cuff — a shape nobody
-       reads as a hand. Redrawn with a real thumb, a fist and a separate cuff,
-       pointing down, so it is legible at 24px without a caption. */
-    /* ── LARGER, ROUNDER, MORE DEFINED (the founder, 2026-10-09: "our heart icon larger and more defined and visual
-       rounded wise, with a smash of an animation"; "the dislike button make it clearer by the dudes sleeve and his
-       hand better"). The heart is two full lobes and a soft point, drawn to fill the 24 grid. The thumbs are a hand
-       and a SLEEVE: the cuff is its own rounded block with a gap before the hand, so the two read apart even when the
-       held state fills them. `thumbup` is the Facebook style's like (OW.likes). */
-    heart:   '<path d="M12 20.6c-.4 0-.8-.15-1.1-.43C6.4 16.3 2.8 13.2 2.8 9.1 2.8 6.2 5.1 3.9 8 3.9'
-             + 'c1.6 0 3 .76 4 2 1-1.24 2.4-2 4-2 2.9 0 5.2 2.3 5.2 5.2 0 4.1-3.6 7.2-8.1 11.07'
-             + '-.3.28-.7.43-1.1.43z"/>',
-    /* THE THUMBS (the founder, 2026-10-10: "dislike icon needs to be better dude", "the thumbs icon they just need to
-       be more detailed and better", then "we didnt need to add no lines"): detail is in the SHAPE, never in strokes
-       drawn across it. A sleeve with a gap before the hand; a thumb with its knuckle; four fingers as bumps on the
-       hand's edge, so the same drawing reads as outline and as filled. The down is the up turned 180 degrees, as
-       every icon set draws it, so its sleeve is on the right. */
-    thumbup: '<path d="M3 10.6h2.7a1 1 0 0 1 1 1v8.4a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8.4a1 1 0 0 1 1-1z"/>'
-             + '<path d="M8.6 21V11.4c0-1 .35-1.8 1-2.5l2-2.6.9-2.4c.3-.9 1.1-1.5 2-1.4 1.3.1 2.1 1.3 1.8 2.6L15.6 8.4H19C21.6 8.4 21.6 11 20.3 11C22 11 22 13.6 20.1 13.6C21.7 13.6 21.7 16.2 19.7 16.2C20.8 16.2 20.8 18.8 18.9 18.8C18.9 20 18.2 21 17 21z"/>',
-    thumbdown:'<g transform="rotate(180 12 12)"><path d="M3 10.6h2.7a1 1 0 0 1 1 1v8.4a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-8.4a1 1 0 0 1 1-1z"/>'
-             + '<path d="M8.6 21V11.4c0-1 .35-1.8 1-2.5l2-2.6.9-2.4c.3-.9 1.1-1.5 2-1.4 1.3.1 2.1 1.3 1.8 2.6L15.6 8.4H19C21.6 8.4 21.6 11 20.3 11C22 11 22 13.6 20.1 13.6C21.7 13.6 21.7 16.2 19.7 16.2C20.8 16.2 20.8 18.8 18.9 18.8C18.9 20 18.2 21 17 21z"/></g>',
-    repost:  '<path d="M4 9V7a3 3 0 0 1 3-3h9"/><path d="M13 1.5L16.5 4 13 6.5"/><path d="M20 15v2a3 3 0 0 1-3 3H8"/><path d="M11 22.5L7.5 20 11 17.5"/>',
-    share:   '<path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6a2 2 0 0 0-2-2h-1"/>',
-    bookmark:'<path d="M6 3h12v18l-6-4.5L6 21z"/>',
-    eye:     '<path d="M2 12s3.8-6 10-6 10 6 10 6-3.8 6-10 6-10-6-10-6z"/><circle cx="12" cy="12" r="2.8"/>',
-    /* ── THE VIDEO SET ────────────────────────────────────────────────────
-       Same 24-unit grid, same weight, so a sound control over a video belongs
-       to the same family as a heart on a card. `muted` is the speaker with the
-       cross rather than a speaker with no waves: an absence reads as "no
-       icon", a cross reads as "off". */
-    play:    '<path d="M7.5 4.8 19 12 7.5 19.2z"/>',
-    pause:   '<path d="M8.5 4.5h3v15h-3z"/><path d="M12.5 4.5h3v15h-3z"/>',
-    sound:   '<path d="M4 9.5h3.6L12 5.4v13.2L7.6 14.5H4z"/>'
-             + '<path d="M15.6 9a4.2 4.2 0 0 1 0 6"/>'
-             + '<path d="M18.2 6.4a7.8 7.8 0 0 1 0 11.2"/>',
-    muted:   '<path d="M4 9.5h3.6L12 5.4v13.2L7.6 14.5H4z"/>'
-             + '<path d="M16 9.6l4.6 4.8"/><path d="M20.6 9.6 16 14.4"/>'
+    home: 'house', compass: 'compass', layers: 'stack', people: 'users-three', place: 'map-pin', event: 'calendar-blank',
+    talk: 'chat-circle', doc: 'file-text', building: 'buildings', spark: 'sparkle', link: 'link', music: 'music-notes',
+    video: 'video-camera', camera: 'camera', cart: 'shopping-cart', mail: 'envelope-simple', globe: 'globe',
+    write: 'pencil-simple', clock: 'clock', tag: 'tag', parking: 'letter-circle-p', card: 'credit-card', phone: 'phone',
+    /* the response glyphs: the runtime stores MEANING ("like"), never a glyph, so the heart lives here, in presentation */
+    heart: 'heart', thumbup: 'thumbs-up', thumbdown: 'thumbs-down', repost: 'repeat', share: 'export',
+    bookmark: 'bookmark-simple', eye: 'eye', play: 'play', pause: 'pause', sound: 'speaker-high', muted: 'speaker-slash'
   };
+  /* PHOSPHOR BOOT (built by tools/phosphor_build.py; do not edit by hand) */
+  var PH_BOOT = {"bookmark-simple":{"b":"<path d=\"M184,28H72A20,20,0,0,0,52,48V224a12,12,0,0,0,18.36,10.18l57.63-36,57.65,36A12,12,0,0,0,204,224V48A20,20,0,0,0,184,28Zm-4,174.35-45.65-28.53a12,12,0,0,0-12.72,0L76,202.35V52H180Z\"/>","f":"<path d=\"M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z\"/>"},"chat":{"b":"<path d=\"M216,44H40A20,20,0,0,0,20,64V224A19.82,19.82,0,0,0,31.56,242.1a20.14,20.14,0,0,0,8.49,1.9,19.91,19.91,0,0,0,12.82-4.72l.12-.11L84.47,212H216a20,20,0,0,0,20-20V64A20,20,0,0,0,216,44Zm-4,144H80a11.93,11.93,0,0,0-7.84,2.92L44,215.23V68H212Z\"/>","f":"<path d=\"M232,64V192a16,16,0,0,1-16,16H83l-32.6,28.16-.09.07A15.89,15.89,0,0,1,40,240a16.05,16.05,0,0,1-6.79-1.52A15.84,15.84,0,0,1,24,224V64A16,16,0,0,1,40,48H216A16,16,0,0,1,232,64Z\"/>"},"chat-circle":{"b":"<path d=\"M128,20A108,108,0,0,0,31.85,177.23L21,209.66A20,20,0,0,0,46.34,235l32.43-10.81A108,108,0,1,0,128,20Zm0,192a84,84,0,0,1-42.06-11.27,12,12,0,0,0-6-1.62,12.1,12.1,0,0,0-3.8.62l-29.79,9.93,9.93-29.79a12,12,0,0,0-1-9.81A84,84,0,1,1,128,212Z\"/>","f":"<path d=\"M232,128A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Z\"/>"},"compass":{"b":"<path d=\"M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm0,192a84,84,0,1,1,84-84A84.09,84.09,0,0,1,128,212ZM163.27,77l-56,24a12,12,0,0,0-6.3,6.3l-24,56A12,12,0,0,0,92.73,179l56-24a12,12,0,0,0,6.3-6.3l24-56A12,12,0,0,0,163.27,77Zm-28.41,57.89-24,10.29,10.29-24,24-10.29Z\"/>","f":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm51.58,57.79-32,64a4.08,4.08,0,0,1-1.79,1.79l-64,32a4,4,0,0,1-5.37-5.37l32-64a4.08,4.08,0,0,1,1.79-1.79l64-32A4,4,0,0,1,179.58,81.79Z\"/>"},"export":{"b":"<path d=\"M220,112v96a20,20,0,0,1-20,20H56a20,20,0,0,1-20-20V112A20,20,0,0,1,56,92H76a12,12,0,0,1,0,24H60v88H196V116H180a12,12,0,0,1,0-24h20A20,20,0,0,1,220,112ZM96.49,72.49,116,53v83a12,12,0,0,0,24,0V53l19.51,19.52a12,12,0,1,0,17-17l-40-40a12,12,0,0,0-17,0l-40,40a12,12,0,1,0,17,17Z\"/>","f":"<path d=\"M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66L120,43.31V96h16Z\"/>"},"eye":{"b":"<path d=\"M251,123.13c-.37-.81-9.13-20.26-28.48-39.61C196.63,57.67,164,44,128,44S59.37,57.67,33.51,83.52C14.16,102.87,5.4,122.32,5,123.13a12.08,12.08,0,0,0,0,9.75c.37.82,9.13,20.26,28.49,39.61C59.37,198.34,92,212,128,212s68.63-13.66,94.48-39.51c19.36-19.35,28.12-38.79,28.49-39.61A12.08,12.08,0,0,0,251,123.13Zm-46.06,33C183.47,177.27,157.59,188,128,188s-55.47-10.73-76.91-31.88A130.36,130.36,0,0,1,29.52,128,130.45,130.45,0,0,1,51.09,99.89C72.54,78.73,98.41,68,128,68s55.46,10.73,76.91,31.89A130.36,130.36,0,0,1,226.48,128,130.45,130.45,0,0,1,204.91,156.12ZM128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Z\"/>"},"hammer":{"b":"<path d=\"M250.18,105.17,186.71,41.25a100.11,100.11,0,0,0-141.43,0l-.13.14L31.37,55.61a12,12,0,1,0,17.24,16.7L62.32,58.16A75.68,75.68,0,0,1,77.49,46.43L119,88,25.85,181.16a20,20,0,0,0,0,28.29l20.69,20.69a20,20,0,0,0,28.28,0L168,137l1.51,1.51h0l23.65,23.66a20,20,0,0,0,28.29,0l28.69-28.7A20,20,0,0,0,250.18,105.17ZM60.68,210.34l-15-15L108,133l15,15ZM140,131l-15-15,19.51-19.51a12,12,0,0,0,0-17L102.24,37.24a75.94,75.94,0,0,1,67.47,20.95l31.44,31.67L178,113l-1.51-1.51a12,12,0,0,0-17,0Zm67.32,11.31L195,130l23.09-23.09,12.3,12.39Z\"/>","f":"<path d=\"M251.34,112,183.88,44.08a96.1,96.1,0,0,0-135.77,0l-.09.09L34.25,58.4A8,8,0,0,0,45.74,69.53L59.47,55.35a79.92,79.92,0,0,1,18.71-13.9L124.68,88l-96,96a16,16,0,0,0,0,22.63l20.69,20.69a16,16,0,0,0,22.63,0l96-96,32,32a16,16,0,0,0,22.63,0l28.69-28.69A16,16,0,0,0,251.34,112Zm-89,2.33L140,136.67,119.31,116l22.35-22.35a8,8,0,0,0,0-11.32L94.32,35a80,80,0,0,1,78.23,20.41l44.22,44.51L188,128.66l-14.34-14.34A8,8,0,0,0,162.34,114.32Zm49,37.66-12-12L228,111.25l12,12Z\"/>"},"heart":{"b":"<path d=\"M178,36c-20.09,0-37.92,7.93-50,21.56C115.92,43.93,98.09,36,78,36a66.08,66.08,0,0,0-66,66c0,72.34,105.81,130.14,110.31,132.57a12,12,0,0,0,11.38,0C138.19,232.14,244,174.34,244,102A66.08,66.08,0,0,0,178,36Zm-5.49,142.36A328.69,328.69,0,0,1,128,210.16a328.69,328.69,0,0,1-44.51-31.8C61.82,159.77,36,131.42,36,102A42,42,0,0,1,78,60c17.8,0,32.7,9.4,38.89,24.54a12,12,0,0,0,22.22,0C145.3,69.4,160.2,60,178,60a42,42,0,0,1,42,42C220,131.42,194.18,159.77,172.51,178.36Z\"/>","f":"<path d=\"M240,102c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,228.66,16,172,16,102A62.07,62.07,0,0,1,78,40c20.65,0,38.73,8.88,50,23.89C139.27,48.88,157.35,40,178,40A62.07,62.07,0,0,1,240,102Z\"/>"},"house":{"b":"<path d=\"M222.14,105.85l-80-80a20,20,0,0,0-28.28,0l-80,80A19.86,19.86,0,0,0,28,120v96a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V164h24v52a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V120A19.86,19.86,0,0,0,222.14,105.85ZM204,204H164V152a12,12,0,0,0-12-12H104a12,12,0,0,0-12,12v52H52V121.65l76-76,76,76Z\"/>","f":"<path d=\"M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z\"/>"},"lightbulb":{"b":"<path d=\"M180,232a12,12,0,0,1-12,12H88a12,12,0,0,1,0-24h80A12,12,0,0,1,180,232Zm40-128a91.51,91.51,0,0,1-35.17,72.35A12.26,12.26,0,0,0,180,186v2a20,20,0,0,1-20,20H96a20,20,0,0,1-20-20v-2a12,12,0,0,0-4.7-9.51A91.57,91.57,0,0,1,36,104.52C35.73,54.69,76,13.2,125.79,12A92,92,0,0,1,220,104Zm-24,0a68,68,0,0,0-69.65-68C89.56,36.88,59.8,67.55,60,104.38a67.71,67.71,0,0,0,26.1,53.19A35.87,35.87,0,0,1,100,184h56.1A36.13,36.13,0,0,1,170,157.49,67.68,67.68,0,0,0,196,104Zm-20.07-5.32a48.5,48.5,0,0,0-31.91-40,12,12,0,0,0-8,22.62,24.31,24.31,0,0,1,16.09,20,12,12,0,0,0,23.86-2.64Z\"/>","f":"<path d=\"M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-32.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z\"/>"},"repeat":{"b":"<path d=\"M20,128A76.08,76.08,0,0,1,96,52h99l-3.52-3.51a12,12,0,1,1,17-17l24,24a12,12,0,0,1,0,17l-24,24a12,12,0,0,1-17-17L195,76H96a52.06,52.06,0,0,0-52,52,12,12,0,0,1-24,0Zm204-12a12,12,0,0,0-12,12,52.06,52.06,0,0,1-52,52H61l3.52-3.51a12,12,0,1,0-17-17l-24,24a12,12,0,0,0,0,17l24,24a12,12,0,1,0,17-17L61,204h99a76.08,76.08,0,0,0,76-76A12,12,0,0,0,224,116Z\"/>","f":"<path d=\"M24,128A72.08,72.08,0,0,1,96,56h96V40a8,8,0,0,1,13.66-5.66l24,24a8,8,0,0,1,0,11.32l-24,24A8,8,0,0,1,192,88V72H96a56.06,56.06,0,0,0-56,56,8,8,0,0,1-16,0Zm200-8a8,8,0,0,0-8,8,56.06,56.06,0,0,1-56,56H64V168a8,8,0,0,0-13.66-5.66l-24,24a8,8,0,0,0,0,11.32l24,24A8,8,0,0,0,64,216V200h96a72.08,72.08,0,0,0,72-72A8,8,0,0,0,224,120Z\"/>"},"thumbs-down":{"b":"<path d=\"M243.78,156.53l-12-96A28,28,0,0,0,204,36H32A20,20,0,0,0,12,56v88a20,20,0,0,0,20,20H72.58l36.69,73.37A12,12,0,0,0,120,244a44.05,44.05,0,0,0,44-44V188h52a28,28,0,0,0,27.78-31.47ZM68,140H36V60H68Zm151,22.65a4,4,0,0,1-3,1.35H152a12,12,0,0,0-12,12v24a20,20,0,0,1-13.18,18.8L92,149.17V60H204a4,4,0,0,1,4,3.5l12,96A4,4,0,0,1,219,162.65Z\"/>","f":"<path d=\"M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Z\"/>"},"thumbs-up":{"b":"<path d=\"M237,77.47A28,28,0,0,0,216,68H164V56a44.05,44.05,0,0,0-44-44,12,12,0,0,0-10.73,6.63L72.58,92H32a20,20,0,0,0-20,20v88a20,20,0,0,0,20,20H204a28,28,0,0,0,27.78-24.53l12-96A28,28,0,0,0,237,77.47ZM36,116H68v80H36ZM220,96.5l-12,96a4,4,0,0,1-4,3.5H92V106.83L126.82,37.2A20,20,0,0,1,140,56V80a12,12,0,0,0,12,12h64a4,4,0,0,1,4,4.5Z\"/>","f":"<path d=\"M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32Z\"/>"},"user":{"b":"<path d=\"M234.38,210a123.36,123.36,0,0,0-60.78-53.23,76,76,0,1,0-91.2,0A123.36,123.36,0,0,0,21.62,210a12,12,0,1,0,20.77,12c18.12-31.32,50.12-50,85.61-50s67.49,18.69,85.61,50a12,12,0,0,0,20.77-12ZM76,96a52,52,0,1,1,52,52A52.06,52.06,0,0,1,76,96Z\"/>","f":"<path d=\"M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z\"/>"}};
+  var PH_JS = '/frontend/shared/oneway-icons.js?v=cb24a537';
+  var PH_PICK = '/frontend/shared/oneway-iconpicker.js?v=e8e956ef';
+  /* PHOSPHOR BOOT END */
+  var PH = {}, PH_NAMES = null, PH_TAGS = null, PH_LOAD = {}, PH_ALL = '/assets/icons/phosphor/all/';
+  (function () { for (var k in PH_BOOT) PH[k] = PH_BOOT[k]; })();
+  /* the ones a press holds: they carry the outline and the fill, and the fill springs in when held */
+  var HELD = { heart: 1, thumbup: 1, thumbdown: 1, repost: 1, bookmark: 1 };
+  /* THE LIGHT AN ICON GIVES WHEN IT IS LIT (the founder, 2026-10-10: "look at facebook ... and all our interactions do").
+     The interactions a person can hold or press carry three soft copies of their own filled shape behind them, hidden until
+     the button is lit (oneway-popit.css, "LIT BUTTONS GLOW"): wide and faint, then tighter and brighter, so the glow follows
+     the heart's or the thumb's own outline. Drawn in the SVG, not filtered: the safe floor every phone runs strips filters. */
+  var HALOED = { heart: 1, thumbup: 1, thumbdown: 1, repost: 1, bookmark: 1, share: 1, talk: 1 };
+  /* THE SPEECH BUBBLE'S THREE DOTS (the founder, 2026-10-10: "give it three dots like the typing animation when its open"):
+     they only show, and only move, while the conversation is open (`aria-expanded`; ".ow-dot"). Not an icon: a motion. */
+  var DOTS = '<circle class="ow-dot" cx="88" cy="128" r="13"/><circle class="ow-dot" cx="128" cy="128" r="13"/>'
+           + '<circle class="ow-dot" cx="168" cy="128" r="13"/>';
+  function phScript(src, then) {              /* one script, asked for once; then() when it has run */
+    var q = PH_LOAD[src];
+    if (q === true) { if (then) then(); return; }
+    if (q) { if (then) q.push(then); return; }
+    q = PH_LOAD[src] = then ? [then] : [];
+    try {
+      var s = doc.createElement('script'); s.src = src; s.async = true;
+      s.onload = function () { PH_LOAD[src] = true; q.forEach(function (f) { try { f(); } catch (_) {} }); };
+      s.onerror = function () { delete PH_LOAD[src]; };
+      (doc.head || doc.documentElement).appendChild(s);
+    } catch (_) {}
+  }
+  function phHas(n, w, sel) { var I = PH[n]; return !!(I && (sel ? I.b && I.f : I[w])); }
+  function phWant(n, w, sel) {
+    if (!PH_NAMES) { phScript(PH_JS); return; }
+    if (!PH_NAMES[n]) return;
+    (sel ? ['b', 'f'] : [w]).forEach(function (x) { if (!(PH[n] && PH[n][x])) phScript(PH_ALL + x + '-' + n.charAt(0) + '.js?v=2.1.1'); });
+  }
+  function phBody(role, n, w, sel) {
+    var I = PH[n], body = sel ? '<g class="ow-ic__o">' + I.b + '</g><g class="ow-ic__f">' + I.f + '</g>' : I[w];
+    if (HALOED[role]) {
+      var F = I.f || I.b;
+      body = '<g class="ow-halo ow-halo--x">' + F + '</g><g class="ow-halo ow-halo--w">' + F + '</g><g class="ow-halo ow-halo--t">'
+        + F + '</g>' + body;
+    }
+    return role === 'talk' ? body + DOTS : body;
+  }
+  /* a placeholder drawn before its icon arrived is filled in where it stands; one the set does not have hides */
+  function phFill() {
+    var els = doc.querySelectorAll ? doc.querySelectorAll('svg.ow-ic[data-ic]:empty') : [];
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i], n = el.getAttribute('data-ic'), w = el.getAttribute('data-w') || 'b', sel = el.classList.contains('ow-ic--sel');
+      if (phHas(n, w, sel)) el.innerHTML = phBody(el.getAttribute('data-role') || n, n, w, sel);
+      else if (PH_NAMES && !PH_NAMES[n]) el.setAttribute('data-ic-none', '');
+      else phWant(n, w, sel);
+    }
+  }
+  function glyph(name, opts) {
+    opts = opts || {};
+    var role = String(name || ''), n = ICONS[role] || role, w = opts.w === 'f' || opts.w === 'd' ? opts.w : 'b';
+    var sel = opts.sel != null ? !!opts.sel : !!HELD[role];
+    if (!/^[a-z0-9-]+$/.test(n) || (PH_NAMES && !PH_NAMES[n] && !PH[n])) return '';
+    var ok = phHas(n, w, sel);
+    if (!ok) phWant(n, w, sel);
+    return '<svg class="ow-ic' + (sel ? ' ow-ic--sel' : '') + (w === 'd' ? ' ow-ic--d' : '') + '" viewBox="0 0 256 256" aria-hidden="true"'
+      + ' data-ic="' + n + '"' + (w !== 'b' ? ' data-w="' + w + '"' : '') + (role !== n ? ' data-role="' + role + '"' : '') + '>'
+      + (ok ? phBody(role, n, w, sel) : '') + '</svg>';
+  }
+  function svg(name) { return glyph(name); }
+  OW.icons = {
+    v: '2.1.1',
+    /* oneway-icons.js and the whole set's files call this: their drawings, and (once) every name in the set */
+    add: function (set, names) {
+      for (var n in set) { var I = PH[n] || (PH[n] = {}); for (var w in set[n]) I[w] = set[n][w]; }
+      if (names) { PH_NAMES = {}; names.forEach(function (x) { PH_NAMES[x] = 1; }); }
+      phFill();
+    },
+    tags: function (rows) { PH_TAGS = rows; },
+    rows: function () { return PH_TAGS; },
+    has: function (name) { var n = ICONS[name] || name; return !!(PH[n] || (PH_NAMES && PH_NAMES[n])); },
+    ready: function (then) { phScript(PH_JS, then); },
+    /* the whole set, for the picker: every name with its tags, then each weight a letter at a time */
+    all: function (w, then) {
+      phScript(PH_ALL + 'names.js?v=2.1.1', function () {
+        var letters = {}; (PH_TAGS || []).forEach(function (r) { letters[r[0].charAt(0)] = 1; });
+        var ls = Object.keys(letters), left = ls.length;
+        if (!left) return then && then();
+        ls.forEach(function (l) { phScript(PH_ALL + (w || 'b') + '-' + l + '.js?v=2.1.1', function () { if (--left === 0 && then) then(); }); });
+      });
+    },
+    /* the picker is its own file, asked for the first time someone opens one */
+    picker: function (host, o) {
+      phScript(PH_PICK, function () { OW.iconPicker && OW.iconPicker(host, o); });
+    }
+  };
+  /* what Oneway draws beyond the first screen arrives once the page is idle, before anyone asks for it */
+  (function () {
+    function soon() { (global.requestIdleCallback || function (f) { return global.setTimeout(f, 900); })(function () { phScript(PH_JS); }, { timeout: 3000 }); }
+    if (doc.readyState === 'complete') soon(); else global.addEventListener('load', soon);
+  })();
   /* ═══ THE ONEWAY GLOBE ═════════════════════════════════════════════════
      Founder (2026-08-02): loading and success animations unique to ONEWAY,
      a wireframe globe doing a neon flashing sequence — referencing the LED
@@ -2450,7 +2575,9 @@
        cannot repost your own post"), so offering the press was a control that
        could only fail (founder/502's crawl found it). The count stays, because
        who reposted what you made is yours to see; it is simply not a button. */
-    if (you.mine) {
+    /* ...unless it was made in a Center's name: then it is the Center's, and its author passes it on like anyone
+       (the founder, 2026-10-21: "why can i william rauert not repost my centers posts"; `may_repost` is the door's rule) */
+    if (you.mine && !you.may_repost) {
       html += '<span class="po-act po-act--icon po-act--stat" aria-label="'
         + esc(reposts === 1 ? '1 repost' : (reposts || 0) + ' reposts') + '">'
         + OW.glyph('repost') + tally(reposts) + '</span>';
@@ -2632,8 +2759,8 @@
        learned that lesson in `OW.cross`. */
     /* jshint expr:true */ plate.offsetHeight;
 
-    var ms = opts.ms || 340;
-    plate.style.transition = 'transform ' + ms + 'ms cubic-bezier(.2,.8,.2,1),'
+    var ms = opts.ms || OW.motion.ms('open');
+    plate.style.transition = 'transform ' + ms + 'ms ' + OW.motion.ease('spring-soft') + ','
                            + ' opacity ' + Math.round(ms * 0.55) + 'ms linear '
                            + Math.round(ms * 0.45) + 'ms';
     plate.style.transform = 'translate(0,0) scale(1,1)';
@@ -2656,7 +2783,7 @@
     });
   };
 
-  OW.glyph = function (name) { return svg(name); };
+  OW.glyph = glyph;
 
   /* ── SOMEBODY IS TYPING UNDER A POST, AND THE POST'S CARD SAYS SO LIVE ────────
      ★ FOUNDER, 2026-10-10: *"when a user is typing under a video even if the user watching doesnt have it open still
@@ -2716,20 +2843,6 @@
   };
   root.setAttribute('data-ow-likes', OW.likes.get());
 
-  /* THE LIGHT AN ICON GIVES WHEN IT IS LIT (the founder, 2026-10-10: "look at facebook ... and all our interactions
-     do"). The interactions a person can hold or press carry three soft copies of their own shape behind them, hidden
-     until the button is lit (oneway-popit.css, "LIT BUTTONS GLOW"): wide and faint, then tighter and brighter,
-     stacked so the edge falls off in steps too small to read as a line, and the glow follows the thumb's or the heart's own outline instead of making a disc or a ring. They are drawn
-     in the SVG, not filtered: the safe floor that every phone runs strips CSS filters. */
-  var HALOED = { heart: 1, thumbup: 1, thumbdown: 1, repost: 1, bookmark: 1, share: 1, talk: 1 };
-  function svg(name) {
-    var d = ICONS[name]; if (!d) return '';
-    if (HALOED[name]) {
-      return '<svg viewBox="0 0 24 24" aria-hidden="true"><g class="ow-halo ow-halo--x">' + d + '</g>'
-        + '<g class="ow-halo ow-halo--w">' + d + '</g><g class="ow-halo ow-halo--t">' + d + '</g>' + d + '</svg>';
-    }
-    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + d + '</svg>';
-  }
 
   /* THE RESTING BEAD — depth 1, "Glance". Icon, a one-word label, and AT MOST
      one live signal. It withholds on purpose: the closed state teases, the
@@ -3161,6 +3274,16 @@
     center: 'this Center', operators: 'operators'
   };
 
+  function suggestedHost(cid) {
+    var h = doc.createElement('div');
+    h.className = 'po-card ow-lchost';
+    h.setAttribute('data-po-kind', 'highlight');
+    if (!cid) { h.hidden = true; return h; }
+    h.setAttribute('data-po-center', cid);
+    var ready = OW.suggested ? Promise.resolve() : (OW.need ? OW.need(['lcard', 'livecard']) : Promise.reject(new Error('no loader')));
+    ready.then(function () { OW.suggested('center', cid, h); }, function () { h.hidden = true; });
+    return h;
+  }
   OW.card = function (item, opts) {
     item = item || {}; opts = opts || {};
     var g = item.post ? postFace(item.post) : (item.gallery || item),
@@ -3206,34 +3329,13 @@
     }
 
     var media = (g.media_count || 0), posts = (g.post_count || 0);
-    if (g._highlight && g._center && OW.cards) {
-      n.setAttribute('data-po-center', g._center);
-      n.setAttribute('data-po-kind', 'highlight');
-      n.setAttribute('aria-label', 'Open ' + (who.name || 'this Center'));
-      n.classList.add('ow-ocard', 'ow-ocard--simple');
-      n.setAttribute('data-live-ref', 'center:' + g._center);   /* live on the card (frontend/shared/oneway-live.js) */
-      n.textContent = who.name || 'Loading profile';
-      OW.cards.mount(n, 'center', g._center, { as: 'simple', into: true, onOpen: false,
-        onMissing: function () { n.textContent = 'Profile unavailable'; },
-        onCard: function () { n.removeAttribute('data-blended'); }
-      });
-      if (opts.open !== false) n.addEventListener('click', function () {
-        doc.dispatchEvent(new CustomEvent('ow:enter-center', { detail: { id: g._center } }));
-      });
-      return n;
-    }
+    /* A SUGGESTED CENTER IS THE LANDING'S CARD (the founder, 2026-10-21, his Home at 1366: "instead of our beautiful cards
+       on the landing we made on both simple and popit with interactions we load these? what the heck man!"). The flat
+       box this drew (the renderer's simple row inside a feed card) is gone: the card is OW.lcard, alive
+       (frontend/shared/oneway-livecard.js), in a host that keeps the feed's one-card-per-row count. */
+    if (g._highlight) return suggestedHost(g._center);
     var counted = [];
-    if (g._highlight) {
-      /* the Center's name is already the face; saying it twice is noise, and
-         a members figure is only said when there is one */
-      if (g.title && who.name && g.title.trim() === String(who.name).trim()) g.title = '';
-      if (g._members) counted.push(g._members + (g._members === 1 ? ' member' : ' members'));
-      if (g._center) {
-        n.setAttribute('data-po-center', g._center);
-        n.setAttribute('data-po-kind', 'highlight');
-        n.setAttribute('aria-label', 'Open ' + (who.name || 'this Center'));
-      }
-    } else if (g._post) {
+    if (g._post) {
       /* WHERE IT WAS LIT, in the slot the counts use. A post's place is the
          point of it — "in Food & Dining" is what makes it a post to a Center
          rather than a note to nobody. Absent when the runtime cannot name the
@@ -3603,12 +3705,9 @@
             }
             return '';
           })() + '>' +
-        /* THE NOTE RIDES WITH THE FACE (founder, 2026-08-17). It is emitted
-           before the avatar in source order so it can be positioned above it
-           without the row having to reserve height for a note nobody set — a
-           person with no note costs this row exactly nothing, which is the
-           only way "everywhere" is affordable on a scrolling surface. */
-        OW.noteHTML(who.note, 'sm') +
+        /* THE NOTE IS ABOVE THE NAME (founder/878, 2026-10-21; it rode the face
+           since 2026-08-17): drawn first in the name's own block below, so a
+           person with no note costs this row nothing. */
         '<span class="po-card__av" data-kind="' + esc(/^(user|profile|)$/.test(String(who.kind || '')) ? 'person' : who.kind) + '"' +
           /* the author's own cut, when they chose one (founder/409) */
           (/^(round|rounded|square)$/.test(String(who.shape || '')) ? ' data-shape="' + esc(who.shape) + '"' : '') +
@@ -3638,7 +3737,7 @@
            sets in something chosen. Size and weight of the row do not move:
            only the FACE changes, or a person with a wordmark would have a
            taller card than a person without one. */
-        '<span class="po-card__n"><span class="po-card__nm'
+        '<span class="po-card__n">' + OW.noteHTML(who.note, 'sm') + '<span class="po-card__nm'
           + (who.wordmark && who.wordmark.stack ? ' ow-wm' : '') + '"'
           + (who.wordmark && who.wordmark.stack
              ? ' style="--wm:' + esc(who.wordmark.stack)
@@ -4025,12 +4124,7 @@
      read out to a screen reader, and callers pass it as the label. What
      changes is what is DRAWN. */
   OW.faceMark = function () {
-    return '<svg class="ow-facemark" viewBox="0 0 24 24" fill="none"'
-      + ' stroke="currentColor" stroke-width="1.6" stroke-linecap="round"'
-      + ' aria-hidden="true">'
-      + '<circle cx="12" cy="8.4" r="3.6"/>'
-      + '<path d="M5.4 20.2a6.6 6.6 0 0 1 13.2 0"/>'
-      + '</svg>';
+    return glyph('user', { sel: false }).replace('class="ow-ic', 'class="ow-facemark ow-ic');   /* the dock's person, Phosphor's */
   };
 
   /* A FACE THAT DOES NOT LOAD IS THE FACE THAT HAS NONE (2026-10-09). Measured at 390 on Home: a
@@ -4075,6 +4169,9 @@
      whole identity and the note can breathe. Two scales of one thing — not two
      designs, which is how a surface goes generic. */
   OW.noteHTML = function (note, size) {
+    /* THE ONE RENDERER (founder/878: "it appears everywhere but must look good doing so"): the bubble above the name is
+       oneway-cards.js's; a page without it keeps this plate. No size is the profile's own (two lines). */
+    if (OW.cards && OW.cards.noteHTML) return OW.cards.noteHTML(note, size === 'sm' ? 'sm' : (size || 'profile'));
     var text = typeof note === 'string' ? note : (note && note.text);
     text = String(text == null ? '' : text).trim();
     if (!text) return '';
@@ -4103,7 +4200,18 @@
     host.className = 'po-note__host';
     host.innerHTML = html;
     var n = host.firstChild;
-    wrap.insertBefore(n, avatarEl);
+    /* ABOVE THE NAME (founder/878): the first thing in the block beside the face, which holds the name; where a face has
+       no such block, before the face as it was */
+    var above = function () {
+      var named = avatarEl.nextElementSibling;
+      if (named && named !== n && !named.classList.contains('po-note')) { named.insertBefore(n, named.firstChild); return true; }
+      return false;
+    };
+    if (!above()) {
+      /* a row that adds its name after the face (a conversation's row) gets it on the next frame, before it is painted */
+      wrap.insertBefore(n, avatarEl);
+      global.requestAnimationFrame(function () { if (n.parentNode === wrap) above(); });
+    }
     return n;
   };
 
@@ -4857,6 +4965,45 @@
     });
     return { choices: got, missing: missing };
   }
+  /* A TIP, WHERE THE CENTER ASKS ONE (oneway/tips): its suggested percents and an amount of the person's own; none unless
+     pressed. The server takes the tip from what was chosen and refuses in words what it does not offer. */
+  function places(cur) {
+    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: cur }).resolvedOptions().maximumFractionDigits; }
+    catch (e) { return 2; }
+  }
+  function tipOf(p, el) {
+    var box = el && el.querySelector('[data-po-tip]');
+    if (!box || !box.firstChild) { return null; }
+    var own = box.querySelector('[data-po-tip-own]');
+    var v = own && String(own.value || '').trim().replace(/^[^0-9.]+/, '');
+    if (v) {
+      if (!/^\d+(\.\d+)?$/.test(v)) { return false; }
+      return { minor: Math.round(Number(v) * Math.pow(10, places(p.currency))) };
+    }
+    var on = box.querySelector('[data-po-tip-pick][aria-pressed="true"]');
+    var pct = on ? Number(on.getAttribute('data-po-tip-pick')) : 0;
+    return pct > 0 ? { percent: pct } : null;
+  }
+  function tipRow(p, box) {
+    OW.data.get('/api/oneway/centers/' + encodeURIComponent(p.center_id) + '/tips').then(function (r) {
+      var t = r && r.ok && r.data;
+      if (!t || !t.on || (t.kinds || []).indexOf('product') < 0 || !box.isConnected) { return; }
+      var price = Number(p.price) || 0;
+      var amt = function (pct) {
+        try { return new Intl.NumberFormat(undefined, { style: 'currency', currency: p.currency }).format(price * pct / 100); }
+        catch (e) { return ''; }
+      };
+      box.innerHTML = '<p class="ow-product__d">Add a tip</p><div class="ow-product__buy" role="group" aria-label="Tip">'
+        + '<button type="button" class="ow-popit-btn ow-popit-btn--fill" data-po-tip-pick="0" aria-pressed="true">No tip</button>'
+        + (t.suggestions || []).map(function (x) {
+            return '<button type="button" class="ow-popit-btn" data-po-tip-pick="' + Number(x) + '" aria-pressed="false" aria-label="'
+              + Number(x) + ' percent, ' + esc(amt(x)) + '">' + Number(x) + '% <span class="ow-product__whose">' + esc(amt(x)) + '</span></button>';
+          }).join('') + '</div>'
+        + (t.custom ? '<label class="ow-product__d">Or an amount <input class="ow-product__tipown" data-po-tip-own inputmode="decimal"'
+          + ' autocomplete="off" placeholder="3.00" aria-label="Tip amount"></label>' : '')
+        + '<p class="ow-product__whose">The tip goes to the team, with your order.</p>';
+    });
+  }
   OW.pay = function (p, el, btn) {
     if (!p || !p.pays_here || !p.center_id || !OW.data) { return false; }
     var c = choicesOf(p, el);
@@ -4864,9 +5011,11 @@
       if (!el) { OW.openProduct(p); } else { OW.toast('Choose its ' + c.missing.toLowerCase() + ' first.'); }
       return true;
     }
+    var tip = tipOf(p, el);
+    if (tip === false) { OW.toast('A tip is an amount, like 3.00.'); return true; }
     if (btn) { btn.disabled = true; }
     OW.data.post('/api/oneway/places/' + encodeURIComponent(p.center_id) + '/checkout',
-                 { product_id: p.id, quantity: 1, choices: c.choices }).then(function (r) {
+                 { product_id: p.id, quantity: 1, choices: c.choices, tip: tip }).then(function (r) {
       var url = r && r.ok && r.data && r.data.url;
       if (url && /^https?:\/\//i.test(url)) { global.location.assign(url); return; }
       if (btn) { btn.disabled = false; }
@@ -4881,6 +5030,19 @@
     if (w) { try { w.opener = null; } catch (e) {} }
     return true;
   };
+  /* back from starting a recurring charge (commerce/recurring): "<charge>.back|cancel"; what it is now, in the server's words */
+  OW.recurringBack = function (center, ref) {
+    var m = /^(rc_[a-f0-9]+)\.(back|cancel)$/.exec(String(ref || ''));
+    try { global.history.replaceState(global.history.state, '', global.location.pathname + '#/c/' + encodeURIComponent(center)); } catch (e) {}
+    if (!m || !OW.data) { return; }
+    if (m[2] === 'cancel') { OW.toast('Not started. Nothing was charged.'); return; }
+    OW.data.get('/api/oneway/me/recurring', { fresh: true }).then(function (r) {
+      var x = ((r && r.ok && r.data && r.data.charges) || []).filter(function (c) { return c.id === m[1]; })[0];
+      if (!x) { return; }
+      OW.toast(x.state === 'active' ? 'You\u2019re in: ' + x.name + ', ' + x.price_words + '.'
+                                    : 'Stripe is confirming it. It shows under Me when it starts.', { tone: 'ok' });
+    });
+  };
   /* back from Stripe: "<order>.<key>.back|cancel", read once; the key leaves the address at once */
   OW.orderBack = function (center, ref) {
     var m = /^(ord_[a-f0-9]+)\.([A-Za-z0-9_-]+)\.(back|cancel)$/.exec(String(ref || ''));
@@ -4893,6 +5055,13 @@
   };
   if (!doc.__owPayBound) {
     doc.__owPayBound = true;
+    doc.addEventListener('input', function (e) {
+      var own = e.target && e.target.closest && e.target.closest('[data-po-tip-own]');
+      if (!own || !String(own.value || '').trim()) { return; }
+      own.closest('[data-po-tip]').querySelectorAll('[data-po-tip-pick]').forEach(function (b) {
+        b.setAttribute('aria-pressed', 'false'); b.classList.remove('ow-popit-btn--fill');
+      });
+    });
     doc.addEventListener('click', function (e) {
       var t = e.target && e.target.closest ? e.target : null;
       var pick = t && t.closest('[data-po-pick]');
@@ -4905,6 +5074,18 @@
           b.setAttribute('aria-pressed', on ? 'true' : 'false');
           b.classList.toggle('ow-popit-btn--fill', on);
         });
+        return;
+      }
+      var tp = t && t.closest('[data-po-tip-pick]');
+      if (tp) {
+        e.preventDefault();
+        tp.parentNode.querySelectorAll('[data-po-tip-pick]').forEach(function (b) {
+          var on = b === tp;
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          b.classList.toggle('ow-popit-btn--fill', on);
+        });
+        var own = tp.closest('[data-po-tip]') && tp.closest('[data-po-tip]').querySelector('[data-po-tip-own]');
+        if (own) { own.value = ''; }
         return;
       }
       var pay = t && t.closest('[data-po-pay]');
@@ -4954,11 +5135,14 @@
             return '<p class="ow-product__d" data-po-option>' + esc(o.name) + ': ' + esc(o.values.map(function (v) { return v.label; }).join(' \u00b7 ')) + '</p>';
           }).join('')
         + (more ? '<div class="ow-product__pics">' + more + '</div>' : '')
+        + (p.pays_here && OW.canBuy(p) ? '<div class="ow-product__tip" data-po-tip></div>' : '')
         + (buy ? '<div class="ow-product__buy">' + buy + '</div>' : '')
         /* ORDER TO PICK UP, PAY AT THE COUNTER (oneway/pickup; frontend/shared/oneway-pickup.js draws it, loaded when wanted) */
         + '<div class="ow-product__pickup" data-po-pickup></div>'
         + '</div>'
     }, origin);
+    var tb = doc.querySelector('.ow-product [data-po-tip]');
+    if (tb && OW.data) { tipRow(p, tb); }
     var pu = doc.querySelector('.ow-product [data-po-pickup]');
     if (pu && p.center_id) {
       (OW.need ? OW.need('pickup') : Promise.resolve()).then(function () { if (OW.pickup) OW.pickup.offer(p, pu); }, function () {});
@@ -5022,7 +5206,9 @@
         { transform: 'translate(' + tx + 'px,' + ty + 'px) scale(' + sx + ',' + sy + ') rotate(0deg)', opacity: .55, offset: 0 },
         { opacity: 1, offset: .45 },
         { transform: restTransform(), opacity: 1, offset: 1 }
-      ], { duration: RM ? 1 : 540, easing: 'cubic-bezier(.34,1.56,.64,1)', fill: 'both' });
+      ], { duration: OW.motion.ms('open'), easing: OW.motion.ease('ease-out'), fill: 'both' });
+      /* S33: drawn out and soft. Not a spring: the old .34,1.56 curve drew the open sheet past its own size before it
+         settled, the "cards ... become super large" founder/863 saw; a sheet this big lands on the long ease instead */
       /* HAND THE REST POSITION TO INLINE STYLE AND RELEASE THE FILL. A filling
          animation outranks inline style in the cascade, so while it holds the
          pane nothing can measure the resting box — every rect read comes back
@@ -5086,7 +5272,7 @@
       { opacity: 1, offset: .72 },
       { transform: 'translate(' + (o.tx + restAt.x) + 'px,' + (o.ty + restAt.y) + 'px) scale('
                    + o.sx + ',' + o.sy + ') rotate(0deg)', opacity: 0, offset: 1 }
-    ], { duration: RM ? 1 : 360, easing: 'cubic-bezier(.5,0,.65,1)', fill: 'forwards' });
+    ], { duration: OW.motion.ms('leave'), easing: OW.motion.ease('ease-leave'), fill: 'forwards' });
 
     var seq = openSeq;
     var done = function () {
@@ -6473,6 +6659,15 @@
      `onAction` (Try again, See it). Not a dialog: nothing takes focus, nothing blocks, it fades on its own. Its look is
      the founder's to tune (.ow-toast in oneway-popit.css). */
   var toastEl = null, toastTimer = 0;
+  /* where a bar at the foot stands: above a dock that runs along the bottom, else where its stylesheet puts it (the toast
+     and OW.sure both, so the two never disagree) */
+  function aboveDock(el) {
+    try {
+      var nav = doc.querySelector('.ow-nav'), vh = global.innerHeight || 0, nr = nav && nav.getBoundingClientRect();
+      var clear = (nr && nr.height && nr.top > vh * 0.6 && global.getComputedStyle(nav).display !== 'none') ? (vh - nr.top + 10) : 0;
+      el.style.bottom = clear ? 'max(' + Math.round(clear) + 'px, calc(14px + var(--ow-dock,0px) + env(safe-area-inset-bottom)))' : '';
+    } catch (_) {}
+  }
   OW.toast = function (msg, opts) {
     opts = opts || {};
     if (!msg) return;
@@ -6496,6 +6691,11 @@
     dismiss.type = 'button'; dismiss.setAttribute('aria-label', 'Dismiss notification');
     dismiss.textContent = '\u00d7'; dismiss.addEventListener('click', function () { OW.toast.hide(); });
     head.appendChild(dismiss); toastEl.appendChild(head);
+    /* A SAVE A PERSON SHOULD SEE (opts.big; founder/882: "favorites need to be saved with a console alert and they always need
+       to stay up long enough and be prominent enough for users to see them"): larger words, the mark of what was kept, seven
+       seconds at least */
+    if (opts.big) toastEl.setAttribute('data-big', '1'); else toastEl.removeAttribute('data-big');
+    if (opts.big) { var mark = doc.createElement('span'); mark.className = 'ow-toast__mark'; mark.setAttribute('aria-hidden', 'true'); mark.textContent = '\u2605'; toastEl.appendChild(mark); }
     var tt = doc.createElement('span'); tt.className = 'ow-toast__t'; tt.textContent = String(msg); toastEl.appendChild(tt);
     if (opts.action && typeof opts.onAction === 'function') {
       var b = doc.createElement('button'); b.className = 'ow-toast__a'; b.textContent = String(opts.action);
@@ -6510,19 +6710,20 @@
     /* ABOVE THE DOCK, MEASURED (2026-10-11). `--ow-dock` is set only in the immersive view, so on Home a phone's bar sat
        over the dock it promises to clear (walk camera-keep, 390). Where a dock runs along the bottom, the bar sits
        above its top edge; a dock down the side (a wide screen) changes nothing. */
-    try {
-      var nav = doc.querySelector('.ow-nav'), vh = global.innerHeight || 0, nr = nav && nav.getBoundingClientRect();
-      var clear = (nr && nr.height && nr.top > vh * 0.6 && global.getComputedStyle(nav).display !== 'none') ? (vh - nr.top + 10) : 0;
-      toastEl.style.bottom = clear ? 'max(' + Math.round(clear) + 'px, calc(14px + var(--ow-dock,0px) + env(safe-area-inset-bottom)))' : '';
-    } catch (_) {}
-    /* reflow so a replacement message re-runs the entrance rather than
-       appearing already-arrived */
-    toastEl.removeAttribute('data-on');
-    void toastEl.offsetWidth;
-    toastEl.setAttribute('data-on', '1');
+    aboveDock(toastEl);
+    /* A REPLACEMENT WHILE ONE IS UP BREATHES IN PLACE (the founder, 2026-10-21: "notifcaton ... should be smooth and consistent
+       and shouldnt break under pressure"): twelve toasts in a burst are one bar changing its words, with a breath from what is
+       on screen (OW.motion.bounce); a toast that was not up rises in */
+    if (toastEl.hasAttribute('data-on') && OW.motion) {
+      OW.motion.bounce(toastEl, 'bump', 'translateX(-50%) translateY(0)');
+    } else {
+      toastEl.removeAttribute('data-on');
+      void toastEl.offsetWidth;
+      toastEl.setAttribute('data-on', '1');
+    }
     /* an error gets the second he asked for; something with an action to press
        gets long enough to press it */
-    toastTimer = global.setTimeout(OW.toast.hide, opts.action ? 8000 : Math.min(10000, Math.max(4000, String(msg).length * 45)));
+    toastTimer = global.setTimeout(OW.toast.hide, opts.action ? 8000 : Math.min(10000, Math.max(opts.big ? 7000 : 4000, String(msg).length * 45)));
   };
   OW.toast.hide = function () {
     if (toastTimer) { global.clearTimeout(toastTimer); toastTimer = 0; }
@@ -6531,7 +6732,61 @@
     var el = toastEl;
     global.setTimeout(function () {
       if (el && el.parentNode && !el.hasAttribute('data-on')) el.parentNode.removeChild(el);
-    }, 320);
+    }, OW.motion.ms('leave') + 100);      /* after its leave has run */
+  };
+
+  /* ══ ARE YOU SURE: THE ONE QUESTION BEFORE AN ACT (founder/882, 2026-10-21: "are you sure u want to delete? system popups
+     should popup smoothly in simple mode or popit") ═══════════════════════════════════════════════════════════════════════
+     OW.sure(words, { yes, no, tone: 'danger' }) -> a promise of true or false. It is the toast's own surface (its look in
+     Popit and in Simple, founder/871) holding the question and two buttons, and it moves as the toast does (S33): it rises
+     from under the dock, swells a touch and settles; leaving, it sinks. Not a box over the page (S2): nothing behind it dims
+     or stops, and the page can still be scrolled and read. Escape, or the other button, is no. A second question while one
+     is up answers the first no and takes its place with a breath. The App had none ("the App's confirm screen does not exist
+     here", messaging.js), so each surface asked in its own way; every confirm and alert asks here now. */
+  var sureEl = null, sureDone = null, sureN = 0;
+  OW.sure = function (msg, opts) {
+    opts = opts || {};
+    var was = !!(sureEl && sureEl.parentNode && sureEl.hasAttribute('data-on'));
+    if (sureDone) sureDone(false, true);
+    if (OW.toast && OW.toast.hide) OW.toast.hide();
+    return new Promise(function (resolve) {
+      var back = doc.activeElement, id = 'ow-sure-' + (++sureN);
+      if (!sureEl || !sureEl.parentNode) {
+        sureEl = doc.createElement('div');
+        sureEl.className = 'ow-toast ow-sure';
+        sureEl.setAttribute('role', 'alertdialog');
+        doc.body.appendChild(sureEl);
+      }
+      var el = sureEl;
+      el.innerHTML = '';
+      var t = doc.createElement('p'); t.className = 'ow-sure__t'; t.id = id; t.textContent = String(msg || 'Are you sure?');
+      el.setAttribute('aria-labelledby', id);
+      var row = doc.createElement('div'); row.className = 'ow-sure__acts';
+      var no = doc.createElement('button'); no.type = 'button'; no.className = 'po-act'; no.textContent = opts.no || 'Cancel';
+      var yes = doc.createElement('button'); yes.type = 'button'; yes.className = 'po-act po-act--primary'; yes.textContent = opts.yes || 'Yes';
+      if (opts.tone === 'danger') yes.setAttribute('data-tone', 'danger');
+      row.appendChild(no); row.appendChild(yes); el.appendChild(t); el.appendChild(row);
+      aboveDock(el);
+      var over = false;
+      function done(v, quiet) {
+        if (over) return; over = true; sureDone = null;
+        doc.removeEventListener('keydown', key, true);
+        if (!quiet) {
+          el.removeAttribute('data-on');
+          global.setTimeout(function () { if (el.parentNode && !el.hasAttribute('data-on')) el.parentNode.removeChild(el); }, OW.motion.ms('leave') + 100);
+          try { if (back && back.focus && back.isConnected) back.focus({ preventScroll: true }); } catch (_) {}
+        }
+        resolve(!!v);
+      }
+      function key(e) { if (e.key === 'Escape') { e.preventDefault(); done(false); } }
+      no.addEventListener('click', function () { done(false); });
+      yes.addEventListener('click', function () { done(true); });
+      doc.addEventListener('keydown', key, true);
+      sureDone = done;
+      if (was && el.hasAttribute('data-on')) OW.motion.bounce(el, 'bump', 'translateX(-50%) translateY(0)');
+      else { el.removeAttribute('data-on'); void el.offsetWidth; el.setAttribute('data-on', '1'); }
+      try { (opts.tone === 'danger' ? no : yes).focus({ preventScroll: true }); } catch (_) {}
+    });
   };
 
   global.OW = OW;

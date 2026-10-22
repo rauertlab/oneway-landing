@@ -29,6 +29,13 @@
   :root{--lp-fs-lead:var(--ow-fs-lead,17px);--lp-fs-body:var(--ow-fs-read,16px);--lp-fs-caption:var(--ow-fs-text,14px)}
   .lp-p{font-size:var(--lp-fs-lead)}
 }                     /* a note under an item: white, sentence case, never smaller */
+/* A VERY NARROW SCREEN (the founder, 2026-10-20: "look at it when the browser is really condesneed"): at 280 px one word of an
+   opening ("Communications.") ran past the screen. Under 400 px the three headline sizes follow the screen's width, so the
+   longest word of a page's headline fits its column, never larger than they were; a word that still cannot breaks. */
+@media (max-width:400px){
+  :root{--lp-fs-display:min(40px,10.4vw);--lp-fs-display-long:min(32px,9vw);--lp-fs-heading:min(30px,8.8vw)}:root.ow-old{--lp-fs-display:10.4vw;--lp-fs-display-long:9vw;--lp-fs-heading:8.8vw}
+}
+.t-display,.t-display-long,.t-heading,.t-sub{overflow-wrap:break-word}
 /* THE ROLES, as classes any landing page uses (the same face, weight, size and spacing on every page) */
 .t-display{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}
 .t-display-long{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;font-weight:900;font-size:var(--lp-fs-display-long);line-height:var(--lp-lh-display);letter-spacing:var(--lp-ls-display)}

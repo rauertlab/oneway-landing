@@ -57,15 +57,31 @@
      renewal ROTATES the session (POST /api/auth/refresh ends the old one at once, on purpose), and the App renews 4 s after
      a load, while the person is already moving: a read sent with the old cookie came back 401 (walked: GET
      /api/oneway/me/footsteps on Discovery, a console error), and a 401 here reads as "signed out" (sessionEnded). So every
-     request is counted while it flies, a renewal waits until none is (at most 4 s) and holds every new one until it has
-     answered, and a held request builds its session headers when it is finally sent. */
-  var flying = 0, renewal = null;
+     request is counted while it flies, a renewal waits until none is and holds every new one until it has answered,
+     and a held request builds its session headers when it is finally sent.
+     NO CAP ON THE WAIT (the staging walk, 2026-10-20: once in three fresh walks at 390, Messages' GET
+     /api/oneway/me/push came back 401 and read as signed out). The wait stopped at 4 s with requests still flying, and on a
+     busy server a read sent before that mark was taken up after the refresh had ended the old session. So the renewal
+     starts at the first moment nothing is in flight (decided in the same turn as the last answer, so nothing can slip
+     between); new requests keep going out while it waits, so a slow one never stalls the App; and if the App is never
+     quiet for 30 s, this renewal is put off (its promise answers `false`, "not renewed now") and the session it has
+     stands. Long-lived streams (the realtime stream) do not come through here and are never counted. */
+  var flying = 0, renewal = null, waiting = null;
+  function landed() { flying--; if (!flying && waiting) begin(waiting); }
   function lift(send) {
     function go() {
       flying++;
-      return send().then(function (r) { flying--; return r; }, function (e) { flying--; throw e; });
+      return send().then(function (r) { landed(); return r; }, function (e) { landed(); throw e; });
     }
     return renewal ? renewal.then(go, go) : go();
+  }
+  function begin(w) {
+    if (waiting === w) waiting = null;
+    global.clearTimeout(w.timer);
+    /* set in this turn, so every request asked for from here on waits for the renewal's answer */
+    renewal = Promise.resolve().then(w.renew)
+      .then(function (v) { renewal = null; return v; }, function (e) { renewal = null; throw e; });
+    renewal.then(w.ok, w.no);
   }
 
   /* ANOTHER TAB RENEWED THE SESSION: the App and the OS share this origin's storage, and a refresh
@@ -163,7 +179,12 @@
       /* A READ THE PAGE ALREADY STARTED (oneway-app.html's early Home read),
          taken once, and only on the same origin it was asked of */
       var early = !BASE && global.__owEarly && global.__owEarly[path];
-      if (early) delete global.__owEarly[path];
+      if (early) {
+        delete global.__owEarly[path];
+        /* it has been flying since the page began: counted from here, so a renewal waits for it too */
+        flying++;
+        early = early.then(function (r) { landed(); return r; }, function (e) { landed(); throw e; });
+      }
       var p = (early || lift(send))
         .then(function (r) {
           if (r.status === 401 && held) sessionEnded();
@@ -263,21 +284,22 @@
         return { ok: false, status: 0, error: 'Oneway did not answer, so nothing was done. Try again.' };
       });
     },
-    /* A RENEWAL, WHEN NOTHING IS IN FLIGHT (above): `renew` is called once every request already sent has its answer (or
-       after 4 s), and every request made meanwhile waits for its answer. One at a time: a second asks for the first. */
+    /* A RENEWAL, WHEN NOTHING IS IN FLIGHT (above): `renew` is called at the first moment no request is flying, and every
+       request made after that waits for its answer; never quiet for 30 s, it is put off and answers `false`. One at a time:
+       a second asks for the first. */
     /* A REQUEST SENT OUTSIDE THIS FILE, CARRIED AS ONE OF ITS OWN (R18, 2026-10-20: the OS's reads went around OW.data, so
        one in flight across a renewal came back 401 and read as signed out): counted while it flies, and held while a
        renewal runs. `send` is called when it may go and returns the request's promise. */
     carry: function (send) { return lift(send); },
     renewWhenQuiet: function (renew) {
       if (renewal) return renewal;
-      var quiet = new Promise(function (done) {
-        var waited = 0;
-        (function look() { if (!flying || waited >= 4000) return done(); waited += 50; global.setTimeout(look, 50); })();
-      });
-      renewal = quiet.then(function () { return renew(); })
-        .then(function (v) { renewal = null; return v; }, function (e) { renewal = null; throw e; });
-      return renewal;
+      if (waiting) return waiting.p;
+      var w = { renew: renew };
+      w.p = new Promise(function (ok, no) { w.ok = ok; w.no = no; });
+      waiting = w;
+      if (!flying) { begin(w); return w.p; }
+      w.timer = global.setTimeout(function () { if (waiting === w) { waiting = null; w.ok(false); } }, 30000);
+      return w.p;
     },
     /* DELETE, PUT — the same request path with a different verb. `post`
        already took `opts.method`; these exist so a caller reads as what it
@@ -425,6 +447,20 @@
   data.blob = function (url) {
     var u = String(url || '');
     if (!u) return Promise.reject(new Error('There is nothing here to read.'));
+    /* A data: ADDRESS IS DECODED HERE, NOT FETCHED: the App's connect-src is 'self', which refuses a fetch of one, and
+       Lightbulb's Edit on a photo just taken (a data: address) opened nothing at all (walked 2026-10-21) */
+    if (/^data:/i.test(u)) {
+      try {
+        var cut = u.indexOf(','), head = u.slice(5, cut), body = u.slice(cut + 1);
+        var bytes;
+        if (/;base64/i.test(head)) {
+          var bin = global.atob(body);
+          bytes = new Uint8Array(bin.length);
+          for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+        } else bytes = new global.TextEncoder().encode(decodeURIComponent(body));
+        return Promise.resolve(new global.Blob([bytes], { type: head.split(';')[0] || 'application/octet-stream' }));
+      } catch (e) { return Promise.reject(new Error('That picture could not be read.')); }
+    }
     var full = /^(data:|blob:|https?:)/.test(u) ? u : (BASE + (u.charAt(0) === '/' ? u : '/' + u));
     return global.fetch(full, { credentials: 'same-origin' }).then(function (r) {
       if (!r.ok) throw new Error('That picture could not be read.');

@@ -1,0 +1,7 @@
+{
+  "about": "Oneway's changelog (founder/870): one entry per big update, newest first. date is the day (YYYY-MM-DD); words are the founder's. changelog.html is drawn from this file; adding an entry needs no change to the page.",
+  "entries": [
+    {"date": "2026-10-21", "words": "Discovery became its own app inside Oneway, with Waypass and Near here. Messages, notifications and team chat were rebuilt, profiles got one clean layout, Lightbulb got a new camera and drafts, and the App and the OS can now be opened and closed from oneway.center itself."},
+    {"date": "2026-10-20", "words": "Platform servers have been put live for the first time, and the first App and landing tests began with pleasant results. We have already started work on the next fix to make Oneway even better."}
+  ]
+}

@@ -397,14 +397,82 @@ html[data-theme="light"][data-theme="light"]{
      sites move together and none can be missed. */
   --ow-font-atmos:'ONEWAY Sans',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
 
-  /* motion */
-  --ow-ease:cubic-bezier(.4,0,.2,1);
-  --ow-spring:cubic-bezier(.34,1.56,.64,1);
+  /* ── MOTION, THE ONE SET OF NAMES (S33; founder/865, 2026-10-21: "the biggest visual work that the app needs now is
+     smooth, slow, drawn out, and bubbly animations"). Every moment reads these: a sheet rising, a card pressed, a list
+     flowing in, a page arriving, a message, a toast, a like. A new moment picks a name here, never a number of its own.
+     The springs are real damped springs (written as linear() below, with a cubic-bezier for a browser without it):
+     --ow-spring is bubbly (one rounded overshoot of ~10%, a small rebound, then rest), --ow-spring-soft is the sheet's
+     (1.5%, so a thing rising from an edge never shows a gap under it). Entering is drawn out; leaving is quicker, so
+     nothing hangs about after a press. Reduced motion (the system's or the App's own switch) makes every duration here
+     instant, below. */
+  --ow-ease:cubic-bezier(.4,0,.2,1);              /* a small change of state: a colour, a fill */
+  --ow-ease-out:cubic-bezier(.22,1,.36,1);        /* the long, soft arrival */
+  --ow-ease-leave:cubic-bezier(.55,0,.45,1);      /* going away, without a jerk at either end */
+  --ow-spring:cubic-bezier(.34,1.56,.64,1);       /* bubbly: presses, a like, a toast, a pin */
+  --ow-spring-soft:cubic-bezier(.22,1.12,.36,1);  /* soft: sheets, menus, pages, a card opening */
   --ow-settle:cubic-bezier(.16,.84,.28,1);
+  --ow-dur-press:.28s;      /* a finger going down */
+  --ow-dur-state:.36s;      /* a colour, a fill, a selected mark */
+  --ow-dur-enter:.6s;       /* a page or a surface arriving */
+  --ow-dur-open:.72s;       /* a sheet or a menu rising and settling */
+  --ow-dur-settle:.8s;      /* a spring coming to rest: a card let go, a like, a toast */
+  --ow-dur-flow:.64s;       /* each row of a list flowing in */
+  --ow-dur-leave:.42s;      /* anything leaving */
+  --ow-stagger:55ms;        /* the beat between rows flowing in (eight at most wait for it) */
+
+  /* ── ROOM, THE ONE SET OF SPACES (S34; founder/865: "well-spaced text and visuals and boxes"; founder/866: "consistent
+     post spacing and card geometry"). A page's text and rows stand --ow-edge from the screen's edge; a card that runs wider
+     than the text (a phone's feed, for bigger pictures: founder/485) stands --ow-card-edge from it, and cards in a list
+     stand --ow-gap apart, the same as from the edge, so no gap reads as a mistake. Measured before (2026-10-21, 320 and
+     390): the feed's cards stood 8px from the edge and 8px apart, under text 18px in. For his eye (founder/264). */
+  --ow-edge:18px;
+  --ow-card-edge:12px;
+  --ow-gap:12px;
+
+  /* ── TYPE, THE ONE SCALE (the founder, 2026-10-21, via the dispatcher: "visual refinement and little things like
+     typography"; founder/866 §1: "Standardize typography ... Avoid oversized text"; S16: ONEWAY Sans, ONEWAY Head for the
+     App's headers). The reading sizes are the platform's one scale, oneway-fonts.css's --ow-fs-* (the OS and the sites read
+     them there; the App never loaded that sheet, so every var(--ow-fs-*) here fell back to a number): the same values, held
+     equal by api/oneway/platform/test_type_scale.py, one step smaller under 768 px. Above them, a screen's title and a section's
+     heading; under them, a label. Weights are four, line heights three. A new text picks a name here, never a number. */
+  --ow-fs-note:13px;--ow-fs-small:14px;--ow-fs-text:15px;--ow-fs-body:16px;--ow-fs-read:17px;--ow-fs-lead:18px;
+  --ow-t-title:26px;        /* a screen's title, one per screen (ONEWAY Head) */
+  --ow-t-greeting:44px;     /* Home's greeting, the one name larger than a title (founder/882: "more prominent and nicer") */
+  --ow-t-heading:18px;      /* a section's heading inside a screen */
+  --ow-t-label:12px;        /* a small label over a group, a badge's word */
+  --ow-w-regular:400;--ow-w-medium:500;--ow-w-semibold:600;--ow-w-bold:700;
+  --ow-lh-tight:1.15;       /* titles and headings */
+  --ow-lh-snug:1.3;         /* one-line UI text: a row's name, a button */
+  --ow-lh-read:1.45;        /* anything read as sentences */
+  --ow-track-label:.01em;
+  /* ICONS, FOUR SIZES (founder/866 §1: "Standardize ... icon sizes"): a glyph beside words 16, an icon inside a row, a tab or
+     a chip 20, a control's own icon 24, the dock's (the founder's 26, 28 on a computer: founder/831) its own */
+  --ow-icon-s:16px;--ow-icon:20px;--ow-icon-m:24px;
 
   /* the sheet's safe-area-aware gutter */
   --ow-gut:max(16px,env(safe-area-inset-left));
 }:root.ow-old{--ow-gut:16px}
+/* THE SPRINGS, DRAWN AS SPRINGS. A damped spring sampled at even steps (ζ 0.58 and 0.8; Chrome 113, Safari 17.2,
+   Firefox 112 draw linear()); an older browser keeps the cubic-bezier above. */
+@supports (transition-timing-function:linear(0,1)){
+  :root{
+    --ow-spring:linear(0,.06,.205,.388,.576,.745,.883,.986,1.054,1.092,1.106,1.103,1.09,1.071,1.051,1.032,1.016,1.004,.996,.991,.989,.989,.99,.992,.994,1);
+    --ow-spring-soft:linear(0,.055,.181,.333,.485,.621,.735,.825,.892,.941,.974,.995,1.007,1.013,1.015,1.015,1.013,1.011,1.008,1.006,1.004,1);
+  }
+}
+/* THE TYPE SCALE ONE STEP SMALLER ON A PHONE (the founder, 2026-10-20: "text should be smaller on mobile"), as oneway-fonts.css */
+@media (max-width:767px){
+  :root{--ow-fs-note:12px;--ow-fs-small:13px;--ow-fs-text:14px;--ow-fs-body:15px;--ow-fs-read:16px;--ow-fs-lead:17px;
+        --ow-t-title:22px;--ow-t-greeting:34px;--ow-t-heading:17px;--ow-t-label:11.5px}
+}
+/* STILL FOR ANYONE WHO ASKED (S33): the system's setting and the App's own (Settings, Reduce motion) make every moment
+   that reads the names above instant; nothing slides, swells or bounces. */
+@media (prefers-reduced-motion:reduce){
+  :root{--ow-dur-press:1ms;--ow-dur-state:1ms;--ow-dur-enter:1ms;--ow-dur-open:1ms;--ow-dur-settle:1ms;--ow-dur-flow:1ms;
+        --ow-dur-leave:1ms;--ow-stagger:0ms}
+}
+html[data-motion="reduced"]{--ow-dur-press:1ms;--ow-dur-state:1ms;--ow-dur-enter:1ms;--ow-dur-open:1ms;--ow-dur-settle:1ms;
+  --ow-dur-flow:1ms;--ow-dur-leave:1ms;--ow-stagger:0ms}
 /* THE WINDOWS OVERRIDE IS RETIRED WITH THE FACE THAT NEEDED IT. It existed
    because Windows could not draw the Poiret hairline at label sizes; the
    platform family renders correctly on both, so a per-OS font swap is now a
@@ -2412,8 +2480,8 @@ html.ow-old .po-links__more:focus{outline:2px solid rgba(var(--h),.9);outline-of
    rule that only works in the mode its author happened to be in. `--ow-h1` is
    the identity hue and is always defined, so the chain degrades to the person's
    own colour instead of to nothing. */
-.po-act,.ow-popit-btn{font:inherit;font-family:var(--ow-font);font-weight:560;font-size:12.5px;color:var(--ow-ink);cursor:pointer;border:0;padding:8px 14px;border-radius:var(--ow-btn-r,12px 10px 13px 11px);background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,0.3);box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 30%,transparent);transition:transform .16s var(--ow-spring), box-shadow .16s var(--ow-ease),
-             background .16s var(--ow-ease), opacity .16s}html.ow-old .po-act,html.ow-old .ow-popit-btn{box-shadow:0 0 0 1px rgba(255,255,255,0.3)}
+.po-act,.ow-popit-btn{font:inherit;font-family:var(--ow-font);font-weight:560;font-size:12.5px;color:var(--ow-ink);cursor:pointer;border:0;padding:8px 14px;border-radius:var(--ow-btn-r,12px 10px 13px 11px);background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,0.3);box-shadow:0 0 0 1px color-mix(in srgb,var(--ow-ink) 30%,transparent);transition:transform var(--ow-dur-press) var(--ow-spring), box-shadow var(--ow-dur-state) var(--ow-ease),
+             background var(--ow-dur-state) var(--ow-ease), opacity .16s}html.ow-old .po-act,html.ow-old .ow-popit-btn{box-shadow:0 0 0 1px rgba(255,255,255,0.3)}
 .po-act--wide{width:100%;text-align:left;display:flex;flex-direction:column;gap:1px}html.ow-nogap .po-act--wide>*+*{margin-top:1px}
 /* ── THE TAIL THAT TELLS TWO DESTINATIONS APART ────────────────────────────
    Shown ONLY when a chip's name is not unique in its row (see `chip` in
@@ -2729,7 +2797,7 @@ html.ow-old .po-act:focus,html.ow-old .ow-popit-btn:focus{outline:2px solid rgba
    to the padding box — a glow on `::before` would be cut off at the edge,
    invisibly, only on this component. See the note above. */
 .po-card,.ow-popit{box-shadow:0 0 54px -5px rgba(var(--h),.62);
-  transition:transform .18s var(--ow-spring), box-shadow .28s var(--ow-ease)}
+  transition:transform var(--ow-dur-settle) var(--ow-spring), box-shadow var(--ow-dur-state) var(--ow-ease)}
 @media (hover:hover) and (pointer:fine){
   /* hover stays a STEP above rest, not a second design — the same proportion
      the old pair had, carried onto the new floor */
@@ -3886,6 +3954,43 @@ html[data-theme="light"] .ow-prof[data-banner-style="framed"] .ow-prof__banner-d
    place's own website uses, in this platform's material. Every section is
    drawn only when the Center has something to put in it. */
 .ow-cpage{display:block;margin-top:4px}
+/* A BLANK PLACE'S FLOOR (founder/873; center.js drawFloor): Visit's two doors, Improve this place's answer, and the one
+   Report a problem at the page's foot */
+.ow-cpage__go{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}html.ow-nogap .ow-cpage__go>*{margin-right:10px}html.ow-nogap .ow-cpage__go>*{margin-bottom:10px}
+.ow-cpage__said{margin:8px 0 0;font-size:13px;color:var(--ow-ink-2)}
+.ow-cpage__said:empty{display:none}
+.ow-cpage__site{display:flex;gap:8px;margin-top:10px}html.ow-nogap .ow-cpage__site>*+*{margin-left:8px}
+.ow-cpage__site .ow-bk__in{flex:1;min-width:0}
+.ow-cpage__foot{display:flex;flex-direction:column;align-items:center;gap:10px;margin:28px 0 8px}html.ow-nogap .ow-cpage__foot>*+*{margin-top:10px}
+/* PHOTOS ON A CENTER'S MAIN (founder/865 Blueprints): a row of squares at the page's measure, scrolled sideways on a phone */
+.ow-cpage__photos{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(112px,1fr);gap:10px;overflow-x:auto;
+  scroll-snap-type:x mandatory;padding:2px 0 6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.ow-cpage__photos::-webkit-scrollbar{display:none}
+.ow-cpage__photo{display:block;aspect-ratio:1;border:0;padding:0;margin:0;border-radius:14px 12px 15px 13px;overflow:hidden;
+  background:var(--ow-veil,rgba(127,127,127,.12));scroll-snap-align:start;cursor:pointer}
+span.ow-cpage__photo{cursor:default}
+.ow-cpage__photo img{display:block;width:100%;height:100%;object-fit:cover}
+@media (min-width:760px){.ow-cpage__photos{grid-auto-flow:row;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));overflow:visible}}
+/* COMMUNITY-LISTED · NOT YET CLAIMED (founder/865): one small line over a place the community listed */
+.ow-clisted{display:inline-block;margin:2px 0 12px;padding:5px 11px;border-radius:999px;font-size:12.5px;line-height:1.3;
+  color:var(--ow-ink-2,rgba(244,245,251,.72));background:var(--ow-veil,rgba(127,127,127,.12))}
+/* SET IT UP FIRST (founder/873; center.js setupCard): a blank Center's essentials, each filled where it stands */
+.ow-csetup{margin:4px 0 18px;padding:16px;border-radius:20px 17px 21px 18px;background:var(--ow-veil,rgba(127,127,127,.1));
+  box-shadow:inset 0 0 0 1px var(--ow-seam,rgba(255,255,255,.1))}
+.ow-csetup__h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:6px}html.ow-nogap .ow-csetup__h>*+*{margin-left:12px}
+.ow-csetup__h b{font-size:17px;font-weight:700}
+.ow-csetup__n{font-size:13px;font-weight:650;color:var(--ow-ink-2)}
+.ow-csetup__row{display:grid;gap:8px;padding:12px 0;border-top:1px solid var(--ow-seam,rgba(255,255,255,.08))}
+.ow-csetup__row:first-child{border-top:0}
+.ow-csetup__k{font-size:14px;font-weight:650}
+.ow-csetup__go{display:flex;flex-wrap:wrap;align-items:center;gap:8px}html.ow-nogap .ow-csetup__go>*{margin-right:8px}html.ow-nogap .ow-csetup__go>*{margin-bottom:8px}
+.ow-csetup__go textarea{flex:1 1 100%;min-width:0}
+.ow-csetup__go input[type=time]{width:7.4em;flex:none;padding-inline:10px}
+.ow-csetup__w{font-size:13px;color:var(--ow-ink-2)}
+.ow-csetup__ok{font-size:13px;font-weight:650;color:#5ee08f}
+.ow-csetup__said{margin:0;font-size:13px;color:var(--ow-ink-2)}
+.ow-csetup__said:empty{display:none}
+.ow-csetup__row.is-done .ow-csetup__k{opacity:.6}
 .ow-cpage__now{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:2px 2px 16px}html.ow-nogap .ow-cpage__now>*{margin-right:10px}html.ow-nogap .ow-cpage__now>*{margin-bottom:10px}
 .ow-cpage__open{font-family:var(--ow-font);font-weight:650;font-size:12.5px;padding:6px 12px;
   border-radius:999px;color:#0b1f14;background:#5fe3a1;box-shadow:0 0 18px -6px #5fe3a1}
@@ -3944,6 +4049,11 @@ button.ow-cpage__ev:hover{transform:translateY(-2px)}
 .ow-product__buy{display:flex;align-items:center;gap:12px;flex-wrap:wrap}html.ow-nogap .ow-product__buy>*{margin-right:12px}html.ow-nogap .ow-product__buy>*{margin-bottom:12px}
 .ow-product__whose{font-size:12.5px;color:var(--ow-ink-3)}
 .ow-product__buy[role="group"]{margin:-6px 0 18px}   /* a choice's values, under its name (paid on Oneway) */
+/* a tip, where the Center asks one (oneway/tips): its percents with what each comes to, and an amount of one's own */
+.ow-product__tip{margin:0 0 6px}
+.ow-product__tip .ow-popit-btn .ow-product__whose{margin-left:6px;color:inherit;opacity:.72}
+.ow-product__tipown{width:7.5em;margin-left:8px;padding:8px 10px;border-radius:10px;border:1px solid var(--ow-line, rgba(127,127,127,.35));
+  background:transparent;color:var(--ow-ink);font:inherit}
 .po-sheet__face[data-kind="product"]{display:block;margin-top:14px}
 .po-sheet__face[data-kind="product"] img{position:static;top:auto;right:auto;bottom:auto;left:auto;inset:auto;display:block;width:100%;height:auto;max-height:62vh;object-fit:cover;border-radius:18px 16px 19px 17px}
 /* the name sits on the surface above the picture, not on it, so it keeps the surface's ink */
@@ -4837,43 +4947,14 @@ button,input,textarea,select{font-family:inherit}
 .po-act[data-po-respond="like"][data-act="on"]::before{
   animation:ow-ring .52s var(--ow-ease) both}
 
-@keyframes ow-liked{
-  0%  {transform:scale(1) rotate(0deg)}
-  30% {transform:scale(1.42) rotate(-7deg)}
-  55% {transform:scale(.9)  rotate(4deg)}
-  78% {transform:scale(1.1) rotate(-2deg)}
-  100%{transform:scale(1)   rotate(0deg)}}
-.po-act[data-po-respond="like"][data-act="on"] > svg{
-  animation:ow-liked .46s var(--ow-spring) both;
-  filter:drop-shadow(0 0 9px rgba(var(--h,var(--ow-h1)),.7))}
-
-/* DISLIKE — a knock downward. Deliberately unglamorous. */
-@keyframes ow-disliked{
-  0%  {transform:translateY(0) scale(1)}
-  35% {transform:translateY(3px) scale(1.16)}
-  65% {transform:translateY(1px) scale(.95)}
-  100%{transform:translateY(0) scale(1)}}
-.po-act[data-po-respond="dislike"][data-act="on"] > svg{
-  animation:ow-disliked .38s var(--ow-ease) both}
-
-/* REPOST — the glyph is a cycle, so the motion is one. */
-@keyframes ow-reposted{
-  0%  {transform:rotate(0deg) scale(1)}
-  45% {transform:rotate(200deg) scale(1.18)}
-  100%{transform:rotate(360deg) scale(1)}}
-.po-act[data-po-repost][data-act="on"] > svg{
-  animation:ow-reposted .58s var(--ow-spring) both;
-  filter:drop-shadow(0 0 8px rgba(var(--h,var(--ow-h1)),.6))}
-
-/* FAVOURITE — lifted, then put away. */
-@keyframes ow-saved{
-  0%  {transform:translateY(0) scale(1)}
-  30% {transform:translateY(-6px) scale(1.14)}
-  60% {transform:translateY(1px) scale(.96)}
-  100%{transform:translateY(0) scale(1)}}
-.po-act[data-po-save][data-act="on"] > svg{
-  animation:ow-saved .46s var(--ow-spring) both;
-  filter:drop-shadow(0 0 8px rgba(var(--h,var(--ow-h1)),.55))}
+/* THE FOUR GESTURES ARE SCRIPT'S NOW (2026-10-21; the founder: "like change ... button change ... should be smooth and
+   consistent and shouldnt break under pressure"): OW.act plays each from what is on screen (OW.motion.bounce: 'like' a heart
+   lands, 'dislike' a knock downward, 'repost' a turn, 'save' a lift and a settle; 'off' gives and springs back), so a quick
+   second tap carries on from the first. Measured before: these keyframes restarted whenever the server's answer came, and
+   fought the press's own bounce for a frame (a one-frame jump of .19 at 1366). Their light stays. */
+.po-act[data-po-respond="like"][data-act="on"] > svg{filter:drop-shadow(0 0 9px rgba(var(--h,var(--ow-h1)),.7))}
+.po-act[data-po-repost][data-act="on"] > svg{filter:drop-shadow(0 0 8px rgba(var(--h,var(--ow-h1)),.6))}
+.po-act[data-po-save][data-act="on"] > svg{filter:drop-shadow(0 0 8px rgba(var(--h,var(--ow-h1)),.55))}
 
 /* ── DOUBLE TAP ANYWHERE ON A POST ────────────────────────────────────────
    ★ FOUNDER: *"people should be able to double tap any kind of post to like
@@ -5134,6 +5215,22 @@ html[data-ow-view="immersive"] .ow-fgroup{
    same on every page — a text page is that Post, not a stack */
 html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{justify-content:center;
   bottom:calc(env(safe-area-inset-bottom) + 30px + var(--ow-dock,0px))}
+/* ONE ROOM FOR EVERY TEXT PAGE, THE SAME GAP ABOVE AND BELOW (PLAN R22; the founder, 2026-10-20: "scroll seems fluent but
+   not centered right"). Walked: a text Post stood 20 px nearer the switch than the dock on a phone (139 above, 159 below at
+   320) and 28 px on a desktop, and the dock's safe area was counted twice. The room is now the switch's bottom (56 px
+   under the safe area) to the dock's top (58 px tall, 10 px or the safe area + 6 px up), 12 px clear of each, the same
+   height as before so a page packs the same Posts; on a desktop, with no dock, 16 px clear of the switch and of the
+   screen's edge. Whatever a page holds, one Post or five, stands in the middle of it: auto margins centre what is
+   shorter than the room and give way to nothing when it is full. */
+html[data-ow-view="immersive"] .ow-fgroup,
+html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{top:calc(env(safe-area-inset-top) + 68px);bottom:calc(10px + 70px);bottom:calc(max(10px, env(safe-area-inset-bottom) + 6px) + 70px)}html.ow-old[data-ow-view="immersive"] .ow-fgroup,html.ow-old[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{bottom:calc(10px + 70px)}
+@media (min-width:900px){
+  html[data-ow-view="immersive"] .ow-fgroup,
+  html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{
+    top:calc(env(safe-area-inset-top) + 72px);bottom:calc(env(safe-area-inset-bottom) + 16px)}
+}
+html[data-ow-view="immersive"] .ow-fgroup > :first-child{margin-top:auto}
+html[data-ow-view="immersive"] .ow-fgroup > :last-child{margin-bottom:auto}
 
 /* ── THE GALAXY IS LEFT ALONE ──────────────────────────────────────────────
    ★ FOUNDER: *"It should be the static environment behind the text Post
@@ -5164,6 +5261,15 @@ html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{justify-content:center;
    pager's `index × page` landed between pages and the snap put the person
    back where they started — the wheel, the keys and a swipe all did nothing. */
 .ow-fscroll > .ow-hlband{display:none}
+/* AND NO MARGIN EITHER (PLAN R22; the founder, 2026-10-20: "scroll seems fluent but not centered right"). The quick-post
+   row's 12 px gap to the river below it was reaching the river after it became this pager, and a fixed box with a top
+   margin starts 12 px down: every page, the video's and the text's, settled 12 px low with its last 12 px under the
+   screen's edge. The counterpart of that rule, one class stronger. */
+html:not([data-simple="1"]) .ow-surface>.ow-quickpost:not([hidden])+.po-river.ow-fscroll{margin-top:0}
+/* SCROLL IS THE CONTENT ALONE (founder/866 §3: "Scroll: More immersive, content-first presentation ... Minimal interface
+   obstruction"): the quick-post row is Feed's. In Scroll it stayed in the page under the pinned Feed | Scroll switch (the switch
+   at 14-56px over its 18-86px, at 390 and 1366, Popit and Simple), "What's new?" cut in half. Feed is one tap away. */
+html[data-ow-view="immersive"] .ow-surface>.ow-quickpost{display:none}
 
 /* ── ONE FEED POSITION = ONE PAGE ─────────────────────────────────────────
    A group of five text Posts and a single video are the same thing here: one
@@ -5246,9 +5352,10 @@ html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{justify-content:center;
    header, with a rail on top of it. Instagram's picture is 100% of the
    screen. The card is ONEWAY's material and stays a card, so it does not go
    to zero; but on a phone the feed is the page, and the greeting's 18px is
-   not the feed's. The river steps 10px out of the page gutter on each side
-   — card 274, picture 266 — and the Scroll's group page takes the same
-   8px so Home and Scroll stay one component (founder, 2026-08-31). The glow
+   not the feed's. The river steps out of the page gutter on each side to
+   --ow-card-edge (12px since S34, 2026-10-21; it was 8px: card 274, picture
+   266 at 290, now 266 and 258) and the Scroll's group page takes the same
+   edge so Home and Scroll stay one component (founder, 2026-08-31). The glow
    is `0 0 26px -18px` now, about 8px of reach: it still fits the gutter. */
 @media (max-width:599px){
   /* ANY feed river, not only the one Home happens to mount as a direct child.
@@ -5257,8 +5364,8 @@ html[data-ow-view="immersive"] .ow-fgroup[data-n="1"]{justify-content:center;
      (measured 2026-09-22 at 290) — 20px of difference a person reads as two
      different components. A river is a river wherever it is mounted. */
   .ow-surface .po-river:not(.ow-fscroll):not(.ow-cv-posts .po-river){
-    margin-left:-10px;margin-right:-10px;width:auto}
-  .ow-fgroup{width:100% - 16px;width:min(680px, 100% - 16px)}
+    margin-left:calc(var(--ow-card-edge) - var(--ow-edge));margin-right:calc(var(--ow-card-edge) - var(--ow-edge));width:auto}
+  .ow-fgroup{width:100% - 2 * var(--ow-card-edge);width:min(680px, 100% - 2 * var(--ow-card-edge))}html.ow-old .ow-fgroup{width:100% - 2 * var(--ow-card-edge)}
 }
 .ow-fgroup > .po-card,
 .ow-fgroup > .ow-xc-slot{
@@ -5381,7 +5488,7 @@ html.ow-old .po-card__known:hover span,html.ow-old .po-card__known:focus span{te
   width:auto;height:auto;padding:0;
   background:none;box-shadow:none;border:0;border-radius:0;
   color:var(--ow-ink);
-  transition:color .16s var(--ow-ease), transform .18s var(--ow-spring)}
+  transition:color var(--ow-dur-state) var(--ow-ease), transform var(--ow-dur-press) var(--ow-spring)}
 /* HOME'S GLYPH, 19px, IN BOTH. These were 27px and 24px — a Like that is a
    different SIZE in each feed is a different control to the eye, and the
    founder's instruction is that a Post look the same in both.
@@ -5468,11 +5575,7 @@ html.ow-old .po-card__known:hover span,html.ow-old .po-card__known:focus span{te
   0%  {opacity:0; transform:translateY(14px) scale(.97)}
   60% {opacity:1; transform:translateY(-2px) scale(1.004)}
   100%{opacity:1; transform:none}}
-.ow-fpos[data-kind="group"] .ow-fgroup > .po-card{
-  animation:ow-popit-in .42s var(--ow-spring) both;
-  animation-delay:calc(var(--i, 0) * 42ms);
-  transition:transform .2s var(--ow-spring)}
-.ow-fpos[data-kind="group"] .ow-fgroup > .po-card:active{transform:scale(.988)}
+.ow-fpos[data-kind="group"] .ow-fgroup > .po-card{animation:ow-popit-in var(--ow-dur-flow) var(--ow-spring-soft) backwards;animation-delay:calc(var(--i, 0) * var(--ow-stagger));animation-delay:calc(min(var(--i, 0), 7) * var(--ow-stagger))}html.ow-old .ow-fpos[data-kind="group"] .ow-fgroup > .po-card{animation-delay:calc(var(--i, 0) * var(--ow-stagger))}
 @media (hover:hover) and (pointer:fine){
   .ow-fpos[data-kind="group"] .ow-fgroup > .po-card:hover{
     transform:translateY(-2px)}
@@ -5743,6 +5846,21 @@ html[data-theme="dark"][data-theme="dark"] .ow-fpos .po-card > .po-card__face{
 .ow-vctl__sound svg{width:19px;height:19px;fill:none;stroke:currentColor;
   stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .ow-vctl__sound svg path:first-child{fill:currentColor;stroke:none}
+/* ONE SOUND ICON ON EVERY VIDEO (PLAN R22; the founder, 2026-10-20: "depending if user has the sound icon on, which
+   should be added if it's not there on mobile and PC"). Each card video's frame (a cover or a carousel piece) carries it
+   in the bottom-right corner, over the picture, so the card keeps its size; Scroll keeps its own icon above. 32 px to the
+   eye, 44 px to the finger. */
+.ow-vsound{position:absolute;right:10px;bottom:10px;z-index:4;
+  width:32px;height:32px;padding:0;margin:0;display:grid;place-items:center;
+  border:0;border-radius:50%;cursor:pointer;
+  background:rgba(0,0,0,.42);color:#fff;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.ow-vsound::before{content:"";position:absolute;top:-6px;right:-6px;bottom:-6px;left:-6px;inset:-6px}
+.ow-vsound:active{opacity:.8}
+.ow-vsound svg{width:16px;height:16px;fill:none;stroke:currentColor;
+  stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ow-vsound svg path:first-child{fill:currentColor;stroke:none}
+.ow-fpos .ow-vsound{display:none}
 
 /* THE LINE IS POSITION, NOT A SCRUBBER. A draggable bar invites a person to
    aim at three pixels; the founder's *"progress indication where
@@ -5930,8 +6048,8 @@ html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over){display:none}
    person to the exact position they pressed from, not to the top of the feed.
    It is `OW.live.post` — the same surface a post opens into from anywhere
    else, given a different host. */
-.ow-fover{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:140;overflow-y:auto;overscroll-behavior:contain;background:var(--ow-ground, #000);background:color-mix(in srgb, var(--ow-ground, #000) 97%, transparent);padding:calc(env(safe-area-inset-top) + 56px) 0 calc(env(safe-area-inset-bottom) + 24px);-webkit-overflow-scrolling:touch;animation:ow-fover-in .22s var(--ow-ease) both}html.ow-old .ow-fover{background:var(--ow-ground, #000)}
-@keyframes ow-fover-in{from{opacity:0;transform:translateY(14px)}
+.ow-fover{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:140;overflow-y:auto;overscroll-behavior:contain;background:var(--ow-ground, #000);background:color-mix(in srgb, var(--ow-ground, #000) 97%, transparent);padding:calc(env(safe-area-inset-top) + 56px) 0 calc(env(safe-area-inset-bottom) + 24px);-webkit-overflow-scrolling:touch;animation:ow-fover-in var(--ow-dur-open) var(--ow-spring-soft) both}html.ow-old .ow-fover{background:var(--ow-ground, #000)}   /* S33: rises and settles, drawn out */
+@keyframes ow-fover-in{from{opacity:0;transform:translateY(28px)}
                        to{opacity:1;transform:none}}
 .ow-fover__in{max-width:620px;margin:0 auto;padding:0 18px}
 
@@ -6011,7 +6129,48 @@ html[data-ow-over="1"] .ow-fexit:not(.ow-fexit--over){display:none}
 /* the Feeds page */
 .ow-feeds__sec{display:flex;flex-direction:column;gap:10px;padding:6px 0 18px;
   border:0}html.ow-nogap .ow-feeds__sec>*+*{margin-top:10px}
+/* ═══ FEEDS, A STEP AT A TIME (founder/882, 2026-10-21: "must be deisnged with a step by step option by option process like we
+   did for sign up im tired of seeing long lists with longer subtext and text boxes") ══════════════════════════════════════
+   The Feeds page opens on tiles (Make a feed, Favorites, Your feeds, Find a feed), each part alone; Make a feed is one
+   question a screen, its answers as tiles, a bar for how far along, Back and Next, as sign-up's steps (signup.html .su-*). */
+html body .ow-feeds .ow-feeds__sec[hidden],html body .ow-feeds [hidden]{display:none!important}
+.ow-fsteps__tiles{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:6px 0 4px}
+.ow-fsteps__tiles--many{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media (min-width:900px){.ow-fsteps__tiles--many{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.ow-fsteps__tile{display:flex;flex-direction:column;justify-content:center;gap:4px;min-height:68px;min-width:0;margin:0;padding:12px 16px;border:0;border-radius:20px;text-align:left;cursor:pointer;font:inherit;color:var(--ow-ink);background:rgba(255,255,255,0.07);background:color-mix(in srgb,var(--ow-ink) 7%,transparent);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink) 10%,transparent);transition:background var(--ow-dur-press,.28s) var(--ow-ease-out,ease),box-shadow var(--ow-dur-press,.28s) var(--ow-ease-out,ease)}html.ow-old .ow-fsteps__tile{background:rgba(255,255,255,0.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)}html.ow-nogap .ow-fsteps__tile>*+*{margin-top:4px}
+.ow-fsteps__tile b{font-size:var(--ow-fs-body,16px);font-weight:var(--ow-w-semibold,600);line-height:var(--ow-lh-snug,1.3);overflow-wrap:anywhere}
+.ow-fsteps__tile span{font-size:var(--ow-fs-note,13px);color:var(--ow-ink-2)}
+.ow-fsteps__tile:hover{background:rgba(255,255,255,0.11);background:color-mix(in srgb,var(--ow-ink) 11%,transparent)}html.ow-old .ow-fsteps__tile:hover{background:rgba(255,255,255,0.11)}
+.ow-fsteps__tile[aria-checked="true"]{background:transparent;background:color-mix(in srgb,rgb(var(--ow-h1)) 26%,transparent);box-shadow:inset 0 0 0 2px rgb(var(--ow-h1))}html.ow-old .ow-fsteps__tile[aria-checked="true"]{background:transparent}
+html.ow-old .ow-fsteps__tile:focus{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+.ow-fsteps__tile:focus-visible{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+.ow-fsteps__menu{margin-top:12px}
+.ow-fsteps__menu .ow-fsteps__tile{min-height:96px;padding:16px 18px}
+.ow-fsteps__menu .ow-fsteps__tile b{font-size:var(--ow-fs-lead,18px)}
+.ow-fsteps__back{display:inline-flex;align-items:center;gap:6px;height:40px;margin:4px 0 8px;padding:0 4px;border:0;background:none;color:var(--ow-ink);
+  font:inherit;font-size:var(--ow-fs-text,15px);font-weight:var(--ow-w-semibold,600);cursor:pointer}html.ow-nogap .ow-fsteps__back>*+*{margin-left:6px}
+.ow-fsteps__back span{font-size:22px;line-height:1}
+.ow-fsteps__bar{height:4px;border-radius:2px;background:rgba(255,255,255,0.12);background:color-mix(in srgb,var(--ow-ink) 12%,transparent);overflow:hidden;margin:4px 0 22px}html.ow-old .ow-fsteps__bar{background:rgba(255,255,255,0.12)}
+.ow-fsteps__bar span{display:block;height:100%;width:0;border-radius:2px;background:rgb(var(--ow-h1));
+  transition:width var(--ow-dur-open,.72s) var(--ow-spring-soft,var(--ow-ease-out,ease))}
+.ow-fsteps__q{margin:0 0 16px;font-family:var(--ow-head,'ONEWAY Head',sans-serif);font-weight:var(--ow-head-weight,1000);letter-spacing:-.02em;
+  font-size:var(--ow-t-title,26px);line-height:var(--ow-lh-tight,1.15);color:var(--ow-ink);outline:none}
+.ow-fsteps__body{min-height:150px;animation:ow-fstep-in var(--ow-dur-enter,.6s) var(--ow-ease-out,ease) both}
+.ow-fsteps__body[data-dir="back"]{animation-name:ow-fstep-back}
+@keyframes ow-fstep-in{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes ow-fstep-back{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.ow-fsteps__body{animation:none}}
+.ow-fsteps__in{box-sizing:border-box;width:100%;height:52px;margin:0 0 12px;padding:0 16px;border-radius:16px;font:inherit;font-size:var(--ow-fs-body,16px);color:var(--ow-ink);background:rgba(255,255,255,0.06);background:color-mix(in srgb,var(--ow-ink) 6%,transparent);border:1px solid rgba(255,255,255,0.22);border:1px solid color-mix(in srgb,var(--ow-ink) 22%,transparent)}html.ow-old .ow-fsteps__in{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.22)}
+.ow-fsteps__in:focus{outline:2px solid rgb(var(--ow-h1));outline-offset:1px}
+.ow-fsteps__none{margin:8px 0;font-size:var(--ow-fs-text,15px);color:var(--ow-ink-2)}
+.ow-fsteps__foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:10px;margin-top:22px}
+.ow-fsteps__foot .ow-btn{min-height:50px;justify-content:center}
+.ow-fsteps__foot .ow-btn:disabled{opacity:.45;cursor:default}
 .ow-feeds__sec:last-child{border-bottom:0}
+.ow-feeds__sec[hidden]{display:none}
+/* a part's count rides its heading ("3/50", "2/10 pinned") in place of the sentence that used to say it (founder/863) */
+.ow-feeds__n{margin-left:8px;font-size:12.5px;font-weight:500;letter-spacing:0;text-transform:none;color:var(--ow-ink-3);font-variant-numeric:tabular-nums}
+.ow-feeds__n:empty{display:none}
 .ow-feedrow__w{appearance:none;-webkit-appearance:none;border:0;background:none;padding:0;text-align:left;cursor:pointer;font-family:var(--ow-font)}
 .ow-feedrow .ow-reach__acct{white-space:normal}
 .ow-feedrow .ow-reach__mk svg{fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
@@ -6350,17 +6509,14 @@ html[data-motion="reduced"] .ow-world__stars{animation:none !important}
 .po-act--icon[aria-pressed="true"] svg,
 .po-acts--rail .po-act[aria-pressed="true"] svg,
 .po-card__foot .po-acts .po-act[aria-pressed="true"] svg{
-  --ow-lit:currentColor;overflow:visible;
-  animation:ow-lit .56s cubic-bezier(.2,.9,.25,1.25)}
-.po-act[aria-pressed="true"] svg .ow-halo{display:inline;animation:ow-halo .7s ease-out}
+  --ow-lit:currentColor;overflow:visible}
+/* The press's bounce is script's now (OW.act -> OW.motion.bounce): it starts from what is on screen, so nine quick taps never
+   jump (the keyframes ow-lit and ow-unlit restarted at scale .62 on every tap: 21 jumps measured), and a post drawn already
+   liked, or liked from another screen, does not bounce by itself. */
+.po-act[aria-pressed="true"] svg .ow-halo{display:inline;animation:ow-halo var(--ow-dur-settle) var(--ow-ease-out)}
 .po-act--icon[data-po-respond="like"][aria-pressed="true"] svg,
 .po-acts--rail .po-act[data-po-respond="like"][aria-pressed="true"] svg,
 .po-card__foot .po-acts .po-act[data-po-respond="like"][aria-pressed="true"] svg{--ow-lit:var(--ow-like)}
-@keyframes ow-lit{
-  0%{transform:scale(.55) rotate(-18deg)}
-  42%{transform:scale(1.34) rotate(8deg)}
-  68%{transform:scale(.93) rotate(-3deg)}
-  100%{transform:scale(1) rotate(0)}}
 @keyframes ow-halo{0%{opacity:0}35%{opacity:.55}100%{}}
 /* pressed, not held: comment, share and every other action give the same light while the finger is down */
 .po-act:not([aria-pressed="true"]):active svg{transform:scale(.88);overflow:visible}
@@ -6912,7 +7068,7 @@ html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after,
 .po-card__foot .po-acts .po-act{
   background:none;box-shadow:none;padding:0;border-radius:0;
   color:var(--ow-ink);
-  transition:transform .18s var(--ow-spring),color .18s var(--ow-ease)}
+  transition:transform var(--ow-dur-press) var(--ow-spring),color var(--ow-dur-state) var(--ow-ease)}
 .po-acts--rail .po-act:hover,
 .po-card__foot .po-acts .po-act:hover{color:var(--ow-ink);transform:scale(1.08)}
 .po-acts--rail .po-act[aria-pressed="true"],
@@ -6960,6 +7116,24 @@ html:not([data-fx="safe"]) .ow-net ~ .ow-sky::after,
 .po-card__foot .po-acts .po-act{flex-direction:row;gap:6px}
 .po-card__foot .po-acts .po-act svg{width:23px;height:23px}
 .po-card__foot .po-acts .po-act b{font-size:13.5px;font-weight:650}
+/* A VERY NARROW SCREEN (2026-10-20, the narrow-screen guard: at 280 px six acts needed 271 px of a 252 px row and Save stood
+   past the screen's edge). Under 321 px the marks, their counts and the room around them step down, so the row holds all
+   six; the card keeps its shape. The row's own rules are the fixed rhythm's at the end of this file ("LAST ON PURPOSE"), so
+   these name the same boxes, one class stronger, rather than being placed after them. */
+@media (max-width:320px){
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){gap:3px;padding:8px 1px 8px 3px}
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){gap:3px;padding:8px 1px 8px 3px}
+  html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){gap:3px;padding:8px 1px 8px 3px}
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon.po-act--end:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){padding:8px 4px}
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon.po-act--end:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){padding:8px 4px}
+  html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon.po-act--end:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){padding:8px 4px}
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon > svg:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){width:20px;height:20px}
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon > svg:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){width:20px;height:20px}
+  html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon > svg:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){width:20px;height:20px}
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon > b:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){font-size:12.5px}
+  html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon > b:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){font-size:12.5px}
+  html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon.po-act--icon > b:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){font-size:12.5px}
+}
 
 /* a count of zero is not a number to print — the glyph alone is the honest
    state, and "0" reads as a judgement nobody made */
@@ -9382,7 +9556,11 @@ html[data-theme="dark"] .ow-cv-face.ow-cv-face--posts{
    those: content sits ON the ground, separated by a hairline, and the media
    runs edge to edge. So each of those four is removed rather than restyled. */
 
-html[data-simple="1"] .po-river{gap:0;border:1px solid rgba(255,255,255,0.1);border:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:24px;box-sizing:border-box;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 97%,rgb(var(--ow-h1)) 3%);overflow:hidden}html.ow-old[data-simple="1"] .po-river{border:1px solid rgba(255,255,255,0.1);background:var(--ow-ground)}
+/* NOT THE SCROLL PAGER (founder/863: "when my friend changes his oritnetion type popit simple his scrolling and feed and faviorties
+   get bricked"). In Scroll the river IS the pager (`.po-river.ow-fscroll`), and this rule's overflow:hidden outranked the
+   pager's own overflow-y:auto, so in Simple a finger could not move Scroll past its first page; the framed surface is the
+   feed's, never the full-screen pager's. platform/test_simple_scroll.py holds it. */
+html[data-simple="1"] .po-river:not(.ow-fscroll){gap:0;border:1px solid rgba(255,255,255,0.1);border:1px solid color-mix(in srgb,var(--ow-ink) 10%,transparent);border-radius:24px;box-sizing:border-box;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 97%,rgb(var(--ow-h1)) 3%);overflow:hidden}html.ow-old[data-simple="1"] .po-river:not(.ow-fscroll){border:1px solid rgba(255,255,255,0.1);background:var(--ow-ground)}
 html[data-simple="1"] .po-river>.ow-hlband{padding:16px 16px 0;margin-bottom:8px;min-width:0}
 
 /* One feed surface with quiet row boundaries, as in the founder's Threads reference. */
@@ -9939,7 +10117,11 @@ html.ow-old .ow-cv-next__e:focus{outline:2px solid rgba(var(--ow-h1),.95);outlin
    wherever it is declared, so this cannot be re-broken by somebody adding a
    `.po-river` rule below. The seam is a FEED decoration and has no business in
    a fullscreen pager, so it goes too. */
-.po-river.ow-fscroll{position:fixed;height:100%;padding-top:0;
+/* AND ITS WIDTH IS THE SCREEN'S (founder/863, his friend's Scroll "bricked"): `.po-river{max-width:640px}`, a one-class rule
+   declared after `.ow-fscroll`, narrowed the full-screen pager to 640px pinned at the left edge on a wide screen, over the
+   side menu, so a wheel over the middle of the page met nothing and Scroll stood still. Claimed here, at two classes, where
+   no later `.po-river` rule can take it (cards/test_simple_scroll.py). */
+.po-river.ow-fscroll{position:fixed;height:100%;padding-top:0;max-width:none;width:100%;margin:0;
   /* ── SCROLL ANCHORING WAS MOVING THE PAGER OFF ITS FIRST PAGE ──────────
      The pages are built INTO this container after it exists, and the browser's
      scroll anchoring compensates for content inserted above the current
@@ -10327,10 +10509,21 @@ html.ow-old .ow-post__nmb:focus{outline:2px solid rgba(var(--ow-h1),.7);outline-
 .ow-hlband__row>.po-card{flex:0 0 76%;max-width:320px;scroll-snap-align:start;margin:0}
 /* a band on a wide screen is a row of three, not one enormous card */
 @media(min-width:720px){.ow-hlband__row>.po-card{flex-basis:31%}}
-.ow-hlband__row>.po-card.ow-ocard--simple{flex:0 0 218px;max-width:218px;margin:0}
+/* A SUGGESTED CENTER IS THE LANDING'S CARD (the founder, 2026-10-21: "instead of our beautiful cards on the landing ... we load
+   these?"): the feed's host wears nothing of a feed card, the card (OW.lcard, landing-cards.css) is the whole of it */
+.po-card.ow-lchost{display:block;padding:0;border:0;background:none;box-shadow:none;border-radius:0;min-height:0;height:auto;
+  transform:none;cursor:default;overflow:visible;aspect-ratio:auto;isolation:auto}
+.po-card.ow-lchost::before,.po-card.ow-lchost::after{display:none}
+.po-card.ow-lchost:hover{transform:none;background:none;box-shadow:none}
+.po-card.ow-lchost[aria-busy="true"]{min-height:240px}
+.ow-hlband__row>.po-card.ow-lchost{flex:0 0 86%;flex:0 0 min(360px,86%);max-width:360px;margin:0;scroll-snap-align:start}
+.ow-hlband__row>.po-card.ow-lchost>.lc{max-width:none;height:100%}
+.ow-lchost .lc{cursor:pointer}
+.ow-lchost .lc .lc-acts [role="button"]{cursor:pointer}
+.ow-lchost .lc .lc-acts [aria-disabled="true"]{opacity:.6}
 .po-river{max-width:640px}
 html:not([data-simple="1"]) .po-river>.po-card{margin:0}
-html:not([data-simple="1"]) .po-river{gap:8px}
+html:not([data-simple="1"]) .po-river{gap:var(--ow-gap)}   /* S34: as far apart as from the edge */
 .po-river .ow-hlband{padding:18px 24px;margin:0}
 .ow-hlband__h{font:600 15px/1.4 var(--ow-font);letter-spacing:0;margin-bottom:14px}
 .ow-ocard.ow-ocard--simple{position:relative;isolation:isolate;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;width:218px;min-height:78px;padding:12px;border-radius:8px;background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 90%,rgb(var(--h,var(--ow-h1))) 10%);box-shadow:inset 0 0 0 1px rgba(var(--h,var(--ow-h1)),.16);border:0;text-align:left;cursor:pointer;font-family:var(--ow-font);transition:background .15s ease,box-shadow .15s ease}html.ow-old .ow-ocard.ow-ocard--simple{background:var(--ow-ground)}html.ow-nogap .ow-ocard.ow-ocard--simple>*+*{margin-left:10px}
@@ -10707,6 +10900,14 @@ video.ow-viewer__media{width:100%;max-height:100%}
 .ow-dest[aria-pressed="true"]{opacity:1}
 .ow-dest[aria-pressed="true"] .ow-dest__n{color:var(--ow-ink);font-weight:600}
 .ow-dest__face[data-shape="round"]{border-radius:50%}
+html.ow-old body .ow-dest:matches(.po-act--primary,[aria-pressed="true"],.is-on){box-shadow:none!important;outline:none!important;border:0!important;background:none!important}
+html.ow-old body .ow-dest:-webkit-any(.po-act--primary,[aria-pressed="true"],.is-on){box-shadow:none!important;outline:none!important;border:0!important;background:none!important}
+/* THE CHOSEN ONE IS RINGED AT ITS FACE, IN ITS SHAPE (the red team's D12; S13, S14): the button wears no ring of its own, so no
+   square is drawn round a round picture; the face gets the ring, a gap of the page's ground and the hue around it */
+html body .ow-dest:is(.po-act--primary,[aria-pressed="true"],.is-on){box-shadow:none!important;outline:none!important;border:0!important;background:none!important}
+html.ow-old body .ow-dest:matches(.po-act--primary,[aria-pressed="true"],.is-on) .ow-dest__face{box-shadow:0 0 0 2px var(--ow-ground,#0b0a12),0 0 0 4px rgb(var(--h,var(--ow-h1)))}
+html.ow-old body .ow-dest:-webkit-any(.po-act--primary,[aria-pressed="true"],.is-on) .ow-dest__face{box-shadow:0 0 0 2px var(--ow-ground,#0b0a12),0 0 0 4px rgb(var(--h,var(--ow-h1)))}
+html body .ow-dest:is(.po-act--primary,[aria-pressed="true"],.is-on) .ow-dest__face{box-shadow:0 0 0 2px var(--ow-ground,#0b0a12),0 0 0 4px rgb(var(--h,var(--ow-h1)))}
 .ow-dest__face[data-shape="square"]{border-radius:6px}
 .ow-dest__face img{width:100%;height:100%;object-fit:cover;display:block}
 .ow-dest__n{font-size:11px;line-height:1.2;text-align:center;max-width:68px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -10736,8 +10937,18 @@ video.ow-viewer__media{width:100%;max-height:100%}
    at 100001, the canvas at 99998), so a refusal said while one was open was in
    the page and on nobody's screen (measured: a refused publish in the editor).
    The layer only; how it looks is unchanged. */
-.ow-toast{position:fixed;left:50%;transform:translateX(-50%) translateY(10px);bottom:calc(14px + var(--ow-dock,0px) + env(safe-area-inset-bottom));z-index:2147483000;display:flex;flex-direction:column;align-items:stretch;gap:8px;isolation:isolate;max-width:calc(100vw - 32px);max-width:min(440px, calc(100vw - 32px));width:max-content;padding:12px 16px 16px;border-radius:22px 19px 23px 20px;--h:var(--ow-h1);--h2:var(--ow-h2);font-family:var(--ow-font);font-size:14px;line-height:1.45;letter-spacing:0;color:var(--ow-ink);background:none;opacity:0;pointer-events:none;transition:opacity .2s var(--ow-ease), transform .26s var(--ow-spring)}html.ow-nogap .ow-toast>*+*{margin-top:8px}
-.ow-toast[data-on]{opacity:1;transform:translateX(-50%) translateY(0)}
+.ow-toast{position:fixed;left:50%;transform:translateX(-50%) translateY(18px) scale(.92);transform-origin:50% 100%;bottom:calc(14px + var(--ow-dock,0px) + env(safe-area-inset-bottom));z-index:2147483000;display:flex;flex-direction:column;align-items:stretch;gap:8px;isolation:isolate;max-width:calc(100vw - 32px);max-width:min(440px, calc(100vw - 32px));width:max-content;padding:12px 16px 16px;border-radius:22px 19px 23px 20px;--h:var(--ow-h1);--h2:var(--ow-h2);font-family:var(--ow-font);font-size:14px;line-height:1.45;letter-spacing:0;color:var(--ow-ink);background:none;opacity:0;pointer-events:none;transition:opacity var(--ow-dur-leave) var(--ow-ease-leave), transform var(--ow-dur-leave) var(--ow-ease-leave)}html.ow-nogap .ow-toast>*+*{margin-top:8px}
+.ow-toast[data-on]{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+/* ITS MOTION, ABOVE THE CROSSING'S. The crossing's `html body > *:not(...)` (0,3,2) gives every child of the page an
+   opacity-only transition, and the toast is one: measured 2026-10-21 (390, Chrome), its rise never ran, it jumped into
+   place while it faded. Said at (0,3,2) and later, and (0,4,2) arriving.
+   LEAVING (S33): it sinks and fades, a little quicker than it came.
+   ARRIVING (S33; founder/863: a notification is never a full-screen pop): it rises from under the dock, swells a touch
+   past its size like a bubble and settles, over the long spring; opacity arrives first so it is never a flash. */
+html body > .ow-toast.ow-toast.ow-toast{
+  transition:opacity var(--ow-dur-leave) var(--ow-ease-leave), transform var(--ow-dur-leave) var(--ow-ease-leave)}
+html body > .ow-toast.ow-toast.ow-toast[data-on]{
+  transition:opacity var(--ow-dur-enter) var(--ow-ease-out), transform var(--ow-dur-settle) var(--ow-spring)}
 .ow-toast__head{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:24px}html.ow-nogap .ow-toast__head>*+*{margin-left:24px}
 .ow-toast__brand{font-size:12px;font-weight:650;color:var(--ow-ink-2)}
 .ow-toast__t{position:relative;z-index:1;min-width:0;overflow-wrap:anywhere;white-space:pre-line}
@@ -10776,11 +10987,13 @@ video.ow-viewer__media{width:100%;max-height:100%}
    textarea, so the padding is a floor rather than an exact figure — a floor
    that is too small hides a message, a floor that is slightly large costs a
    few pixels of air. */
-html[data-ow-thread] .ow-composer{position:fixed;left:0;right:0;bottom:0;z-index:120;padding:10px 14px 10px;padding:10px max(14px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));background:linear-gradient(0deg,var(--ow-chrome) 78%,transparent)}html.ow-old[data-ow-thread] .ow-composer{padding:10px 14px 10px}
+/* founder/863 OVERRULES 493's "the dock steps aside": the dock never leaves. The composer sits above it (a phone), beside the
+   rail (a computer), or on the keyboard, at the place oneway-app.html's threadChrome() measures from the nav and the visual
+   viewport (--ow-thread-bottom, --ow-thread-left, --ow-thread-pad). */
+html[data-ow-thread] .ow-composer{position:fixed;left:var(--ow-thread-left,0px);right:0;bottom:var(--ow-thread-bottom,0px);z-index:120;padding:10px 14px var(--ow-thread-pad,10px);padding:10px max(14px,env(safe-area-inset-left)) var(--ow-thread-pad,max(10px,env(safe-area-inset-bottom)));background:linear-gradient(0deg,var(--ow-chrome) 78%,transparent)}html.ow-old[data-ow-thread] .ow-composer{padding:10px 14px var(--ow-thread-pad,10px)}
 html[data-ow-thread] .ow-composer > *{max-width:640px}
 html[data-ow-thread] .ow-composer{justify-content:center}
-html[data-ow-thread] .ow-nav{display:none}
-html[data-ow-thread] .ow-main{padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+html[data-ow-thread] .ow-main{padding-bottom:calc(72px + var(--ow-thread-bottom,0px) + env(safe-area-inset-bottom))}
 
 /* ── ARRIVING LIKE iMESSAGE ───────────────────────────────────────────────
    A message that simply exists on the next paint reads as a page reload; one
@@ -10789,13 +11002,66 @@ html[data-ow-thread] .ow-main{padding-bottom:calc(72px + env(safe-area-inset-bot
    so this is the product's motion rather than a message-only effect. It runs
    on ARRIVAL only: `.ow-msg--new` is set by the surface when a row is appended
    after the first paint, so opening a thread does not animate fifty rows. */
+/* S33 (founder/865): slower and bubblier. The bubble grows out of its own tail corner (the sender's side) over the long
+   spring, so it swells a touch past its size and settles, the way iMessage's does; opacity arrives first. */
 @keyframes ow-msg-in{
-  from{opacity:0;transform:translateY(10px) scale(.985)}
+  from{opacity:0;transform:translateY(12px) scale(.82)}
+  30%{opacity:1}
   to{opacity:1;transform:none}}
-.ow-msg--new{animation:ow-msg-in .22s var(--ow-spring) both}
+.ow-msg--new{animation:ow-msg-in var(--ow-dur-settle) var(--ow-spring) both;transform-origin:0 100%}
+.ow-msg--new[data-mine]{transform-origin:100% 100%}
 @media (prefers-reduced-motion:reduce){
   .ow-msg--new{animation:none}
 }
+
+html.ow-old :matches(.po-river > .po-card, .ow-fgroup > .po-card){transition:transform var(--ow-dur-settle) var(--ow-spring), box-shadow var(--ow-dur-state) var(--ow-ease)}
+
+/* ══ THE SHARED MOMENTS, MOVED BY THE NAMES (S33; founder/865, 2026-10-21: "smooth, slow, drawn out, and bubbly") ══
+   The moments many surfaces share: a thing pressed, and rows flowing in when a page arrives. A moment that belongs to
+   one component (the toast, a message arriving, the like, the sheet) keeps its rule beside the component and reads the
+   same names (:root, MOTION). Transform and opacity only, so nothing here can move a neighbour or cost a layout.
+
+   A THING PRESSED gives a little under the finger and, let go, swells back a touch past its size on the bubbly spring
+   and settles. Measured before (2026-10-21, 390): a Post's card in the river did not move at all under a press, and a
+   card in a Scroll group could not either, because its arrival held transform with fill both. */
+:is(.po-river > .po-card, .ow-fgroup > .po-card){
+  transition:transform var(--ow-dur-settle) var(--ow-spring), box-shadow var(--ow-dur-state) var(--ow-ease)}
+html.ow-old :matches(.po-river > .po-card, .ow-fgroup > .po-card):active{transform:scale(.965);transition:transform var(--ow-dur-press) var(--ow-ease-out), box-shadow var(--ow-dur-state) var(--ow-ease)}
+:is(.po-river > .po-card, .ow-fgroup > .po-card):active{transform:scale(.965);
+  transition:transform var(--ow-dur-press) var(--ow-ease-out), box-shadow var(--ow-dur-state) var(--ow-ease)}
+html.ow-old :matches(.ow-threads > .ow-thread, .ow-notes > .ow-note){transition:transform var(--ow-dur-settle) var(--ow-spring), background-color var(--ow-dur-state) var(--ow-ease)}
+:is(.ow-threads > .ow-thread, .ow-notes > .ow-note){
+  transition:transform var(--ow-dur-settle) var(--ow-spring), background-color var(--ow-dur-state) var(--ow-ease)}
+html.ow-old :matches(.ow-threads > .ow-thread, .ow-notes > .ow-note):active{transform:scale(.982);transition:transform var(--ow-dur-press) var(--ow-ease-out), background-color var(--ow-dur-state) var(--ow-ease)}
+:is(.ow-threads > .ow-thread, .ow-notes > .ow-note):active{transform:scale(.982);
+  transition:transform var(--ow-dur-press) var(--ow-ease-out), background-color var(--ow-dur-state) var(--ow-ease)}
+
+/* ROWS FLOW IN WHEN A PAGE ARRIVES. OW.motion.arrive(surface) sets .ow-arrive for one beat as the page lands; its
+   first rows rise in one after another, a stagger apart, over the soft spring. Only in that beat: a list that redraws
+   itself later (a new message, a refresh) does not replay it, and rows added by scrolling arrive still.
+   `backwards`, never `both`: once a row has landed, nothing here holds its transform, so a press still moves it. */
+@keyframes ow-flow-in{from{opacity:0;transform:translateY(18px) scale(.98)}}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-surface > .ow-reqs, .ow-notes > .ow-note,
+               .ow-set__list > .ow-set__sec, .ow-hello, .ow-worlds, .ow-quickpost){animation:ow-flow-in var(--ow-dur-flow) var(--ow-spring-soft) backwards}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-surface > .ow-reqs, .ow-notes > .ow-note,
+               .ow-set__list > .ow-set__sec, .ow-hello, .ow-worlds, .ow-quickpost){
+  animation:ow-flow-in var(--ow-dur-flow) var(--ow-spring-soft) backwards}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(2){animation-delay:var(--ow-stagger)}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(2){animation-delay:var(--ow-stagger)}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(3){animation-delay:calc(var(--ow-stagger) * 2)}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(3){animation-delay:calc(var(--ow-stagger) * 2)}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(4){animation-delay:calc(var(--ow-stagger) * 3)}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(4){animation-delay:calc(var(--ow-stagger) * 3)}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(5){animation-delay:calc(var(--ow-stagger) * 4)}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(5){animation-delay:calc(var(--ow-stagger) * 4)}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(6){animation-delay:calc(var(--ow-stagger) * 5)}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(6){animation-delay:calc(var(--ow-stagger) * 5)}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(7){animation-delay:calc(var(--ow-stagger) * 6)}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(7){animation-delay:calc(var(--ow-stagger) * 6)}
+html.ow-old .ow-arrive :matches(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(n+8){animation-delay:calc(var(--ow-stagger) * 7)}
+.ow-arrive :is(.po-river > .po-card, .ow-threads > .ow-thread, .ow-notes > .ow-note, .ow-set__list > .ow-set__sec):nth-child(n+8){animation-delay:calc(var(--ow-stagger) * 7)}
+.ow-arrive .ow-worlds{animation-delay:var(--ow-stagger)}
+.ow-arrive .ow-quickpost{animation-delay:calc(var(--ow-stagger) * 2)}
 
 /* ══ THE CAMERA IS THE SCREEN ═════════════════════════════════════════════
    ★ FOUNDER/493: *"The camera should become the entire screen here, no matter
@@ -11127,8 +11393,8 @@ html[data-theme="dark"] .ow-set__row + .ow-set__row::before{background:rgba(255,
 .ow-set__none{color:var(--ow-ink-3);font-size:14px;margin:8px 2px}
 
 /* a row's own page slides in from the right, the way TikTok's do */
-.ow-set__page.is-in{animation:ow-set-in .22s var(--ow-ease,ease) both}
-@keyframes ow-set-in{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+.ow-set__page.is-in{animation:ow-set-in var(--ow-dur-enter) var(--ow-ease-out) backwards}
+@keyframes ow-set-in{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){ .ow-set__page.is-in{animation:none} }
 .ow-set__ph{display:flex;align-items:center;gap:8px;margin:2px 0 16px}html.ow-nogap .ow-set__ph>*+*{margin-left:8px}
 .ow-set__back{appearance:none;-webkit-appearance:none;border:0;background:none;cursor:pointer;
@@ -12316,15 +12582,7 @@ html[data-ow-thread] .ow-thread__foot .ow-props{position:fixed;left:0;right:0;z-
    The glyphs are 23px on a card and 28px on the Scroll's rail (from 19 and 25), drawn at 2-2.1 in the ink, not
    the grey; the counts 13.5px. A like pops past its size, settles and glows once in its own colour; the touch
    target (`.po-act::after`) is untouched, so nothing moves under the thumb. */
-.po-act[data-po-respond="like"].is-smash > svg{animation:ow-smash .62s cubic-bezier(.2,1.5,.35,1) both;transform-origin:50% 55%}
-@keyframes ow-smash{
-  0%{transform:scale(.55);filter:drop-shadow(0 0 0 currentColor)}
-  38%{transform:scale(1.48);filter:drop-shadow(0 0 9px currentColor)}
-  60%{transform:scale(.88)}
-  80%{transform:scale(1.08)}
-  100%{transform:scale(1);filter:drop-shadow(0 0 0 transparent)}}
-@media (prefers-reduced-motion:reduce){.po-act[data-po-respond="like"].is-smash > svg{animation:none}}
-html[data-ow-motion="reduce"] .po-act[data-po-respond="like"].is-smash > svg{animation:none}
+/* the smash itself is OW.act's bounce (OW.motion.bounce 'on'), which starts from what is on screen (2026-10-21) */
 
 /* ── LIKES AND DISLIKES, THE PERSON'S CHOICE (Settings > Appearance; OW.likes) ─────────────────────────────────
    The App's own choice row; each option shows the two marks it gives. */
@@ -12446,6 +12704,11 @@ html.ow-old .ow-ocard:focus{outline:2px solid rgba(var(--h,139,92,255),.9);outli
 .ow-ocard__face[data-shape="rounded"]{border-radius:30%}
 .ow-ocard__face[data-shape="square"]{border-radius:8px}
 .ow-ocard__face img{width:100%;height:100%;object-fit:cover;display:block}
+/* HERE NOW on a slim card (founder/863; oneway-cards.js slimFace): Messages' dot, 13px, a ring of the ground, bottom-right */
+.ow-ocard__faceon{position:relative;flex:none;display:inline-grid}
+.ow-ocard__on{position:absolute;right:-1px;bottom:-1px;width:13px;height:13px;border-radius:50%;background:#2fd27a;
+  box-shadow:0 0 0 2.5px var(--ow-ground,#000),0 0 8px rgba(47,210,122,.6);pointer-events:none}
+.ow-ocard[data-projection="micro"] .ow-ocard__on{width:10px;height:10px;box-shadow:0 0 0 2px var(--ow-ground,#000),0 0 6px rgba(47,210,122,.6)}
 .ow-ocard__face i{font-style:normal;font-family:var(--ow-font-display,inherit);font-weight:800;font-size:17px;letter-spacing:.02em}
 /* IN THE LIGHT ROOM THE INITIALS STAY READABLE (a cold judge, 2026-10-17: white letters on a pale mint or sky face, about
    1.5:1): a face with no picture wears the account's own colour, deepened, under its white letters */
@@ -12518,6 +12781,11 @@ html .po-act--icon svg{stroke-width:1.3}
 html .ow-fpos[data-kind] .po-card__foot .po-acts .po-act:not([aria-pressed="true"]):not([aria-expanded="true"]) > svg,
 html .po-acts--rail .po-act:not([aria-pressed="true"]):not([aria-expanded="true"]) > svg,
 html .po-act--icon:not([aria-pressed="true"]):not([aria-expanded="true"]) svg{opacity:.72}
+html.ow-old :matches(.po-card__foot,.po-acts--rail) .po-act > svg,html.ow-old .po-act--icon svg{transition:opacity var(--ow-dur-state) var(--ow-ease),transform var(--ow-dur-press) var(--ow-spring)}
+html.ow-old :-webkit-any(.po-card__foot,.po-acts--rail) .po-act > svg,html.ow-old .po-act--icon svg{transition:opacity var(--ow-dur-state) var(--ow-ease),transform var(--ow-dur-press) var(--ow-spring)}
+/* a held icon's light comes up and goes down over --ow-dur-state, never in one frame (2026-10-21, the founder: "like change
+   ... smooth"; measured: .72 to 1 in one frame on every press) */
+html :is(.po-card__foot,.po-acts--rail) .po-act > svg,html .po-act--icon svg{transition:opacity var(--ow-dur-state) var(--ow-ease),transform var(--ow-dur-press) var(--ow-spring)}
 html .ow-fpos[data-kind] .po-card__foot .po-acts .po-act:not([aria-pressed="true"]) > b,
 html .po-acts--rail .po-act:not([aria-pressed="true"]) > b,
 html .po-act--icon:not([aria-pressed="true"]) b{font-weight:400;opacity:.62}
@@ -12809,6 +13077,14 @@ html[data-theme="light"] .ow-ocard[data-projection="mini"] .ow-ocard__sub{opacit
 /* Full pages retain their actions/content shell and use the family's identity rules. */
 .ow-main:has(.ow-prof[data-projection="full"]){width:100%;max-width:1200px}
 .ow-prof[data-projection="full"]{container-type:inline-size;--id-avatar:96px;--id-padding:24px;margin-inline:16px}
+/* ROOM ON A PHONE, ONE EDGE (founder/866 §1 "Correct inconsistent margins and excessive empty space", §6 "Fix header spacing
+   and alignment"; motion's S34 find): a profile's and a Center's page stood three insets deep on a phone, the App's 18, this
+   16 and the tab panel's 18, so a Center's posts began 46px in at 320 and 390 (a 228px card at 320) and its sections 52px in.
+   On a phone the page keeps the App's own edge (--ow-edge) and a card the card edge, as Home does. */
+@media (max-width:599px){
+  .ow-prof[data-projection="full"]{margin-inline:0}
+  .ow-prof[data-projection="full"] > .ow-panel{padding-left:0;padding-right:0}
+}
 .ow-prof[data-projection="full"][data-kind] .ow-prof__name{font-size:1.75rem;line-height:1.25;letter-spacing:0;overflow-wrap:anywhere;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .ow-prof[data-projection="full"] .ow-prof__handle{max-inline-size:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0}
@@ -12879,7 +13155,8 @@ html.ow-old .ow-ocard[data-projection]:-webkit-any(.ow-ocard--tile,.ow-ocard--fl
 .ow-ocard[data-projection] .ow-ocard__top>.ow-ocard__face{border:1.5px solid var(--ow-banner-edge)}
 /* ONE EMPTY STATE ON A TAB: the profile's own half stands aside when the canvas above it has said it (canvas.js, me.js
    emptyMarked); an error is never marked */
-.ow-prof__canvas:has(> .ow-door) ~ * > .ow-door[data-empty="profile"]{display:none}
+.ow-prof__canvas:has(> .ow-door) ~ * > .ow-door[data-empty="profile"],
+.ow-prof__canvas:has(> .ow-cv-begin) ~ * > .ow-door[data-empty="profile"]{display:none}   /* the Main's action row says it (founder/866) */
 .ow-cv-empty--act{background:transparent;border:1px solid rgba(255,255,255,0.3);border:1px solid color-mix(in srgb,var(--ow-ink) 30%,transparent);box-shadow:none;border-radius:999px}html.ow-old .ow-cv-empty--act{border:1px solid rgba(255,255,255,0.3)}
 .ow-cv-empty--act:hover{background:transparent;border-color:rgba(255,255,255,0.65);border-color:color-mix(in srgb,var(--ow-ink) 65%,transparent)}html.ow-old .ow-cv-empty--act:hover{border-color:rgba(255,255,255,0.65)}
 
@@ -13455,6 +13732,13 @@ html.ow-old body .ow-compose__stage[data-screen="made"] .ow-compose__pick :-webk
 html body .ow-compose__stage[data-screen="made"] .ow-compose__pick :is(img,video){position:absolute;top:0;right:0;bottom:0;left:0;inset:0;width:100%!important;height:100%!important;max-height:none;object-fit:cover}
 .ow-toast > .po-card__face{display:none!important}
 .ow-toast{flex-direction:row-reverse!important;align-items:center!important;gap:12px!important;border-radius:999px;padding:10px 12px 10px 18px}
+/* A SAVE A PERSON SHOULD SEE (founder/882: favorites "always need to stay up long enough and be prominent enough for users to
+   see them"): the same bar, larger, its mark in the person's light before the words, the action a button */
+html body .ow-toast[data-big]{padding:14px 14px 14px 20px;gap:12px!important;min-width:92vw;min-width:min(92vw,340px);max-width:92vw;max-width:min(92vw,520px);font-size:var(--ow-fs-body,16px);font-weight:var(--ow-w-semibold,600);line-height:var(--ow-lh-snug,1.3)}
+html body .ow-toast[data-big] .ow-toast__t{font-size:var(--ow-fs-body,16px);font-weight:var(--ow-w-semibold,600);order:3}
+html body .ow-toast[data-big] .ow-toast__mark{order:4;flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;
+  font-size:16px;line-height:1;color:#fff;background:rgb(var(--ow-h1,124,92,255))}
+html body .ow-toast[data-big] .ow-toast__a{order:2;flex:none;height:36px;padding:0 14px;border-radius:999px;font-size:var(--ow-fs-small,14px);background:transparent;background:color-mix(in srgb,var(--ow-ground) 14%,transparent);box-shadow:inset 0 0 0 1px transparent;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ground) 40%,transparent)}html.ow-old body .ow-toast[data-big] .ow-toast__a{background:transparent;box-shadow:inset 0 0 0 1px transparent}
 .ow-toast .ow-toast__head{gap:0}
 .ow-toast .ow-toast__dismiss{width:28px;height:28px;padding:0;display:grid;place-items:center;border-radius:999px}
 /* the bar no longer leaves, so over the page it always has its ground under it (the safe tier, which strips the blur,
@@ -13759,9 +14043,9 @@ html body .po-card > .po-card__foot:not(:is(.ow-fpos[data-kind="media"],.ow-w,.o
 html.ow-old body .po-card__foot > .po-acts[data-po-responses]:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){display:flex;flex:1 1 auto;min-width:0;width:auto;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:0;margin:0 -8px;padding:0;position:static;top:auto;right:auto;bottom:auto;left:auto;inset:auto}
 html.ow-old body .po-card__foot > .po-acts[data-po-responses]:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){display:flex;flex:1 1 auto;min-width:0;width:auto;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:0;margin:0 -8px;padding:0;position:static;top:auto;right:auto;bottom:auto;left:auto;inset:auto}
 html body .po-card__foot > .po-acts[data-po-responses]:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){display:flex;flex:1 1 auto;min-width:0;width:auto;flex-wrap:nowrap;align-items:center;justify-content:flex-start;gap:0;margin:0 -8px;padding:0;position:static;top:auto;right:auto;bottom:auto;left:auto;inset:auto}
-html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){flex:0 0 auto;display:inline-flex;flex-direction:row;align-items:center;gap:6px;width:auto;height:40px;min-height:40px;padding:8px 1px 8px 4px;padding:8px max(1px,min(1.1cqi,4px)) 8px max(4px,min(2.2cqi,8px));padding:8px clamp(1px,1.1cqi,4px) 8px clamp(4px,2.2cqi,8px);margin:0;background:none;border:0;border-radius:0;box-shadow:none;transform:none;line-height:1;transition:opacity .15s var(--ow-ease),transform .18s var(--ow-spring)}
-html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){flex:0 0 auto;display:inline-flex;flex-direction:row;align-items:center;gap:6px;width:auto;height:40px;min-height:40px;padding:8px 1px 8px 4px;padding:8px max(1px,min(1.1cqi,4px)) 8px max(4px,min(2.2cqi,8px));padding:8px clamp(1px,1.1cqi,4px) 8px clamp(4px,2.2cqi,8px);margin:0;background:none;border:0;border-radius:0;box-shadow:none;transform:none;line-height:1;transition:opacity .15s var(--ow-ease),transform .18s var(--ow-spring)}
-html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){flex:0 0 auto;display:inline-flex;flex-direction:row;align-items:center;gap:6px;width:auto;height:40px;min-height:40px;padding:8px 1px 8px 4px;padding:8px max(1px,min(1.1cqi,4px)) 8px max(4px,min(2.2cqi,8px));padding:8px clamp(1px,1.1cqi,4px) 8px clamp(4px,2.2cqi,8px);margin:0;background:none;border:0;border-radius:0;box-shadow:none;transform:none;line-height:1;transition:opacity .15s var(--ow-ease),transform .18s var(--ow-spring)}
+html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){flex:0 0 auto;display:inline-flex;flex-direction:row;align-items:center;gap:6px;width:auto;height:40px;min-height:40px;padding:8px 1px 8px 4px;padding:8px max(1px,min(1.1cqi,4px)) 8px max(4px,min(2.2cqi,8px));padding:8px clamp(1px,1.1cqi,4px) 8px clamp(4px,2.2cqi,8px);margin:0;background:none;border:0;border-radius:0;box-shadow:none;transform:none;line-height:1;transition:opacity var(--ow-dur-state) var(--ow-ease),transform var(--ow-dur-press) var(--ow-spring)}
+html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){flex:0 0 auto;display:inline-flex;flex-direction:row;align-items:center;gap:6px;width:auto;height:40px;min-height:40px;padding:8px 1px 8px 4px;padding:8px max(1px,min(1.1cqi,4px)) 8px max(4px,min(2.2cqi,8px));padding:8px clamp(1px,1.1cqi,4px) 8px clamp(4px,2.2cqi,8px);margin:0;background:none;border:0;border-radius:0;box-shadow:none;transform:none;line-height:1;transition:opacity var(--ow-dur-state) var(--ow-ease),transform var(--ow-dur-press) var(--ow-spring)}
+html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){flex:0 0 auto;display:inline-flex;flex-direction:row;align-items:center;gap:6px;width:auto;height:40px;min-height:40px;padding:8px 1px 8px 4px;padding:8px max(1px,min(1.1cqi,4px)) 8px max(4px,min(2.2cqi,8px));padding:8px clamp(1px,1.1cqi,4px) 8px clamp(4px,2.2cqi,8px);margin:0;background:none;border:0;border-radius:0;box-shadow:none;transform:none;line-height:1;transition:opacity var(--ow-dur-state) var(--ow-ease),transform var(--ow-dur-press) var(--ow-spring)}
 html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:matches(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){color:var(--ow-ink)}
 html.ow-old body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:-webkit-any(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){color:var(--ow-ink)}
 html body .po-card__foot > .po-acts[data-po-responses] > .po-act.po-act--icon:not(:is(.ow-fpos[data-kind="media"],.ow-w,.ow-cv-face) *){color:var(--ow-ink)}
@@ -13866,6 +14150,30 @@ html body :is(.po-card__who,.ow-post__who,.ow-gal__who,.ow-thread,.ow-prof__id) 
 /* THE PROFILE: beside the identity, level with the face, at the header's right; the header gains no height for it */
 html body .ow-prof .ow-prof__id > .po-note{position:absolute;top:calc(34px + 8px);left:auto;right:18px;translate:none;max-width:calc(50% - 18px);max-width:min(260px,calc(50% - 18px))}
 html body .ow-prof[data-layout="above"] .ow-prof__id > .po-note{top:calc(50px);left:auto;right:18px;translate:none}
+/* ═══ A PERSON'S NOTE, ABOVE THEIR NAME, WHEREVER THEY APPEAR (founder/878, 2026-10-21: "notes are still not appearing above
+   the name closley and cleanly"; "the change is it appears everywhere but must look good doing so") ═══════════════════════
+   Instagram's Notes. One renderer (oneway-cards.js noteHTML; the material's OW.noteHTML and OW.noteOn draw through it) puts
+   the bubble in the flow, first in the block that holds the name, so it sits directly over the name, touching it, and never
+   covers a face, a name or a banner and is never clipped. The theme's own ground with a crisp hairline, the page's ink: it
+   reads on every hue, in Pop-it and in Simple. Its tail (.po-note__tie, an element: nothing paints a pseudo-element under a
+   header) points down toward the face. Sized for where it is (data-size): a short line on a small card or a row, one line on
+   a card, two lines on a profile. */
+html body .po-note{position:relative!important;top:auto!important;right:auto!important;bottom:auto!important;left:auto!important;inset:auto!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;translate:none!important;transform:none!important;order:0!important;flex:none!important;align-self:flex-start!important;grid-area:auto!important;display:block!important;width:max-content!important;max-width:100%!important;max-width:min(100%,220px)!important;min-width:0!important;margin:0 0 6px!important;padding:4px 10px 5px!important;box-sizing:border-box!important;border-radius:13px!important;background:var(--ow-ground,#0b0a12)!important;border:1px solid rgba(255,255,255,0.22)!important;border:1px solid color-mix(in srgb,var(--ow-ink) 22%,transparent)!important;box-shadow:0 2px 8px -4px rgba(0,0,0,.5)!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;color:var(--ow-ink)!important;text-shadow:none!important;animation:none!important;z-index:auto!important;pointer-events:auto!important;font:600 12px/1.3 var(--ow-font,"ONEWAY Sans",system-ui,sans-serif)!important;letter-spacing:0!important;text-transform:none!important;text-align:left!important}html.ow-old body .po-note{border:1px solid rgba(255,255,255,0.22)!important}
+html body .po-note .po-note__t{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  font:inherit!important;color:inherit!important;text-align:inherit!important;max-width:100%!important}
+html body .po-note > .po-note__tie{display:block!important;position:absolute!important;left:12px!important;right:auto!important;top:auto!important;bottom:-4px!important;width:7px!important;height:7px!important;transform:rotate(45deg)!important;translate:none!important;background:var(--ow-ground,#0b0a12)!important;border:1px solid rgba(255,255,255,0.22)!important;border:1px solid color-mix(in srgb,var(--ow-ink) 22%,transparent)!important;border-top:0!important;border-left:0!important;border-radius:0 0 2px 0!important}html.ow-old body .po-note > .po-note__tie{border:1px solid rgba(255,255,255,0.22)!important}
+html body .po-note[data-size="profile"]{max-width:100%!important;max-width:min(100%,280px)!important;font-size:13px!important;padding:5px 12px 6px!important;border-radius:15px!important}
+html body .po-note[data-size="profile"] .po-note__t{white-space:normal!important;display:-webkit-box!important;-webkit-box-orient:vertical!important;
+  -webkit-line-clamp:2!important;overflow-wrap:anywhere!important}
+html.ow-old body :matches(.po-note[data-size="sm"],.po-note.po-note--sm){max-width:100%!important;max-width:min(100%,160px)!important;font-size:11px!important;padding:2px 8px 3px!important;border-radius:10px!important;margin-bottom:5px!important}
+html.ow-old body :-webkit-any(.po-note[data-size="sm"],.po-note.po-note--sm){max-width:100%!important;max-width:min(100%,160px)!important;font-size:11px!important;padding:2px 8px 3px!important;border-radius:10px!important;margin-bottom:5px!important}
+html body :is(.po-note[data-size="sm"],.po-note.po-note--sm){max-width:100%!important;max-width:min(100%,160px)!important;font-size:11px!important;padding:2px 8px 3px!important;border-radius:10px!important;margin-bottom:5px!important}
+html.ow-old body :matches(.po-note[data-size="sm"],.po-note.po-note--sm) > .po-note__tie{left:9px!important;width:6px!important;height:6px!important;bottom:-3.5px!important}
+html.ow-old body :-webkit-any(.po-note[data-size="sm"],.po-note.po-note--sm) > .po-note__tie{left:9px!important;width:6px!important;height:6px!important;bottom:-3.5px!important}
+html body :is(.po-note[data-size="sm"],.po-note.po-note--sm) > .po-note__tie{left:9px!important;width:6px!important;height:6px!important;bottom:-3.5px!important}
+/* a byline's name block holds the bubble over the name; the face stays level with the name */
+html body .po-card__who:has(.po-note){align-items:flex-end}
+html body .po-card__n:has(> .po-note){display:flex;flex-direction:column;align-items:flex-start}
 
 /* THE FACE IN THE NAVIGATION IS THE GLYPH'S SIZE, CENTRED (founder/831): the caption is gone from the screen, so the glyph
    is the button's centre on the rail too, and the face covers it exactly at the new sizes (27 on a phone, 28 on the rail). */
@@ -13920,3 +14228,689 @@ html body .ow-w[data-mode="card"]:is([data-family="large"],[data-family="extra_l
 .ow-ocard.ow-ocard--chip[data-projection]:not(.ow-ocard--tile) .ow-ocard__name{font-size:13px;line-height:1.3;text-align:center;
   inline-size:auto;max-inline-size:76px;white-space:normal;overflow-wrap:break-word;text-overflow:clip;overflow:hidden;
   display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+
+/* ═══ WORDS ALWAYS READABLE ON A PERSON'S HUE (founder/863) ═══════════════════════════════════════════════════════════
+   messaging.js inkTheThread() sets the sent bubble's two stops and its ink from the hue in force (a light hue lifted under
+   dark ink, a dark one deepened under white, each only as far as 4.5:1 needs), and nameInk() a sender's name for the theme's
+   ground. Without them (no script yet) the bubble keeps its earlier ground. */
+html[data-ow-thread] .ow-msgs .ow-msg.ow-msg[data-mine]{background:linear-gradient(160deg,var(--ow-mine-a,rgb(var(--ow-h1))),
+    var(--ow-mine-b,rgb(var(--ow-h2))));background:linear-gradient(160deg,var(--ow-mine-a,color-mix(in oklab,rgb(var(--ow-h1)) 82%,#14131f)),
+    var(--ow-mine-b,color-mix(in oklab,rgb(var(--ow-h2)) 50%,#14131f)));color:var(--ow-mine-ink,#fff)}html.ow-old[data-ow-thread] .ow-msgs .ow-msg.ow-msg[data-mine]{background:linear-gradient(160deg,var(--ow-mine-a,rgb(var(--ow-h1))),
+    var(--ow-mine-b,rgb(var(--ow-h2))))}
+html[data-simple="1"][data-ow-thread] .ow-msgs .ow-msg.ow-msg[data-mine]{background:var(--ow-mine-a,rgb(var(--ow-h1)));
+  background-image:none;color:var(--ow-mine-ink,#fff)}
+html[data-ow-thread] .ow-msg.ow-msg[data-mine] .ow-rx__c{color:inherit}
+html[data-ow-thread] .ow-msg .ow-msg__who{color:var(--who-ink,rgb(var(--h,var(--ow-h1))))}
+
+/* ══ A NEW PERSON'S START (home.js mountFirstRun; founder/866 §3, §14) ═══════════════════════════════════════════════════
+   One block above the feed while a person follows fewer than three places: where they are, the places there as the App's
+   own cards with Follow, what is on, and three dots that fill. No paragraph (S28); a sentence only when something could not
+   be read. */
+.ow-fr-slot{margin:0 0 16px}
+.ow-fr{display:flex;flex-direction:column;gap:12px;padding:16px 0 4px}html.ow-nogap .ow-fr>*+*{margin-top:12px}
+.ow-fr__h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px}html.ow-nogap .ow-fr__h>*+*{margin-left:12px}
+.ow-fr__h > b{font-size:19px;font-weight:700;letter-spacing:-.01em;color:var(--ow-ink)}
+.ow-fr__n{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:600;color:var(--ow-ink-3)}html.ow-nogap .ow-fr__n>*+*{margin-left:5px}
+.ow-fr__n i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.18);background:color-mix(in srgb,var(--ow-ink) 18%,transparent);transition:background var(--ow-dur-state) var(--ow-ease-out)}html.ow-old .ow-fr__n i{background:rgba(255,255,255,0.18)}
+.ow-fr__n i.is-on{background:rgb(var(--ow-h1))}
+.ow-fr__n span{margin-left:4px}
+.ow-fr__at{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ow-ink-2);padding:0 2px}html.ow-nogap .ow-fr__at>*+*{margin-left:10px}
+.ow-fr__at b{color:var(--ow-ink);font-weight:650}
+.ow-fr__change{border:0;background:none;padding:4px 2px;font:inherit;font-size:13.5px;font-weight:650;color:rgb(var(--ow-h1));cursor:pointer}
+.ow-fr__ask{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:650;color:var(--ow-ink-2);padding:0 2px}html.ow-nogap .ow-fr__ask>*+*{margin-top:6px}
+/* where you are, as two choices (no text box until Somewhere else is pressed) */
+.po-river > .ow-fr-slot--in{margin:6px 0 14px}
+.ow-fr__q{font-size:var(--ow-fs-small,14px);font-weight:650;color:var(--ow-ink-2);padding:0 2px 8px}
+.ow-fr__two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.ow-fr__two .ow-btn{min-height:44px;justify-content:center}
+.ow-fr__ask input{font:inherit;font-size:16px;font-weight:500;color:var(--ow-ink);padding:12px 14px;border-radius:14px 12px 15px 13px;
+  border:1px solid var(--ow-field-edge,rgba(255,255,255,.14));background:var(--ow-field,rgba(255,255,255,.05));outline:none}
+.ow-fr__ask input:focus{border-color:rgba(var(--ow-h1),.6)}
+.ow-fr__hits{display:flex;flex-wrap:wrap;gap:8px;padding:0 2px}html.ow-nogap .ow-fr__hits>*{margin-right:8px}html.ow-nogap .ow-fr__hits>*{margin-bottom:8px}
+.ow-fr__hit{border:1px solid var(--ow-seam,rgba(255,255,255,.12));background:none;border-radius:999px;padding:8px 14px;font:inherit;
+  font-size:13.5px;font-weight:600;color:var(--ow-ink);cursor:pointer}
+.ow-fr__row{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:none;
+  padding:2px 2px 6px;margin:0 -2px}html.ow-nogap .ow-fr__row>*+*{margin-left:12px}
+.ow-fr__row::-webkit-scrollbar{display:none}
+.ow-fr__card{flex:0 0 78%;flex:0 0 min(78%,300px);scroll-snap-align:start;margin:0}
+.ow-fr__sub{font-size:14px;font-weight:700;color:var(--ow-ink);padding:4px 2px 0}
+.ow-fr__ev{flex:0 0 auto;display:flex;align-items:center;gap:10px;max-width:280px;padding:10px 14px 10px 10px;scroll-snap-align:start;
+  border:1px solid var(--ow-seam,rgba(255,255,255,.1));border-radius:16px 13px 17px 14px;background:none;font:inherit;color:inherit;
+  text-align:left;cursor:pointer}html.ow-nogap .ow-fr__ev>*+*{margin-left:10px}
+.ow-fr__date{display:grid;justify-items:center;min-width:42px;padding:6px 4px;border-radius:11px;background:rgba(var(--ow-h1),.16)}
+.ow-fr__date b{font-size:18px;font-weight:800;line-height:1}
+.ow-fr__date i{font-style:normal;font-size:10px;font-weight:800;letter-spacing:.12em;color:rgb(var(--ow-h1));margin-top:2px}
+.ow-fr__evb{display:grid;gap:2px;min-width:0}
+.ow-fr__evb b{font-size:14px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ow-fr__evb span{font-size:12.5px;color:var(--ow-ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ow-fr__none{font-size:14px;color:var(--ow-ink-3);padding:4px 2px}
+.ow-fr__done{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 2px}html.ow-nogap .ow-fr__done>*+*{margin-left:12px}
+.ow-fr__done b{font-size:16px;font-weight:700}
+@media (min-width:900px){ .ow-fr__card{flex-basis:300px} }
+@media (prefers-reduced-motion:reduce){ .ow-fr__n i{transition:none} }
+
+html.ow-old body :matches(.ow-hello__name.ow-hello__name.ow-hello__name,.ow-inbox__h.ow-inbox__h.ow-inbox__h,.ow-set__h.ow-set__h.ow-set__h,.ow-set__pt.ow-set__pt.ow-set__pt,.ow-cal__h.ow-cal__h.ow-cal__h,.ow-act__h.ow-act__h.ow-act__h,.ow-feedhead__n.ow-feedhead__n.ow-feedhead__n,.ow-ask.ow-ask.ow-ask,.ow-upload__h.ow-upload__h.ow-upload__h){font-size:var(--ow-t-title);line-height:var(--ow-lh-tight)}
+
+html.ow-old body :-webkit-any(.ow-hello__name.ow-hello__name.ow-hello__name,.ow-inbox__h.ow-inbox__h.ow-inbox__h,.ow-set__h.ow-set__h.ow-set__h,.ow-set__pt.ow-set__pt.ow-set__pt,.ow-cal__h.ow-cal__h.ow-cal__h,.ow-act__h.ow-act__h.ow-act__h,.ow-feedhead__n.ow-feedhead__n.ow-feedhead__n,.ow-ask.ow-ask.ow-ask,.ow-upload__h.ow-upload__h.ow-upload__h){font-size:var(--ow-t-title);line-height:var(--ow-lh-tight)}
+
+/* ══ A SCREEN'S TITLE, ONE SIZE (TYPE; the founder, 2026-10-21: "little things like typography") ═══════════════════════
+   Measured before (2026-10-21, rendered, 320 to 1366): the App's screen titles stood at seven sizes, 19, 20, 21, 22, 24, 26
+   and 28px (Settings 24 and its open menu 20, a Settings page 19, Messages 22, Home's name 21 to 26, Lightbulb's ask 24,
+   Calendar and Activity 28). Now every one is --ow-t-title (22 on a phone, 26 from 768), in ONEWAY Head (oneway-type.css),
+   tight. Said last, at (0,3,2), so it holds over each title's own rule (the deepest, Settings' open menu, is (0,3,0)); a
+   profile's name is the header's own. */
+html body :is(.ow-hello__name.ow-hello__name.ow-hello__name,.ow-inbox__h.ow-inbox__h.ow-inbox__h,.ow-set__h.ow-set__h.ow-set__h,.ow-set__pt.ow-set__pt.ow-set__pt,.ow-cal__h.ow-cal__h.ow-cal__h,.ow-act__h.ow-act__h.ow-act__h,.ow-feedhead__n.ow-feedhead__n.ow-feedhead__n,.ow-ask.ow-ask.ow-ask,.ow-upload__h.ow-upload__h.ow-upload__h){
+  font-size:var(--ow-t-title);line-height:var(--ow-lh-tight)}
+/* HOME'S GREETING (founder/882, 2026-10-21: "the hello william rauert section needs to be made more prominent and nicer and
+   ditch the sub text below it"): the name at the greeting's own size, larger than any title, in the person's own light in
+   Pop-it (mixed with the ink, so it reads on every hue), the plain ink in Simple; it rises in once, as the screen does. */
+html body .ow-hello{padding:10px 0 20px}
+html body .ow-hello .ow-hello__name.ow-hello__name.ow-hello__name{font-size:var(--ow-t-greeting);line-height:1.02;letter-spacing:-.035em;
+  animation:ow-hello-in var(--ow-dur-enter,.6s) var(--ow-ease-out,cubic-bezier(.2,.8,.2,1)) both}
+html:not([data-simple="1"]) body .ow-hello .ow-hello__name.ow-hello__name.ow-hello__name{background:linear-gradient(100deg,var(--ow-ink) 0%,rgb(var(--ow-h1)) 58%,
+    rgb(var(--ow-h2,var(--ow-h1))) 100%);background:linear-gradient(100deg,var(--ow-ink) 0%,color-mix(in srgb,rgb(var(--ow-h1)) 62%,var(--ow-ink)) 58%,
+    color-mix(in srgb,rgb(var(--ow-h2,var(--ow-h1))) 62%,var(--ow-ink)) 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding-bottom:.06em}html.ow-old:not([data-simple="1"]) body .ow-hello .ow-hello__name.ow-hello__name.ow-hello__name{background:linear-gradient(100deg,var(--ow-ink) 0%,rgb(var(--ow-h1)) 58%,
+    rgb(var(--ow-h2,var(--ow-h1))) 100%)}
+html body .ow-hello .ow-hello__hi{font-size:var(--ow-fs-read);color:var(--ow-ink-2);margin-bottom:4px}
+@keyframes ow-hello-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){html body .ow-hello .ow-hello__name.ow-hello__name.ow-hello__name{animation:none}}
+
+html.ow-old :matches(.ow-ph__count b,.ow-tab__n,.ow-req__t,.ow-thread__t,.ow-set__v,.ow-msg__t,.ow-note__t,.ow-price,[data-price],time){font-variant-numeric:tabular-nums}
+
+/* COUNTS, TIMES AND PRICES IN TABULAR FIGURES (TYPE), so a number that changes or stands in a column keeps its width:
+   a profile's and a tab's counts, a request's and a thread's time, a setting's value, a price. A Post's action counts were
+   already (.po-act > b). */
+:is(.ow-ph__count b,.ow-tab__n,.ow-req__t,.ow-thread__t,.ow-set__v,.ow-msg__t,.ow-note__t,.ow-price,[data-price],time){
+  font-variant-numeric:tabular-nums}
+
+html.ow-old :matches(.ow-top__bell,.ow-top__back,.ow-worlds__b,.ow-quickpost__prompt,.po-card__who,.ow-map__earth,.ow-feedswitch button,
+    .ow-quickpost__post,.ow-xp__view,.ow-xp__add,.ow-map__near,.ow-map__steps,.ow-map__heat,.ow-map__help,.ow-thread-head__more,
+    .ow-ph__count,.ow-tabs__next,.ow-depth__add,.ow-hit){position:relative}
+
+/* ══ EVERY CONTROL CAN BE PRESSED (the little things; founder/866 §1: "Make all primary touch targets comfortable") ═══════
+   Measured before (2026-10-21, 390, rendered): the bell and the gear 34 by 34, Back 40, the feed's tabs and Feed/Scroll 36
+   tall, Post 36, Discovery's Map/Explore 29 and its map controls 32 to 38, Messages' Mail and New 38, a profile's counts 38
+   and its tabs 36, Lightbulb's Add 36, Home's What's new? 40, a Post's author line 34, and the one button language's text
+   buttons (S20) 36 to 42 (Accept, Decline, Edit profile, Message, Post it). Each now has an invisible area at least 44 by 44 (Apple's minimum) centred on it, in
+   its free ::after (::before on the tabs, whose ::after a profile's header removes): nothing drawn moves or grows. A
+   control is made its own area's frame, at no weight: one another rule positions (Back, the map's controls, More tabs)
+   keeps that, and one nothing positions is relative, so its area is never framed by a far ancestor (measured: the help
+   control, unpositioned, would have laid a 390 by 800 layer over the page); the area itself is said at no weight, so a
+   rule that draws into that
+   pseudo-element still wins. Both are said with :where(), at no weight: a control another rule positions keeps its
+   position (and is the area's frame already), and none of these is set static anywhere (checked 2026-10-21), so the
+   frame is never an ancestor far away. A new small control: give it .ow-hit. */
+:where(.ow-top__bell,.ow-top__back,.ow-worlds__b,.ow-quickpost__prompt,.po-card__who,.ow-map__earth,.ow-feedswitch button,
+    .ow-quickpost__post,.ow-xp__view,.ow-xp__add,.ow-map__near,.ow-map__steps,.ow-map__heat,.ow-map__help,.ow-thread-head__more,
+    .ow-ph__count,.ow-tabs__next,.ow-depth__add,.ow-hit){position:relative}
+html.ow-old :matches(.ow-top__bell,.ow-top__back,.ow-worlds__b,.ow-quickpost__prompt,.po-card__who,.ow-map__earth,.ow-feedswitch button,.ow-quickpost__post,.ow-xp__view,.ow-xp__add,.ow-map__near,.ow-map__steps,.ow-map__heat,.ow-map__help,.ow-thread-head__more,.ow-ph__count,.ow-tabs__next,.ow-depth__add,.ow-hit)::after,html.ow-old :matches(.ow-tab, .po-act:not(.po-act--icon):not([data-po-respond]), .ow-btn)::before{content:"";position:absolute;left:50%;top:50%;width:44px;width:max(100%,44px);height:44px;height:max(100%,44px);transform:translate(-50%,-50%);pointer-events:auto}
+:where(.ow-top__bell,.ow-top__back,.ow-worlds__b,.ow-quickpost__prompt,.po-card__who,.ow-map__earth,.ow-feedswitch button,.ow-quickpost__post,.ow-xp__view,.ow-xp__add,.ow-map__near,.ow-map__steps,.ow-map__heat,.ow-map__help,.ow-thread-head__more,.ow-ph__count,.ow-tabs__next,.ow-depth__add,.ow-hit)::after,:where(.ow-tab, .po-act:not(.po-act--icon):not([data-po-respond]), .ow-btn)::before{content:"";position:absolute;left:50%;top:50%;width:44px;width:max(100%,44px);height:44px;height:max(100%,44px);transform:translate(-50%,-50%);pointer-events:auto}
+html.ow-old :matches(.ow-tab){position:relative}
+html.ow-old :-webkit-any(.ow-tab){position:relative}
+:where(.ow-tab){position:relative}
+html.ow-old :matches(.po-act:not(.po-act--icon):not([data-po-respond]),.ow-btn){position:relative}
+/* THE ONE BUTTON LANGUAGE (S20) TOO: a text button stands 36 to 42 tall; its area is 44, in its ::before (a like's light
+   is its own ::before and is left alone, and an icon button's area was already its ::after) */
+:where(.po-act:not(.po-act--icon):not([data-po-respond]),.ow-btn){position:relative}
+/* the dock's buttons are at least 44 wide (they were 40 in the phone's floating bar) */
+.ow-nav .ow-nav__b{min-width:44px}
+
+/* ── LIGHTBULB, founder/866 §8 (2026-10-21): controls on the media keep their contrast on any picture, Post and Send to
+   are two different acts to the eye, and what was made waits in the camera's tray. Still bare marks with a shadow, never a
+   grey bubble (founder, 2026-10-16). ── */
+/* a soft shade at the top of the photo, as at its foot, so the marks there read on a white picture as on a dark one */
+.ow-compose__stage[data-screen="made"] .ow-compose__pick::before{content:"";position:absolute;left:0;right:0;top:0;height:24%;
+  pointer-events:none;z-index:1;background:linear-gradient(180deg,rgba(0,0,0,.42),transparent)}
+html.ow-old body .ow-compose__stage[data-screen="made"] :matches(.ow-upload__back,.ow-compose__rm,.ow-compose__more){filter:drop-shadow(0 0 1px rgba(0,0,0,.85)) drop-shadow(0 1px 4px rgba(0,0,0,.7))}
+html.ow-old body .ow-compose__stage[data-screen="made"] :-webkit-any(.ow-upload__back,.ow-compose__rm,.ow-compose__more){filter:drop-shadow(0 0 1px rgba(0,0,0,.85)) drop-shadow(0 1px 4px rgba(0,0,0,.7))}
+html body .ow-compose__stage[data-screen="made"] :is(.ow-upload__back,.ow-compose__rm,.ow-compose__more){
+  filter:drop-shadow(0 0 1px rgba(0,0,0,.85)) drop-shadow(0 1px 4px rgba(0,0,0,.7))}
+html body .ow-compose__stage[data-screen="made"] .ow-compose__trim{filter:drop-shadow(0 0 1px rgba(0,0,0,.85)) drop-shadow(0 1px 4px rgba(0,0,0,.7))}
+/* POST: an outline with its mark, the quiet act; SEND TO: the one filled hue button with its arrow. Same height, two shapes */
+.ow-compose__stage[data-screen="made"] .ow-compose__twoacts .ow-compose__postbtn{display:inline-flex;align-items:center;gap:8px;
+  min-height:44px;padding:0 20px;border-radius:999px;border:1.5px solid rgba(255,255,255,.92)!important;background:transparent!important;
+  color:#fff;font-weight:700;font-size:.9375rem;text-shadow:0 1px 4px rgba(0,0,0,.6);box-shadow:0 1px 8px rgba(0,0,0,.25)}html.ow-nogap .ow-compose__stage[data-screen="made"] .ow-compose__twoacts .ow-compose__postbtn>*+*{margin-left:8px}
+/* the mark is its ::after, drawn first: its ::before is the 44-pixel press area every .ow-btn has (bbe315e74) */
+.ow-compose__stage[data-screen="made"] .ow-compose__twoacts .ow-compose__postbtn::after{content:"";order:-1;position:static;transform:none;width:16px;height:16px;flex:none;
+  background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='3.5' y='3.5' width='17' height='17' rx='4'/%3E%3Cpath d='M12 8v8M8 12h8'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round'%3E%3Crect x='3.5' y='3.5' width='17' height='17' rx='4'/%3E%3Cpath d='M12 8v8M8 12h8'/%3E%3C/svg%3E") center/contain no-repeat}
+.ow-compose__stage[data-screen="made"] .ow-compose__twoacts .ow-compose__sendbtn{min-height:44px;border-radius:999px}
+/* the camera's header marks over the live picture, where the picture runs under the header (below 900px; wider, the
+   header is over the page): light, with a shadow. The wordmark is left exactly as it is */
+@media (max-width:899px){
+  html[data-ow-lens] .ow-top__right .ow-top__bell{color:#fff;filter:drop-shadow(0 0 1px rgba(0,0,0,.8)) drop-shadow(0 1px 4px rgba(0,0,0,.6))}
+}
+/* the order line ("2 things. The first is what people see first.") sat on the row of marks at the top of the photo and
+   ran under the back mark: it sits over the two acts now, on the shade at the photo's foot */
+html body .ow-compose__stage[data-screen="made"] .ow-compose__why{top:auto;bottom:calc(env(safe-area-inset-bottom) + 152px);
+  width:max-content;max-width:calc(100% - 40px);text-align:center}
+/* WHAT YOU HAVE MADE, waiting in the camera: its last piece and how many, one press back to them */
+.ow-compose__tray{position:relative;width:46px;height:46px;padding:0;border:2px solid #fff;border-radius:12px;overflow:visible;cursor:pointer;
+  background:#000;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+html.ow-old .ow-compose__tray :matches(img,video){width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
+html.ow-old .ow-compose__tray :-webkit-any(img,video){width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
+.ow-compose__tray :is(img,video){width:100%;height:100%;object-fit:cover;display:block;border-radius:10px}
+.ow-compose__tray b{position:absolute;right:-7px;bottom:-7px;min-width:20px;height:20px;padding:0 5px;border-radius:10px;
+  background:rgb(var(--ow-h1,124,45,255));color:var(--ow-on-h1,#fff);font:700 12px/20px var(--ow-font);text-align:center}
+.ow-compose__tray:active{transform:scale(.95)}
+/* the receipt's way back: one quiet line under where it went */
+.ow-compose__done .ow-compose__undo{margin-top:6px}
+/* ══ MESSAGES, ONE OF THE MOST POLISHED PLACES IN THE APP — founder/866 §11 ═══════════════════════════════════════════
+   ★ FOUNDER/866: *"Messages should be one of the most polished and people-focused areas of the App."* Measured at 390 and
+   1366 before (2026-10-21): the bar and the strip under the composer let the conversation show through them; one person
+   wore two faces; a run of messages was a stack of separate pills; reactions made a bubble taller; a reply's quote stood
+   out past the words; a shared post was a dark box inside a coloured bubble with its author named twice and no picture
+   frame; a removed one said "the original is no longer available" in a box; a missed call was a grey sentence; Send ready
+   and Send not ready differed only by how faded it was. Each rule below answers one of those. Spacing and motion use the
+   ROOM and MOTION names (S33, S34), never a number of their own. */
+
+/* 1 · A RUN IS ONE SHAPE: the corners toward the sender tighten between messages of one run, the tail on its last */
+html[data-ow-thread] .ow-msgs .ow-msg:not([data-mine]):not([data-first]){border-top-left-radius:6px}
+html[data-ow-thread] .ow-msgs .ow-msg:not([data-mine]):not([data-last]){border-bottom-left-radius:6px}
+html[data-ow-thread] .ow-msgs .ow-msg[data-mine]:not([data-first]){border-top-right-radius:6px}
+html[data-ow-thread] .ow-msgs .ow-msg[data-mine]:not([data-last]){border-bottom-right-radius:6px}
+html[data-ow-thread] .ow-msgs.ow-msgs > [data-gap]{margin-top:var(--ow-gap,12px)}
+html[data-ow-thread] .ow-msgs.ow-msgs > .ow-msg-day{margin:calc(var(--ow-gap,12px) * 1.6) 0 calc(var(--ow-gap,12px) * .5)}
+
+/* 2 · THE TIME AND WHAT HAPPENED TO IT, READABLE: full strength in a quieter ink (it was the bubble's ink at 62%) */
+html[data-ow-thread] .ow-msgs .ow-msg__t{opacity:1;align-items:center;font-size:11.5px;font-variant-numeric:tabular-nums;color:rgba(255,255,255,0.64);color:color-mix(in srgb,var(--ow-ink) 64%,transparent)}html.ow-old[data-ow-thread] .ow-msgs .ow-msg__t{color:rgba(255,255,255,0.64)}
+html[data-ow-thread] .ow-msgs .ow-msg[data-mine] .ow-msg__t{color:var(--ow-mine-ink,#fff);color:color-mix(in srgb,var(--ow-mine-ink,#fff) 80%,transparent)}html.ow-old[data-ow-thread] .ow-msgs .ow-msg[data-mine] .ow-msg__t{color:var(--ow-mine-ink,#fff)}
+html[data-ow-thread] .ow-msgs .ow-msg__timer{display:inline-flex;align-items:center}
+html[data-ow-thread] .ow-msgs .ow-msg__timer svg{width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+/* sending is said on the message itself, on any message of a run */
+html[data-ow-thread] .ow-msgs .ow-msg[data-pending]{opacity:.82}
+html[data-ow-thread] .ow-msgs .ow-msg[data-pending] .ow-msg__t{display:flex}
+html[data-ow-thread] .ow-msgs .ow-msg[data-pending] .ow-msg__tt{display:inline;font-style:normal}
+html[data-ow-thread] .ow-msgs > .ow-msg__st{font-size:12px;color:rgba(255,255,255,0.62);color:color-mix(in srgb,var(--ow-ink) 62%,transparent)}html.ow-old[data-ow-thread] .ow-msgs > .ow-msg__st{color:rgba(255,255,255,0.62)}
+html[data-ow-thread] .ow-msgs > .ow-msg__st[data-st="read"]{color:rgba(255,255,255,0.78);color:color-mix(in srgb,var(--ow-ink) 78%,transparent)}html.ow-old[data-ow-thread] .ow-msgs > .ow-msg__st[data-st="read"]{color:rgba(255,255,255,0.78)}
+
+/* 3 · A REPLY'S QUOTE SITS ON THE WORDS' OWN EDGE: a flat block as wide as the words, its mark a straight bar inside it
+   (a 3px border on a 13px corner bent the bar and pushed the quote 5px past the words) */
+html[data-ow-thread] .ow-msgs .ow-msg .ow-msg__q.ow-msg__q{display:block;box-sizing:border-box;width:100%;margin:2px 0 6px;
+  padding:6px 10px 6px 12px;border:0;border-radius:10px;text-align:left;font:inherit;color:inherit;cursor:pointer;
+  background:rgba(var(--h,var(--ow-h1)),.10);box-shadow:inset 3px 0 0 rgba(var(--h,var(--ow-h1)),.85)}
+html[data-ow-thread] .ow-msgs .ow-msg[data-mine] .ow-msg__q.ow-msg__q{background:rgba(255,255,255,.16);box-shadow:inset 3px 0 0 var(--ow-mine-ink,#fff);box-shadow:inset 3px 0 0 color-mix(in srgb,var(--ow-mine-ink,#fff) 85%,transparent)}html.ow-old[data-ow-thread] .ow-msgs .ow-msg[data-mine] .ow-msg__q.ow-msg__q{box-shadow:inset 3px 0 0 var(--ow-mine-ink,#fff)}
+html[data-ow-thread] .ow-msgs .ow-msg__q-who{display:block;font-size:12px;font-weight:650;line-height:1.3}
+html[data-ow-thread] .ow-msgs .ow-msg__q-b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  font-size:13px;line-height:1.3;opacity:.85}
+html[data-ow-thread] .ow-msgs .ow-msg__q--gone{font-size:12.5px;opacity:.75;box-shadow:none}
+
+/* 4 · REACTIONS REST ON THE BUBBLE'S EDGE, one small pill, as Messenger and Instagram draw them; the bubble keeps its size */
+html[data-ow-thread] .ow-msgs .ow-msg:has(.ow-rx__c){margin-bottom:15px}
+html[data-ow-thread] .ow-msgs .ow-rx:empty{display:none}
+html[data-ow-thread] .ow-msgs .ow-rx{position:absolute;bottom:-16px;z-index:2;display:flex;gap:1px;margin:0;padding:2px;
+  border-radius:999px;background:var(--ow-panel-1);
+  box-shadow:0 0 0 2px var(--ow-ground),0 3px 10px -4px rgba(0,0,0,.4);
+  animation:owRxIn var(--ow-dur-settle) var(--ow-spring) both}html.ow-nogap[data-ow-thread] .ow-msgs .ow-rx>*+*{margin-left:1px}
+html[data-ow-thread] .ow-msgs .ow-msg:not([data-mine]) .ow-rx{right:10px}
+html[data-ow-thread] .ow-msgs .ow-msg[data-mine] .ow-rx{left:10px}
+html[data-ow-thread] .ow-msgs .ow-rx .ow-rx__c{display:inline-flex;align-items:center;gap:3px;min-height:24px;padding:0 6px;
+  border:0;border-radius:999px;background:none;box-shadow:none;font-size:13px;line-height:24px;color:var(--ow-ink);cursor:pointer;
+  transition:background-color var(--ow-dur-state) var(--ow-ease-out),transform var(--ow-dur-press) var(--ow-spring)}html.ow-nogap[data-ow-thread] .ow-msgs .ow-rx .ow-rx__c>*+*{margin-left:3px}
+html[data-ow-thread] .ow-msgs .ow-rx .ow-rx__c b{font-size:11.5px;font-weight:650}
+html[data-ow-thread] .ow-msgs .ow-rx .ow-rx__c[aria-pressed="true"]{background:rgba(var(--ow-h1),.18)}
+html[data-ow-thread] .ow-msgs .ow-rx .ow-rx__c:active{transform:scale(.9)}
+@keyframes owRxIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+
+/* 5 · NOTHING SHOWS THROUGH THE BAR OR UNDER THE COMPOSER: both are solid; the strip between the composer and the foot of
+   the screen (where the dock floats) is the composer's own ground; the conversation ends above the composer however tall
+   it grows (--ow-composer-h, measured by messaging.js) */
+html[data-ow-thread] .ow-thread-head.ow-thread-head{background:rgb(var(--ow-chrome-rgb))}
+html[data-ow-thread] .ow-composer.ow-composer{background:rgb(var(--ow-chrome-rgb));box-shadow:0 -1px 0 rgba(255,255,255,0.08);box-shadow:0 -1px 0 color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old[data-ow-thread] .ow-composer.ow-composer{box-shadow:0 -1px 0 rgba(255,255,255,0.08)}
+html[data-simple="1"][data-ow-thread] .ow-thread-head.ow-thread-head,
+html[data-simple="1"][data-ow-thread] .ow-composer.ow-composer{background:var(--ow-ground)}
+html[data-ow-thread] .ow-thread__foot::before{content:"";position:fixed;left:var(--ow-thread-left,0px);right:0;bottom:0;
+  height:var(--ow-thread-bottom,0px);z-index:65;background:rgb(var(--ow-chrome-rgb));pointer-events:none}
+html[data-simple="1"][data-ow-thread] .ow-thread__foot::before{background:var(--ow-ground)}
+html[data-ow-thread] .ow-main{padding-bottom:calc(var(--ow-composer-h,64px) + var(--ow-gap,12px) + var(--ow-thread-bottom,0px))}
+
+/* 6 · A SHARED POST IS A CARD ON THE GROUND'S OWN SURFACE: picture, who made it, what it says; the whole card opens it */
+html[data-ow-thread] .ow-msgs .ow-msg:has(.ow-att__card){padding:3px 3px 6px;max-width:78%;max-width:min(78%,340px)}
+html[data-ow-thread] .ow-msgs .ow-msg:has(.ow-att__card) > .ow-msg__x{display:block;margin:4px 9px 6px}
+html[data-ow-thread] .ow-msgs .ow-msg:has(.ow-att__card) > .ow-msg__t{margin:5px 9px 0}
+html[data-ow-thread] .ow-msgs .ow-msg .ow-att:has(.ow-att__card){margin:0;border-radius:17px;background:none;box-shadow:none;overflow:visible}
+html[data-ow-thread] .ow-msgs .ow-att__card.ow-att__card{display:flex;flex-direction:column;gap:0;width:100%;min-width:100%;min-width:min(220px,100%);padding:0;border:0;border-radius:17px;overflow:hidden;text-align:left;font:inherit;cursor:pointer;color:var(--ow-ink);background:#1c1b2d;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink) 10%,transparent);transition:transform var(--ow-dur-press) var(--ow-spring)}html.ow-old[data-ow-thread] .ow-msgs .ow-att__card.ow-att__card{box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)}
+html[data-theme="light"][data-ow-thread] .ow-msgs .ow-att__card.ow-att__card{background:#fff}
+html[data-ow-thread] .ow-msgs .ow-att__card:active{transform:scale(.98)}
+html.ow-old[data-ow-thread] .ow-msgs .ow-att__card:focus{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+html[data-ow-thread] .ow-msgs .ow-att__card:focus-visible{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+html[data-ow-thread] .ow-msgs .ow-att__pic{position:relative;display:block;aspect-ratio:1.91/1;max-height:220px;overflow:hidden;background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old[data-ow-thread] .ow-msgs .ow-att__pic{background:rgba(255,255,255,0.08)}
+html[data-ow-thread] .ow-msgs .ow-att__card .ow-att__pic img,
+html[data-ow-thread] .ow-msgs .ow-att__card .ow-att__pic video{display:block;width:100%;height:100%;max-height:none;margin:0;
+  object-fit:cover;border-radius:0}
+html[data-ow-thread] .ow-msgs .ow-att__pic[data-video]::after{content:"";position:absolute;left:50%;top:50%;width:0;height:0;
+  margin:-11px 0 0 -7px;border-style:solid;border-width:11px 0 11px 18px;border-color:transparent transparent transparent #fff;
+  filter:drop-shadow(0 1px 4px rgba(0,0,0,.6))}
+html[data-ow-thread] .ow-msgs .ow-att__by{display:flex;align-items:center;gap:8px;padding:10px 12px 0;min-width:0}html.ow-nogap[data-ow-thread] .ow-msgs .ow-att__by>*+*{margin-left:8px}
+html[data-ow-thread] .ow-msgs .ow-att__card:not(:has(.ow-att__b)) .ow-att__by{padding-bottom:12px}
+html[data-ow-thread] .ow-msgs .ow-att__face.ow-att__face{flex:none;width:24px;height:24px;font-size:9.5px}
+html[data-ow-thread] .ow-msgs .ow-att__byw{display:flex;flex-direction:column;min-width:0;line-height:1.2}
+html[data-ow-thread] .ow-msgs .ow-att__who{font-family:var(--ow-font);font-weight:650;font-size:13.5px;opacity:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html[data-ow-thread] .ow-msgs .ow-att__where{margin:0;font-family:var(--ow-font);font-weight:500;font-size:12px;letter-spacing:0;opacity:1;color:rgba(255,255,255,0.62);color:color-mix(in srgb,var(--ow-ink) 62%,transparent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}html.ow-old[data-ow-thread] .ow-msgs .ow-att__where{color:rgba(255,255,255,0.62)}
+html[data-ow-thread] .ow-msgs .ow-att__b{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;padding:6px 12px 12px;font-size:14px;line-height:1.38;color:rgba(255,255,255,0.82);color:color-mix(in srgb,var(--ow-ink) 82%,transparent)}html.ow-old[data-ow-thread] .ow-msgs .ow-att__b{color:rgba(255,255,255,0.82)}
+/* what is no longer there is one quiet line with a mark, the size of its words */
+html[data-ow-thread] .ow-msgs .ow-att[data-empty]{margin:2px 0 0;padding:0;border-radius:0;background:none;box-shadow:none}
+html[data-ow-thread] .ow-msgs .ow-att__gone,
+html[data-ow-thread] .ow-msgs .ow-msg__media[data-gone]{display:inline-flex;align-items:center;gap:7px;width:auto;padding:7px 11px;border-radius:12px;font-size:13.5px;line-height:1.3;color:inherit;opacity:.85;background:rgba(255,255,255,0.1);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:none}html.ow-nogap[data-ow-thread] .ow-msgs .ow-att__gone>*+*{margin-left:7px}html.ow-nogap[data-ow-thread] .ow-msgs .ow-msg__media[data-gone]>*+*{margin-left:7px}
+html[data-ow-thread] .ow-msgs .ow-att__gone svg{flex:none;width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+html[data-ow-thread] .ow-msgs .ow-msg__media[data-gone] .ow-att__gone{padding:0;background:none;opacity:1}
+
+/* 7 · SEND IS READY OR IT IS NOT, AND LOOKS IT: not ready is a quiet grey disc; ready is the hue, lit; a press springs */
+html[data-ow-thread] .ow-composer .ow-send{transition:background-color var(--ow-dur-state) var(--ow-ease-out),
+  color var(--ow-dur-state) var(--ow-ease-out),box-shadow var(--ow-dur-state) var(--ow-ease-out),transform var(--ow-dur-press) var(--ow-spring)}
+html[data-ow-thread] .ow-composer .ow-send:disabled{opacity:1;cursor:default;background:rgba(255,255,255,0.09);background:color-mix(in srgb,var(--ow-ink) 9%,transparent);background-image:none;color:rgba(255,255,255,0.36);color:color-mix(in srgb,var(--ow-ink) 36%,transparent);box-shadow:none}html.ow-old[data-ow-thread] .ow-composer .ow-send:disabled{background:rgba(255,255,255,0.09);color:rgba(255,255,255,0.36)}
+html[data-ow-thread] .ow-composer .ow-send[data-ready]{opacity:1;color:#fff;
+  background:linear-gradient(150deg,rgb(var(--ow-h1)),rgb(var(--ow-h2,var(--ow-h1))));
+  box-shadow:0 6px 16px -8px rgba(var(--ow-h1),.9),inset 0 1px 0 rgba(255,255,255,.3)}
+html[data-simple="1"][data-ow-thread] .ow-composer .ow-send[data-ready]{background:rgb(var(--ow-h1));box-shadow:none}
+html[data-ow-thread] .ow-composer .ow-send[data-ready]:active{transform:scale(.9)}
+
+/* 8 · WHAT RIDES ABOVE THE FIELD: the message being answered, the photo or video chosen to send */
+html[data-ow-thread] .ow-composer{flex-wrap:wrap}
+html[data-ow-thread] .ow-composer > .ow-composer__over{flex:1 0 100%;display:flex;flex-direction:column;gap:6px;min-width:0}html.ow-nogap[data-ow-thread] .ow-composer > .ow-composer__over>*+*{margin-top:6px}
+html[data-ow-thread] .ow-composer > .ow-composer__over:empty{display:none}
+html[data-ow-thread] .ow-composer__over .ow-reply-aim{margin:0;padding:7px 8px 7px 13px;border-radius:12px;background:rgba(255,255,255,0.06);background:color-mix(in srgb,var(--ow-ink) 6%,transparent);box-shadow:inset 3px 0 0 rgb(var(--ow-h1))}html.ow-old[data-ow-thread] .ow-composer__over .ow-reply-aim{background:rgba(255,255,255,0.06)}
+html[data-ow-thread] .ow-composer__tray{position:relative;display:inline-flex;align-self:flex-start;
+  animation:owTrayIn var(--ow-dur-open) var(--ow-spring-soft) both}
+html[data-ow-thread] .ow-composer__thumb{position:relative;display:block;width:68px;height:68px;border-radius:14px;overflow:hidden;background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old[data-ow-thread] .ow-composer__thumb{background:rgba(255,255,255,0.08);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)}
+html[data-ow-thread] .ow-composer__thumb img,
+html[data-ow-thread] .ow-composer__thumb video{display:block;width:100%;height:100%;object-fit:cover}
+html[data-ow-thread] .ow-composer__thumb[data-video]::after{content:"";position:absolute;left:50%;top:50%;margin:-8px 0 0 -5px;
+  border-style:solid;border-width:8px 0 8px 13px;border-color:transparent transparent transparent #fff;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+html[data-ow-thread] .ow-composer__unstage{position:absolute;top:-7px;right:-7px;width:24px;height:24px;padding:0;border:0;
+  border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--ow-ground);background:var(--ow-ink);
+  box-shadow:0 0 0 2px rgb(var(--ow-chrome-rgb))}
+html[data-ow-thread] .ow-composer__unstage svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.6;stroke-linecap:round}
+@keyframes owTrayIn{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+
+/* 9 · A CALL IS A ROW: its mark, what happened, its time, and Call back; a missed one is red */
+html[data-ow-thread] .ow-msgs > .ow-msg-sys.ow-msg-call{align-self:center;display:flex;align-items:center;gap:10px;max-width:92%;max-width:min(92%,380px);margin:calc(var(--ow-gap,12px) * 1.2) auto calc(var(--ow-gap,12px) * .5);padding:8px 8px 8px 10px;border-radius:18px;text-align:left;color:var(--ow-ink);background:rgba(255,255,255,0.06);background:color-mix(in srgb,var(--ow-ink) 6%,transparent)}html.ow-old[data-ow-thread] .ow-msgs > .ow-msg-sys.ow-msg-call{background:rgba(255,255,255,0.06)}html.ow-nogap[data-ow-thread] .ow-msgs > .ow-msg-sys.ow-msg-call>*+*{margin-left:10px}
+html[data-ow-thread] .ow-msg-call__ic{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old[data-ow-thread] .ow-msg-call__ic{background:rgba(255,255,255,0.1)}
+html[data-ow-thread] .ow-msg-call__ic svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;
+  stroke-linecap:round;stroke-linejoin:round}
+html[data-ow-thread] .ow-msg-call__b{display:flex;flex-direction:column;min-width:0;line-height:1.25}
+html[data-ow-thread] .ow-msg-call__w{font-family:var(--ow-font);font-weight:650;font-size:14px}
+html[data-ow-thread] .ow-msg-call__t{font-size:12px;color:rgba(255,255,255,0.62);color:color-mix(in srgb,var(--ow-ink) 62%,transparent)}html.ow-old[data-ow-thread] .ow-msg-call__t{color:rgba(255,255,255,0.62)}
+html[data-ow-thread] .ow-msg-call[data-missed] .ow-msg-call__ic{color:#ff6b7c;background:rgba(255,92,112,.16)}
+html[data-ow-thread] .ow-msg-call[data-missed] .ow-msg-call__w{color:#ff7b8a}
+html[data-theme="light"][data-ow-thread] .ow-msg-call[data-missed] .ow-msg-call__ic{color:#c8283f}
+html[data-theme="light"][data-ow-thread] .ow-msg-call[data-missed] .ow-msg-call__w{color:#b3243a}
+html[data-ow-thread] .ow-msg-call__back{flex:none;margin-left:6px;min-height:34px;padding:0 14px;border:0;border-radius:999px;
+  cursor:pointer;font-family:var(--ow-font);font-weight:650;font-size:13px;color:#fff;background:rgb(var(--ow-h1));
+  transition:transform var(--ow-dur-press) var(--ow-spring)}
+html[data-ow-thread] .ow-msg-call__back:active{transform:scale(.94)}
+
+/* 10 · SOMETHING NEW IS BELOW: one pill over the composer while reading further up */
+.ow-jump{position:fixed;z-index:121;left:calc(var(--ow-thread-left,0px) + (100vw - var(--ow-thread-left,0px)) / 2);
+  bottom:calc(var(--ow-thread-bottom,0px) + var(--ow-composer-h,64px) + 10px);transform:translateX(-50%);
+  display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 15px;border:0;border-radius:999px;cursor:pointer;
+  font-family:var(--ow-font);font-weight:650;font-size:13px;color:#fff;background:rgb(var(--ow-h1));
+  box-shadow:0 10px 24px -12px rgba(0,0,0,.7);animation:owJumpIn var(--ow-dur-open) var(--ow-spring-soft) both}html.ow-nogap .ow-jump>*+*{margin-left:6px}
+.ow-jump[hidden]{display:none}
+.ow-jump svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@keyframes owJumpIn{from{opacity:0;transform:translate(-50%,10px) scale(.92)}to{opacity:1;transform:translateX(-50%)}}
+
+/* 11 · THE BAR'S DISAPPEARING LINE WEARS THE TIMER THE MESSAGES WEAR */
+html[data-ow-thread] .ow-thread-head .ow-fact[data-ttl]{display:inline-flex;align-items:center;gap:4px}html.ow-nogap[data-ow-thread] .ow-thread-head .ow-fact[data-ttl]>*+*{margin-left:4px}
+html[data-ow-thread] .ow-thread-head .ow-fact[data-ttl] svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2.1;
+  stroke-linecap:round;stroke-linejoin:round}
+
+/* 12 · ONE SET OF CALL CONTROLS: round marks with their word, the microphone and camera lit when off, end red, answer green */
+.ow-call .ow-call__b{display:flex;flex-direction:column;align-items:center;gap:7px;padding:0;border:0;background:none;cursor:pointer;
+  font-family:var(--ow-font);font-weight:600;font-size:12.5px;color:var(--ow-ink)}html.ow-nogap .ow-call .ow-call__b>*+*{margin-top:7px}
+.ow-call .ow-call__bi{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,0.12);background:color-mix(in srgb,var(--ow-ink) 12%,transparent);transition:transform var(--ow-dur-press) var(--ow-spring),background-color var(--ow-dur-state) var(--ow-ease-out)}html.ow-old .ow-call .ow-call__bi{background:rgba(255,255,255,0.12)}
+.ow-call .ow-call__b:active .ow-call__bi{transform:scale(.92)}
+.ow-call .ow-call__bi svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ow-call .ow-call__b[aria-pressed="true"] .ow-call__bi{background:var(--ow-ink);color:var(--ow-ground)}
+.ow-call .ow-call__b[data-tone="end"] .ow-call__bi{background:#e5484d;color:#fff}
+.ow-call .ow-call__b[data-tone="go"] .ow-call__bi{background:#2fb35a;color:#fff}
+.ow-call .ow-call__face{display:grid;width:104px;height:104px;margin:0 auto 14px;font-size:34px}
+.ow-call[data-kind="video"][data-connection="connected"] .ow-call__face{display:none}
+.ow-call[data-kind="video"] .ow-call__b{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+
+/* 13 · ONE PERSON, ONE FACE: every face in a conversation (beside their messages, on a post they made, on a call) wears the
+   material the inbox row and the chat's bar give them, in their own colour (--h, which messaging.js sets from their record,
+   and from the room's colour when the record names none, as the bar does) */
+html[data-ow-thread] .ow-msgs .ow-msg-face:not(.is-blank),
+html[data-ow-thread] .ow-msgs .ow-att__face,
+.ow-call .ow-call__face{font-family:var(--ow-font-display);font-weight:650;color:#fff;background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,
+      rgb(var(--h,var(--ow-h1))),
+      #14131f);background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,
+      color-mix(in oklab,rgb(var(--h,var(--ow-h1))) 84%,#14131f),
+      color-mix(in oklab,rgb(var(--h2,var(--ow-h2))) 44%,#14131f));box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}html.ow-old[data-ow-thread] .ow-msgs .ow-msg-face:not(.is-blank),html.ow-old[data-ow-thread] .ow-msgs .ow-att__face,html.ow-old .ow-call .ow-call__face{background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,
+      rgb(var(--h,var(--ow-h1))),
+      #14131f)}
+html[data-ow-thread] .ow-msgs .ow-msg-face:not(.is-blank){font-size:10.5px}
+
+/* ── LIGHTBULB, founder/866 §8 landing B (2026-10-21): words and stickers one press from the photo. Two bare marks in the
+   photo's top row, before the crop corners and the bin, drawn as they are: white with a shadow, never a grey bubble (down
+   the side they met Add more). ── */
+.ow-compose__mark{position:absolute;z-index:3;top:12px;width:40px;height:40px;padding:0;border:0;border-radius:50%;
+  display:grid;place-items:center;cursor:pointer;background:transparent;color:#fff;
+  filter:drop-shadow(0 0 1px rgba(0,0,0,.85)) drop-shadow(0 1px 4px rgba(0,0,0,.7))}
+.ow-compose__mark[data-mark="text"]{right:156px}
+.ow-compose__mark[data-mark="sticker"]{right:108px}
+.ow-compose__mark svg{width:24px;height:24px}
+.ow-compose__mark span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+html.ow-old .ow-compose__mark:focus{outline:2px solid #fff;outline-offset:2px}
+.ow-compose__mark:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.ow-compose__mark::before{content:"";position:absolute;top:-4px;right:-4px;bottom:-4px;left:-4px;inset:-4px}
+/* ══ NOTIFICATIONS: NO GREY BOXES — founder/871, 872 (and 866's bell list) ═══════════════════════════════════════════
+   ★ FOUNDER/871: *"notifcations on simple mode should be like the clear rounded boxes ... on popit mode ... give them as a
+     popit with a clean animation in the users hue. but simple should be clear box. NO GREY BOXES"*.
+   ★ FOUNDER/872: *"notiation bell needs a red outline when user has notifcations unread"*.
+   Measured before (2026-10-21): the toast was an ink-coloured pill (a black or a white box), the banner a grey-purple
+   panel, the bell's list a column of identical grey-purple boxes with empty grey faces and a dot for unread. Now, in every
+   one of them: POPIT draws a Popit in the person's hue (the hue deepened toward ink, a soft glow of it, a lit top edge);
+   SIMPLE draws a clear rounded box (see-through, frosted, a hairline rim). The words on a hue take the ink the hue needs
+   (white on a deep hue, near-black on a light one), as every chosen thing in the App does. Motion is motion's (S33):
+   nothing below moves anything. */
+
+/* 1 · THE BELL: its outline red while anything is unread */
+.ow-top__bell[data-unread]{color:#ff3b4f}
+.ow-top__bell[data-unread] svg{stroke:#ff3b4f;stroke-width:2.1;opacity:1}
+.ow-top__bell[data-unread] .ow-top__dot{background:#ff3b4f;box-shadow:0 0 0 2px var(--ow-ground)}
+html[data-ow-lens] .ow-top__right .ow-top__bell[data-unread]{color:#ff5468}
+
+/* 2 · THE TOAST */
+html body > .ow-toast.ow-toast.ow-toast{color:#fff!important;border-radius:22px!important;background:linear-gradient(150deg,rgb(var(--ow-h1)),
+    rgb(var(--ow-h2,var(--ow-h1))))!important;background:linear-gradient(150deg,color-mix(in oklab,rgb(var(--ow-h1)) 78%,#14131f),
+    color-mix(in oklab,rgb(var(--ow-h2,var(--ow-h1))) 60%,#14131f))!important;box-shadow:0 16px 36px -16px rgba(var(--ow-h1),.85),inset 0 1px 0 rgba(255,255,255,.28)!important}html.ow-old body > .ow-toast.ow-toast.ow-toast{background:linear-gradient(150deg,rgb(var(--ow-h1)),
+    rgb(var(--ow-h2,var(--ow-h1))))!important}
+html[data-simple="1"] body > .ow-toast.ow-toast.ow-toast{color:var(--ow-ink)!important;border-radius:18px!important;background:var(--ow-ground)!important;background:color-mix(in srgb,var(--ow-ground) 68%,transparent)!important;-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),0 14px 32px -16px rgba(0,0,0,.45)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink) 14%,transparent),0 14px 32px -16px rgba(0,0,0,.45)!important}html.ow-old[data-simple="1"] body > .ow-toast.ow-toast.ow-toast{background:var(--ow-ground)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),0 14px 32px -16px rgba(0,0,0,.45)!important}
+
+/* 3 · THE BANNER (oneway-alerts.js): its card; its kind's mark keeps the kind's colour */
+html .ow-alert .ow-alert__card{color:#fff;background:linear-gradient(150deg,rgb(var(--ow-h1)),
+    rgb(var(--ow-h2,var(--ow-h1))));background:linear-gradient(150deg,color-mix(in oklab,rgb(var(--ow-h1)) 78%,#14131f),
+    color-mix(in oklab,rgb(var(--ow-h2,var(--ow-h1))) 60%,#14131f));-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 18px 40px -16px rgba(var(--ow-h1),.8),inset 0 1px 0 rgba(255,255,255,.28)}html.ow-old .ow-alert .ow-alert__card{background:linear-gradient(150deg,rgb(var(--ow-h1)),
+    rgb(var(--ow-h2,var(--ow-h1))))}
+html .ow-alert .ow-alert__p{color:inherit;opacity:.84}
+html .ow-alert .ow-alert__mk{box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 0 2px rgba(255,255,255,.22)}
+html[data-simple="1"] .ow-alert .ow-alert__card{color:var(--ow-ink);background:var(--ow-ground);background:color-mix(in srgb,var(--ow-ground) 68%,transparent);-webkit-backdrop-filter:blur(22px) saturate(1.6);backdrop-filter:blur(22px) saturate(1.6);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),0 14px 32px -16px rgba(0,0,0,.45);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink) 14%,transparent),0 14px 32px -16px rgba(0,0,0,.45)}html.ow-old[data-simple="1"] .ow-alert .ow-alert__card{background:var(--ow-ground);box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),0 14px 32px -16px rgba(0,0,0,.45)}
+
+/* the ink a hue needs (the derivation every chosen thing in the App uses) */
+@supports (color: rgb(from red r g b)) {
+  html body > .ow-toast.ow-toast.ow-toast,
+  html .ow-alert .ow-alert__card,
+  .ow-notes--std .ow-note__face[data-mark]{color:rgb(from rgb(var(--ow-h1))
+      20
+      20
+      40)!important;color:rgb(from color-mix(in oklab,rgb(var(--ow-h1)) 70%,#14131f)
+      max(20,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255))
+      max(20,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255))
+      max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)))!important;color:rgb(from color-mix(in oklab,rgb(var(--ow-h1)) 70%,#14131f)
+      clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+      clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))!important}html.ow-old body > .ow-toast.ow-toast.ow-toast,html.ow-old .ow-alert .ow-alert__card,html.ow-old .ow-notes--std .ow-note__face[data-mark]{color:rgb(from rgb(var(--ow-h1))
+      20
+      20
+      40)!important}
+  html[data-simple="1"] body > .ow-toast.ow-toast.ow-toast,
+  html[data-simple="1"] .ow-alert .ow-alert__card{color:var(--ow-ink)!important}
+}
+
+/* 4 · THE BELL'S LIST, AS PEOPLE KNOW IT: sections, real faces, the name in bold, what it is about at the end */
+.ow-notes.ow-notes--std{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;box-shadow:none;border-radius:0}html.ow-nogap .ow-notes.ow-notes--std>*+*{margin-top:6px}
+.ow-notes--std > .ow-notes__h{margin:calc(var(--ow-gap,12px) * 1.5) 4px 2px;font-family:var(--ow-font);font-weight:700;
+  font-size:15px;letter-spacing:-.01em;color:var(--ow-ink)}
+.ow-notes--std > .ow-notes__h:first-child{margin-top:2px}
+.ow-notes--std > .ow-note{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;margin:0;
+  padding:10px 12px;border:0;border-radius:18px;cursor:pointer;text-align:left;font-family:var(--ow-font);color:var(--ow-ink);
+  background:linear-gradient(160deg,rgba(var(--ow-h1),.09),rgba(var(--ow-h2,var(--ow-h1)),.05));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 0 1px rgba(var(--ow-h1),.16);
+  transition:background-color var(--ow-dur-state) var(--ow-ease-out),box-shadow var(--ow-dur-state) var(--ow-ease-out)}html.ow-nogap .ow-notes--std > .ow-note>*+*{margin-left:12px}
+.ow-notes--std > .ow-note[data-unread]{
+  background:linear-gradient(160deg,rgba(var(--ow-h1),.24),rgba(var(--ow-h2,var(--ow-h1)),.14));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 0 1px rgba(var(--ow-h1),.38),0 10px 24px -18px rgba(var(--ow-h1),.9)}
+.ow-notes--std > .ow-note[aria-disabled="true"]{cursor:default}
+html.ow-old .ow-notes--std > .ow-note:focus{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+.ow-notes--std > .ow-note:focus-visible{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+@media (hover:hover){.ow-notes--std > .ow-note:not([aria-disabled="true"]):hover{
+  background:linear-gradient(160deg,rgba(var(--ow-h1),.18),rgba(var(--ow-h2,var(--ow-h1)),.10))}}
+/* Simple: a clear rounded box; unread is a light tint of the hue */
+html[data-simple="1"] .ow-notes--std > .ow-note{background:transparent;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink) 12%,transparent)}html.ow-old[data-simple="1"] .ow-notes--std > .ow-note{box-shadow:inset 0 0 0 1px rgba(255,255,255,0.12)}
+html[data-simple="1"] .ow-notes--std > .ow-note[data-unread]{background:rgba(var(--ow-h1),.10);
+  box-shadow:inset 0 0 0 1px rgba(var(--ow-h1),.34)}
+/* the face: theirs, or the App's mark in the person's hue */
+.ow-notes--std .ow-note__face{flex:none;width:48px;height:48px;margin:0;border-radius:50%;overflow:hidden;display:grid;place-items:center;font-family:var(--ow-font-display);font-weight:650;font-size:16px;color:#fff;--h:var(--ow-h1);--h2:var(--ow-h2);background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,rgb(var(--h)),#14131f);background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,color-mix(in oklab,rgb(var(--h)) 84%,#14131f),color-mix(in oklab,rgb(var(--h2,var(--h))) 44%,#14131f));box-shadow:inset 0 1px 0 rgba(255,255,255,.4)}html.ow-old .ow-notes--std .ow-note__face{background:radial-gradient(46% 36% at 28% 18%,rgba(255,255,255,.28),transparent 64%),
+    linear-gradient(150deg,rgb(var(--h)),#14131f)}
+.ow-notes--std .ow-note__face img{width:100%;height:100%;object-fit:cover;display:block}
+.ow-notes--std .ow-note__face > i{font-size:16px}
+/* the face on a call's screen is the person at full size, their initials with it */
+.ow-call .ow-call__face > i{font-size:36px}
+.ow-notes--std .ow-note__face[data-mark]{background:linear-gradient(150deg,rgb(var(--ow-h1)),rgb(var(--ow-h2,var(--ow-h1))));background:linear-gradient(150deg,color-mix(in oklab,rgb(var(--ow-h1)) 70%,#14131f),color-mix(in oklab,rgb(var(--ow-h2,var(--ow-h1))) 55%,#14131f))}html.ow-old .ow-notes--std .ow-note__face[data-mark]{background:linear-gradient(150deg,rgb(var(--ow-h1)),rgb(var(--ow-h2,var(--ow-h1))))}
+/* the App's marks, drawn as the dock draws its own: the same outline, stroke and grid */
+.ow-notes--std .ow-note__face[data-mark] svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;
+  stroke-linecap:round;stroke-linejoin:round}
+.ow-notes--std .ow-note__fw{position:relative;flex:none;width:48px;height:48px}
+/* what the person did, a small mark on their face in the hue */
+.ow-notes--std .ow-note__badge{position:absolute;right:-3px;bottom:-3px;width:22px;height:22px;border-radius:50%;display:grid;
+  place-items:center;color:#fff;background:rgb(var(--ow-h1));box-shadow:0 0 0 2px var(--ow-ground)}
+.ow-notes--std .ow-note__badge svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;
+  stroke-linecap:round;stroke-linejoin:round}
+.ow-notes--std .ow-note__badge .ow-dot{display:none}
+.ow-notes--std .ow-note__badge[data-k="liked"] svg{fill:currentColor}
+/* the words: the name bold, what they did, what they said, and when, inline, three lines at most */
+.ow-notes--std .ow-note__t{flex:1 1 auto;min-width:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;
+  overflow:hidden;font-size:14px;font-weight:400;line-height:1.36;color:var(--ow-ink)}
+/* THE WORDS ARE BRIGHT (founder, 2026-10-21: "bright white text"): on a dark theme the name and what they did at full
+   white, what they said a breath down, the time a step down and still bright; on a light theme the same in ink */
+html:not([data-theme="light"]) .ow-notes--std > .ow-notes__h,
+html:not([data-theme="light"]) .ow-notes--std .ow-note__t{color:#fff}
+html[data-theme="light"] .ow-notes--std > .ow-notes__h,
+html[data-theme="light"] .ow-notes--std .ow-note__t{color:#14131f}
+/* inline, against the older `.ow-note b` and `.ow-note span` rules that stacked every part on its own line */
+.ow-notes--std .ow-note__t b.ow-note__who,
+.ow-notes--std .ow-note__t .ow-note__others{display:inline;margin:0;font-size:inherit;font-weight:700;opacity:1}
+.ow-notes--std .ow-note__t .ow-note__p{display:inline;margin:0;opacity:1;color:inherit}
+.ow-notes--std .ow-note__t .ow-note__w{display:inline;white-space:nowrap;font-size:13px;opacity:1}
+html:not([data-theme="light"]) .ow-notes--std .ow-note__t .ow-note__p{color:rgba(255,255,255,.9)}
+html:not([data-theme="light"]) .ow-notes--std .ow-note__t .ow-note__w{color:rgba(255,255,255,.74)}
+html[data-theme="light"] .ow-notes--std .ow-note__t .ow-note__p{color:rgba(20,19,31,.86)}
+html[data-theme="light"] .ow-notes--std .ow-note__t .ow-note__w{color:rgba(20,19,31,.66)}
+/* what it is about, at the end */
+.ow-notes--std .ow-note__thumb{flex:none;width:46px;height:46px;border-radius:10px;overflow:hidden;background:rgba(255,255,255,0.08);background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}html.ow-old .ow-notes--std .ow-note__thumb{background:rgba(255,255,255,0.08)}
+.ow-notes--std .ow-note__thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ow-notes--std .ow-note__act{flex:none;min-height:34px;padding:0 15px;border:0;border-radius:999px;cursor:pointer;
+  font-family:var(--ow-font);font-weight:650;font-size:13.5px;color:#fff;background:rgb(var(--ow-h1));
+  transition:background-color var(--ow-dur-state) var(--ow-ease-out),transform var(--ow-dur-press) var(--ow-spring)}
+.ow-notes--std .ow-note__act[data-go]{background:#2fb35a}
+.ow-notes--std .ow-note__act[data-done]{color:var(--ow-ink);background:rgba(255,255,255,0.1);background:color-mix(in srgb,var(--ow-ink) 10%,transparent)}html.ow-old .ow-notes--std .ow-note__act[data-done]{background:rgba(255,255,255,0.1)}
+.ow-notes--std .ow-note__act:active{transform:scale(.94)}
+@supports (color: rgb(from red r g b)) {
+  .ow-notes--std .ow-note__act:not([data-go]):not([data-done]),
+  .ow-notes--std .ow-note__badge{color:rgb(from rgb(var(--ow-h1))
+      20
+      20
+      40);color:rgb(from rgb(var(--ow-h1))
+      max(20,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255))
+      max(20,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255))
+      max(40,min((125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100,255)));color:rgb(from rgb(var(--ow-h1))
+      clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+      clamp(20, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255)
+      clamp(40, (125 - (0.2126*r + 0.7152*g + 0.0722*b)) * 100, 255))}html.ow-old .ow-notes--std .ow-note__act:not([data-go]):not([data-done]),html.ow-old .ow-notes--std .ow-note__badge{color:rgb(from rgb(var(--ow-h1))
+      20
+      20
+      40)}
+}
+
+/* 14 · THE INCOMING CALL, CENTERED OVER A SKY (the founder, 2026-10-21: "nicer centered interface with particle animations
+   like seen on apples icloud site"; "Pick up decline options always"): the person's face rings with a soft pulse of their
+   hue while the call rings, and stops when it is answered; a video call under way keeps its controls at the foot */
+.ow-call .ow-call__face{width:120px;height:120px;margin:0 auto 18px;font-size:40px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 0 rgba(var(--ow-h1),.45)}
+.ow-call .ow-call__face > i{font-size:40px}
+.ow-call:not([data-connection="connected"]):not([data-ended]) .ow-call__face{animation:owCallRing 2.4s var(--ow-ease-out) infinite}
+@keyframes owCallRing{0%{box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 0 rgba(var(--ow-h1),.45)}
+  70%{box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 28px rgba(var(--ow-h1),0)}
+  100%{box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 0 0 0 rgba(var(--ow-h1),0)}}
+@media (prefers-reduced-motion:reduce){.ow-call .ow-call__face{animation:none!important}}
+.ow-call .ow-call__who b{letter-spacing:-.01em}
+.ow-call .ow-call__acts{gap:44px!important}
+.ow-call[data-kind="video"][data-connection="connected"]{justify-content:flex-end!important}
+.ow-call[data-kind="video"][data-connection="connected"] .ow-call__sky{display:none}
+
+
+
+html.ow-old body :matches(.ow-top__bell,.ow-top__back,.ow-thread-head__more) > svg{width:var(--ow-icon-m);height:var(--ow-icon-m)}
+
+
+
+html.ow-old body :-webkit-any(.ow-top__bell,.ow-top__back,.ow-thread-head__more) > svg{width:var(--ow-icon-m);height:var(--ow-icon-m)}
+
+
+
+/* ══ ICONS AT ONE SIZE PER ROLE (the little things; founder/866 §1: "Standardize ... icon sizes") ═══════════════════════════
+   Measured before (2026-10-21, 390, rendered, eight screens): the top bar's bell and gear 23, Back 24, Messages' Mail and New
+   22 (one header, three sizes); a Settings row's icon 21, a profile's tab 21, a reach chip 19 (one role, three sizes). Now a
+   header control's icon is --ow-icon-m (24) and an icon inside a row, a tab or a chip is --ow-icon (20). A Post's actions (the
+   founder's, 2026-10-09), the dock (founder/831) and Discovery's controls (being redrawn as Popits, founder/868) keep theirs. */
+html body :is(.ow-top__bell,.ow-top__back,.ow-thread-head__more) > svg{width:var(--ow-icon-m);height:var(--ow-icon-m)}
+html.ow-old body :matches(.ow-set__ic,.ow-tab,.ow-tab[data-icon],.ow-reach__chip) svg{width:var(--ow-icon);height:var(--ow-icon)}
+html.ow-old body :-webkit-any(.ow-set__ic,.ow-tab,.ow-tab[data-icon],.ow-reach__chip) svg{width:var(--ow-icon);height:var(--ow-icon)}
+html body :is(.ow-set__ic,.ow-tab,.ow-tab[data-icon],.ow-reach__chip) svg{width:var(--ow-icon);height:var(--ow-icon)}
+
+/* ── LIGHTBULB'S POST SCREEN, founder/866 P1 (2026-10-21): Save as draft beside Post, the quiet act before the filled one ── */
+.ow-upload__bar:has(.ow-upload__draft){display:flex;gap:10px;align-items:center}
+.ow-upload__bar .ow-upload__draft{flex:none;min-height:48px;padding:0 16px;border-radius:999px;font-weight:600;white-space:nowrap}
+.ow-upload__bar:has(.ow-upload__draft) .ow-upload__post{flex:1 1 auto;width:auto;min-width:0;margin:0}
+/* ══ ARE YOU SURE (OW.sure; founder/882: "system popups should popup smoothly in simple mode or popit") ═══════════════════
+   The toast's own surface, in its Popit and its Simple look, holding a question and two buttons from the one button language
+   (S20). It moves by the toast's rule above (rises over --ow-spring, sinks over --ow-dur-leave). It takes presses (the toast
+   lets them through); nothing behind it dims (S2). */
+html body > .ow-toast.ow-sure{flex-direction:column!important;align-items:stretch!important;gap:12px!important;padding:16px!important;width:calc(100vw - 32px);width:min(380px,calc(100vw - 32px));max-width:calc(100vw - 32px);max-width:min(380px,calc(100vw - 32px));pointer-events:auto}
+.ow-sure .ow-sure__t{margin:0;font-size:var(--ow-fs-text,15px);font-weight:600;line-height:var(--ow-lh-snug,1.3)}
+.ow-sure .ow-sure__acts{display:flex;justify-content:flex-end;gap:8px}html.ow-nogap .ow-sure .ow-sure__acts>*+*{margin-left:8px}
+.ow-sure .ow-sure__acts .po-act[data-tone="danger"]{background:#e5484d;color:#fff;border-color:transparent;box-shadow:none}
+
+
+/* ── MESSAGES · SOMEBODY IS TYPING (founder/882: "typing status on messages from comments need to be brought over") ──
+   The comments' three dots (`.ow-typing__dots`, the same keyframes and the same reduced-motion stop), drawn in the other
+   person's bubble at the foot of the thread, beside their face. The bubble is a `.ow-msg` in `.ow-msgs`, so it wears the
+   incoming bubble's own material in Popit, in Simple, light and dark, rather than a copy that drifts. The row opens and
+   closes by its HEIGHT (0fr → 1fr), so the thread slides up instead of hopping; the inner box keeps room for the bubble's
+   glow, which the clip would otherwise cut. In a direct conversation the face says who; the words are for a screen
+   reader only. In a group the names are written over the bubble, the way comments say them. */
+.ow-typing-row{display:grid;grid-template-rows:0fr;opacity:0;
+  transition:grid-template-rows var(--ow-dur-state,.36s) var(--ow-settle,ease-out),
+             opacity var(--ow-dur-press,.28s) var(--ow-settle,ease-out)}
+.ow-typing-row[data-on]{grid-template-rows:1fr;opacity:1}
+html[data-ow-thread] .ow-msgs > .ow-typing-row:not([data-on]){margin-top:0}
+.ow-typing-row__in{min-height:0;overflow:hidden;display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  padding:0 10px 6px 0}html.ow-nogap .ow-typing-row__in>*+*{margin-top:3px}
+.ow-typing-row .ow-msg-line{max-width:none}
+.ow-typing__who{font-family:var(--ow-font);font-weight:600;font-size:11.5px;line-height:1.3;color:var(--ow-ink-2);
+  padding:2px 0 0 35px}
+.ow-typing__who:empty{display:none}
+.ow-typing__who[data-quiet]{position:absolute;width:1px;height:1px;padding:0;overflow:hidden;
+  clip:rect(0 0 0 0);clip-path:inset(50%);white-space:nowrap}
+.ow-msgs .ow-msg.ow-typing__bub{padding:13px 15px;line-height:0;cursor:default;transform-origin:0 100%}
+.ow-typing-row[data-on] .ow-typing__bub{animation:ow-typing-pop var(--ow-dur-open,.72s) var(--ow-spring-soft,ease-out) both}
+@keyframes ow-typing-pop{from{transform:scale(.55);opacity:0}to{transform:none;opacity:1}}
+.ow-typing__bub .ow-typing__dots{gap:4px}
+.ow-typing__bub .ow-typing__dots i{width:7px;height:7px;background:currentColor}
+@media (prefers-reduced-motion:reduce){
+  .ow-typing-row{transition:none}
+  .ow-typing-row[data-on] .ow-typing__bub{animation:none}}
+html[data-ow-motion="reduce"] .ow-typing-row{transition:none}
+html[data-ow-motion="reduce"] .ow-typing-row[data-on] .ow-typing__bub{animation:none}
+/* ── MESSAGES · AN EMPTY INBOX, A NEW CONVERSATION (founder/866 §14: "Explain the purpose of the area briefly. Offer one
+   clear primary action. Avoid excessive decorative graphics. Avoid long explanatory paragraphs. Preserve layout
+   consistency.") ──────────────────────────────────────────────────────────────────────────────────────────────────────
+   The inbox's empty state is one panel in the list's own place, in the requests panel's material (`.ow-reqs`): a small
+   mark in the person's hue, a title, a line, the people they follow as faces, New message. A conversation nobody has
+   written in shows who it is with, centred in the thread: their face, their name, a line, Say hi. No globe in either. */
+.ow-inbox-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:22px 16px 18px}html.ow-nogap .ow-inbox-empty>*+*{margin-top:6px}
+.ow-inbox-empty__mark{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;margin-bottom:4px;
+  background:linear-gradient(150deg,rgb(var(--ow-h1)),rgb(var(--ow-h2)));box-shadow:inset 0 1px 0 rgba(255,255,255,.35)}
+.ow-inbox-empty__mark svg{width:22px;height:22px}
+.ow-inbox-empty__t{margin:0;font-family:var(--ow-font-display);font-weight:650;font-size:17px;line-height:1.25;color:var(--ow-ink)}
+.ow-inbox-empty__why{margin:0;font-size:13.5px;line-height:1.4;color:var(--ow-ink-2)}
+.ow-inbox-empty__faces{display:flex;gap:10px;justify-content:safe center;overflow-x:auto;max-width:100%;
+  padding:10px 2px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}html.ow-nogap .ow-inbox-empty__faces>*+*{margin-left:10px}
+.ow-inbox-empty__faces::-webkit-scrollbar{display:none}
+.ow-inbox-empty__faces[hidden]{display:none}
+.ow-inbox-empty__p{flex:none;display:flex;flex-direction:column;align-items:center;gap:5px;width:58px;padding:0;border:0;
+  background:none;color:var(--ow-ink);font:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}html.ow-nogap .ow-inbox-empty__p>*+*{margin-top:5px}
+.ow-inbox-empty__p:disabled{opacity:.6;cursor:default}
+html.ow-old .ow-inbox-empty__p:focus{outline:none}
+.ow-inbox-empty__p:focus-visible{outline:none}
+html.ow-old .ow-inbox-empty__p:focus .ow-inbox-empty__face{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+.ow-inbox-empty__p:focus-visible .ow-inbox-empty__face{outline:2px solid rgb(var(--ow-h1));outline-offset:2px}
+.ow-thread__av.ow-inbox-empty__face{width:50px;height:50px;font-size:16px}
+.ow-inbox-empty__face img{width:100%;height:100%;object-fit:cover;display:block}
+.ow-inbox-empty__nm{max-width:58px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:600;
+  color:var(--ow-ink-2)}
+.ow-inbox-empty__acts{display:flex;justify-content:center;margin-top:8px}
+.ow-inbox-empty__said{margin:0;font-size:12.5px;line-height:1.35;color:var(--ow-ink-2)}
+.ow-inbox-empty__said:empty{display:none}
+.ow-thread-start{margin:auto 0;align-self:center;display:flex;flex-direction:column;align-items:center;text-align:center;
+  gap:6px;padding:24px 16px}html.ow-nogap .ow-thread-start>*+*{margin-top:6px}
+.ow-thread__av.ow-thread-start__face{width:76px;height:76px;font-size:26px;margin-bottom:6px}
+.ow-thread-start__face img{width:100%;height:100%;object-fit:cover;display:block}
+.ow-thread-start__nm{font-family:var(--ow-font-display);font-weight:650;font-size:18px;line-height:1.25;color:var(--ow-ink)}
+.ow-thread-start__why{margin:0;font-size:13.5px;line-height:1.4;color:var(--ow-ink-2)}
+.ow-thread-start__hi{margin-top:8px}
+html[data-ow-thread] .ow-msgs > .ow-thread-start{margin:auto 0}
+html[data-ow-thread] .ow-msgs .ow-thread-start .ow-msg-face.ow-thread-start__face,
+.ow-thread-start .ow-msg-face.ow-thread-start__face{width:76px;height:76px;margin-bottom:6px;cursor:default;font-size:24px}
+.ow-thread-start .ow-msg-face.ow-thread-start__face i{font-size:24px}
+/* ── LIGHTBULB, founder/882 (2026-10-21): the tiles are the page (create.js opens a part on its tile), and a taken photo's
+   X asks once, on the photo ── */
+/* only while the hub's tiles are on the page: the surface element is every page's, and the attribute alone hid the next one */
+[data-lb-hub]:has(> .ow-compose .ow-lbh) > :not(.ow-compose):not(.ow-ask){display:none!important}
+.ow-compose__ask{position:absolute;top:auto;right:12px;bottom:50%;left:12px;inset:auto 12px 50% 12px;transform:translateY(50%);z-index:6;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:16px;border-radius:18px;background:rgba(0,0,0,.78);color:#fff;text-align:center}html.ow-nogap .ow-compose__ask>*{margin-right:10px}html.ow-nogap .ow-compose__ask>*{margin-bottom:10px}
+.ow-compose__ask p{flex:1 0 100%;margin:0 0 4px;font-weight:650;font-size:1rem}
+.ow-compose__ask .ow-btn,.ow-compose__ask .po-act{min-height:44px;padding:0 22px;border-radius:999px}
+.ow-compose__ask .po-act{color:#fff;border:1.5px solid rgba(255,255,255,.85);background:transparent}
+
+
+
+/* ══ ONE ICON SET: PHOSPHOR (founder/886, 2026-10-21: "more detailed and dynamic icons ... they must have no geommetric errors
+   or misspaced overlapping lines"; his word: "download Phosphor and use it as Oneway's icon set") ═════════════════════════
+   OW.glyph draws Phosphor Icons 2.1.1 (MIT) as Phosphor ships them: filled shapes on a 256 grid. So the rules written for
+   the old 2px line (stroke, stroke-width, fill:none) give way here, and an icon is its text's colour, never stroked; the
+   sizes stay TYPE's per role. A held one (pressed, the page you are on, the selected tab) carries its outline and its fill:
+   the outline steps back and the fill springs in over it on S33's names, and back. The lit glow's three copies are the
+   filled shape, widened on the 256 grid as they were on the 24. */
+html body svg.ow-ic{fill:currentColor!important;stroke:none!important;overflow:visible}
+html body svg.ow-ic :not(.ow-halo):not(.ow-halo *){fill:inherit!important;stroke:none!important}
+html body svg.ow-ic[data-ic-none]{display:none}
+html body svg.ow-ic .ow-halo--x{stroke-width:150}
+html body svg.ow-ic .ow-halo--w{stroke-width:107}
+html body svg.ow-ic .ow-halo--t{stroke-width:60}
+html body svg.ow-ic--sel .ow-ic__o{transition:opacity var(--ow-dur-state) var(--ow-ease)}
+html body svg.ow-ic--sel .ow-ic__f{opacity:0;transform:scale(.55);transform-box:fill-box;transform-origin:50% 50%;
+  transition:opacity var(--ow-dur-state) var(--ow-ease),transform var(--ow-dur-settle) var(--ow-spring)}
+html.ow-old body :matches([aria-pressed="true"],[aria-current="page"],[aria-selected="true"]) svg.ow-ic--sel .ow-ic__f{opacity:1;transform:none}
+html.ow-old body :-webkit-any([aria-pressed="true"],[aria-current="page"],[aria-selected="true"]) svg.ow-ic--sel .ow-ic__f{opacity:1;transform:none}
+html body :is([aria-pressed="true"],[aria-current="page"],[aria-selected="true"]) svg.ow-ic--sel .ow-ic__f{opacity:1;transform:none}
+html.ow-old body :matches([aria-pressed="true"],[aria-current="page"],[aria-selected="true"]) svg.ow-ic--sel .ow-ic__o{opacity:0}
+html.ow-old body :-webkit-any([aria-pressed="true"],[aria-current="page"],[aria-selected="true"]) svg.ow-ic--sel .ow-ic__o{opacity:0}
+html body :is([aria-pressed="true"],[aria-current="page"],[aria-selected="true"]) svg.ow-ic--sel .ow-ic__o{opacity:0}
+/* the like, held, in its own colour (it was the old drawing's fill) */
+html body .po-act[data-po-respond="like"][aria-pressed="true"] svg.ow-ic{color:var(--ow-like)}
+/* THE ICON PICKER (OW.icons.picker; founder/886): a search over the whole set and a grid that scrolls inside its own place,
+   each icon a 48px press (the 44 floor) drawn at --ow-icon-m, the chosen one ringed in the hue. */
+.ow-ipick{display:flex;flex-direction:column;gap:var(--ow-gap-s,8px);min-width:0}
+.ow-ipick__s{display:flex;align-items:center;gap:8px;min-height:44px;padding:0 12px;border-radius:var(--ow-r-field,12px);
+  background:var(--ow-field,rgba(127,127,127,.12));color:var(--ow-ink-2,inherit)}html.ow-nogap .ow-ipick__s>*+*{margin-left:8px}
+.ow-ipick__s svg{width:var(--ow-icon);height:var(--ow-icon);flex:none}
+.ow-ipick__s input{flex:1;min-width:0;border:0;background:transparent;color:var(--ow-ink,inherit);font:inherit;font-size:var(--ow-fs-text,15px);outline:none}
+.ow-ipick__say{margin:0;font-size:var(--ow-fs-small,13px);color:var(--ow-ink-2,inherit);font-variant-numeric:tabular-nums}
+.ow-ipick__g{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px;max-height:56vh;max-height:min(56vh,420px);overflow:auto;overscroll-behavior:contain;padding:2px}
+.ow-ipick__t{display:grid;place-items:center;width:100%;aspect-ratio:1;min-height:48px;border:0;border-radius:12px;
+  background:transparent;color:var(--ow-ink,inherit);cursor:pointer;
+  transition:background-color var(--ow-dur-state) var(--ow-ease),box-shadow var(--ow-dur-state) var(--ow-ease)}
+.ow-ipick__t svg{width:var(--ow-icon-m);height:var(--ow-icon-m)}
+.ow-ipick__t:hover{background:var(--ow-field,rgba(127,127,127,.12))}
+.ow-ipick__t[aria-pressed="true"]{background:rgba(var(--ow-h1,124,45,255),.14);box-shadow:inset 0 0 0 2px rgba(var(--ow-h1,124,45,255),.7);
+  color:rgb(var(--ow-h1,124,45,255))}
+.ow-ipick__end{grid-column:1/-1;height:1px}

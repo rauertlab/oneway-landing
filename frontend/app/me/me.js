@@ -373,10 +373,31 @@ function iconTab(id, label, render, n) {
       host.appendChild(mk('h1', '', esc(person.name || 'Someone')));
       host.appendChild(mk('p', 'ow-workplace-profile__username', esc(person.ref || '')));
     }
-    var note = d.enabled === false
-      ? 'Workplace identity is off. Turn it on in Workplace settings to keep your personal profile separate.'
-      : 'Work connections and Center posts. Your personal profile stays separate.';
-    host.appendChild(mk('p', 'ow-workplace-profile__note', note));
+    /* founder/866 §12: whether it is on, said plainly, with the way to its settings (to its own person only), and where they
+       work: each Center named to themselves and a coworker there (people/workplace.py), each opening the Center */
+    if (work.is_me || d.enabled === false) {
+      var state = mk('div', 'ow-workplace-profile__state');
+      state.appendChild(mk('span', 'ow-workplace-profile__chip', d.enabled === false ? 'Off' : 'On'));
+      var set = mk('a', 'po-act', 'Workplace settings');
+      set.href = '#settings/workplace';
+      state.appendChild(set);
+      host.appendChild(state);
+    }
+    if ((d.centers || []).length) {
+      var at = mk('div', 'ow-workplace-profile__centers');
+      d.centers.forEach(function (c) {
+        var b = mk('button', 'ow-workplace-profile__center');
+        b.type = 'button';
+        var f = mk('span', 'ow-workplace-profile__center-face');
+        if (OW.cards && OW.cards.fill) OW.cards.fill(f, { kind: 'center', name: c.name || '' });
+        b.appendChild(f);
+        b.appendChild(mk('span', '', esc(c.name || 'A Center')));
+        b.addEventListener('click', function () { if (OW.go) OW.go('center', c.center_id); });
+        at.appendChild(b);
+      });
+      if (d.centers_more) at.appendChild(mk('span', 'ow-workplace-profile__more', esc('+ ' + d.centers_more)));
+      host.appendChild(at);
+    }
     var list = mk('div', 'ow-workplace-profile__connections');
     var stats = mk('div', 'ow-workplace-profile__stats');
     ['followers', 'following'].forEach(function (which) {
@@ -433,8 +454,6 @@ function iconTab(id, label, render, n) {
             labels: { on: 'Following personally', off: 'Follow personal profile' }, after: reload });
         });
         host.appendChild(connect);
-        host.appendChild(mk('p', 'ow-workplace-profile__note',
-          'Personal profiles are shared only when you both follow personally. Work follows do not unlock them.'));
       }
       if (personal.mutual) {
         var open = mk('button', 'po-act', 'Open personal profile'); open.type = 'button';
@@ -442,20 +461,42 @@ function iconTab(id, label, render, n) {
       }
     }
     host.appendChild(list);
-    host.appendChild(mk('h2', '', 'Center posts'));
-    var river = mk('div'), footer = mk('div', 'ow-prof__more');
-    host.appendChild(river); host.appendChild(footer);
-    var posts = [], postIds = {};
+    host.appendChild(mk('h2', '', 'Work posts'));
+    var byPlace = mk('div', 'ow-workplace-profile__centers'), river = mk('div'), footer = mk('div', 'ow-prof__more');
+    host.appendChild(byPlace); host.appendChild(river); host.appendChild(footer);
+    var posts = [], postIds = {}, onlyAt = '';
+    /* WORK POSTS BY WORKPLACE (founder/866 §12: "Display workplace-related posts in an organized format"): when they come
+       from two Centers or more, a chip for each filters them, and All shows every one */
+    function placeOf(p) {
+      var pl = p.place || {};
+      return { id: p.center_id || pl.center_id || pl.id || '', name: pl.name || pl.title || p.center_name || '' };
+    }
+    function drawPlaces() {
+      var seen = {}, list = [];
+      posts.forEach(function (p) { var x = placeOf(p); if (x.id && x.name && !seen[x.id]) { seen[x.id] = 1; list.push(x); } });
+      byPlace.innerHTML = '';
+      if (list.length < 2) { onlyAt = ''; return; }
+      [{ id: '', name: 'All' }].concat(list).forEach(function (x) {
+        var b = mk('button', 'ow-workplace-profile__center', esc(x.name));
+        b.type = 'button';
+        b.setAttribute('aria-pressed', String(onlyAt === x.id));
+        b.addEventListener('click', function () { onlyAt = x.id; drawPlaces(); drawRiver(); });
+        byPlace.appendChild(b);
+      });
+    }
+    function drawRiver() {
+      river.innerHTML = '';
+      var shown = onlyAt ? posts.filter(function (p) { return placeOf(p).id === onlyAt; }) : posts;
+      if (!shown.length) { river.textContent = 'No work posts yet'; return; }
+      var rows = OW.riverRows ? OW.riverRows(shown) : shown;
+      OW.mountRiver(river, rows, { open: false }); OW.openCardsIn(river);
+      if (OW.mountResponses) rows.forEach(function (row) { OW.mountResponses(river, row); });
+    }
     function paintPosts(page) {
       if ((page.unreadable || []).length) { footer.textContent = 'Workplace posts could not be fully loaded.'; return; }
       (page.posts || []).forEach(function (p) { if (!postIds[p.id]) { postIds[p.id] = true; posts.push(p); } });
-      if (!posts.length) river.textContent = work.is_me
-        ? 'Posts you publish to your workplace Centers appear here.' : 'Posts shared to their workplace Centers appear here.';
-      else {
-        var rows = OW.riverRows ? OW.riverRows(posts) : posts;
-        OW.mountRiver(river, rows, { open: false }); OW.openCardsIn(river);
-        if (OW.mountResponses) rows.forEach(function (row) { OW.mountResponses(river, row); });
-      }
+      drawPlaces();
+      drawRiver();
       footer.innerHTML = '';
       if (page.posts_cursor) {
         var more = mk('button', 'po-act', 'Load more posts'); more.type = 'button';
@@ -1841,6 +1882,14 @@ function iconTab(id, label, render, n) {
     found.href = OS_SURFACE + '#found';
     found.setAttribute('data-door', 'os');
     acts.appendChild(found);
+    /* THE ONE WAY TO THE LANDING PAGE (founder/894, 2026-10-21: "just have button to get to the landing page in the profile
+       section similar to the os button but only one for the entire"; founder/895: "make it like the other buttons we are
+       intoducing on our platform"): a button of the one language (S20, outlined beside Edit profile), the App's only one */
+    var landing = mk('a', 'po-act', 'oneway.center');
+    landing.href = '/';
+    landing.setAttribute('data-door', 'landing');
+    landing.setAttribute('aria-label', 'Open oneway.center, the landing page');
+    acts.appendChild(landing);
 
     return data.get('/api/oneway/centers/mine', { fresh: true }).then(function (r) {
       /* UNKNOWN IS NOT "NONE" (founder/350). A failed read must not render the
@@ -2176,6 +2225,47 @@ function iconTab(id, label, render, n) {
           });
         }).catch(function () {});
         pane.insertBefore(page, pane.firstChild);
+
+        /* WHAT THEY PAY FOR AGAIN AND AGAIN (commerce/recurring): each, its price, its state in words, when it ends or what failed;
+           ended at the end of the period paid for, taken back until then, a failed payment paid now. Drawn only when there is one. */
+        data.get('/api/oneway/me/recurring').then(function (rr) {
+          var rows = ((rr && rr.ok && rr.data && rr.data.charges) || []).filter(function (c) { return c && c.id; });
+          if (!rows.length) return;
+          var rh = mk('div', 'ow-cpage__h');
+          rh.appendChild(mk('span', 'ow-cpage__ht', 'What you pay for'));
+          carry.appendChild(rh);
+          var rb = mk('div', 'ow-cpage__b');
+          carry.appendChild(rb);
+          rows.slice(0, 12).forEach(function (c) {
+            var one = mk('div', 'ow-cpage__ev');
+            one.setAttribute('data-me-recurring', c.id);
+            one.appendChild(mk('b', '', esc(c.name)));
+            one.appendChild(mk('span', '', esc([c.price_words, c.state_words, c.ends_words, c.failed ? 'The payment of ' + c.failed.amount_words + ' failed'
+              + (c.failed.next_words ? '; Stripe tries again on ' + c.failed.next_words : '') : ''].filter(Boolean).join(' \u00b7 '))));
+            var live = /^(active|past_due|unpaid|paused)$/.test(c.state);
+            var act = function (label, what, fill) {
+              var b = mk('button', 'ow-popit-btn' + (fill ? ' ow-popit-btn--fill' : ''), esc(label)); b.type = 'button';
+              b.setAttribute('data-me-rc', what);
+              b.addEventListener('click', function () {
+                b.disabled = true;
+                data.post('/api/oneway/me/recurring/' + encodeURIComponent((c.center || {}).id) + '/' + encodeURIComponent(c.id) + '/' + what, {}).then(function (r) {
+                  var d = r && r.ok && r.data;
+                  if (OW.toast) OW.toast((d && d.words) || (r && r.error) || 'That did not go through.', { tone: d ? 'ok' : 'bad' });
+                  if (!d) { b.disabled = false; return; }
+                  b.remove();
+                });
+              });
+              return b;
+            };
+            if (live) {
+              var row = mk('div', 'ow-product__buy');
+              if (c.failed) row.appendChild(act('Pay it now', 'retry', true));
+              row.appendChild(c.cancel_at_period_end ? act('Keep it', 'resume', true) : act('End at the period\u2019s end', 'cancel', false));
+              one.appendChild(row);
+            }
+            rb.appendChild(one);
+          });
+        }).catch(function () {});
 
         /* AND THE CARDS THEY CARRY — one read, drawn only when there is one
            (founder/422's wallet; a person with no card sees no heading). */
@@ -2682,4 +2772,26 @@ function iconTab(id, label, render, n) {
 
   /* the real surface replaces its stub: wrap it again in what it reads while it builds */
   if (OW.lazyAfterLibrary) OW.lazyAfterLibrary();
+  /* ── THE WORKPLACE IDENTITY'S PARTS (founder/866 §12): its state, where they work ── */
+  try {
+    var wpCss = [
+      '.ow-workplace-profile__state{display:flex;align-items:center;gap:10px;margin:14px 0 4px}',
+      '.ow-workplace-profile__chip{font:700 .75rem/1 var(--ow-font);padding:6px 10px;border-radius:999px;color:var(--ow-ink);',
+      '  background:rgba(var(--ow-h1),.14);box-shadow:inset 0 0 0 1px rgba(var(--ow-h1),.45)}',
+      '.ow-workplace-profile__centers{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}',
+      '.ow-workplace-profile__center{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;border:0;border-radius:999px;cursor:pointer;',
+      '  font:600 .875rem/1.2 var(--ow-font);color:var(--ow-ink);background:color-mix(in srgb,var(--ow-ink) 7%,transparent);',
+      '  transition:transform var(--ow-dur-press,.2s) var(--ow-spring,ease)}',
+      '.ow-workplace-profile__center:active{transform:scale(.97)}',
+      '.ow-workplace-profile__center-face{flex:none;width:28px;height:28px;border-radius:50%;overflow:hidden;display:grid;place-items:center;',
+      '  background:rgb(var(--ow-h1));color:#fff;font:700 .7rem/1 var(--ow-font)}',
+      '.ow-workplace-profile__center-face img{width:100%;height:100%;object-fit:cover}',
+      '.ow-workplace-profile__center[aria-pressed="true"]{background:rgba(var(--ow-h1),.16);box-shadow:inset 0 0 0 1.5px rgba(var(--ow-h1),.55)}',
+      '.ow-workplace-profile__more{align-self:center;font-size:.8125rem;color:var(--ow-ink-3)}'
+    ].join('');
+    var wpSt = document.createElement('style');
+    wpSt.setAttribute('data-ow', 'workplace-identity');
+    wpSt.textContent = wpCss;
+    document.head.appendChild(wpSt);
+  } catch (_) {}
 })(window);

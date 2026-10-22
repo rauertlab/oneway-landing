@@ -171,3 +171,30 @@ html[data-simple="1"][data-simple="1"] .ow-live[data-tone="live"] i{animation:no
 .ow-claims__x.is-armed{padding:0 14px;background:rgba(255,92,108,.16);box-shadow:inset 0 0 0 1px rgba(255,92,108,.55);color:#ff5c6c}
 html.ow-old .ow-claims__x:focus{outline:2px solid var(--ow-ink);outline-offset:2px}
 .ow-claims__x:focus-visible{outline:2px solid var(--ow-ink);outline-offset:2px}
+
+/* THE MENU ON A CENTER'S PAGE (frontend/shared/oneway-menu.js, called by frontend/app/center/center.js; the one menu, systems/restaurant/menu.py; founder/854):
+   each dish a card with its photo, or the Center's hue and the dish's initial, never a grey square; Sold out and Not served
+   now said on the dish. No flex gap: the old engines draw it too. */
+.ow-menu__now{margin:0 0 8px;font-size:13px;font-weight:600;opacity:.72}
+.ow-menu__chips{display:flex;flex-wrap:nowrap;overflow-x:auto;margin:0 -4px 8px;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.ow-menu__chip{flex:none;margin:0 4px;padding:7px 14px;border:0;border-radius:999px;font:inherit;font-size:13px;font-weight:700;color:inherit;
+  background:rgba(127,127,127,.14);cursor:pointer}
+.ow-menu__chip.is-on{background:rgba(124,92,255,.85);color:#fff}
+.ow-menu__sec{margin:0 0 12px}
+.ow-menu__sh{margin:6px 0 8px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
+.ow-menu__grid{display:flex;flex-wrap:wrap;margin:0 -5px}
+.ow-menu__dish{position:relative;display:flex;flex-direction:column;box-sizing:border-box;flex:1 1 220px;max-width:calc(50% - 10px);min-width:150px;
+  margin:5px;padding:0;border:0;border-radius:18px;overflow:hidden;text-align:left;color:inherit;font:inherit;cursor:pointer;
+  background:rgba(127,127,127,.1);box-shadow:inset 0 0 0 1px rgba(127,127,127,.2)}
+.ow-menu__pic{display:block;width:100%;padding-top:62%;background-size:cover;background-position:center}
+.ow-menu__pic--none{position:relative;background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.95),rgba(var(--h),.45) 72%)}
+.ow-menu__pic--none i{position:absolute;left:0;right:0;top:50%;margin-top:-22px;text-align:center;font:800 40px/44px 'ONEWAY Head','ONEWAY Sans',system-ui,sans-serif;
+  font-style:normal;color:#fff;opacity:.92}
+.ow-menu__b{display:block;padding:10px 12px 12px}
+.ow-menu__b b{display:block;font-size:15px;line-height:1.25}
+.ow-menu__d{display:block;margin-top:3px;font-size:12.5px;line-height:1.35;opacity:.7;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ow-menu__p{display:block;margin-top:6px;font-weight:800;font-variant-numeric:tabular-nums}
+.ow-menu__tag{display:inline-block;margin-top:6px;padding:3px 9px;border-radius:999px;font-style:normal;font-size:11.5px;font-weight:700;background:rgba(255,69,58,.18)}
+.ow-menu__dish.is-out .ow-menu__pic{filter:grayscale(.7);opacity:.6}
+@media (max-width:420px){.ow-menu__dish{max-width:calc(50% - 10px);min-width:0}.ow-menu__b b{font-size:14px}}
+@media (min-width:760px){.ow-menu__dish{max-width:calc(33.333% - 10px);flex-basis:200px}}

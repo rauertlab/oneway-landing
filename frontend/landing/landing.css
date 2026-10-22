@@ -114,6 +114,8 @@ html body :is(.pill,a.pill.ow-popit-btn){align-items:center;justify-content:cent
 /* where it shows and whether its words wrap stay at the pill's own weight, so a page can still put one away on a phone
    (oneway-bar.css, app.html) or let a long one wrap (site-page.css); a.pill is over a.ow-popit-btn's inline-block */
 .pill,a.pill{display:inline-flex;white-space:nowrap}
+/* a pill's words take two lines rather than the screen's edge (app.html's "Oneway OS for organizations" at 280 to 320 px) */
+@media (max-width:400px){.lp-acts .pill,.lp-acts a.pill{white-space:normal;text-align:center;justify-content:center;max-width:100%}}
 html.ow-old body :matches(.pill,a.pill.ow-popit-btn):hover:not(:disabled){background:rgba(255,255,255,.08);border-color:currentColor!important;box-shadow:none;transform:none;filter:none;opacity:1}
 html.ow-old body :-webkit-any(.pill,a.pill.ow-popit-btn):hover:not(:disabled){background:rgba(255,255,255,.08);border-color:currentColor!important;box-shadow:none;transform:none;filter:none;opacity:1}
 html body :is(.pill,a.pill.ow-popit-btn):hover:not(:disabled){background:rgba(255,255,255,.08);border-color:currentColor!important;

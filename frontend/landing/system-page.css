@@ -66,6 +66,11 @@
   .sys-shot--pics{padding-bottom:56px;padding-bottom:max(56px,min(16vw,96px));padding-bottom:clamp(56px,16vw,96px)}
   .sys-shot__phone{width:34%;right:2%;bottom:calc(-1 * 56px);bottom:calc(-1 * max(56px,min(16vw,96px)));bottom:calc(-1 * clamp(56px,16vw,96px))}
   .sys-shot--pics figcaption{max-width:58%}
+  /* CLEAR OF THE PHONE (2026-10-20, measured at 280 to 700 px: the caption ran under the phone on every System page). The
+     caption is also a .t-caption, and site-page.css's .mission-page .t-caption (52ch, centred) outranked the two rules above,
+     so they never applied; this one outranks it, under 700 px only (wider, the centred caption sits under the PC, clear of
+     the phone): the figure less the phone's right, its width (112 px at least) and padding, and a gap */
+  .sys-shot--pics figcaption.t-caption{max-width:calc(98% - 112px - 24px);max-width:calc(98% - max(34%, 112px) - 24px);margin-left:0;margin-right:0}
 }
 
 /* how it works, drawn: across on a wide screen, down on a phone */
@@ -103,3 +108,11 @@
 @media(max-width:900px){ .sys-tiles{grid-template-columns:repeat(2,minmax(0,1fr))} }
 .sys-tile span{word-wrap:break-word;overflow-wrap:break-word}
 @media(max-width:360px){ .sys-tiles{grid-template-columns:minmax(0,1fr)} }
+
+/* EARLY ACCESS (founder/859, 2026-10-21): a System outside the launch set says so under its name on its page, on its row and tile
+   in the catalog, and in its room in Oneway OS (tools/system_pages.py early(), from catalog.LAUNCH_EXCELLENT) */
+.sys-ea{margin:14px 0 0}
+.sys-ea span{display:inline-block;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.3);
+  background:rgba(255,255,255,.07);color:#fff;font-size:13px;font-weight:600;line-height:1.2;letter-spacing:.01em}
+.sys-all .sys-ea--s,.sys-tile .sys-ea--s{display:inline-block;align-self:flex-start;margin:2px 0 0}
+.sys-all .sys-ea--s span,.sys-tile .sys-ea--s span{display:inline-block;margin:0;padding:3px 10px;font-size:12px}

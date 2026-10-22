@@ -60,7 +60,7 @@
        colour, and nothing behind the pane can be read as words any more. */
     '.ow-proj__veil{position:absolute;inset:0;background:rgba(3,4,10,.42);opacity:0;',
     '  -webkit-backdrop-filter:blur(14px) saturate(1.06);backdrop-filter:blur(14px) saturate(1.06);',
-    '  transition:opacity .5s cubic-bezier(.4,0,.2,1)}',
+    '  transition:opacity var(--ow-dur-enter,.5s) var(--ow-ease-out,cubic-bezier(.4,0,.2,1))}',   /* S33: the motion names (oneway-popit.css) */
     /* a browser without backdrop-filter gets the tint alone, darker, because
        there it is the only thing separating the two layers */
     '@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){',
@@ -84,7 +84,7 @@
     '.ow-proj.is-in .ow-proj__veil{opacity:1}',
     '.ow-proj__pane{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;',
     '  transform-origin:0 0;will-change:transform,opacity;outline:0}',
-    '.ow-proj__stage{max-width:760px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 16px 90px;opacity:0;transition:opacity .45s cubic-bezier(.4,0,.2,1) .18s}',
+    '.ow-proj__stage{max-width:760px;margin:0 auto;padding:max(18px,env(safe-area-inset-top)) 16px 90px;opacity:0;transition:opacity var(--ow-dur-enter,.45s) var(--ow-ease-out,cubic-bezier(.4,0,.2,1)) .18s}',
     '.ow-proj.is-in .ow-proj__stage{opacity:1}',
     '.ow-proj__close{position:fixed;top:max(14px,env(safe-area-inset-top));right:max(14px,env(safe-area-inset-right));z-index:2;',
     '  width:40px;height:40px;border-radius:999px;border:0;cursor:pointer;color:#fff;',
@@ -161,7 +161,7 @@
       { transform: 'translate(' + r.left + 'px,' + r.top + 'px) scale(' + sx + ',' + sy + ')', opacity: .55, offset: 0 },
       { opacity: 1, offset: .5 },
       { transform: 'translate(0px,0px) scale(1,1)', opacity: 1, offset: 1 }
-    ], { duration: reduced() ? 1 : 560, easing: 'cubic-bezier(.34,1.3,.64,1)', fill: 'both' });
+    ], { duration: reduced() ? 1 : motion('open', 560), easing: easing('ease-out', 'cubic-bezier(.34,1.3,.64,1)'), fill: 'both' });
     return a.finished.then(function () { a.cancel(); pane.style.transform = ''; }).catch(function () {});
   }
   function fold(to) {
@@ -172,12 +172,31 @@
     var a = pane.animate([
       { transform: 'translate(0px,0px) scale(1,1)', opacity: 1, offset: 0 },
       { transform: 'translate(' + r.left + 'px,' + r.top + 'px) scale(' + sx + ',' + sy + ')', opacity: .3, offset: 1 }
-    ], { duration: reduced() ? 1 : 420, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'both' });
+    ], { duration: reduced() ? 1 : motion('leave', 420), easing: easing('ease-leave', 'cubic-bezier(.4,0,.2,1)'), fill: 'both' });
     return a.finished.then(function () { a.cancel(); }).catch(function () {});
   }
+  var DRAW_AFTER_MS = 280;
+  /* the Center page's own reads (center.js OW.live.center), asked while the pane grows */
+  function warmCenter(id) {
+    var d = OW.data;
+    if (!d || !d.get) return;
+    try {
+      d.get('/api/oneway/centers/' + encodeURIComponent(id) + '/app');
+      d.get('/api/canvas/' + encodeURIComponent('center:' + id));
+      if (OW.cards && OW.cards.read) OW.cards.read(['center:' + String(id)]);
+    } catch (e) {}
+  }
   function reduced() {
+    if (global.OW && global.OW.motion) return global.OW.motion.still();
     try { return global.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
   }
+  /* S33 (founder/865): the unfold and the fold read the platform's motion names (OW.motion, oneway-popit.js), so the
+     whole-screen pane grows out of what was pressed over the long soft ease and folds back over the leave. No spring on a
+     pane the size of the screen: measured 2026-10-21 (390), the .34,1.3 curve drew it 2.7% larger than the screen and
+     even the soft spring 1.35%, which reads as the glitch founder/863 describes ("become super large"). A page without
+     the App's sheet keeps the old values. */
+  function motion(name, fallback) { return (global.OW && global.OW.motion) ? global.OW.motion.ms(name) : fallback; }
+  function easing(name, fallback) { return (global.OW && global.OW.motion) ? global.OW.motion.ease(name) : fallback; }
 
   /* which surface draws which kind — the App's own, never a copy */
   function renderer(kind) {
@@ -238,19 +257,31 @@
       if (originEl) originEl.setAttribute('data-po-open', '');
       pane.scrollTop = 0;
       var grown = unfold(originEl);
-      /* the surface renders while the pane grows; its own reads decide what
-         it says, and it asserts the thing's hue on the world (§17) */
-      var drawn;
-      try {
-        drawn = Promise.resolve(draw(host, id, Object.assign({
+      /* the surface's own reads decide what it says, and it asserts the thing's hue on the world (§17) */
+      var paint = function () {
+        if (seq !== openSeq) return null;
+        return draw(host, id, Object.assign({
           onBack: function () { OW.project.close(); },
           onMessage: function (c) {
             /* a conversation is the App's; from a projection it opens there */
             if (c && c.id) global.location.href = '/oneway-app.html#messages/' + encodeURIComponent(c.id);
           },
           onPerson: function (em) { if (em) OW.project.open('person', em, null); }
-        }, opts)));
-      } catch (e) { drawn = Promise.reject(e); }
+        }, opts));
+      };
+      /* ── A CENTER: THE PANE GROWS FIRST, THEN THE PAGE DRAWS (2026-10-21; motion's trace at 390 with the CPU slowed 4x:
+         ~55 of ~180 frames dropped in the pane's first second, with ~540 ms of style recalculation, while the Center page
+         drew into the pane as it grew). Its reads start now, so the page drawn once the pane has mostly grown finds them
+         answered (OW.data shares a read in flight and keeps it). Every other surface draws as it grows. */
+      var drawn;
+      if (kind === 'center' && originEl) {
+        warmCenter(id);
+        /* the first DRAW_AFTER_MS of the unfold run alone, where the eye follows the growth; the page then draws while the
+           pane settles (waiting for the whole unfold showed the page ~500 ms later, measured: too late for the speed asked) */
+        drawn = Promise.race([grown, new Promise(function (ok) { global.setTimeout(ok, DRAW_AFTER_MS); })]).then(paint);
+      } else {
+        try { drawn = Promise.resolve(paint()); } catch (e) { drawn = Promise.reject(e); }
+      }
       return Promise.all([grown, drawn.catch(function () { return null; })]).then(function () {
         if (seq !== openSeq) return true;
         host.classList.add('ow-surface', 'is-in');

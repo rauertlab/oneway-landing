@@ -108,6 +108,8 @@
       body: JSON.stringify(exchange ? { refresh_token: t } : {})
     }); };
     return (data.renewWhenQuiet ? data.renewWhenQuiet(renew) : renew()).then(function (r) {
+      /* put off (the App was never quiet): not renewed now, the session stands, and a later look tries again */
+      if (!r) { unlock(); return false; }
       return r.json().catch(function () { return {}; }).then(function (j) {
         unlock();
         if (r.ok && j && (j.access_token || j.session === 'cookie')) {
@@ -192,9 +194,13 @@
     /* and the account's own setting, once it is known — asked only when
        there is an account to ask (signed out, the only answer is 401) */
     try {
-      if (token()) data.get('/api/me/settings').then(function (r) {
+      /* a cookie session is an account too (PLAN R22: with only the token asked, a cookie session never read these) */
+      if (token() || cookieSession()) data.get('/api/me/settings').then(function (r) {
         var s = (r && r.ok && r.data && r.data.settings) || null;
         if (s && s.reduce_motion) apply(true);
+        /* and the display ones (Play video automatically, Data saver, sound, contrast, text) at boot, as their comment
+           at OW.applyPrefs always said; they were applied only once Settings was opened (PLAN R22) */
+        if (s && OW.applyPrefs) OW.applyPrefs(s, { boot: true });
       }).catch(function () {});
     } catch (e) {}
   })();
@@ -269,6 +275,15 @@
     actState(btn, 'working');
     if (spec.labels) btn.textContent = spec.labels[on ? 'on' : 'off'] || was;
     btn.setAttribute('aria-pressed', String(on));
+    /* THE PRESS IS FELT, ONE WAY FOR EVERY HELD ACTION (S33; the founder, 2026-10-21: "like change ... button change ...
+       should be smooth and consistent and shouldnt break under pressure"): an icon squeezes and swells on, gives and springs
+       back off; a word button breathes. From what is on screen, so quick presses never jump (OW.motion.bounce). */
+    if (OW.motion && OW.motion.bounce) {
+      var _ic = btn.querySelector(':scope > svg');
+      var _g = btn.getAttribute('data-po-respond') === 'dislike' ? 'dislike' : btn.hasAttribute('data-po-repost') ? 'repost'
+             : btn.hasAttribute('data-po-save') ? 'save' : 'like';
+      OW.motion.bounce(_ic || btn, _ic ? (on ? _g : 'off') : 'bump');
+    }
 
     /* THE BODY MAY DEPEND ON WHICH DIRECTION THIS PRESS IS GOING.
        ★ FOUNDER, 2026-08-26: the reaction path must survive *"reconnect after
@@ -1115,6 +1130,8 @@
       var name = (err && err.name) || '';
       if (name === 'NotAllowedError' && !gesture && !v.muted) {
         v.muted = true;
+        /* refused: the icons go back to muted until the next press */
+        pressed = false; paintSound();
         var q = null;
         try { q = v.play(); } catch (_) {}
         if (q && q.catch) q.catch(function () {});
@@ -1131,20 +1148,56 @@
   /* SOUND IS ONE DECISION, NOT ONE PER VIDEO. Unmuting the third clip and
      having the fourth arrive silent is the thing every video feed gets wrong;
      the choice belongs to the person and it travels with them. */
-  var soundOn = false;
+  /* ★ FOUNDER, 2026-10-20 (PLAN R22): *"It should play them with or without
+       sound automatically, depending if user has the sound icon on, which should
+       be added if it's not there on mobile and PC."* So the one decision is the
+     ACCOUNT's (`video_sound`, Settings › Content), read at boot on every device;
+     this device's copy (`ow_feed_sound`) answers only until the account does.
+     A browser lets sound start only after the person has pressed something on
+     the page, so until then every clip plays muted and every icon says muted;
+     the first press (the icon is the obvious one) is that permission, and a
+     refusal puts the icons back to muted. */
+  var soundOn = false, pressed = false, soundChosen = false;
   try { soundOn = global.localStorage.getItem('ow_feed_sound') === '1'; } catch (_) {}
-
-  function setSound(on) {
+  try { pressed = !!(global.navigator.userActivation && global.navigator.userActivation.hasBeenActive); } catch (_) {}
+  function audible() { return soundOn && pressed; }
+  function paintIcon(b, on) {
+    if (!b || (b.getAttribute('aria-pressed') === String(on) && b.firstChild)) return;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.setAttribute('aria-label', on ? 'Mute' : 'Unmute');
+    b.innerHTML = OW.glyph ? OW.glyph(on ? 'sound' : 'muted') : (on ? '&#9835;' : '&#9834;');
+  }
+  function paintSound() {
+    var on = audible();
+    mediaPool.vids.forEach(function (v) { if (v) v.muted = !on; });
+    var cur = OW.media && OW.media.feed && OW.media.feed.playing();
+    if (cur) cur.muted = !on;
+    doc.querySelectorAll('[data-ow-sound]').forEach(function (b) { paintIcon(b, on); });
+  }
+  /* the account's answer (boot, Settings, a change made on another device): kept here, never written back */
+  function holdSound(on) {
     soundOn = !!on;
     try { global.localStorage.setItem('ow_feed_sound', soundOn ? '1' : '0'); } catch (_) {}
-    mediaPool.vids.forEach(function (v) { if (v) v.muted = !soundOn; });
-    doc.querySelectorAll('[data-ow-sound]').forEach(function (b) {
-      b.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
-      b.setAttribute('aria-label', soundOn ? 'Mute' : 'Unmute');
-      b.innerHTML = OW.glyph ? OW.glyph(soundOn ? 'sound' : 'muted') : (soundOn ? '&#9835;' : '&#9834;');
-    });
+    paintSound();
   }
-
+  /* the person's press on an icon or a playing clip: the gesture that lets sound start, and the account remembers it */
+  function setSound(on) {
+    pressed = true; soundChosen = true;
+    holdSound(on);
+    if (token() || cookieSession()) data.post('/api/me/settings', { settings: { video_sound: soundOn } }, { method: 'PUT', queueable: true })
+      .catch(function () {});
+  }
+  /* any press on the page is the browser's permission too (where the browser can say, it is asked); a press on a
+     sound icon or on a video's frame is left to its own handler, which reads what the icon SHOWS before it turns it */
+  ['click', 'keydown'].forEach(function (t) {
+    doc.addEventListener(t, function (e) {
+      if (pressed) return;
+      if (e.target && e.target.closest && e.target.closest('[data-ow-sound], .po-card__cover, .po-shot')) return;
+      var ua = global.navigator && global.navigator.userActivation;
+      pressed = ua ? !!ua.hasBeenActive : true;
+      if (pressed && soundOn) paintSound();
+    }, true);
+  });
   /* ── THE CONTROLS FOR ONE POSITION ──────────────────────────────────────
      Built once per position and reused: `mount` is called on every index
      change, and rebuilding the chrome each time would throw away the very
@@ -1161,17 +1214,21 @@
         + '<div class="ow-vctl__line"><i></i></div>'
         + '<button type="button" class="ow-vctl__play" aria-label="Play" hidden></button>';
       posEl.appendChild(bar);
-      /* PAINT IT ONCE IT EXISTS. `setSound` is what draws the glyph, and it
+      /* PAINT IT ONCE IT EXISTS. `paintIcon` is what draws the glyph, and it
          was only ever called on a press — so the control shipped empty until
          somebody pressed the empty thing. */
-      setSound(soundOn);
+      var sb = bar.querySelector('[data-ow-sound]');
+      paintIcon(sb, audible());
 
-      bar.querySelector('[data-ow-sound]').addEventListener('click', function (e) {
+      sb.addEventListener('click', function (e) {
         e.stopPropagation();
-        setSound(!soundOn);
+        /* what the icon SHOWS is what the press turns over: muted on a fresh
+           page with the account's sound on, the press is "sound, please" */
+        setSound(sb.getAttribute('aria-pressed') !== 'true');
         /* UNMUTING IS A GESTURE, so it is also the moment a browser will let a
            paused-by-policy video start. */
-        if (soundOn) play(v, true);
+        var cur = posEl.querySelector('video.po-card__vid');
+        if (audible() && cur) play(cur, true);
       });
 
       /* THE FRAME IS THE PLAY/PAUSE TARGET. Not a button drawn over the video —
@@ -1225,7 +1282,7 @@
     if (line && v.duration) {
       line.style.width = ((v.currentTime / v.duration) * 100) + '%';
     }
-    v.muted = !soundOn;
+    v.muted = !audible();
     /* REPLAY. `loop` is set on every pooled player, so a clip that ends starts
        again — which is what a feed does. `currentTime` is reset when a person
        comes BACK to a position they had left part-way through, because
@@ -1244,9 +1301,11 @@
        larger_text      the content column enlarged, the way browser zoom does
      `reduce_motion` keeps its own attribute, which it has had since it was
      written. */
-  OW.applyPrefs = function (s) {
+  OW.applyPrefs = function (s, how) {
     s = s || {};
-    OW.prefs = { autoplay: s.autoplay_media !== false, dataSaver: !!s.data_saver };
+    OW.prefs = { autoplay: s.autoplay_media !== false, dataSaver: !!s.data_saver, sound: !!s.video_sound };
+    /* the boot answer can land after the person already pressed the icon on this page: their press stands */
+    if (s.video_sound !== undefined && !!s.video_sound !== soundOn && !(how && how.boot && soundChosen)) holdSound(!!s.video_sound);
     var root = doc.documentElement;
     if (s.high_contrast) root.setAttribute('data-contrast', 'high'); else root.removeAttribute('data-contrast');
     if (s.larger_text) root.setAttribute('data-text', 'large'); else root.removeAttribute('data-text');
@@ -1339,6 +1398,137 @@
                }) };
     }
   };
+
+  /* ── THE FEED'S VIDEOS PLAY BY THEMSELVES (PLAN R22) ─────────────────────
+     ★ FOUNDER, 2026-10-20: *"why do users need to click on a video to play it
+       on feed?"*
+     Scroll already plays the one page it is on (`prepare`, above). The Feed's
+     videos are each card's own cover `<video>`, and they sat on their first
+     frame until pressed. Now they do what Instagram, TikTok and Reels do: the
+     one most in view plays once about 60% of it shows, and stops when it
+     leaves; one at a time. Muted unless the person turned sound on (the same
+     one decision as Scroll), and a tap on the playing clip is that sound.
+     Nothing starts by itself with Play video automatically off, with Data
+     saver, with reduced motion (the setting or the system's), with the
+     browser's Save-Data, in a hidden tab, or in Scroll, whose player is not
+     this element. `muted` + `playsinline` are what let iOS Safari start it; a
+     browser without IntersectionObserver keeps the tap to play. The cover
+     already holds its size, so playing moves nothing. */
+  OW.media.feed = (function () {
+    var IO = global.IntersectionObserver, watched = [], current = null;
+    var root = doc.documentElement;
+    function on() {
+      var pr = OW.prefs || {}, c = global.navigator && global.navigator.connection;
+      if (pr.autoplay === false || pr.dataSaver || (c && c.saveData)) return false;
+      if (root.getAttribute('data-ow-motion') === 'reduce' || root.getAttribute('data-saver') === '1') return false;
+      try { if (global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches) return false; } catch (_) {}
+      return !!IO;
+    }
+    /* Its own start (`go`), not `play`: that one retries any refused start once the
+       clip can play, and a pause from here (the clip left the screen while it
+       was still loading) is a refusal too, so the clip came back on by itself
+       below the fold. The same two answers, given only while the clip is
+       still the one being looked at: the cover's source arriving after the
+       start (not ready yet) waits for it, the no-sound policy plays it muted. */
+    function go(v) {
+      v.muted = !audible();
+      var again = function () { try { var q = v.play(); if (q && q.catch) q.catch(function () {}); } catch (_) {} };
+      var p = null;
+      try { p = v.play(); } catch (_) {}
+      if (p && p.catch) p.catch(function (err) {
+        var name = (err && err.name) || '';
+        if (current !== v) return;
+        if (name === 'NotAllowedError' && !v.muted) { v.muted = true; pressed = false; paintSound(); again(); }
+        else if (name === 'AbortError') {
+          v.addEventListener('canplay', function () { if (current === v && v.paused) again(); }, { once: true });
+        }
+      });
+    }
+    function settle() {
+      watched = watched.filter(function (v) { return v.isConnected; });
+      /* in Scroll its own player plays the page; a cover moved into a page is not the Feed's any more */
+      var away = doc.hidden || root.getAttribute('data-ow-view') === 'immersive';
+      var auto = !away && on(), best = null;
+      watched.forEach(function (v) {
+        if (auto && (v.__owSeen || 0) >= 0.6 && !v.closest('.ow-fscroll') && (!best || v.__owSeen > best.__owSeen)) best = v;
+      });
+      watched.forEach(function (v) {
+        /* left, or another one is the one being looked at */
+        if (v !== best && !v.paused && (auto || away || !v.__owSeen || v.closest('.ow-fscroll'))) { try { v.pause(); } catch (_) {} }
+      });
+      current = best;
+      if (best && best.paused) go(best);
+      keep();
+    }
+    /* THE PLAYING CLIP'S ICON STAYS IN SIGHT. A portrait clip on a desktop runs past the screen's bottom edge, and on a
+       phone a clip's corner can sit under the dock: its icon is lifted (a transform, so nothing moves) to just above
+       whichever comes first, never above the clip itself; the others stay in their corner. */
+    var lifted = null, frame = 0;
+    function keep() {
+      frame = 0;
+      var sb = current && current.parentNode && current.parentNode.querySelector('.ow-vsound');
+      if (lifted && lifted !== sb) { lifted.style.transform = ''; lifted = null; }
+      if (!sb) return;
+      var r = current.parentNode.getBoundingClientRect(), vh = global.innerHeight || 0, floor = vh;
+      var nav = doc.querySelector('.ow-nav'), nr = nav && nav.getBoundingClientRect();
+      if (nr && nr.height && nr.top > vh / 2) floor = nr.top;
+      var up = Math.max(0, Math.min(r.bottom - (floor - 8), r.height - 52));
+      sb.style.transform = up ? 'translateY(' + (-Math.round(up)) + 'px)' : '';
+      lifted = sb;
+    }
+    global.addEventListener('scroll', function () {
+      if (current && !frame) frame = (global.requestAnimationFrame || global.setTimeout)(keep);
+    }, { passive: true });
+    /* without IntersectionObserver nothing starts by itself, and every clip still gets its sound icon and its tap */
+    var io = IO && new IO(function (es) {
+      es.forEach(function (e) { e.target.__owSeen = e.isIntersecting ? e.intersectionRatio : 0; });
+      settle();
+    }, { threshold: [0, 0.3, 0.6, 0.8, 1] });
+    function watch(scope) {
+      var vs = scope && scope.querySelectorAll ? scope.querySelectorAll('.po-card__cover video, .po-shot video') : [];
+      for (var i = 0; i < vs.length; i++) {
+        var v = vs[i];
+        if (v.__owFeed || v.closest('.ow-fscroll, .ow-fpos, .ow-compose, .ow-editor')) continue;
+        v.__owFeed = true; v.muted = true; v.loop = true; v.playsInline = true;
+        v.setAttribute('playsinline', ''); v.setAttribute('muted', '');
+        watched.push(v); if (io) io.observe(v);
+        /* ONE SOUND ICON ON EVERY VIDEO, in the frame's bottom-right corner,
+           placed over the picture so nothing moves (oneway-popit.css, .ow-vsound) */
+        var frame = v.parentNode;
+        if (frame && !frame.querySelector('[data-ow-sound]')) {
+          var sb = doc.createElement('button');
+          sb.type = 'button'; sb.className = 'ow-vsound'; sb.setAttribute('data-ow-sound', '');
+          paintIcon(sb, audible()); frame.appendChild(sb);
+        }
+      }
+    }
+    function boot() {
+      watch(doc);
+      new global.MutationObserver(function (ms) {
+        for (var i = 0; i < ms.length; i++) {
+          for (var j = 0, add = ms[i].addedNodes; j < add.length; j++) {
+            var n = add[j];
+            if (n.nodeType === 1 && (n.tagName === 'VIDEO' || n.querySelector('video'))) watch(n.parentNode || n);
+          }
+        }
+      }).observe(doc.body, { childList: true, subtree: true });
+      doc.addEventListener('visibilitychange', settle);
+      /* the icon is the sound, never the card's door, and never a like */
+      doc.addEventListener('click', function (e) {
+        var sb = e.target && e.target.closest && e.target.closest('.ow-vsound');
+        if (!sb) return;
+        /* immediate: the cover's own tap listens on this same document and would turn the sound back over */
+        e.preventDefault(); e.stopImmediatePropagation();
+        setSound(sb.getAttribute('aria-pressed') !== 'true');
+        var fv = sb.parentNode && sb.parentNode.querySelector('video');
+        if (fv && audible() && (fv === current || !fv.paused)) { fv.muted = false; play(fv, true); }
+      }, true);
+      /* Scroll opening or closing is the same question asked again */
+      new global.MutationObserver(settle).observe(root, { attributes: true, attributeFilter: ['data-ow-view', 'data-ow-motion', 'data-saver'] });
+    }
+    if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();
+    return { on: on, playing: function () { return current; }, settle: settle };
+  })();
 
   /* ══ SEND TO — ONE SHEET, EVERY SURFACE THAT CAN SEND ═══════════════════
      ★ FOUNDER, 2026-09-07: *"they can seamlessly send things to their friends
@@ -1682,7 +1872,7 @@
     /* things that already mean something keep meaning it — a control, a link,
        the author chip, and the carousel's pagination dots (swiping a carousel
        is a different gesture from tapping it, so the photos themselves stay) */
-    if (target.closest('.po-shots__dots, .po-act, .ow-vctl, [data-po-respond], '
+    if (target.closest('.po-shots__dots, .po-act, .ow-vctl, .ow-vsound, [data-po-respond], '
                        + '[data-po-repost], [data-po-save], [data-po-share], [data-po-who], '
                        + '[data-po-center], [data-po-product], a, input, textarea')) return null;
 
@@ -1774,14 +1964,22 @@
        element. */
     var cv = e.target.closest('.po-card__cover, .po-shot');
     if (cv && doc.documentElement.getAttribute('data-ow-view') !== 'immersive'
-        && !e.target.closest('.po-act, .ow-vctl, [data-po-respond]')) {
+        && !e.target.closest('.po-act, .ow-vctl, .ow-vsound, [data-po-respond]')) {
       var cvid = cv.querySelector('video');
       if (cvid) {
         e.preventDefault(); e.stopPropagation();
         OW.openAfterTap(function () {
           if (!cvid.isConnected) return;
+          /* playing by itself, the tap is its sound (PLAN R22), the one choice
+             Scroll keeps too */
+          if (!cvid.paused && OW.media.feed && OW.media.feed.on()) {
+            setSound(cvid.muted); cvid.muted = !audible();
+            if (audible()) play(cvid, true);
+            return;
+          }
           if (cvid.paused) {
-            cvid.muted = true; cvid.loop = true; cvid.playsInline = true;
+            pressed = true;
+            cvid.muted = !audible(); cvid.loop = true; cvid.playsInline = true;
             play(cvid, true);
           } else {
             try { cvid.pause(); } catch (_) {}
@@ -1819,11 +2017,8 @@
       }
       bump(r, wasOn ? -1 : 1);
       sibs.forEach(function (x) { if (x[1] === 'true') bump(x[0], -1); });
-      /* THE SMASH (the founder: "with a smash of an animation"): a like pops, overshoots and settles, once */
-      if (!wasOn && verb === 'like') {
-        r.classList.remove('is-smash'); void r.offsetWidth; r.classList.add('is-smash');
-        global.setTimeout(function () { r.classList.remove('is-smash'); }, 700);
-      }
+      /* THE SMASH (the founder: "with a smash of an animation") is OW.act's bounce now (OW.motion.bounce, 'on': a squeeze, a
+         swell past its size, two rebounds), from what is on screen, so quick taps never jump */
       /* the control says what it is answering; `gallery` remains the default
          so every existing caller behaves exactly as before */
       var okind = r.getAttribute('data-okind') || 'post';
@@ -2660,13 +2855,15 @@
      build the whole surface to know whether to show a dot. */
   OW.live.unread = function () {
     /* no session, no question: the bell has nothing to count for a stranger,
-       and the 401 it would take is not "unknown", it is "nobody" */
-    if (!token()) return Promise.resolve(null);
-    return data.get('/api/me/notifications').then(function (r) {
+       and the 401 it would take is not "unknown", it is "nobody". A SESSION IS A TOKEN OR THE COOKIE (founder/872,
+       measured 2026-10-21): it asked for a stored token only, and since the session moved to the HttpOnly cookie no
+       browser holds one, so the bell's count was "unknown" for everyone and its dot lit only when a notice arrived live */
+    if (!token() && !cookieSession()) return Promise.resolve(null);
+    /* ONE NUMBER FROM ITS OWN DOOR (founder/882: the bell read the whole list, faces and pictures with it, for a count) */
+    return data.get('/api/me/notifications/count', { fresh: true }).then(function (r) {
       if (!r.ok) return null;                    /* unknown, NOT zero */
       var d = r.data || {};
-      return typeof d.unread === 'number' ? d.unread
-           : ((d.needs_you || []).length + (d.social || []).length);
+      return typeof d.unread === 'number' ? d.unread : null;
     }).catch(function () { return null; });
   };
 
@@ -2697,42 +2894,18 @@
 
      NO MODALS (standing rule): a row opens a page in the same surface with a
      back arrow; Escape goes back too. */
+  /* each a Phosphor name (founder/886; oneway-popit.js "ONE ICON SET"), drawn Bold like every control */
   var SET_ICONS = {
-    calendar: '<rect x="4" y="5.5" width="16" height="14.5" rx="3"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>',
-    activity: '<path d="M4 12h3.5l2.5-6 4 12 2.5-6H20"/>',
-    understanding: '<circle cx="6" cy="7" r="1.7"/><circle cx="17" cy="6" r="1.5"/><circle cx="12" cy="13" r="2.1"/><circle cx="18" cy="17" r="1.5"/><circle cx="6.5" cy="17.5" r="1.5"/><path d="M7.2 8.2 10.6 11.6M15.9 7.2 13 11.2M14 13.8l2.6 2.2M10.3 14.2 7.8 16.4"/>',
-    at: '<circle cx="12" cy="12" r="3.6"/><path d="M15.6 12v1.4a2.4 2.4 0 0 0 4.8 0V12a8.4 8.4 0 1 0-3.3 6.7"/>',
-    person: '<circle cx="12" cy="8" r="3.4"/><path d="M5.5 20a6.5 6.5 0 0 1 13 0"/>',
-    mail: '<rect x="3" y="5" width="18" height="14" rx="2.4"/><path d="m4 7 8 6 8-6"/>',
-    key: '<circle cx="8" cy="15" r="4"/><path d="m11 12 8.5-8.5M16 7l2.5 2.5M14 9l2 2"/>',
-    shield: '<path d="M12 3 5 6v5.5c0 4.2 3 7.6 7 9.5 4-1.9 7-5.3 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/>',
-    device: '<rect x="6" y="2.8" width="12" height="18.4" rx="2.6"/><path d="M10.5 18h3"/>',
-    lock: '<rect x="5" y="10.5" width="14" height="10" rx="2.2"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/>',
-    chat: '<path d="M4 5h16v11H9l-5 4z"/>',
-    pin: '<path d="M12 21s7-5.6 7-11a7 7 0 1 0-14 0c0 5.4 7 11 7 11Z"/><circle cx="12" cy="10" r="2.6"/>',
-    bell: '<path d="M18 8.6a6 6 0 1 0-12 0c0 5-2.1 6.4-2.1 6.4h16.2S18 13.6 18 8.6z"/><path d="M13.7 19a2 2 0 0 1-3.4 0"/>',
-    moon: '<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>',
-    compass: '<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
-    access: '<circle cx="12" cy="4.6" r="1.8"/><path d="M5 8.5h14M12 8.5v5.5m0 0-3.5 6.5M12 14l3.5 6.5"/>',
-    star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
-    doc: '<path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M9.5 12h6M9.5 16h6"/>',
-    out: '<path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 16l-4-4 4-4M6 12h10"/>',
-    chevron: '<path d="m9 5 7 7-7 7"/>',
-    back: '<path d="m15 5-7 7 7 7"/>',
-    search: '<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/>',
-    link: '<path d="M10 14a4.2 4.2 0 0 0 6 0l3-3a4.2 4.2 0 0 0-6-6l-1 1"/><path d="M14 10a4.2 4.2 0 0 0-6 0l-3 3a4.2 4.2 0 0 0 6 6l1-1"/>',
-    check: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
-    flag: '<path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/>',
-    ban: '<circle cx="12" cy="12" r="8.5"/><path d="m6 6 12 12"/>',
-    trash: '<path d="M4.5 7h15M9.5 7V4.8h5V7M6.6 7l.9 12.2h9l.9-12.2M10.2 10.6v5.4M13.8 10.6v5.4"/>',
-    plus: '<path d="M12 5v14M5 12h14"/>',
-    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
-    sliders: '<path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/>',
-    mute: '<path d="M18 8.6a6 6 0 0 0-9.7-4.7M6.2 7.4A6 6 0 0 0 6 8.6c0 5-2.1 6.4-2.1 6.4H15"/><path d="M13.7 19a2 2 0 0 1-3.4 0M4 4l16 16"/>',
-    inbox: '<path d="M4 13.5 6.5 5h11l2.5 8.5V19H4z"/><path d="M4 13.5h5l1 2h4l1-2h5"/>'
+    calendar: 'calendar-blank', activity: 'pulse', understanding: 'graph', at: 'at', person: 'user-circle',
+    mail: 'envelope-simple', key: 'key', shield: 'shield-check', device: 'device-mobile', lock: 'lock',
+    chat: 'chat-teardrop-text', pin: 'map-pin', bell: 'bell', moon: 'moon', compass: 'compass',
+    access: 'person-arms-spread', star: 'star', doc: 'file-text', out: 'sign-out', chevron: 'caret-right',
+    back: 'caret-left', search: 'magnifying-glass', link: 'link', check: 'check', flag: 'flag', ban: 'prohibit',
+    trash: 'trash', plus: 'plus', clock: 'clock', sliders: 'sliders-horizontal', mute: 'bell-slash', inbox: 'tray'
   };
+
   function setIcon(name) {
-    return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (SET_ICONS[name] || '') + '</svg>';
+    return SET_ICONS[name] && OW.glyph ? OW.glyph(SET_ICONS[name], { sel: false }) : '<svg viewBox="0 0 24 24" aria-hidden="true"></svg>';
   }
   /* one icon set for every settings-shaped page in the App (Settings, the
      Post screen, a chat's settings) — founder/510 */

@@ -346,7 +346,7 @@
      (OW.data, frontend/shared/oneway-data.js, loaded here where a page has none) asks the session's own read, GET
      /api/auth/me, then the person read the App's own face comes from, GET /api/oneway/people/<you>. Same origin: the
      cookie goes by itself, the bar reads no token and sends no header. The face follows the one face rule: the picture
-     when there is one, the person's outline (OW.faceMark, founder/495) on their hue when there is none or it will not
+     when there is one, the person's initials on their hue (OW.cards.inside, founder/816, 883) when there is none or it will not
      load. A picture kept on another site is not drawn here (no third-party request from a landing page): the outline.
      Signed in, the slot is a round button to your Me in the App, named "Your profile"; a refusal, a silence or a failure
      leaves Sign in. While it asks (2.5 s at most) the slot keeps still, so nobody signed in sees Sign in turn into a face.
@@ -410,12 +410,18 @@
         return false;
       } catch (_) { return true; }
     }
-    /* a person with no picture is their outline: OW.faceMark where the page has it; on a page without oneway-popit.js
-       (the legal pages, Security, the 404) the same drawing, so the outline is never anything else */
-    function outline() {
-      if (window.OW && window.OW.faceMark) return window.OW.faceMark();
-      return '<svg class="ow-facemark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"'
-        + ' stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="8.4" r="3.6"/><path d="M5.4 20.2a6.6 6.6 0 0 1 13.2 0"/></svg>';
+    /* A PERSON WITH NO PICTURE IS THEIR INITIALS ON THEIR COLOUR (founder/816: "all default profile pictures platform-wide
+       should look like this"; founder/883: "back to showing user profile by sign in"): the one face rule, OW.cards.inside,
+       loaded here where a page has none (oneway-cards.js, as the reader above); until it is, the disc in the hue, empty */
+    function cards(cb) {
+      if (window.OW && window.OW.cards && window.OW.cards.inside) return cb(window.OW.cards);
+      var s = document.querySelector('script[src*="/frontend/shared/oneway-cards.js"]');
+      if (!s) { s = document.createElement('script'); s.src = '/frontend/shared/oneway-cards.js'; s.async = true; document.head.appendChild(s); }
+      s.addEventListener('load', function () { cb(window.OW && window.OW.cards && window.OW.cards.inside ? window.OW.cards : null); });
+    }
+    function letters(face, name) {
+      if (!name) return;
+      cards(function (C) { if (C && !face.querySelector('img')) face.innerHTML = '<i>' + C.inside({ kind: 'person', name: name }) + '</i>'; });
     }
     function asSignIn() {
       still(false);
@@ -427,13 +433,13 @@
       drawn = null;
       fit();
     }
-    function asYou(picture) {
+    function asYou(picture, name) {
       still(false);
       var src = faceSrc(picture);
-      if (you.classList.contains('owbar-you') && drawn === src) return;   // already this face: nothing moves
+      if (you.classList.contains('owbar-you') && drawn === src + '|' + (name || '')) return;   // already this face: nothing moves
       var face = document.createElement('span');
-      face.className = 'owbar-face';
-      face.innerHTML = outline();                                       // the outline until the picture is seen to draw
+      face.className = 'owbar-face owbar-face--ini';
+      letters(face, name);                                              // their initials until the picture is seen to draw
       if (src) {
         var im = document.createElement('img');
         im.alt = ''; im.decoding = 'async';
@@ -450,7 +456,7 @@
       you.setAttribute('aria-label', 'Your profile');
       you.innerHTML = '';
       you.appendChild(face);
-      drawn = src;
+      drawn = src + '|' + (name || '');
       fit();
     }
     function ask(again) {
@@ -466,10 +472,11 @@
           var d = (r && r.ok && r.data) || {};
           var em = String(d.email || (d.user && d.user.email) || '').trim().toLowerCase();
           if (!em) { asSignIn(); return; }
-          if (!you.classList.contains('owbar-you')) asYou('');            // signed in: the outline until the face is read
+          var nm = String(d.full_name || d.name || (d.user && (d.user.full_name || d.user.name)) || '').trim();
+          if (!you.classList.contains('owbar-you')) asYou('', nm);        // signed in: their initials until the face is read
           return D.get('/api/oneway/people/' + encodeURIComponent(em), o).then(function (p) {
-            if (n !== asked || !(p && p.ok && p.data)) return;             // unread: the outline stands, honestly
-            asYou(p.data.picture || '');
+            if (n !== asked || !(p && p.ok && p.data)) return;             // unread: their initials stand, honestly
+            asYou(p.data.picture || '', p.data.name || p.data.display_name || nm);
           });
         }).catch(function () { if (n === asked) asSignIn(); });
       });
@@ -486,4 +493,34 @@
   })();
 
   window.owBar = { el: bar, set: set, fit: fit };
+})();
+
+/* GO TO, WHILE IT IS OPEN (founder/883: "the app and os buttons everywhere including on landing pages must become go to when
+   they are open"). Every App and OS button on a landing page is marked (data-ow-go="app" | "os"); the platform's one public
+   read of the two switches, GET /api/oneway/platform/public ({app, os}: deploy's, answering anyone), says which side is
+   open. A side that reads true turns its buttons into "Go to the App" / "Go to the OS", opening it; anything else (closed,
+   missing, a failed or foreign read, the static copy with no API) leaves today's words and today's door. Same origin, no
+   headers; plain ES5 and XMLHttpRequest for the oldest browsers the site keeps. */
+(function () {
+  /* the bar is read before the page's own buttons are: they are looked for once the whole document has been read */
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', goTo); } else { goTo(); }
+  function goTo() {
+  var marks = document.querySelectorAll ? document.querySelectorAll('[data-ow-go]') : [];
+  if (!marks.length || typeof XMLHttpRequest === 'undefined') return;
+  var x = new XMLHttpRequest();
+  x.open('GET', '/api/oneway/platform/public');
+  x.onload = function () {
+    var s = null;
+    try { s = x.status === 200 ? JSON.parse(x.responseText) : null; } catch (e) { s = null; }
+    if (!s || typeof s !== 'object') return;
+    for (var i = 0; i < marks.length; i++) {
+      var a = marks[i], side = a.getAttribute('data-ow-go');
+      if ((side !== 'app' && side !== 'os') || s[side] !== true) continue;
+      var arrow = /\u2192|&rarr;|\u2192/.test(a.innerHTML) || a.textContent.indexOf('\u2192') >= 0;
+      a.textContent = (side === 'app' ? 'Go to the App' : 'Go to the OS') + (arrow ? ' \u2192' : '');
+      a.setAttribute('href', side === 'app' ? '/oneway-app.html' : '/oneway-os.html');
+    }
+  };
+  x.send();
+  }
 })();

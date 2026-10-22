@@ -58,7 +58,11 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function url(v) { return OW.imageUrl ? OW.imageUrl(v) : String(v || ''); }
   function initials(n) {   /* OW.initials (oneway-popit.js) is the rule; where it is not loaded, the same rule: letters, never a sigil */
-    return OW.initials ? OW.initials(n) : (String(n || '').match(/[\p{L}\p{N}]/u) || [''])[0].toUpperCase();
+    if (OW.initials) return OW.initials(n);
+    /* the first word's letter and the last word's, as OW.initials says it (it said only the first: "Ana Face" was "A" on
+       every page without oneway-popit.js, the bar's face on the landing among them, founder/883) */
+    var p = String(n || '').trim().split(/\s+/).map(function (w) { var m = w.match(/[\p{L}\p{N}]/u); return m ? m[0] : ''; }).filter(Boolean);
+    return p.length ? (p[0] + (p.length > 1 ? p[p.length - 1] : '')).toUpperCase() : '';
   }
   function huePair(h) {
     if (typeof h !== 'number' || !OW.hue || !OW.hue.fromAngle) return null;
@@ -163,6 +167,14 @@
     var inner = inside({ kind: kind, name: card.title, picture: pic.url },
                        { letters: 'i', img: ' loading="lazy" decoding="async" onerror="OW.faceFail&&OW.faceFail(this)"' });
     return '<span class="ow-ocard__face ' + (cls || '') + '" data-shape="' + esc(shape) + '" data-kind="' + kind + '" data-ini="' + esc(ini) + '">' + inner + '</span>';
+  }
+
+  /* HERE NOW, ON A SLIM CARD (founder/863: "show users online status in messaging and cards slim ones"): the green dot
+     Messages draws, bottom-right of the face, when the read says this person is online (cards/service._here_now: only to
+     someone they let see it). The face clips what it holds, so the dot sits beside it in a holder of the face's size. */
+  function slimFace(card) {
+    if (!card || card.presence !== 'online' || kindOf(card) !== 'person') return face(card);
+    return '<span class="ow-ocard__faceon">' + face(card) + '<i class="ow-ocard__on" role="img" aria-label="Online"></i></span>';
   }
 
   /* THE COUNTS, right under the name and the handle (ASKS rows 10-11, PLAN §3.4 item 5): followers first and always, a
@@ -283,9 +295,24 @@
     var line = opts.secondary === false ? '' : site ? site.label : (opts.line != null ? opts.line : handleLine(card));
     var said = site ? { title: card.title || '', line: line } : sayOnce(card.title || '', line, kindOf(card));
     var nameClass = prefix + '__name', subClass = prefix === 'ow-prof' ? 'ow-prof__handle' : prefix + '__sub';
-    return '<' + heading + ' class="' + nameClass + '" dir="auto" title="' + esc(said.title) + '">' + esc(said.title) + '</' + heading + '>' +
+    return (prefix === 'ow-ocard' && opts.note !== false ? noteHTML(card.note, opts.noteSize || 'card') : '') + '<' + heading + ' class="' + nameClass + '" dir="auto" title="' + esc(said.title) + '">' + esc(said.title) + '</' + heading + '>' +
       (said.line ? (site ? '<a class="' + subClass + '" href="' + esc(site.href) + '" target="_blank" rel="noopener noreferrer">' :
         '<span class="' + subClass + '" title="' + esc(said.line) + '" dir="auto">') + esc(said.line) + (site ? '</a>' : '</span>') : '');
+  }
+  /* A PERSON'S NOTE, ABOVE THEIR NAME, WHEREVER THEY APPEAR (founder/878, 2026-10-21: "notes are still not appearing above the
+     name closley and cleanly"; "the change is it appears everywhere but must look good doing so"). Instagram's Notes: a small
+     speech bubble directly over the name, touching it, its tail toward the face; the theme's own ground with a crisp edge,
+     so it reads on every hue. In the flow above the name, so it never covers a face, a name or a banner and is never
+     clipped. Sized for where it is: `profile` two lines, `card` one, `sm` a short line on a small card or a row. The card
+     read carries it only as its person's audience allows (api/oneway/cards, people.store.note); nothing is drawn without
+     one. THE ONE RENDERER: the material's OW.noteHTML and OW.noteOn draw through this (oneway-popit.js). */
+  function noteHTML(note, size) {
+    var t = typeof note === 'string' ? note : (note && note.text);
+    t = String(t == null ? '' : t).replace(/\s+/g, ' ').trim();
+    if (!t) return '';
+    var sz = size === 'profile' ? 'profile' : (size === 'sm' || size === 'micro') ? 'sm' : 'card';
+    return '<span class="po-note ow-note" data-size="' + sz + '" role="note" title="' + esc(t) + '">' +
+      '<span class="po-note__t" dir="auto">' + esc(t) + '</span><i class="po-note__tie" aria-hidden="true"></i></span>';
   }
   /* A PLACE IS WRITTEN THE SHORT WAY (founder, 2026-10-16: "location should always be the quickest abbreviations like
      Atlantic City, NJ, rather than New Jersey"): a US state or territory becomes its postal code and a trailing
@@ -495,11 +522,11 @@
     if (!card) return '';
     /* THE COMPACT PROJECTIONS draw the same parts for both kinds (founder/797: "condensed versions of the cards") */
     if (as === 'chip') return face(card) + '<b class="ow-ocard__name" title="' + esc(card.title || '') + '">' + esc(card.title) + '</b>';
-    if (mode === 'micro') return face(card) + '<span class="ow-ocard__id">' + identityHTML(card, { secondary: false }) + '</span>';
-    if (mode === 'mini' || as === 'row') return face(card) + '<span class="ow-ocard__id">' +
-      identityHTML(card, { line: handleOf(card) }) + '</span>' + compactAside(card);
+    if (mode === 'micro') return slimFace(card) + '<span class="ow-ocard__id">' + identityHTML(card, { secondary: false, noteSize: 'sm' }) + '</span>';
+    if (mode === 'mini' || as === 'row') return slimFace(card) + '<span class="ow-ocard__id">' +
+      identityHTML(card, { line: handleOf(card), noteSize: 'sm' }) + '</span>' + compactAside(card);
     if (as === 'simple') {
-      return '<span class="po-card__face" aria-hidden="true"></span>' + face(card) + '<span class="ow-ocard__id">' + identityHTML(card, { line: handleOf(card) }) + '</span>';
+      return '<span class="po-card__face" aria-hidden="true"></span>' + face(card) + '<span class="ow-ocard__id">' + identityHTML(card, { line: handleOf(card), noteSize: 'sm' }) + '</span>';
     }
     if (mode === 'standard') {
       var sctx = contextHTML(card, false);
@@ -730,7 +757,7 @@
   }
 
   OW.cards = { lineMarks: lineMarks, detailIcon: detailIcon, read: read, deck: deck, html: html, face: face, fill: fill, inside: inside, node: node, mount: mount, forget: forget,
-    identityHTML: identityHTML, informationHTML: informationHTML, countsHTML: countsHTML, counts: counts, countWords: countWords,
+    identityHTML: identityHTML, noteHTML: noteHTML, informationHTML: informationHTML, countsHTML: countsHTML, counts: counts, countWords: countWords,
     linksHTML: linksHTML, linksInner: linksInner, directions: directions, handle: handleOf, handleLine: handleLine,
     sayOnce: sayOnce, shortPlace: shortPlace, mark: mark };
 })(window);

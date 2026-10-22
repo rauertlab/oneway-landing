@@ -195,12 +195,19 @@
     var vid = r.kind === 'video';
     return { src: r.dataUrl, kind: vid ? 'video' : 'photo', origin: 'uploaded', name: (file && file.name) || r.name || '',
              file: vid ? r.blob : (file || null), frame: r.frame, crop: vid ? r.crop : null, trim: vid ? r.trim : null,
-             poster: vid ? r.poster : '' };
+             poster: vid ? r.poster : '', marks: vid ? null : (r.marks || null) };
   }
 
   /* the editor's mark: the crop corners, as Photos draws its Edit */
   var CO_EDIT_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
     + 'stroke-linejoin="round" aria-hidden="true"><path d="M6 2v14a2 2 0 0 0 2 2h14"/><path d="M18 22V8a2 2 0 0 0-2-2H2"/></svg>';
+
+  /* the photo's Text and Sticker marks (founder/866 §8), drawn as the bin and the crop corners are */
+  var CO_TEXT_MARK = '<svg viewBox="0 0 24 24" aria-hidden="true"><text x="12" y="17.5" text-anchor="middle" font-size="16" '
+    + 'font-weight="800" fill="currentColor" font-family="system-ui,-apple-system,sans-serif">Aa</text></svg>';
+  var CO_STICKER_MARK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+    + 'stroke-linejoin="round" aria-hidden="true"><path d="M15.5 3H8a5 5 0 0 0-5 5v8a5 5 0 0 0 5 5h5l8-8V8.5A5.5 5.5 0 0 0 15.5 3z"/>'
+    + '<path d="M13 21v-3a5 5 0 0 1 5-5h3"/><path d="M8.5 10h.01M14.5 10h.01"/><path d="M9 14.5c1.6 1.3 4.4 1.3 6 0"/></svg>';
 
   function coBytes(dataUrl) {
     var i = String(dataUrl || '').indexOf(',');
@@ -215,6 +222,12 @@
       ? 'video' : 'photo';
   }
 
+  /* WHAT WAS BEING MADE, KEPT WHILE THE PAGE IS OPEN (founder/866 §8, 2026-10-21: "preserve editing progress"; "ensure
+     selected media is preserved when navigating backward"). Lightbulb is drawn anew each time it is opened, and leaving it
+     for Home lost every photo, the words and the screen. The work is held here and handed to the next Lightbulb opened, and
+     let go once it is shared or sent. */
+  var kept = null;
+
   function composer(host, opts) {
     opts = opts || {};
     var picks = [];            /* {src, kind, external} — held HERE, not on a server */
@@ -228,6 +241,18 @@
     var posting = false;       /* on the upload screen (founder/493) */
     var audience = 'everyone'; /* who can see it — the post door's own three */
     var sub = '';              /* the Post screen's own page: where · who · platforms */
+    var leftP = null;          /* the draft kept when this work was last left: replaced, never doubled, when it goes out */
+    if (kept && kept.picks.length && !opts.fresh) {
+      picks = kept.picks; step = kept.step; title = kept.title; caption = kept.caption;
+      place = kept.place; audience = kept.audience; posting = kept.posting; leftP = kept.draftP || null;
+    }
+    /* THE WORK WAS KEPT IN DRAFTS WHEN IT WAS LEFT, AND IT IS HERE AGAIN: once it is posted, sent or kept anew, that
+       first draft is the same work twice, so it goes (a draft is in no feed and was sent to no one) */
+    function dropLeft(nowId) {
+      if (!leftP) return;
+      var lp = leftP; leftP = null;
+      lp.then(function (id) { if (id && id !== nowId) data.del('/api/oneway/social/posts/' + encodeURIComponent(id)); });
+    }
     function placeOf(cid) {
       var hit = null;
       places.forEach(function (p) { if (p && p.id === cid) hit = p; });
@@ -307,10 +332,13 @@
       if (step === 5 || sentPost) return;
       var words = (caption || '').trim() || (title || '').trim();
       if (!picks.length && !(posting && textPost && words)) return;
-      makePrivatePost().then(function (id) {
+      var keeping = makePrivatePost();
+      if (kept) kept.draftP = keeping;
+      keeping.then(function (id) {
         if (!OW.toast) return;
         if (!id) { OW.toast('What you made could not be kept. Nothing was shared.'); return; }
         OW.toast('Kept in your drafts', { tone: 'ok', action: 'Discard', onAction: function () {
+          if (kept && kept.draftP === keeping) kept = null;   /* discarded: the next Lightbulb opens empty */
           data.del('/api/oneway/social/posts/' + encodeURIComponent(id)).then(function (r) {
             OW.toast(r && r.ok ? 'Discarded' : 'That draft could not be discarded. It is in your drafts.',
                      { tone: r && r.ok ? 'ok' : 'bad' });
@@ -324,7 +352,8 @@
          the screen stays the camera the whole time (founder/545) */
       doc.addEventListener('visibilitychange', function () {
         if (doc.hidden) { if (stream) stopStream(); return; }
-        if (curLens && curLens.frame.isConnected && !video && !picks.length
+        /* the lens on screen is the test, not "nothing made": the camera now opens with what was made in its tray */
+        if (curLens && curLens.frame.isConnected && !video
             && curLens.frame.getAttribute('data-state') !== 'off'
             && curLens.frame.getAttribute('data-state') !== 'ask') startStream(curLens);
       });
@@ -422,7 +451,8 @@
        camera, a refusal) is said in one line on the same screen, with Upload
        and Import still under the thumb. */
     var mode = opts.mode === 'write' ? 'write' : 'camera';
-    var lensShut = false;      /* the person chose More: the rest of Lightbulb */
+    /* the person chose More: the rest of Lightbulb. On Lightbulb (opts.hub) it opens there, on the creation hub (founder/866 section 7) */
+    var lensShut = !!opts.hub;
     /* A PLACE FROM THE FIRST RUN (founder/846): sign-up's "Put a place on Oneway" leaves one to confirm; Lightbulb opens on
        More, where create.js shows it filled in, never on a camera the person did not ask for */
     try { if (global.sessionStorage && global.sessionStorage.getItem('ow_place_prefill')) lensShut = true; } catch (_) {}
@@ -501,7 +531,19 @@
         facing = (facing === 'environment') ? 'user' : 'environment';
         stopStream(); startStream(L);
       });
-      top.appendChild(mk('span', ''));
+      /* WHAT YOU HAVE MADE SO FAR, waiting: its last piece and how many, one press back to them (founder/866 §8) */
+      if (picks.length) {
+        var last = picks[picks.length - 1];
+        var tray = mk('button', 'ow-compose__tray');
+        tray.type = 'button';
+        tray.setAttribute('aria-label', picks.length + (picks.length === 1 ? ' thing' : ' things') + ' made: back to them');
+        tray.innerHTML = (last.kind === 'video' ? '<video muted playsinline preload="metadata"></video>' : '<img alt="">')
+          + '<b>' + picks.length + '</b>';
+        var tm = tray.firstChild;
+        tm.src = last.src;
+        tray.addEventListener('click', function () { go(1); });
+        top.appendChild(tray);
+      } else top.appendChild(mk('span', ''));
       top.appendChild(flip);
       frame.appendChild(top);
 
@@ -650,7 +692,7 @@
       if (!perms || !perms.query) { L.ask(); return; }
       try {
         perms.query({ name: 'camera' }).then(function (st) {
-          if (!L.frame.isConnected || picks.length) return;
+          if (!L.frame.isConnected) return;   /* the lens is still there; what was made waits in its tray (866 §8) */
           if (st && st.state === 'granted') startStream(L);
           else if (st && st.state === 'denied') L.off(CAM_OFF);
           else L.ask();
@@ -693,7 +735,60 @@
 
     /* THE CAMERA, AFTER THE PERSON CHOSE MORE: the rest of Lightbulb is under
        it, and this is the way back in. */
+    /* THE CREATION HUB (founder/866 section 7): what can be made, each a plain tile with its mark; no glowing cards, no
+       paragraph between choices. Capture, Upload, Import and Write are this composer's own ways; the rest are Lightbulb's. */
+    var HUB_MARKS = {
+      capture: '<rect x="3" y="6.5" width="18" height="13" rx="3"/><circle cx="12" cy="13" r="3.6"/><path d="M8.5 6.5 10 4h4l1.5 2.5"/>',
+      upload: '<path d="M12 15.5V4"/><path d="m7.5 8.5 4.5-4.5 4.5 4.5"/><path d="M4 15.5v3a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-3"/>',
+      import: '<path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1"/>',
+      write: '<path d="M4 20h4L19 9l-4-4L4 16Z"/><path d="m13.5 6.5 4 4"/>',
+      drafts: '<path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10A.5.5 0 0 1 7 20Z"/><path d="M14 3.5V8h4"/><path d="M10 13h5M10 16.5h3"/>',
+      create: '<rect x="3.5" y="3.5" width="17" height="17" rx="4"/><path d="M12 8v8M8 12h8"/>',
+      center: '<path d="M4 20V9l8-5 8 5v11"/><path d="M9.5 20v-5h5v5"/>' };
+    function hubStyle() {
+      if (doc.getElementById('ow-lbhub-css')) return;
+      var st = doc.createElement('style'); st.id = 'ow-lbhub-css';
+      st.textContent = '.ow-lbh__h{margin:6px 2px 12px;font-size:20px;font-weight:750;letter-spacing:-.01em;color:var(--ow-ink)}' +
+        '.ow-lbh{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 18px}' +
+        '@media (min-width:900px){.ow-lbh{grid-template-columns:repeat(4,minmax(0,1fr))}}' +
+        '.ow-lbh__t{display:flex;flex-direction:column;align-items:flex-start;gap:10px;min-height:118px;padding:14px;border-radius:18px;text-align:left;cursor:pointer;font:inherit;color:var(--ow-ink);' +
+        'background:color-mix(in srgb,var(--ow-ink) 5%,transparent);border:1px solid color-mix(in srgb,var(--ow-ink) 11%,transparent);box-shadow:none;transition:border-color .15s,transform .15s}' +
+        '.ow-lbh__t:hover{border-color:color-mix(in srgb,var(--ow-ink) 24%,transparent);transform:translateY(-1px)}' +
+        '.ow-lbh__t:focus-visible{outline:2px solid rgba(var(--ow-h1,232,69,122),.9);outline-offset:2px}' +
+        '.ow-lbh__i{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--ow-ink) 8%,transparent)}' +
+        '.ow-lbh__i svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}' +
+        '.ow-lbh__t[data-hub="capture"] .ow-lbh__i{background:rgba(var(--ow-h1,232,69,122),.14);color:rgba(var(--ow-h1,232,69,122),1)}' +
+        '.ow-lbh__t b{font-size:15px;font-weight:650}.ow-lbh__t span.ow-lbh__n{font-size:12.5px;line-height:1.35;color:var(--ow-ink-3)}' +
+        '.ow-lbh__t[data-hub="center"]{grid-column:1/-1;flex-direction:row;align-items:center;min-height:0}' +
+        'html[data-motion="reduced"] .ow-lbh__t{transition:none}';
+      (doc.head || doc.documentElement).appendChild(st);
+    }
     function drawDoor() {
+      if (opts.hub) {
+        var hub = opts.hub;
+        hubStyle();
+        /* the page already asks what they are starting (create.js), so the hub draws no heading of its own */
+        var grid = mk('div', 'ow-lbh'), below = mk('div');
+        var tile = function (k, label, note, run) {
+          if (!run) return;
+          var b = mk('button', 'ow-lbh__t'); b.type = 'button'; b.setAttribute('data-hub', k);
+          b.innerHTML = '<span class="ow-lbh__i"><svg viewBox="0 0 24 24" aria-hidden="true">' + HUB_MARKS[k] + '</svg></span><b>' + esc(label) + '</b><span class="ow-lbh__n">' + esc(note) + '</span>';
+          b.addEventListener('click', run);
+          grid.appendChild(b);
+        };
+        tile('capture', 'Capture', 'A photo or a video, now', function () { lensShut = false; mode = 'camera'; openLens(); });
+        tile('upload', 'Upload', 'Photos and videos from this device', function () { filePick.click(); });
+        tile('import', 'Import', 'Something you host elsewhere, by its link', function () { openImport(below); });
+        tile('write', 'Write', 'Words on their own', function () { lensShut = false; mode = 'write'; paintChoose(); });
+        tile('drafts', 'Continue a draft', 'What you saved without sending', hub.drafts);
+        tile('create', 'Create', 'A document, an event, a guide and more', hub.create);
+        if (hub.center && hub.showCenter && hub.showCenter.then) {
+          hub.showCenter.then(function (yes) { if (yes && grid.isConnected && !grid.querySelector('[data-hub="center"]')) tile('center', 'For your Center', 'Posts, offers and events as your Center, in the OS', hub.center); });
+        } else tile('center', 'For your Center', 'Posts, offers and events as your Center, in the OS', hub.center);
+        stage.appendChild(grid);
+        stage.appendChild(below);
+        return;
+      }
       var lens = mk('button', 'ow-compose__lensdoor');
       lens.type = 'button';
       lens.setAttribute('aria-label', 'Open the camera');
@@ -846,7 +941,8 @@
       /* THE EDITOR OPENS AT THE UPLOAD (founder/831), over the camera, and hands back each piece in its frame;
          Cancel leaves the camera exactly as it was */
       if (typeof OW.editMedia === 'function') {
-        OW.editMedia(files, { frame: 'post', videoFrame: 'postVideo', title: 'New post' }).then(function (res) {
+        /* words and stickers on a photo (founder/866 §8): the editor's own layer, kept on the pick */
+        OW.editMedia(files, { frame: 'post', videoFrame: 'postVideo', title: 'New post', marks: true }).then(function (res) {
           if (!res || !res.length) return;
           res.forEach(function (r, i) {
             var it = coFromEdit(r, files[i]);
@@ -967,12 +1063,37 @@
             editBtn.setAttribute('aria-label', 'Edit photo ' + (i + 1));
             editBtn.addEventListener('click', function (e) { e.stopPropagation(); editPick(p, i); });
             cell.appendChild(editBtn);
+            /* WORDS AND STICKERS, ONE PRESS FROM THE PHOTO (founder/866 §8: "make text and sticker placement
+               intuitive"): the two marks down the photo's side open the editor straight to the words or the stickers */
+            [['text', 'Text', CO_TEXT_MARK], ['sticker', 'Sticker', CO_STICKER_MARK]].forEach(function (d) {
+              var mb = mk('button', 'ow-compose__mark', d[2] + '<span>' + d[1] + '</span>');
+              mb.type = 'button';
+              mb.setAttribute('data-mark', d[0]);
+              mb.setAttribute('aria-label', (d[0] === 'text' ? 'Add words to photo ' : 'Add a sticker to photo ') + (i + 1));
+              mb.addEventListener('click', function (e) { e.stopPropagation(); editPick(p, i, d[0]); });
+              cell.appendChild(mb);
+            });
           }
         }
-        var rm = mk('button', 'ow-compose__rm', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg><span>Remove</span>');
+        var rm = mk('button', 'ow-compose__rm', '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg><span>Delete</span>');
         rm.type = 'button';
-        rm.setAttribute('aria-label', 'Remove item ' + (i + 1));
-        rm.addEventListener('click', function () { picks.splice(i, 1); go(1); });
+        rm.setAttribute('aria-label', 'Delete item ' + (i + 1));
+        rm.addEventListener('click', function (e) {
+          e.stopPropagation();
+          /* AN X, AND ONE QUESTION ON THE PHOTO ITSELF (founder/882: "quickly disposing and retaking photos with X icon after
+             taken. are you sure u want to delete?"): Delete throws it away and the camera is back for the next one */
+          if (cell.querySelector('.ow-compose__ask')) return;
+          var ask = mk('div', 'ow-compose__ask');
+          ask.setAttribute('role', 'alertdialog');
+          ask.appendChild(mk('p', '', 'Are you sure you want to delete this?'));
+          var yes = mk('button', 'ow-btn ow-compose__askyes', 'Delete'), no = mk('button', 'po-act ow-compose__askno', 'Keep');
+          yes.type = no.type = 'button';
+          yes.addEventListener('click', function (ev) { ev.stopPropagation(); picks.splice(i, 1); go(picks.length ? 1 : 0); });
+          no.addEventListener('click', function (ev) { ev.stopPropagation(); ask.remove(); });
+          ask.appendChild(yes); ask.appendChild(no);
+          cell.appendChild(ask);
+          try { no.focus(); } catch (_) {}
+        });
         cell.appendChild(rm);
         grid.appendChild(cell);
       });
@@ -987,11 +1108,13 @@
 
     /* EDIT A PIECE AGAIN: the original opens in the editor (a photo from its file, a video with its frame and trim
        where they were left), and what comes back takes its place. Cancel changes nothing. */
-    function editPick(p, idx) {
+    function editPick(p, idx, openMarks) {
       /* a photo without a file (the camera's) keeps the shot it started from, so it is never a crop of a crop */
       var from = p.file || p.orig || p.src;
+      /* the words and stickers come back where they were put, on the picture they were put on, still movable */
       OW.editMedia(from, { frame: 'post', videoFrame: 'postVideo', frameKey: p.frame, title: 'Edit',
-                           crop: p.kind === 'video' ? p.crop : null, trim: p.kind === 'video' ? p.trim : null })
+                           crop: p.kind === 'video' ? p.crop : null, trim: p.kind === 'video' ? p.trim : null,
+                           marks: p.kind === 'video' ? null : (p.marks || true), openMarks: openMarks || '' })
         .then(function (r) {
           if (!r) return;
           var it = coFromEdit(r, p.file);
@@ -1310,6 +1433,7 @@
         var id = ((r.data || {}).post || {}).id || (r.data || {}).id || '';
         if (!r.ok || !id) throw new Error('it could not be prepared');
         sentPost = id;
+        dropLeft(id);
         return id;
       }).catch(function () { return ''; });
     }
@@ -1761,6 +1885,33 @@
       var ok = mk('div', 'ow-compose__done');
       ok.appendChild(mk('p', 'ow-note show ow-note--good',
         esc('Shared "' + name + '" to ' + where + '.')));
+      kept = null;
+      dropLeft(gid);
+      syncBack();              /* the receipt is the end: Back leaves Lightbulb, not into a post screen that is gone */
+      /* TAKEN DOWN IN ONE PRESS (founder/866 §8: "prevent accidental publishing"): a post that went out by mistake is
+         archived through its own state door, which takes it off the profile and out of every feed (contracts: ARCHIVED),
+         and the same press puts it back up */
+      if (gid) {
+        var undo = mk('button', 'po-act ow-compose__undo', 'Take it down');
+        undo.type = 'button';
+        var isDown = false;
+        undo.addEventListener('click', function () {
+          undo.disabled = true;
+          var want = isDown ? 'published' : 'archived';
+          data.put('/api/oneway/social/posts/' + encodeURIComponent(gid) + '/state', { state: want }).then(function (r) {
+            undo.disabled = false;
+            if (r && r.ok) {
+              isDown = !isDown;
+              if (OW.toast && OW.toast.hide) OW.toast.hide();   /* "Posted to your profile" is no longer true */
+              ok.firstChild.textContent = isDown
+                ? 'Taken down. It is off your profile and out of every feed. Only you can see it.'
+                : 'Shared "' + name + '" to ' + where + '.';
+              undo.textContent = isDown ? 'Post it again' : 'Take it down';
+            } else if (OW.toast) OW.toast((r && r.error) || 'That did not work. Try again.');
+          });
+        });
+        ok.appendChild(undo);
+      }
       /* ── WHERE IT WENT, AND HOW TO OPEN IT ───────────────────────────────
          ★ FOUNDER/493: *"feedback that truly tells user where a post uploaded
            and where to click it."*
@@ -1876,10 +2027,77 @@
     function paintStage() {
       if (step === 5) paintDone();
       else if (!picks.length && !(posting && textPost)) { posting = false; paintChoose(); }
+      /* BACK TO THE CAMERA IS THE CAMERA (founder/866 §8, 2026-10-21: "support switching between capture and uploaded
+         media", "refine add-media"). With something taken, step 0 drew the edit screen again, so "Back to the camera"
+         and "Add more" both stayed where they were: the camera now opens with what was made waiting in its tray. */
+      else if (step === 0 && !posting) paintChoose();
       else if (posting) { if (sub) paintPostSub(); else paintPost(); }
       else paintMade();
       screenMode(step === 5 || !!picks.length || (posting && textPost));
+      kept = (step !== 5 && picks.length) ? { picks: picks, step: step, title: title, caption: caption, place: place,
+                                               audience: audience, posting: posting, draftP: leftP } : null;
+      syncBack();
     }
+    /* ── BACK STEPS BACK, AND NOTHING MADE IS LOST (founder/866 §8) ─────────────────────────────────────────────
+       A phone's back gesture left Lightbulb from any screen, and the work with it (walked 2026-10-21: from the post screen
+       it went to the page before the App). Each screen past the camera adds one entry at the same address, which the
+       shell's router leaves alone; Back steps one screen back: the post screen's own page to the post screen, the post
+       screen to editing, editing to the camera with what was made in its tray. The entry a pop lands on says how deep it
+       is, so the editor's own entry (owEditor) and the steps this takes back itself are never read as a person's Back. */
+    var lbDepth = (global.history.state && global.history.state.owLb) || 0;
+    function lbLevel() {
+      if (step === 5 || (!picks.length && !(posting && textPost))) return 0;
+      if (posting) return sub ? 3 : 2;
+      return step === 0 ? 0 : 1;
+    }
+    function syncBack() {
+      var wait = OW.editMedia && OW.editMedia.settled ? OW.editMedia.settled() : null;
+      if (wait && wait.then) wait.then(function () { syncNow(); }); else syncNow();
+    }
+    var lbMoving = false, lbAgain = false;
+    function syncNow(tries) {
+      if (!host.isConnected) return;
+      var st = global.history.state || {};
+      /* the editor's entry is still on top (its step back is slow on a busy phone): wait for it, a little */
+      if (st.owEditor) { if ((tries || 0) < 30) global.setTimeout(function () { syncNow((tries || 0) + 1); }, 100); return; }
+      if (lbMoving) { lbAgain = true; return; }   /* a step back of ours is on its way: once it lands */
+      var lv = lbLevel();
+      while (lbDepth < lv) {
+        lbDepth++;
+        try { global.history.pushState({ owLb: lbDepth }, '', global.location.href); } catch (_) {}
+      }
+      if (lbDepth > lv) {
+        /* never more steps than the browser says are ours under this entry: a step too many leaves the App */
+        var n = Math.min(lbDepth, st.owLb || 0) - lv;
+        lbDepth = lv;
+        if (n > 0) {
+          lbMoving = true;
+          global.setTimeout(function () { if (lbMoving) { lbMoving = false; if (lbAgain) { lbAgain = false; syncNow(); } } }, 800);
+          try { global.history.go(-n); } catch (_) { lbMoving = false; }
+        }
+      }
+    }
+    function onLbPop() {
+      if (!host.isConnected) { global.removeEventListener('popstate', onLbPop); return; }
+      var st = global.history.state || {};
+      if (st.owEditor) return;
+      if (lbMoving) {   /* our own step back, landed */
+        lbMoving = false;
+        if (lbAgain) { lbAgain = false; syncNow(); }
+        return;
+      }
+      var at = st.owLb || 0;
+      if (at >= lbDepth) return;
+      var n = lbDepth - at;
+      lbDepth = at;
+      while (n-- > 0) {
+        if (posting && sub) sub = '';
+        else if (posting) posting = false;
+        else step = 0;
+      }
+      if (step === 0 && !posting) go(0); else paintStage();
+    }
+    global.addEventListener('popstate', onLbPop);
 
     /* ── WHAT YOU MADE ─────────────────────────────────────────────────────
        Everything that used to be Review, Describe and Where, on one surface,
@@ -1998,10 +2216,28 @@
 
       /* one Post, across the bottom, where the thumb already is */
       var bar = mk('div', 'ow-upload__bar');
-      var go = mk('button', 'ow-btn ow-upload__post', 'Post');
-      go.type = 'button';
-      go.addEventListener('click', function () { share(go); });
-      bar.appendChild(go);
+      /* IT SAYS WHERE (founder/866 §8: "prevent accidental publishing", "a clear transition into destination selection") */
+      var postB = mk('button', 'ow-btn ow-upload__post', esc('Post to ' + (place ? whereWords() : 'your profile')));
+      postB.type = 'button';
+      postB.setAttribute('data-where', place || 'profile');
+      postB.addEventListener('click', function () { share(postB); });
+      /* SAVED, NOT POSTED (founder/866 P1, the publishing flow: "Publish or save as a draft"): through the door that already
+         makes a draft (makePrivatePost: born a draft, in no feed and on no profile); Lightbulb then starts clean */
+      var keep = mk('button', 'po-act ow-upload__draft', 'Save as draft');
+      keep.type = 'button';
+      keep.addEventListener('click', function () {
+        keep.disabled = true; postB.disabled = true;
+        makePrivatePost().then(function (id) {
+          keep.disabled = false; postB.disabled = false;
+          if (!id) { if (OW.toast) OW.toast('That could not be saved. Nothing was posted.'); return; }
+          kept = null; sentPost = '';
+          picks = []; caption = ''; title = ''; posting = false; sub = ''; textPost = false;
+          if (OW.toast) OW.toast('Saved to your drafts. Nothing was posted.', { tone: 'ok' });
+          go(0);
+        });
+      });
+      bar.appendChild(keep);
+      bar.appendChild(postB);
       stage.appendChild(bar);
     }
     var AUD_WORDS = { everyone: 'Everyone', followers: 'Followers', close: 'Close friends' };
@@ -2055,7 +2291,6 @@
       var sec = mk('section', 'ow-set__sec');
       var back = function () { sub = ''; paintStage(); };
       if (sub === 'where') {
-        stage.appendChild(mk('p', 'ow-set__lede', 'It goes to your profile. It can go to a place you are part of instead, where its members see it.'));
         /* your profile wears your own face, like the places under it */
         var meFace = mk('span', 'ow-dest__face ow-setpick__face');
         meFace.setAttribute('data-shape', 'round');
@@ -2082,7 +2317,6 @@
           pickRowOf(sec, AUD_WORDS[a], AUD_SAID[a], audience === a, null, function () { audience = a; back(); });
         });
       } else if (sub === 'platforms') {
-        stage.appendChild(mk('p', 'ow-set__lede', 'Choose where else it goes. Nothing is sent anywhere you do not choose.'));
         var ts = reachOf(place || ((data.meHome && data.meHome()) || ''));
         OW.reach.list(sec, ts, outTo, picks.map(function (p) { return p.kind; }));
         var done = mk('button', 'ow-btn ow-upload__post', 'Done');

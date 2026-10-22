@@ -179,6 +179,16 @@
     return out;
   }
 
+  /* WHERE AN EVENT WAS OPENED FROM (events/insights.py): the App says each page it walks to (`ow:navigate`), the event's own
+     last; the one before it is where the person was. Opened straight at an event (a link, a push, a reload) it is "link". */
+  var evNav = { now: '', before: '' };
+  document.addEventListener('ow:navigate', function (e) { evNav.before = evNav.now; evNav.now = String(((e && e.detail) || {}).to || ''); });
+  function evVia() {
+    var v = String(evNav.now === 'Event' ? evNav.before : evNav.now).split(':')[0].toLowerCase();
+    return ({ home: 'home', discovery: 'discovery', map: 'map', center: 'center', messaging: 'messaging', messages: 'messaging',
+              notifications: 'notifications' })[v] || (v ? 'other' : 'link');
+  }
+
   OW.live.event = function (host, eventId, opts) {
     opts = opts || {};
     eventId = String(eventId || '').trim();
@@ -206,7 +216,7 @@
        · displays, with real authority behind each — rather than rebuilding it,
        so there is one answer to "which Centers carry this Event" and not two. */
     return Promise.all([
-      data.get('/api/oneway/events/' + encodeURIComponent(eventId), { fresh: true }),
+      data.get('/api/oneway/events/' + encodeURIComponent(eventId) + '?via=' + evVia(), { fresh: true }),     /* an open, counted for its host */
       data.get('/api/oneway/events/' + encodeURIComponent(eventId) + '/centers')
         .catch(function () { return { ok: false }; })
     ]).then(function (rs) {
@@ -314,6 +324,172 @@
         srBox.appendChild(srRow);
         page.appendChild(srBox);
       }
+      /* ── FROM THE HOST (events/news.py): what the guests were told, the newest first; read by whoever said going or maybe ── */
+      var news = (er.data && er.data.news) || [];
+      if (news.length) {
+        var nb = mk('div', 'ow-ev__news', '');
+        nb.appendChild(mk('div', 'ow-ev__sr-t', 'From the host'));
+        news.slice(0, 5).forEach(function (x) {
+          var it = mk('div', 'ow-ev__note' + (x.kind === 'change' ? ' is-change' : ''), ''), at = new Date(x.at), o = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+          if (tz && tz.timezone) o.timeZone = tz.timezone;
+          it.appendChild(mk('p', 'ow-ev__note-t', esc(x.text)));
+          if (!isNaN(at.getTime())) { try { it.appendChild(mk('span', 'ow-ev__note-at', esc(at.toLocaleString(undefined, o)))); } catch (e) { /* no date said */ } }
+          nb.appendChild(it);
+        });
+        page.appendChild(nb);
+      }
+      /* ── THE DRAWING THIS EVENT HOLDS (systems/casino/drawings.py): what is won, when entries open and close, the person's own
+         entries and one free entry a day; once drawn, the winners by first name and how they were picked; the official rules ── */
+      var dw = (er.data && er.data.drawing) || {};
+      if (dw.state) {
+        var dwBox = mk('div', 'ow-ev__drawing', ''), dwWhen = function (iso) {
+          var t = new Date(iso), o = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' };
+          if (tz && tz.timezone) o.timeZone = tz.timezone;
+          try { return isNaN(t.getTime()) ? '' : t.toLocaleString(undefined, o); } catch (e) { return ''; }
+        };
+        dwBox.setAttribute('data-drawing', dw.state);
+        dwBox.appendChild(mk('div', 'ow-ev__sr-t', 'Drawing'));
+        var dwPr = mk('div', 'ow-ev__sr-d', '');
+        (dw.prizes || []).forEach(function (p) { dwPr.appendChild(mk('span', 'ow-ev__sr-c', esc(p.name + (p.count > 1 ? ' × ' + p.count : '')))); });
+        dwBox.appendChild(dwPr);
+        var dwSaid = mk('p', 'ow-ev__said', '');
+        dwSaid.setAttribute('data-drawing-said', '');
+        dwSaid.textContent = ({ coming: 'Entries open ' + dwWhen(dw.opens_at) + '.', open: 'Entries close ' + dwWhen(dw.closes_at) + '. One free entry a day.',
+          closed: 'Entries are closed. The winners are drawn soon.', drawn: 'The winners are drawn.' })[dw.state] || '';
+        dwBox.appendChild(dwSaid);
+        var tiers = Object.keys(dw.multipliers || {});
+        if (tiers.length && (dw.state === 'open' || dw.state === 'coming')) {
+          dwBox.appendChild(mk('p', 'ow-ev__note-at', esc('Rewards members: ' + tiers.map(function (t) {
+            return t.charAt(0).toUpperCase() + t.slice(1) + ' counts ' + dw.multipliers[t] + ' entries a day'; }).join(', ') + '.')));
+        }
+        var dwMine = mk('p', 'ow-ev__said', '');
+        dwMine.setAttribute('data-drawing-mine', '');
+        var paintMine = function (n) { dwMine.textContent = n ? 'You have ' + n + (n === 1 ? ' entry.' : ' entries.') : ''; };
+        paintMine(dw.mine || 0);
+        dwBox.appendChild(dwMine);
+        if (dw.state === 'open') {
+          var may = dw.may || {};
+          if (signedIn() && may.may === false && may.why) {
+            dwBox.appendChild(mk('p', 'ow-ev__note-at', esc(may.why.charAt(0).toUpperCase() + may.why.slice(1) + '.')));
+          } else {
+            var dwB = mk('button', 'po-act', signedIn() ? 'Enter today' : 'Sign in to enter');
+            dwB.type = 'button'; dwB.setAttribute('data-drawing-enter', ''); dwB.setAttribute('data-act', 'on');
+            dwB.addEventListener('click', function () {
+              if (!signedIn()) { if (global.go) global.go('home'); return; }
+              dwB.disabled = true;
+              data.post('/api/oneway/events/' + encodeURIComponent(eventId) + '/drawing/enter', {}).then(function (r) {
+                if (r && r.ok && r.data) {
+                  dwSaid.textContent = r.data.words || dwSaid.textContent; paintMine(r.data.entries || 0);
+                  dwB.textContent = 'Entered today'; return;
+                }
+                dwB.disabled = false;
+                if (global.OW && OW.toast) OW.toast((r && r.error) || 'You were not entered. Try again.');
+              });
+            });
+            dwBox.appendChild(dwB);
+          }
+        }
+        if ((dw.winners || []).length) {
+          var wl = mk('ol', 'ow-ev__winners', '');
+          dw.winners.forEach(function (w) {
+            var li = mk('li', w.state === 'won' ? '' : 'is-passed', esc(w.prize + ': ' + w.name + (w.state === 'won' ? '' : ' (passed over)')));
+            wl.appendChild(li);
+          });
+          dwBox.appendChild(wl);
+          var pf = dw.proof || {};
+          if (pf.seed) {
+            var how = mk('details', 'ow-ev__rules', '');
+            how.appendChild(mk('summary', '', 'How the winners were picked'));
+            how.appendChild(mk('p', 'ow-ev__note-at', esc(pf.entries + ' entries by ' + pf.people + (pf.people === 1 ? ' person' : ' people') + ', one win each')));
+            [['Fingerprint', pf.list_hash], ['Seed', pf.seed], ['Drawn again with', (pf.redraws || []).map(function (x) { return x.seed; }).join(', ')]].forEach(function (f) {
+              if (f[1]) how.appendChild(mk('p', 'ow-ev__note-at', esc(f[0] + ': ' + f[1])));
+            });
+            dwBox.appendChild(how);
+          }
+        }
+        var rules = mk('details', 'ow-ev__rules', '');
+        rules.appendChild(mk('summary', '', 'Official rules'));
+        rules.appendChild(mk('p', 'ow-ev__note-t', esc(dw.rules || '')));
+        rules.appendChild(mk('p', 'ow-ev__note-at', 'No purchase necessary.'));
+        dwBox.appendChild(rules);
+        page.appendChild(dwBox);
+      }
+      /* ── THE RECAP AND THE PHOTOS FROM THE NIGHT (events/recap.py): the host's recap first; then the album, which whoever
+         went adds to once it is on, each under a first name; a person takes back their own ── */
+      var evPhoto = function (p, cap) {
+        var f = mk('figure', 'ow-ev__ph', ''), img = document.createElement('img');
+        img.loading = 'lazy'; img.alt = cap ? 'A photo ' + cap : 'A photo from the event'; img.src = p.url;
+        if (p.width && p.height) { img.width = p.width; img.height = p.height; }
+        f.appendChild(img);
+        if (cap) f.appendChild(mk('figcaption', 'ow-ev__ph-by', esc(cap)));
+        return f;
+      };
+      var rcp = (er.data && er.data.recap) || {}, alb = (er.data && er.data.album) || {};
+      if (rcp.text || (rcp.photos || []).length) {
+        var rb = mk('div', 'ow-ev__recap', ''), rg = mk('div', 'ow-ev__grid', '');
+        rb.appendChild(mk('div', 'ow-ev__sr-t', 'The recap'));
+        if (rcp.text) rb.appendChild(mk('p', 'ow-ev__note-t', esc(rcp.text)));
+        (rcp.photos || []).forEach(function (p) { rg.appendChild(evPhoto(p)); });
+        rb.appendChild(rg);
+        page.appendChild(rb);
+      }
+      var photos = (alb.photos || []).slice();
+      if (photos.length || alb.may_add) {
+        var ab = mk('div', 'ow-ev__album', ''), ah = mk('div', 'ow-ev__sr-t', ''), ag = mk('div', 'ow-ev__grid', '');
+        ab.appendChild(ah); ab.appendChild(ag);
+        var paintAlbum = function () {
+          ah.textContent = 'Photos' + (photos.length ? ' \u00b7 ' + photos.length : '');
+          ag.innerHTML = '';
+          photos.forEach(function (p) {
+            var f = evPhoto(p, 'by ' + p.by);
+            if (p.may_remove) {
+              var x = mk('button', 'ow-ev__ph-x', 'Remove');
+              x.type = 'button'; x.setAttribute('aria-label', 'Remove this photo');
+              x.addEventListener('click', function () {
+                x.disabled = true;
+                data.del('/api/oneway/events/' + encodeURIComponent(eventId) + '/photos/' + encodeURIComponent(p.id)).then(function (r) {
+                  if (r && r.ok) { photos = photos.filter(function (q) { return q.id !== p.id; }); paintAlbum(); return; }
+                  x.disabled = false;
+                  if (global.OW && OW.toast) OW.toast((r && r.error) || 'That did not change. Try again.');
+                });
+              });
+              f.appendChild(x);
+            }
+            ag.appendChild(f);
+          });
+        };
+        paintAlbum();
+        if (alb.may_add) {
+          var pick = document.createElement('input'), addB = mk('button', 'po-act', 'Add your photos'), said = mk('p', 'ow-ev__note-at', esc('Everyone who can see this event sees them.'));
+          pick.type = 'file'; pick.accept = 'image/*'; pick.multiple = true; pick.hidden = true; pick.className = 'ow-ev__pick';
+          addB.type = 'button'; addB.setAttribute('data-act', 'on'); addB.setAttribute('data-photos', 'add');
+          addB.addEventListener('click', function () { pick.click(); });
+          pick.addEventListener('change', function () {
+            var files = [].slice.call(pick.files || []).slice(0, 10), n = 0, err = '', chain = Promise.resolve();
+            if (!files.length) return;
+            addB.disabled = true; said.textContent = 'Adding ' + files.length + (files.length === 1 ? ' photo\u2026' : ' photos\u2026');
+            files.forEach(function (file) {
+              chain = chain.then(function () {
+                return new Promise(function (res) { var fr = new FileReader(); fr.onload = function () { res(fr.result); }; fr.onerror = function () { res(''); }; fr.readAsDataURL(file); });
+              }).then(function (src) {
+                return src ? data.post('/api/oneway/media', { data: src, origin: 'uploaded' }) : null;
+              }).then(function (m) {
+                if (!m || !m.ok || !m.data || !m.data.media) { err = (m && m.error) || err; return null; }
+                return data.post('/api/oneway/events/' + encodeURIComponent(eventId) + '/photos', { media: m.data.media });
+              }).then(function (r) {
+                if (r && r.ok && r.data && r.data.photo) { photos.unshift(r.data.photo); n++; } else if (r) err = r.error || err;
+              });
+            });
+            chain.then(function () {
+              addB.disabled = false; pick.value = '';
+              said.textContent = n ? (n === 1 ? 'Added to the album.' : n + ' photos added to the album.') : (err || 'Those photos could not be added.');
+              paintAlbum();
+            });
+          });
+          ab.appendChild(addB); ab.appendChild(pick); ab.appendChild(said);
+        }
+        page.appendChild(ab);
+      }
 
       /* ── WHO IS ON ─────────────────────────────────────────────────────
          `performers` is the field an event about people is FOR — a lineup, a
@@ -411,7 +587,11 @@
         }
       }
 
-      CHOICES.forEach(function (c) {
+      /* A TICKETED EVENT IS GONE TO WITH A TICKET (events/rsvp.door; the review of 2026-10-20): no free Going is offered; a ticket
+         holder is Going already and their tickets are refunded by the Center, not answered away */
+      var ticketed = !!(er.data && er.data.ticketed), holds = ((er.data && er.data.my_tickets) || []).length > 0;
+      var tkSaid = (ticketed && !holds) ? mk('p', 'ow-ev__said', esc('Going takes a ticket: buy one below.')) : null;
+      CHOICES.filter(function (c) { return !ticketed || (holds ? c.v === 'going' : c.v !== 'going'); }).forEach(function (c) {
         var b = mk('button', 'po-act', c.label);
         b.type = 'button';
         b.setAttribute('data-v', c.v);
@@ -483,7 +663,8 @@
          may bring, and whether the host lets each person in. Drawn instead of Going / Maybe when the event asks anything;
          sent, the person is Going at once or waits for the host, and the page says which in the server's own words. ── */
       var reg = (er.data && er.data.registration) || {}, regd = (er.data && er.data.registered) || {};
-      var asks = !!((reg.questions || []).length || reg.approval || reg.plus_ones_max);
+      /* at an event that sells its places, Going is a ticket: the form stays only for who signed up before (their answers stand) */
+      var asks = !!((reg.questions || []).length || reg.approval || reg.plus_ones_max) && !((er.data && er.data.ticketed) && !regd.state);
       function asksAnything() { return asks; }
       function signup() {
         var box = mk('form', 'ow-ev__signup', ''), said = mk('p', 'ow-ev__said', '');
@@ -547,6 +728,7 @@
         page.appendChild(mk('div', 'ow-ev__state', 'This event was cancelled.'));
       } else {
         if (state === 'live') page.appendChild(mk('div', 'ow-ev__state ow-ev__state--live', 'Happening now.'));
+        if (!asks && tkSaid) page.appendChild(tkSaid);          /* said above the answers, never in their row */
         page.appendChild(asks ? signup() : acts);
         page.appendChild(count);
         page.appendChild(waitBox);
@@ -793,6 +975,17 @@
     '.ow-ev__series{margin:10px 0 2px}.ow-ev__sr-t{font-size:13px;font-weight:600;color:var(--ow-ink-2,#9793ad);margin-bottom:6px}',
     '.ow-ev__sr-d{display:flex;flex-wrap:wrap;gap:6px}.ow-ev__sr-c{font-size:13px;padding:5px 10px;border-radius:999px;border:1px solid var(--ow-line,rgba(255,255,255,.14));color:inherit;text-decoration:none}',
     '.ow-ev__sr-c.is-here{border-color:currentColor;font-weight:600}',
+    '.ow-ev__recap,.ow-ev__album{margin:16px 0 4px}.ow-ev__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:6px 0 8px}',
+    '@media (min-width:700px){.ow-ev__grid{grid-template-columns:repeat(4,minmax(0,1fr))}}',
+    '.ow-ev__ph{position:relative;margin:0;border-radius:10px;overflow:hidden;background:rgba(255,255,255,.06);aspect-ratio:1/1}.ow-ev__ph img{width:100%;height:100%;object-fit:cover;display:block}',
+    '.ow-ev__ph-by{position:absolute;left:6px;bottom:5px;font-size:11px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7)}',
+    '.ow-ev__ph-x{position:absolute;top:4px;right:4px;font-size:11px;padding:3px 8px;border-radius:999px;border:0;background:rgba(0,0,0,.6);color:#fff}',
+    '.ow-ev__news{margin:14px 0 4px;display:grid;gap:8px}.ow-ev__note{padding:10px 12px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--ow-line,rgba(255,255,255,.12))}',
+    '.ow-ev__note.is-change{border-style:dashed}.ow-ev__note-t{margin:0 0 4px;font-size:14.5px;line-height:1.4;white-space:pre-wrap;overflow-wrap:anywhere}.ow-ev__note-at{font-size:12px;color:var(--ow-ink-2,#9793ad)}',
+    '.ow-ev__drawing{margin:14px 0 4px;display:grid;gap:8px;padding:12px 14px;border-radius:14px;border:1px solid var(--ow-line,rgba(255,255,255,.12))}',
+    '.ow-ev__drawing .po-act{justify-self:start;border:1px solid currentColor;border-radius:999px;padding:10px 20px;font-weight:600}',
+    '.ow-ev__winners{margin:0;padding-left:20px;display:grid;gap:4px;font-size:14.5px}.ow-ev__winners .is-passed{opacity:.6;text-decoration:line-through}',
+    '.ow-ev__rules summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--ow-ink-2,#9793ad)}.ow-ev__rules p{margin:6px 0 0;overflow-wrap:anywhere}',
     '.ow-ev__w{font-size:13.5px;color:var(--ow-ink-3,#6f6b85)}',
     '.ow-ev__cover{width:100%;margin:0 0 14px;border-radius:20px 15px 18px 16px;overflow:hidden;',
     '  background:rgba(255,255,255,.04);box-shadow:0 0 0 1px rgba(var(--ow-h1),.28),0 18px 40px -22px rgba(0,0,0,.8)}',
