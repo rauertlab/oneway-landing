@@ -517,8 +517,12 @@
       var a = marks[i], side = a.getAttribute('data-ow-go');
       if ((side !== 'app' && side !== 'os') || s[side] !== true) continue;
       var arrow = /\u2192|&rarr;|\u2192/.test(a.innerHTML) || a.textContent.indexOf('\u2192') >= 0;
-      a.textContent = (side === 'app' ? 'Go to the App' : 'Go to the OS') + (arrow ? ' \u2192' : '');
-      a.setAttribute('href', side === 'app' ? '/oneway-app.html' : '/oneway-os.html');
+      var words = a.getAttribute('data-ow-go-text') || (side === 'app' ? 'Go to the App' : 'Go to the OS');
+      var label = a.querySelector ? a.querySelector('span') : null;
+      if (label) label.textContent = words;
+      else a.textContent = words + (arrow ? ' \u2192' : '');
+      if (a.hasAttribute('aria-label')) a.setAttribute('aria-label', words);
+      a.setAttribute('href', side === 'app' ? '/oneway-app.html#home' : '/oneway-os.html');
     }
   };
   x.send();
