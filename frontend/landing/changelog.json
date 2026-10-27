@@ -9,43 +9,51 @@
     {
      "title": "Safety and security",
      "items": [
-      "Layered protection for your account and every sign-in.",
-      "Harmful posts, comments and messages are stopped before anyone sees them, and community reports are acted on quickly.",
-      "Oneway spots and stops attacks automatically, such as spam floods and password guessing.",
-      "Our team's safety tools keep Oneway protected around the clock.",
-      "An intimate picture shared without consent can be taken down fast, with every copy."
+      "Your account is protected at every step: sign-in, two-step verification, passkeys, and the devices you are signed in on, which you can see and sign out of in Settings.",
+      "Every post, comment, message, bio and listing passes Oneway's safety check before it shows, so threats, hate and harmful content never reach anyone.",
+      "Community reports are taken seriously: when several trusted people report the same thing, it is hidden until our team decides.",
+      "Oneway watches for unusual activity around the clock and responds on its own to things like spam floods, password guessing and automated scraping.",
+      "Our team has a dedicated safety console, and one switch can tighten the whole platform whenever it is needed.",
+      "Photos and files are checked before they are stored, and a link in a post always shows exactly where it goes.",
+      "Anyone can ask for an intimate picture shared without consent to be taken down, and every copy of it is removed.",
+      "Bookings and checkouts are protected from bots and floods, so real people always get through."
      ]
     },
     {
      "title": "Privacy",
      "items": [
-      "Choose who sees when you are online.",
-      "Choose how comments with strong words appear to you: shown, blurred or hidden, and keep your own list of hidden words.",
-      "An edited post says Edited, and you decide whether people can see the original.",
-      "Extra care for teens, including a location shared only with friends.",
-      "You can change your birthday once in Settings."
+      "Your email address is never shown to anyone else, anywhere on Oneway.",
+      "A private profile stays private everywhere its posts could appear.",
+      "Choose who sees when you are online: everyone, the people you follow back, or nobody.",
+      "Choose how comments with strong words appear to you: shown, blurred with a tap to see, or hidden. Keep your own list of words you never want to see.",
+      "An edited post says Edited, and only you decide whether others can see what you first wrote.",
+      "Teen accounts get extra care: a teen's location is shared only with friends, and teens are told clearly what a teen account means.",
+      "You can change your birthday once in Settings, with a clear check before it is saved."
      ]
     },
     {
      "title": "New in the App",
      "items": [
-      "Edit your profile or your Center's page right where you are, with drafts and history.",
-      "Place anything anywhere on your page.",
-      "The Marketplace: list an item, meet buyers nearby, and get safe meetup suggestions.",
-      "Every post on Home shows its author's own colour.",
-      "Discovery's map turns like Apple Maps, with the places near you as cards.",
-      "A faster Home, and every screen stays where you left it.",
-      "Twelve month colours, smoother light and dark mode, and a new icon set."
+      "Edit opens the page editor right on your profile or your Center's page. Changes stay a draft until you press Publish, and History keeps your past versions.",
+      "Free placement: every piece stays exactly where you put it, pieces can overlap, and nothing pushes anything else around.",
+      "The Marketplace: list an item, people nearby find it and message you, and the chat suggests safe public places and times to meet.",
+      "Every post and card on Home wears its author's own colour, a person's or a Center's.",
+      "Discovery's map turns with two fingers like Apple Maps, with a compass, and shows the places near you as cards.",
+      "Home is faster, and Messages, Create and Me come back exactly as you left them.",
+      "Follower and following counts are live and exact everywhere, and links in posts can be tapped.",
+      "Twelve month colours in themes, smooth light and dark mode that follows your device, and one icon set with over 1,500 icons."
      ]
     },
     {
      "title": "For Centers and businesses",
      "items": [
-      "Book a table or a room right on a Center's website.",
-      "Tickets, events and rewards work together, with a simple 1% fee.",
-      "Arrange a Center's pages into tidy categories.",
-      "Choose exactly which Facebook Page, Instagram account or Google listing you connect.",
-      "A new home screen in Oneway OS."
+      "Book a table or a room right on a Center's own website, with a confirmation email, a calendar file and a link to change or cancel.",
+      "Tickets show the truth: free tickets say Free, seats are held fairly, and events read the same everywhere.",
+      "Join a Center's rewards with one press, and the card lands in your wallet.",
+      "Selling on Oneway costs a simple 1% fee, with a 10-cent minimum.",
+      "Arrange a Center's pages into categories that open and close, and choose who sees each one.",
+      "Choose exactly which Facebook Page, Instagram account or Google listing your Center connects.",
+      "Oneway OS has a new home screen: what is happening now, today's figures and a tile for each System."
      ]
     },
     {
