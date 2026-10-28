@@ -17,12 +17,14 @@
         "Map-place links survive a reload. Both the vector map and basic renderer can open indexed places from a map tap.",
         "More place categories can appear on the map, with icons appearing at wider zoom levels. Recorded follows and post counts help active places stand out in crowded views, regardless of ownership or Center type.",
         "Information Centers use category artwork and an information marker; adding a picture keeps the category marker in the corner.",
-        "Imported searchable-place coverage currently includes the supported US regions; missing coverage is stated rather than shown as an empty area."
+        "Imported searchable-place coverage currently includes the supported US regions; missing coverage is stated rather than shown as an empty area.",
+        "Map places missing from the separate search inventory resolve against the actual map source, preserving verified names and points instead of rejecting the place."
       ]
     },
     {
       "title": "Location and Waypass",
       "items": [
+        "Location sharing has an explicit save action and confirmed status. Starting sharing returns to the map, shows your position and follows fresh fixes; hiding other people keeps your own marker visible.",
         "Your location marker moves smoothly between fresh device fixes. Moving around the map pauses camera-follow, and recentering resumes it.",
         "Stale locations are marked as last known positions. Watching your own location does not turn on public location sharing.",
         "Waypass is opt-in for adults and uses the selected device. It collects encounter cards from other people who also enabled it, showing an approximate place and time rather than precise coordinates. On the web it counts while the page is open."
