@@ -1,6 +1,53 @@
 {
  "about": "Oneway's changelog (founder/870): one entry per big update, newest first. date is the day (YYYY-MM-DD); words are the founder's. An entry may also have a title and sections, each a title and a list of items (founder/1024). A line marked as pending is not live yet: tools/landing_static.py leaves it out of the published page and file until the mark is cleared. changelog.html is drawn from this file; adding an entry needs no change to the page.",
  "entries": [
+{
+  "date": "2026-10-28",
+  "title": "v50.1 — Discovery and everyday tools",
+  "words": "A follow-up to v50 focused on finding places, filling in the map, browsing as a guest, and keeping everyday tools together.",
+  "sections": [
+    {
+      "title": "Discovery and places",
+      "items": [
+        "Searchable map places open as Information Centers, including places whose community information has not been filled in yet.",
+        "Imported places and places added by people use the same Center records. Finding an existing match opens that Center instead of creating another copy.",
+        "Nearby places needing information appear in Explore and Contribute without relying on a town Center. The list states its area and when it is only a selection.",
+        "Add an introduction with a short write, review and confirmation flow. Current information is read before editing it.",
+        "Public information changes reach other signed-in viewers through live updates. Open pages retain their follow and post controls.",
+        "Map-place links survive a reload. Both the vector map and basic renderer can open indexed places from a map tap.",
+        "More place categories can appear on the map, with icons appearing at wider zoom levels. Recorded follows and post counts help active places stand out in crowded views, regardless of ownership or Center type.",
+        "Information Centers use category artwork and an information marker; adding a picture keeps the category marker in the corner.",
+        "Imported searchable-place coverage currently includes the supported US regions; missing coverage is stated rather than shown as an empty area."
+      ]
+    },
+    {
+      "title": "Location and Waypass",
+      "items": [
+        "Your location marker moves smoothly between fresh device fixes. Moving around the map pauses camera-follow, and recentering resumes it.",
+        "Stale locations are marked as last known positions. Watching your own location does not turn on public location sharing.",
+        "Waypass is opt-in for adults and uses the selected device. It collects encounter cards from other people who also enabled it, showing an approximate place and time rather than precise coordinates. On the web it counts while the page is open."
+      ]
+    },
+    {
+      "title": "Guests and profiles",
+      "items": [
+        "Open the App from the website and browse public Home and the map without signing in.",
+        "Guest likes count toward the real total. Guests can undo their like, while comments, posting, following and negative reactions remain sign-in actions.",
+        "Eligible visitors can post as themselves at unclaimed Information Centers without becoming members or gaining authority over the place.",
+        "Simple public profiles put identity, links and posts together without a redundant Profile view. Their first public posts load from the existing profile read."
+      ]
+    },
+    {
+      "title": "Workspace, Opportunities and refinements",
+      "items": [
+        "Workspace brings together the existing Calendar, email tools and connected business workspace.",
+        "Opportunities is the destination for the Marketplace, jobs and bookable spaces. Tonight near you appears in Discovery.",
+        "Calendar views, destination links and phone layouts received additional checks across light, dark and simple presentation.",
+        "Activity colours, server-rendered icons, link insertion and permission checks received targeted fixes. The boost engine remains disabled; this update does not announce active boosting."
+      ]
+    }
+  ]
+},
   {
    "date": "2026-10-26",
    "title": "v50",
