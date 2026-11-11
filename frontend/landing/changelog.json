@@ -7,6 +7,14 @@
    "words": "A consolidated update bringing recent profile, Discovery and operating-tool work together, with everyday fixes and security hardening.",
    "sections": [
     {
+     "title": "Emergency browser repair",
+     "items": [
+      "Restored full App styling and navigation after a release-build failure, including Discovery map styles.",
+      "Fixed the OS menu failing on a fresh Home load.",
+      "Embedded videos wait for their card layout before loading instead of being permanently replaced by a link. Existing playback choices and provider restrictions still apply."
+     ]
+    },
+    {
      "title": "Profiles and everyday use",
      "items": [
       "Names use the reading font while custom wordmarks retain their own lettering.",
