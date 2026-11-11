@@ -19,6 +19,7 @@
     {
      "title": "Discovery and media",
      "items": [
+      "Photos keep their correct orientation in JPEG, PNG and WebP originals and generated sizes. Rotated WebP originals are stored upright for browsers that ignore rotation metadata; image preparation stays bounded.",
       "Map place markers retain their category colours in both map styles.",
       "Supported fonts, maps and display libraries are served through Oneway's own origin. Picture requests are bounded and legal picture holds also cover cached server copies.",
       "Feed pictures retain their aspect ratio while loading, and desktop feed media use the shared media controls."
