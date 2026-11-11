@@ -58,8 +58,21 @@
 .ow-hero__t.ow-hero__t{font-family:'ONEWAY Sans 2','ONEWAY Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;font-weight:800;letter-spacing:normal}
 /* a profile card's name line, people and Center, on every surface (OW.cards .ow-ocard; the landing's .lc, whose sheet sets
    the name's weight with !important): the header face; the rest of the card is the page's text face */
-.ow-ocard .ow-ocard__name,.lc.lc.lc.lc .ow-ocard__name{font-family:var(--ow-head,'ONEWAY Head','ONEWAY Sans',sans-serif)!important;
+/* THE HEADER FACE IS POPIT'S, NOT SIMPLE'S (the founder, 2026-11-08: "NO MORE BUBBLE LETTERS SIMPLE PROFILE CENTER CARDS
+   NEEDS TO BE FIXED", and his brief: "Center names currently resemble bold promotional headings. Use Oneway's normal font
+   family with a natural semibold weight"). This forced the display face at weight 1000 - the heaviest there is - on EVERY
+   card name on EVERY surface, with !important, in two sheets. .ow-ocard--simple .ow-ocard__name already asks for
+   `600 14px/1.35 var(--ow-font)`, the exact thing he is asking for, and this rule was overriding it. Popit keeps the header
+   face, which is the Oneway identity he likes there; Simple now gets the reading face at a natural semibold. */
+/* THE LANDING KEEPS THE HEADER FACE; A CARD IN THE APP DOES NOT (the founder, 2026-11-08, after seeing Popit mode: "the cards
+   actually looked fixed and good on the popit mode, but again, change the font type. We want to move away from those bubble
+   fonts on the profiles"). He has now asked twice, for Simple and then for Popit, so the app's card name takes the reading face
+   at a natural semibold in BOTH modes - which is what his brief asked for in the first place. The landing's .lc cards are his
+   approved design and are untouched. */
+.lc.lc.lc.lc .ow-ocard__name{font-family:var(--ow-head,'ONEWAY Head','ONEWAY Sans',sans-serif)!important;
   font-weight:var(--ow-head-weight,1000)!important;letter-spacing:var(--ow-head-track,-0.025em)!important}
+.ow-ocard .ow-ocard__name{font-family:var(--ow-font,'ONEWAY Sans',sans-serif)!important;
+  font-weight:650!important;letter-spacing:0!important}
 
 /* THE READING SCALE, ONE SET FOR THE APP, ONEWAY.CENTER AND EVERY GENERATED SITE (the founder, 2026-10-20: "text should be smaller on mobile and more centered in the middle of the screen. this should go for generated websites aswell"). Every
    surface reads its reading sizes from these roles (the App through oneway-type.css, the site through compat.css, a Center's

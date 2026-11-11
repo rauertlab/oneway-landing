@@ -30,7 +30,10 @@
 
   var doc = global.document, root = doc.documentElement;
   var RM = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var OW = {};
+  /* A MERGE, NEVER A REPLACEMENT: the App's address (OW.here, OW.go, OW.url) is defined in oneway-app.html's head before this file
+     loads, and the closing `global.OW = OW` once wiped it, which blanked the App ("OW.here is not a function", rc-2 2026-11-09).
+     Held by api/oneway/platform/test_app_paths.py. */
+  var OW = global.OW || {};
 
   /* ══ MOTION, READ FROM THE ONE SET OF NAMES (S33; founder/865: "smooth, slow, drawn out, and bubbly") ══════════
      The durations and the springs are named once, in oneway-popit.css's :root (--ow-dur-*, --ow-spring, ...). A
@@ -42,7 +45,10 @@
        OW.motion.arrive(host)      a surface arriving: its rows flow in for one beat (.ow-arrive), and only then, so a
                                    list that redraws itself later does not replay it
        OW.motion.bounce(el, k, r)  a held icon pressed on ('on') or off ('off'), or a change in place ('bump'), from what is on
-                                   screen now to rest (r), so a press in the middle of one carries on from it */
+                                   screen now to rest (r), so a press in the middle of one carries on from it
+       OW.motion.jump(el, then)    a mark's one hop, then `then` as it lands; at once when el is off screen or the person asked for less motion
+       OW.motion.count(el, n, f)   a number moving to n (f says it: OW.cards.number for "1,204"), a short eased count; one step settles in
+       OW.motion.countOf(el)       the number el is at or on its way to: every reader asks here, never el.textContent */
   OW.motion = (function () {
     var EASE = { 'spring': 'cubic-bezier(.34,1.56,.64,1)', 'spring-soft': 'cubic-bezier(.22,1.12,.36,1)',
                  'ease-out': 'cubic-bezier(.22,1,.36,1)', 'ease-leave': 'cubic-bezier(.55,0,.45,1)', 'ease': 'cubic-bezier(.4,0,.2,1)' };
@@ -53,9 +59,21 @@
           || root.getAttribute('data-motion') === 'reduced' || root.getAttribute('data-ow-motion') === 'reduce');
       } catch (_) { return false; }
     }
+    /* MOTION's names do not change while a page is open (reduced motion is still()'s, above), so each is read from the
+       stylesheet once: read on every call, a press or a page change in the middle of building a page made the browser work
+       out the whole page's style to answer it (the design red team's D14, ~30-75 ms a time at 4x CPU) */
+    var read = {};
     function token(name) {
-      try { return global.getComputedStyle(root).getPropertyValue('--ow-' + name).trim(); } catch (_) { return ''; }
+      if (read[name]) return read[name];
+      try { var v = global.getComputedStyle(root).getPropertyValue('--ow-' + name).trim(); if (v) read[name] = v; return v; } catch (_) { return ''; }
     }
+    /* and all of them once the page is idle, so the first press or page change never asks mid-build */
+    try {
+      var warm = function () { ['dur-press', 'dur-state', 'dur-enter', 'dur-open', 'dur-settle', 'dur-flow', 'dur-leave', 'stagger',
+        'ease', 'ease-out', 'ease-leave', 'spring', 'spring-soft', 'settle'].forEach(token); };
+      var idle = function () { (global.requestIdleCallback || function (f) { return global.setTimeout(f, 300); })(warm, { timeout: 2000 }); };
+      if (doc.readyState === 'complete') idle(); else global.addEventListener('load', idle);
+    } catch (_) {}
     function ms(name) {
       if (still()) return 1;
       var v = token(name === 'stagger' ? 'stagger' : 'dur-' + name), n = parseFloat(v);
@@ -100,6 +118,7 @@
       dislike: [['translateY(3px) scale(1.14)', .34], ['translateY(1px) scale(.95)', .66]],
       repost:  [['rotate(200deg) scale(1.16)', .45], ['rotate(360deg) scale(1)', .999]],
       save:    [['translateY(-6px) scale(1.14)', .3], ['translateY(1px) scale(.96)', .62]],
+      jump:    [['translateY(-14px) scale(1.14)', .42]],
       off:     [['scale(.8)', .3], ['scale(1.06)', .64]],
       bump:    [['scale(.97)', .22], ['scale(1.025)', .55]]
     };
@@ -116,13 +135,91 @@
       });
       frames.push({ transform: base || 'none', offset: 1 });
       try {
-        var a = el.animate(frames, { duration: ms(kind === 'bump' ? 'enter' : 'settle') });
+        var a = el.animate(frames, { duration: ms(kind === 'bump' ? 'enter' : kind === 'jump' ? 'state' : 'settle') });
         el.__owBounce = a;
         a.onfinish = a.oncancel = function () { if (el.__owBounce === a) el.__owBounce = null; };
         return a;
       } catch (_) { return null; }
     }
-    return { still: still, ms: ms, ease: ease, arrive: arrive, bounce: bounce };
+    /* A MARK'S ONE HOP, AND WHAT WAITS FOR IT TO LAND (his words, 2026-11-06: "then lightbulb jumps when they hit the +  button on home to arrange that cavnas"): by the clock and by transform alone, so it
+       holds at 120 and at 60 frames. A second press in the hop starts nothing. `then` runs once: on landing, at once when there is nothing to watch, and never later than the moment plus a spare beat,
+       so a page put away mid-hop holds nothing back. */
+    var JUMP_SPARE_MS = 80;
+    function jump(el, then) {
+      if (el && el.__owJumping) return;
+      var a = el && el.getClientRects && el.getClientRects().length ? bounce(el, 'jump') : null;
+      if (!a) { then(); return; }
+      el.__owJumping = true;
+      var landed = function () { if (!el.__owJumping) return; el.__owJumping = false; then(); };
+      if (a.finished) a.finished.then(landed, landed);
+      global.setTimeout(landed, ms('state') + JUMP_SPARE_MS);
+    }
+    /* A NUMBER THAT MOVES (the founder, 2026-10-30). One writer for every tally and count on the platform, and one frame loop however many
+       are moving (a refresh can touch forty boxes at once). The target is held on el.__owTo from the first moment, so a reader in the middle
+       of the count gets the number it is going to, never one it is passing: a like pressed during a count of 12 to 20 is 21, and the server's
+       answer of 20 finds nothing to do. Only integers are written, only when the integer changes, and the figures are tabular in the
+       stylesheet, so the box changes width only when the number really gains a digit. One step (a like, a follow) has nothing to count
+       through: the new figure settles in on transform and opacity, which moves nothing beside it. A number going from 12 to 13 twice is
+       said once. Reduced motion, a hidden tab and a box not on the page get the target at once. */
+    var countRuns = [], countFrame = 0;
+    function countOf(el) {
+      if (!el) return 0;
+      if (typeof el.__owTo === 'number' && (el.__owRun || el.textContent === el.__owSaid)) return el.__owTo;
+      var n = parseInt(String(el.textContent || '').replace(/[^\d]/g, ''), 10);
+      return isFinite(n) ? n : 0;
+    }
+    function countQuiet(el, on) {   /* a live region says the number it reached, not the ones it passed */
+      var region = el.closest && el.closest('[aria-live]');
+      if (region) { if (on) region.setAttribute('aria-busy', 'true'); else region.removeAttribute('aria-busy'); }
+    }
+    function countSettle(el, to, said) {
+      el.__owRun = null; el.__owTo = to; el.__owSaid = said;
+      if (el.textContent !== said) el.textContent = said;
+    }
+    function countStep(el) {
+      if (typeof el.animate !== 'function') return;
+      try {
+        if (el.__owStep) el.__owStep.cancel();
+        el.__owStep = el.animate([{ transform: 'translateY(-.42em)', opacity: 0 }, { transform: 'translateY(.06em)', opacity: 1, offset: .55 }, { transform: 'none', opacity: 1 }],
+          { duration: ms('state'), easing: ease('ease-out') });
+      } catch (_) {}
+    }
+    function countTick(now) {
+      countFrame = 0;
+      countRuns = countRuns.filter(function (r) {
+        if (r.el.__owRun !== r) return false;
+        if (!r.at) r.at = now;
+        var t = (now - r.at) / r.ms;
+        if (t >= 1 || !r.el.isConnected) { countSettle(r.el, r.to, r.say(r.to)); countQuiet(r.el, false); return false; }
+        var v = Math.round(r.from + (r.to - r.from) * (1 - Math.pow(1 - t, 3)));      /* eased out: it lands softly */
+        if (v !== r.now) { r.now = v; r.el.textContent = r.say(v); }
+        return true;
+      });
+      if (countRuns.length) countFrame = global.requestAnimationFrame(countTick);
+    }
+    function count(el, to, say) {
+      if (!el) return;
+      to = Math.max(0, Math.round(Number(to)));
+      if (!isFinite(to)) return;
+      if (to) el.removeAttribute('data-zero'); else el.setAttribute('data-zero', '');
+      say = say || String;
+      if (el.__owRun && el.__owTo === to) return;                     /* already on its way there: the answer to a press finds nothing to do */
+      var from = el.__owRun ? el.__owRun.now : countOf(el), said = say(to), far = Math.abs(to - from);
+      if (!far) { if (el.__owRun) { countQuiet(el, false); countSettle(el, to, said); } return; }
+      var off = still() || doc.hidden || !el.isConnected || typeof global.requestAnimationFrame !== 'function';
+      if (off || far === 1) {
+        if (el.__owRun) countQuiet(el, false);
+        countSettle(el, to, said);
+        if (!off) countStep(el);
+        return;
+      }
+      el.__owTo = to; el.__owSaid = said;
+      el.__owRun = { el: el, from: from, now: from, to: to, say: say, ms: ms('state'), at: 0 };
+      countRuns.push(el.__owRun);
+      countQuiet(el, true);
+      if (!countFrame) countFrame = global.requestAnimationFrame(countTick);
+    }
+    return { still: still, ms: ms, ease: ease, arrive: arrive, bounce: bounce, jump: jump, count: count, countOf: countOf };
   })();
 
   /* ── tiny helpers ────────────────────────────────────────────────────── */
@@ -131,6 +228,9 @@
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
   }
+  /* what a repost needs, in the server's own words (service.repost) so the button and the refusal say the same thing; popit-live.js reads them too */
+  var REPOST_NEEDS = { like: 'Like this post to repost it.', dislike: 'You disliked this post, so you can\'t repost it.' };
+  OW.repostNeeds = REPOST_NEEDS;
   /* AN IMAGE URL THIS MATERIAL WILL LOAD. `esc` stops a value breaking OUT of
      the attribute; it does nothing about where the attribute POINTS. Every
      cover, avatar and banner here comes from a server payload, and a client
@@ -138,17 +238,12 @@
      viewer fetch an attacker's host — a tracking beacon carrying each viewer's
      IP, fired for everyone who opens the surface.
 
-     Mirrors the rule the runtime already enforces on the way in (`_asset_url`:
-     "never an arbitrary remote URL — that would let a profile hotlink
-     anything"). Same rule at both ends, so neither can be the weak one. Lives
-     HERE rather than in the reality layer because this is where images are
-     rendered, and one validator is the point. */
+     The runtime's rule on the way in, here: one validator. */
   var SAFE_PATH = /^\/(assets|media|uploads)\/[A-Za-z0-9._\-\/]{1,200}$/;
   /* IMAGES ARE SERVED BY THE RUNTIME, so a server-relative path follows the
      runtime's origin — not the origin the page happens to be served from.
-     Same-origin in production makes these identical; they are NOT identical
-     when the App is opened against an API on another host, which is every
-     development setup and every future native shell. Set by OW.data.configure
+     Same-origin in production; NOT when the App is opened against an API on
+     another host (development, a native shell). Set by OW.data.configure
      so there is one place that knows where the runtime lives. */
   OW.assetBase = '';
   OW.imageUrl = function (v) {
@@ -156,9 +251,71 @@
     if (!u) return '';
     if (SAFE_PATH.test(u) && u.indexOf('..') < 0) return (OW.assetBase || '') + u;
     if (/^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(u)) return u;
-    if (/^https:\/\/[^\s"'<>]+$/i.test(u)) return u;
+    /* another server's picture: our signed copy only (own_copies) */
+    if (/^\/api\/oneway\/pictures\/outside\?u=[\w.~%-]+&s=[0-9a-f]{32}$/.test(u)) return (OW.assetBase || '') + u;
+    if (/^https:\/\/[^\s"'<>]+$/i.test(u)) return u.indexOf(location.origin + '/') ? '' : u;
     return '';                       /* refused → the caller's honest fallback */
   };
+
+  /* A CARD'S PICTURE THAT FAILS, ONE HANDLER (the founder, 2026-10-30: "images are not currently loading"). A phone on a poor signal loses
+     pictures it could have had a second later, and `onerror="this.remove()"` gave each exactly one chance. So: its srcset goes (a narrower
+     candidate the network or the server could not give is not asked again), the card's own ground shows meanwhile, it is asked for once more after a
+     short wait, or when the network is back if it is gone, and if that fails too it leaves the ground, the hue the card is made of. Every card
+     reserves the picture's room in its stylesheet, so none of this moves anything. A face has its own fallback (OW.faceFail): its letters. */
+  var IMAGE_RETRY_WAIT_MS = 900;
+  OW.imgFail = function (img) {
+    if (!img || !img.parentNode) return;
+    if (img.__owAskedAgain) {
+      var frame = img.parentNode;
+      img.remove();
+      if (frame.getAttribute && !frame.querySelector('img') && !frame.hasAttribute('aria-label')) { frame.setAttribute('role', 'img'); frame.setAttribute('aria-label', 'This picture could not be loaded'); }
+      return;
+    }
+    img.__owAskedAgain = true;
+    var src = img.getAttribute('src') || img.currentSrc || '';
+    if (!src) { img.remove(); return; }
+    img.style.visibility = 'hidden';
+    /* both attributes leave together, or dropping srcset alone makes the browser ask for src this instant */
+    img.removeAttribute('src'); img.removeAttribute('srcset'); img.removeAttribute('sizes');
+    var again = function () {
+      if (!img.isConnected) return;
+      img.addEventListener('load', function () { img.style.visibility = ''; }, { once: true });
+      img.setAttribute('src', src);
+    };
+    if (global.navigator && global.navigator.onLine === false) global.addEventListener('online', again, { once: true });
+    else global.setTimeout(again, IMAGE_RETRY_WAIT_MS);
+  };
+
+  /* PICTURES AHEAD OF THE READER (feed speed, 2026-11-10: "I need speed big time"; main: "never show a blank card in view", "nothing
+     fills in while he watches"). A card's picture is `loading="lazy"`, which the browser starts only about a screen and a half before it
+     shows: a hard fling outruns that, and the card arrives grey and fills in on screen. So every card a feed draws is watched, and once it
+     is within PICS_AHEAD of the screen (four screens below, one above) its pictures are asked for at once and decoded, so the pixels are
+     ready before the card scrolls in. Far below that nothing is fetched, so a feed of a hundred posts does not load a hundred pictures. */
+  var PICS_AHEAD = '100% 0px 400% 0px';
+  /* the widest a post's picture is drawn on a desktop (his compare with Instagram's desktop feed, 2026-11-10: a narrow centred column,
+     the whole post in one window); oneway-popit.css draws the same number */
+  var MEDIA_MAX_PX = 620;
+  OW.picsAhead = (function () {
+    var io = null;
+    function ready(img) {
+      if (img.getAttribute('loading') === 'lazy') img.setAttribute('loading', 'eager');
+      if (!img.decode) return;
+      var go = function () { img.decode().catch(function () {}); };
+      if (img.complete && img.naturalWidth) go(); else img.addEventListener('load', go, { once: true });
+    }
+    return function (root) {
+      if (!root || !global.IntersectionObserver) return;
+      if (!io) io = new global.IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          io.unobserve(en.target);
+          Array.prototype.forEach.call(en.target.querySelectorAll('img'), ready);
+        });
+      }, { rootMargin: PICS_AHEAD });
+      var cards = root.matches && root.matches('.po-card') ? [root] : root.querySelectorAll('.po-card');
+      Array.prototype.forEach.call(cards, function (c) { io.observe(c); });
+    };
+  })();
 
   function el(tag, cls, html) {
     var n = doc.createElement(tag);
@@ -181,7 +338,25 @@
      HSL angle, personal.html's desaturated angle, dashboard.html's named
      tokens, oneway-hue.js's localStorage angle, and the backend's single
      integer. Everything now funnels through here. */
-  var DEF1 = '124,45,255', DEF2 = '93,226,255';
+  /* THE TWELVE, ONE PER MONTH (founder/891, 892, 896, 897, 2026-10-21: "make colors in between these still keeping the same
+     flush and saturation but equaling 12 for the 12 months of the year. each must be mapped to a default month. when a user
+     chooses no hue the button says No hue (changes monthly)"; "june july aug should be yellowish bighter months while the
+     winter should be darker, blues reds, spring is when purples and others"; "magenta for feb pink for april"). Each is its
+     angle at full strength (HSV 100%, 100%: Orange 27 is #FF7300, Pink 302 #FF00F6), and so is every angle between them:
+     a hue on Oneway is drawn at the strength of the twelve. Listed January to December. Nobody who has chosen nothing, and
+     nobody who chose No hue, wears a fixed violet any more: they wear the month's (THE PLATFORM DEFAULT, DEF1 and DEF2). */
+  var MONTHS = [['Azure', 203, '009DFF'], ['Magenta', 332, 'FF0077'], ['Violet', 274, '9000FF'], ['Pink', 302, 'FF00F6'],
+                ['Green', 115, '15FF00'], ['Lemon', 54, 'FFE500'], ['Amber', 45, 'FFBF00'], ['Lime', 75, 'BFFF00'],
+                ['Aqua', 172, '00FFDD'], ['Orange', 27, 'FF7300'], ['Red', 0, 'FF0000'], ['Blue', 228, '0033FF']];
+  /* an angle at full strength; the twelve are their own hexes exactly (two of them sit half a step from the rounding) */
+  function strong(d) {
+    d = ((Math.round(d) % 360) + 360) % 360;
+    for (var i = 0; i < MONTHS.length; i++) if (MONTHS[i][1] === d) {
+      var n = parseInt(MONTHS[i][2], 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
+    return hsl2rgb(d, 100, 50);
+  }
+  var MONTH_NOW = MONTHS[new Date().getMonth()];
+  var DEF1 = strong(MONTH_NOW[1]).join(','), DEF2 = strong(MONTH_NOW[1] - 64).join(',');
   var huePending = null;   /* a destination a hidden tab still owes */
   var hueRAF = 0;
 
@@ -233,9 +408,16 @@
        It is a DERIVATION, not a claim: an authored Center pair always wins,
        and when the backend serves two this becomes a pass-through. */
     fromAngle: function (deg) {
-      var d = parseInt(deg, 10); if (isNaN(d)) d = 258;
-      return [hsl2rgb(d, 100, 68).join(','), hsl2rgb(d - 64, 100, 68).join(',')];
+      var d = parseInt(deg, 10); if (isNaN(d)) d = MONTH_NOW[1];
+      return [strong(d).join(','), strong(d - 64).join(',')];
     },
+    /* the twelve, January to December: { name, angle, hex, month (0-11) } */
+    months: MONTHS.map(function (m, i) {
+      return { name: m[0], angle: m[1], month: i,
+        hex: '#' + m[2] };
+    }),
+    /* the month's own, for a date (now when none is given) */
+    month: function (when) { return hue.months[(when || new Date()).getMonth()]; },
     /* ── THE THIRD COLOUR ─────────────────────────────────────────────────
        ★ FOUNDER/459, 2026-09-20: *"make sure it supports multi color
          gradients."* The material was a PAIR — the hue and its partner —
@@ -248,10 +430,12 @@
     third: function (h1) {
       var t = parseTriplet(h1); if (!t) return null;
       var hsl = rgb2hsl(t[0], t[1], t[2]);
-      return hsl2rgb((hsl[0] + 42) % 360, 100, 66).join(',');
+      return hsl2rgb((hsl[0] + 42) % 360, 100, 50).join(',');
     },
     set: function (h1, h2) {
       if (hueRAF) { cancelAnimationFrame(hueRAF); hueRAF = 0; }
+      [].forEach.call(doc.querySelectorAll ? doc.querySelectorAll('.ow-world__was') : [], function (o) {   /* nor a fading sky */
+        if (o.parentNode) o.parentNode.removeChild(o); });
       root.style.setProperty('--ow-h1', h1 || DEF1);
       root.style.setProperty('--ow-h2', h2 || h1 || DEF2);
       root.style.setProperty('--ow-h3', hue.third(h1 || DEF1) || h2 || DEF2);
@@ -318,33 +502,45 @@
         if (wantsAngle) hue.angle(parseInt(angle, 10));
         return hue.set(h1, h2);
       }
-      var cs = getComputedStyle(root);
-      var fr1 = parseTriplet(cs.getPropertyValue('--ow-h1')) || parseTriplet(DEF1);
-      var fr2 = parseTriplet(cs.getPropertyValue('--ow-h2')) || parseTriplet(DEF2);
+      /* ── THE PAGE ARRIVES IN ITS COLOUR; THE WORLD BEHIND IT GLIDES (the design red team's D14, 2026-10-21: at 4x CPU
+         opening a profile dropped ~100 frames in 2.6 s, frames of 60-311 ms). Every frame of this tween rewrote the root's
+         three colours, which every element inherits, so the whole document's style was recalculated each frame for 800 ms
+         (665 ms of style in a Chrome trace; the script itself ~100 ms). Now the root takes the destination in one write,
+         while the page change hides it (the new page is fading in; the leaving page keeps its own colours,
+         oneway-app.html's ghost layer), and the colour field behind everything, `.ow-world`, glides on variables of its own:
+         a few elements, not the document. The angle lands once, so the canvases are woken once. */
+      var world = doc.querySelector('.ow-world');
+      /* the colour worn now, read from the root's own line (hue.set writes it there), never from computed style: a computed read
+         here, mid-navigation, made the browser work out the whole page's style once more (D14) */
+      var fr1 = parseTriplet(root.style.getPropertyValue('--ow-h1')) || parseTriplet(DEF1);
+      var fr2 = parseTriplet(root.style.getPropertyValue('--ow-h2')) || parseTriplet(DEF2);
       if (!to2) to2 = to1;
       var dur = ms || 800, t0 = performance.now();
       if (hueRAF) cancelAnimationFrame(hueRAF);
-      huePending = { h1: h1, h2: h2, angle: wantsAngle ? parseInt(angle, 10) : null };
-      (function step(t) {
-        var k = Math.min(1, (t - t0) / dur), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
-        function mix(a, b) {
-          return [0, 1, 2].map(function (i) { return Math.round(a[i] + (b[i] - a[i]) * e); }).join(',');
-        }
-        var m1 = mix(fr1, to1);
-        root.style.setProperty('--ow-h1', m1);
-        root.style.setProperty('--ow-h2', mix(fr2, to2));
-        root.style.setProperty('--ow-h3', hue.third(m1) || mix(fr2, to2));
-        if (wantsAngle) {
-          /* the angle of the colour THIS frame is painting. The second
-             argument says whether this frame is a waypoint or the
-             destination — only the destination wakes the canvases. */
-          var landed = (k >= 1);
-          var a = landed ? parseInt(angle, 10) : hue.angleOf(m1);
-          if (a != null) hue.angle(a, !landed);
-        }
-        hueRAF = k < 1 ? requestAnimationFrame(step) : 0;
-        if (k >= 1) huePending = null;          /* it arrived under its own power */
-      })(t0);
+      huePending = null;
+      root.style.setProperty('--ow-h1', to1.join(','));
+      root.style.setProperty('--ow-h2', to2.join(','));
+      root.style.setProperty('--ow-h3', hue.third(to1.join(',')) || to2.join(','));
+      if (wantsAngle) hue.angle(parseInt(angle, 10));
+      if (!world || (fr1.join(',') === to1.join(',') && fr2.join(',') === to2.join(','))) return;
+      /* the world's colour layers, copied in the colour they had, laid over the new and faded out: opacity alone, which the
+         compositor runs, so no frame repaints the sky or recalculates a style */
+      var was = world.querySelectorAll('.ow-world__field, .ow-world__wash, .ow-world__neb');
+      if (!was.length) return;
+      var veil = doc.createElement('div');
+      veil.className = 'ow-world__was'; veil.setAttribute('aria-hidden', 'true');
+      veil.style.cssText = 'position:absolute;inset:0;pointer-events:none;will-change:opacity;opacity:0;--ow-h1:' + fr1.join(',')
+        + ';--ow-h2:' + fr2.join(',');
+      [].forEach.call(was, function (el) { var c = el.cloneNode(false); c.style.animation = 'none'; veil.appendChild(c); });
+      [].forEach.call(world.querySelectorAll('.ow-world__was'), function (o) { o.parentNode.removeChild(o); });
+      world.insertBefore(veil, was[was.length - 1].nextSibling);
+      /* a Web Animation, which starts without a forced reflow (a CSS transition needed one: `void offsetWidth`, D14) */
+      var gone = function () { if (veil.parentNode) veil.parentNode.removeChild(veil); };
+      try {
+        var an = veil.animate([{ opacity: 1 }, { opacity: 0 }], { duration: dur, easing: (OW.motion && OW.motion.ease) ? OW.motion.ease('ease') : 'ease', fill: 'forwards' });
+        an.onfinish = gone; an.oncancel = gone;
+      } catch (_) { gone(); }
+      global.setTimeout(gone, dur + 200);
     },
     /* THE ONE WRITER OF THE COMPAT ANGLE. Every surface still painting from a
        single angle — Home's Popit canvas, the Galaxy starfield, anything on
@@ -378,9 +574,7 @@
          event COSTS was never counted, and once the angle joined the tween it
          became the most expensive thing in a navigation.
 
-         Every listener redraws in full. `OW.farField` repaints an entire
-         starfield — every link stroked, every point filled, twice, because the
-         sky is two parallax canvases — and `oneway-galaxy.js` re-reads
+         Every listener redraws in full. `oneway-galaxy.js` re-reads
          `getComputedStyle` and re-tints three palettes. At one event per frame
          that is ~96 full starfield redraws and ~48 forced style recalculations
          for ONE 800ms transition, on the main thread, while a profile is also
@@ -500,11 +694,29 @@
     } catch (_) { return null; }
   }
 
+  /* WHAT A PERSON WEARS BEFORE THEIR OWN COLOUR IS KNOWN. A signed-out guest wears the month's pair; a signed-in person, on a browser that
+     has not heard the account yet, wears a neutral ink and never a colour that is not theirs (his ruling, "Fixed per person"). */
+  var QUIET_INK = '142,142,150', wearingQuiet = false, answeredNone = false;     /* answeredNone: the account has answered and has no hue of its own, so the neutral is over for good (it was bound again on leaving a context) */
+  function unknownPair() {
+    var inside = false;
+    try { inside = typeof OW.signedIn === 'function' ? !!OW.signedIn() : global.localStorage.getItem('ow_session_cookie') === '1'; } catch (_) {}
+    return inside && !answeredNone ? { h1: QUIET_INK, h2: QUIET_INK } : { h1: DEF1, h2: DEF2 };
+  }
+
+  /* THE ACCOUNT HAS ANSWERED (oneway-hue.js sync): whoever is wearing the neutral wears their own now, on any page. An exact pair comes with the
+     person's profile, and it is never on this path: a saved one binds without the neutral. */
+  hue.heard = function (a) {
+    if (!wearingQuiet) return;
+    /* an account that answers with no hue of its own wears Oneway's own, never the neutral grey for good (main, 2026-11-09: the chosen outline and Keep were grey) */
+    if (a != null) hue.bind({ angle: a }); else hue.bind({ month: true });
+  };
+
   /* Bind the surface to the viewer's own hue. Call once at boot in the App.
      `hue` may be a pair {h1,h2} (an authored identity — always wins) or an
      angle (the backend's resolved_hue, bridged to a pair). */
   hue.bind = function (opts) {
     opts = opts || {};
+    wearingQuiet = false;
     /* ── BIND CAN GLIDE, BECAUSE THE PICKER HAS TO USE IT ─────────────────
        ★ FOUNDER, 2026-09-10: *"im checking if user hue in settings changes
          whole platform still doesnt!!"*
@@ -591,7 +803,11 @@
     if (a == null || isNaN(a)) { ctxPair = null; ownAngle = null;
       /* a viewer who has chosen nothing must not repaint the world in the
          PLATFORM DEFAULT over somebody else's identity either */
-      return inContext ? null : applyPair(DEF1, DEF2, _ms); }
+      /* {month:true} is the one press that asks for the month's by name: No hue in Settings (founder/891); the account cannot say so yet, so it holds for that page */
+      if (opts.month) answeredNone = true;
+      var none = opts.month ? { h1: DEF1, h2: DEF2 } : unknownPair();
+      wearingQuiet = none.h1 === QUIET_INK;
+      return inContext ? null : applyPair(none.h1, none.h2, _ms); }
     boundAngle = a;
     ownAngle = a;                     /* this IS the viewer; remember it */
     /* ── AN ANGLE HAS TO SURVIVE THE NAVIGATION TOO ──────────────────────
@@ -688,6 +904,25 @@
   /* the second tone of a pair, if a person picked only one: the same -64°
      relationship fromAngle uses, so a custom colour and a wheel colour build
      their gradient the same way rather than by two different rules */
+  /* THE MONTH'S HUE, AS A TOKEN AND ON TIME (founder/891: "should show on app guest screens and the apps landing page hue mixed
+     with others"; founder/980). `--ow-month` on the root is this month's colour as an "R,G,B" triplet, for a look to draw as one
+     of its glows, never the lead (founder/976: the landings lead with deep blues and purples): rgba(var(--ow-month), .5).
+     OW.hue.month() gives {name, angle, hex, month}. The month turns on the 1st by the person's own clock: a page left open
+     across it turns too, and so does everybody who wears No hue (no hue of their own, so the platform default is the month's). */
+  function monthTurn() {
+    var now = new Date(), m = MONTHS[now.getMonth()], was = MONTH_NOW;
+    MONTH_NOW = m;
+    DEF1 = strong(m[1]).join(','); DEF2 = strong(m[1] - 64).join(',');
+    root.style.setProperty('--ow-month', DEF1);
+    if (was !== m && ownAngle == null && !inContext) {
+      try { if (!global.localStorage.getItem('ow_user_pair') && !global.localStorage.getItem('ow_user_hue') && unknownPair().h1 === DEF1) hue.set(DEF1, DEF2); } catch (_) {}
+    }
+    var next = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 1);
+    global.setTimeout(monthTurn, Math.min(next - now, 2147483000));
+  }
+  monthTurn();
+  doc.addEventListener('visibilitychange', function () { if (!doc.hidden && MONTHS[new Date().getMonth()] !== MONTH_NOW) monthTurn(); });
+
   hue.mate = function (rgb) {
     var t = parseTriplet(rgb); if (!t) return rgb;
     var h = rgb2hsl(t[0], t[1], t[2]);
@@ -732,7 +967,7 @@
       inContext = true;
       return applyPair(p[0], p[1], ms == null ? 800 : ms, hue.angleOf(p[0]));
     }
-    var back = ctxPair || { h1: DEF1, h2: DEF2 };
+    var back = ctxPair || unknownPair();
     inContext = false;                       /* back in your own world */
     /* `ms || 700` turned an explicit 0 into a 700ms tween — a caller asking
        for an instant change got the opposite. Zero is a duration. */
@@ -826,36 +1061,8 @@
       worldNode.appendChild(el('div', 'ow-world__wash'));
       worldNode.appendChild(el('div', 'ow-world__neb'));
       worldNode.appendChild(el('div', 'ow-world__stars'));
-      /* THE BACKING GALAXY, generated rather than tiled. Sits under the live
-         network and over the star field — the far distance, still, because
-         motion at this depth is what turns a sky into a screensaver. */
-      /* ── DEPTH: TWO FIELDS, NOT ONE ────────────────────────────────────
-         ★ FOUNDER, 2026-08-29: *"make sure that galaxy background when turned
-           on looks good on all platforms, on local host here looks quite
-           shallow."*
-
-         It was shallow because it was ONE layer. Every structure was drawn at
-         one distance from one origin, so the sky had scale variation but no
-         PARALLAX — nothing was behind anything else, and a flat field of dots
-         is what that looks like however varied the dots are.
-
-         A second field is drawn from a DIFFERENT REGION of the same infinite
-         generator, smaller and dimmer, sitting behind the first. Two fields
-         from one generator, not two generators: the far one is the same sky
-         seen from further away, which is why it never disagrees with the near
-         one about what kind of place this is.
-
-         IT COSTS ONE MORE CANVAS AND NO FRAMES. Both are drawn once and never
-         animate — motion at this depth is what turns a sky into a
-         screensaver — so depth here is paid for in pixels, not in frame time,
-         and the mobile safe floor drops the far one rather than the near. */
-      var deep = doc.createElement('canvas'); deep.className = 'ow-world__deep';
-      worldNode.appendChild(deep);
-      try { OW.farField(deep, { ox: 48310, oy: 22740 }); } catch (e) {}
-
-      var far = doc.createElement('canvas'); far.className = 'ow-world__far';
-      worldNode.appendChild(far);
-      try { OW.farField(far); } catch (e) {}
+      /* NO CONNECTED DOTS (S39, founder/1309: "Arrows not dots"): the two far fields, which drew knots of points joined by lines at every
+         width, are gone. The sky is the wash, the nebula and the stars (founder, 2026-10-09: "keep the moving galaxy effect"). */
       /* NO DOTS FOLLOW THE CURSOR. ★ FOUNDER, 2026-10-09: *"there are these dots that move with the cursor that
          feel like they are awfully to blown up and close to the screen. i still wanna keep the moving galaxy effect
          but simply remove the pale white dots that follow the cursor"*. Tier 2 drew sixteen soft glows (20-90 px)
@@ -907,8 +1114,8 @@
     bookmark: 'bookmark-simple', eye: 'eye', play: 'play', pause: 'pause', sound: 'speaker-high', muted: 'speaker-slash'
   };
   /* PHOSPHOR BOOT (built by tools/phosphor_build.py; do not edit by hand) */
-  var PH_BOOT = {"bookmark-simple":{"b":"<path d=\"M184,28H72A20,20,0,0,0,52,48V224a12,12,0,0,0,18.36,10.18l57.63-36,57.65,36A12,12,0,0,0,204,224V48A20,20,0,0,0,184,28Zm-4,174.35-45.65-28.53a12,12,0,0,0-12.72,0L76,202.35V52H180Z\"/>","f":"<path d=\"M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z\"/>"},"chat":{"b":"<path d=\"M216,44H40A20,20,0,0,0,20,64V224A19.82,19.82,0,0,0,31.56,242.1a20.14,20.14,0,0,0,8.49,1.9,19.91,19.91,0,0,0,12.82-4.72l.12-.11L84.47,212H216a20,20,0,0,0,20-20V64A20,20,0,0,0,216,44Zm-4,144H80a11.93,11.93,0,0,0-7.84,2.92L44,215.23V68H212Z\"/>","f":"<path d=\"M232,64V192a16,16,0,0,1-16,16H83l-32.6,28.16-.09.07A15.89,15.89,0,0,1,40,240a16.05,16.05,0,0,1-6.79-1.52A15.84,15.84,0,0,1,24,224V64A16,16,0,0,1,40,48H216A16,16,0,0,1,232,64Z\"/>"},"chat-circle":{"b":"<path d=\"M128,20A108,108,0,0,0,31.85,177.23L21,209.66A20,20,0,0,0,46.34,235l32.43-10.81A108,108,0,1,0,128,20Zm0,192a84,84,0,0,1-42.06-11.27,12,12,0,0,0-6-1.62,12.1,12.1,0,0,0-3.8.62l-29.79,9.93,9.93-29.79a12,12,0,0,0-1-9.81A84,84,0,1,1,128,212Z\"/>","f":"<path d=\"M232,128A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Z\"/>"},"compass":{"b":"<path d=\"M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm0,192a84,84,0,1,1,84-84A84.09,84.09,0,0,1,128,212ZM163.27,77l-56,24a12,12,0,0,0-6.3,6.3l-24,56A12,12,0,0,0,92.73,179l56-24a12,12,0,0,0,6.3-6.3l24-56A12,12,0,0,0,163.27,77Zm-28.41,57.89-24,10.29,10.29-24,24-10.29Z\"/>","f":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm51.58,57.79-32,64a4.08,4.08,0,0,1-1.79,1.79l-64,32a4,4,0,0,1-5.37-5.37l32-64a4.08,4.08,0,0,1,1.79-1.79l64-32A4,4,0,0,1,179.58,81.79Z\"/>"},"export":{"b":"<path d=\"M220,112v96a20,20,0,0,1-20,20H56a20,20,0,0,1-20-20V112A20,20,0,0,1,56,92H76a12,12,0,0,1,0,24H60v88H196V116H180a12,12,0,0,1,0-24h20A20,20,0,0,1,220,112ZM96.49,72.49,116,53v83a12,12,0,0,0,24,0V53l19.51,19.52a12,12,0,1,0,17-17l-40-40a12,12,0,0,0-17,0l-40,40a12,12,0,1,0,17,17Z\"/>","f":"<path d=\"M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66L120,43.31V96h16Z\"/>"},"eye":{"b":"<path d=\"M251,123.13c-.37-.81-9.13-20.26-28.48-39.61C196.63,57.67,164,44,128,44S59.37,57.67,33.51,83.52C14.16,102.87,5.4,122.32,5,123.13a12.08,12.08,0,0,0,0,9.75c.37.82,9.13,20.26,28.49,39.61C59.37,198.34,92,212,128,212s68.63-13.66,94.48-39.51c19.36-19.35,28.12-38.79,28.49-39.61A12.08,12.08,0,0,0,251,123.13Zm-46.06,33C183.47,177.27,157.59,188,128,188s-55.47-10.73-76.91-31.88A130.36,130.36,0,0,1,29.52,128,130.45,130.45,0,0,1,51.09,99.89C72.54,78.73,98.41,68,128,68s55.46,10.73,76.91,31.89A130.36,130.36,0,0,1,226.48,128,130.45,130.45,0,0,1,204.91,156.12ZM128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Z\"/>"},"hammer":{"b":"<path d=\"M250.18,105.17,186.71,41.25a100.11,100.11,0,0,0-141.43,0l-.13.14L31.37,55.61a12,12,0,1,0,17.24,16.7L62.32,58.16A75.68,75.68,0,0,1,77.49,46.43L119,88,25.85,181.16a20,20,0,0,0,0,28.29l20.69,20.69a20,20,0,0,0,28.28,0L168,137l1.51,1.51h0l23.65,23.66a20,20,0,0,0,28.29,0l28.69-28.7A20,20,0,0,0,250.18,105.17ZM60.68,210.34l-15-15L108,133l15,15ZM140,131l-15-15,19.51-19.51a12,12,0,0,0,0-17L102.24,37.24a75.94,75.94,0,0,1,67.47,20.95l31.44,31.67L178,113l-1.51-1.51a12,12,0,0,0-17,0Zm67.32,11.31L195,130l23.09-23.09,12.3,12.39Z\"/>","f":"<path d=\"M251.34,112,183.88,44.08a96.1,96.1,0,0,0-135.77,0l-.09.09L34.25,58.4A8,8,0,0,0,45.74,69.53L59.47,55.35a79.92,79.92,0,0,1,18.71-13.9L124.68,88l-96,96a16,16,0,0,0,0,22.63l20.69,20.69a16,16,0,0,0,22.63,0l96-96,32,32a16,16,0,0,0,22.63,0l28.69-28.69A16,16,0,0,0,251.34,112Zm-89,2.33L140,136.67,119.31,116l22.35-22.35a8,8,0,0,0,0-11.32L94.32,35a80,80,0,0,1,78.23,20.41l44.22,44.51L188,128.66l-14.34-14.34A8,8,0,0,0,162.34,114.32Zm49,37.66-12-12L228,111.25l12,12Z\"/>"},"heart":{"b":"<path d=\"M178,36c-20.09,0-37.92,7.93-50,21.56C115.92,43.93,98.09,36,78,36a66.08,66.08,0,0,0-66,66c0,72.34,105.81,130.14,110.31,132.57a12,12,0,0,0,11.38,0C138.19,232.14,244,174.34,244,102A66.08,66.08,0,0,0,178,36Zm-5.49,142.36A328.69,328.69,0,0,1,128,210.16a328.69,328.69,0,0,1-44.51-31.8C61.82,159.77,36,131.42,36,102A42,42,0,0,1,78,60c17.8,0,32.7,9.4,38.89,24.54a12,12,0,0,0,22.22,0C145.3,69.4,160.2,60,178,60a42,42,0,0,1,42,42C220,131.42,194.18,159.77,172.51,178.36Z\"/>","f":"<path d=\"M240,102c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,228.66,16,172,16,102A62.07,62.07,0,0,1,78,40c20.65,0,38.73,8.88,50,23.89C139.27,48.88,157.35,40,178,40A62.07,62.07,0,0,1,240,102Z\"/>"},"house":{"b":"<path d=\"M222.14,105.85l-80-80a20,20,0,0,0-28.28,0l-80,80A19.86,19.86,0,0,0,28,120v96a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V164h24v52a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V120A19.86,19.86,0,0,0,222.14,105.85ZM204,204H164V152a12,12,0,0,0-12-12H104a12,12,0,0,0-12,12v52H52V121.65l76-76,76,76Z\"/>","f":"<path d=\"M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z\"/>"},"lightbulb":{"b":"<path d=\"M180,232a12,12,0,0,1-12,12H88a12,12,0,0,1,0-24h80A12,12,0,0,1,180,232Zm40-128a91.51,91.51,0,0,1-35.17,72.35A12.26,12.26,0,0,0,180,186v2a20,20,0,0,1-20,20H96a20,20,0,0,1-20-20v-2a12,12,0,0,0-4.7-9.51A91.57,91.57,0,0,1,36,104.52C35.73,54.69,76,13.2,125.79,12A92,92,0,0,1,220,104Zm-24,0a68,68,0,0,0-69.65-68C89.56,36.88,59.8,67.55,60,104.38a67.71,67.71,0,0,0,26.1,53.19A35.87,35.87,0,0,1,100,184h56.1A36.13,36.13,0,0,1,170,157.49,67.68,67.68,0,0,0,196,104Zm-20.07-5.32a48.5,48.5,0,0,0-31.91-40,12,12,0,0,0-8,22.62,24.31,24.31,0,0,1,16.09,20,12,12,0,0,0,23.86-2.64Z\"/>","f":"<path d=\"M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-32.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z\"/>"},"repeat":{"b":"<path d=\"M20,128A76.08,76.08,0,0,1,96,52h99l-3.52-3.51a12,12,0,1,1,17-17l24,24a12,12,0,0,1,0,17l-24,24a12,12,0,0,1-17-17L195,76H96a52.06,52.06,0,0,0-52,52,12,12,0,0,1-24,0Zm204-12a12,12,0,0,0-12,12,52.06,52.06,0,0,1-52,52H61l3.52-3.51a12,12,0,1,0-17-17l-24,24a12,12,0,0,0,0,17l24,24a12,12,0,1,0,17-17L61,204h99a76.08,76.08,0,0,0,76-76A12,12,0,0,0,224,116Z\"/>","f":"<path d=\"M24,128A72.08,72.08,0,0,1,96,56h96V40a8,8,0,0,1,13.66-5.66l24,24a8,8,0,0,1,0,11.32l-24,24A8,8,0,0,1,192,88V72H96a56.06,56.06,0,0,0-56,56,8,8,0,0,1-16,0Zm200-8a8,8,0,0,0-8,8,56.06,56.06,0,0,1-56,56H64V168a8,8,0,0,0-13.66-5.66l-24,24a8,8,0,0,0,0,11.32l24,24A8,8,0,0,0,64,216V200h96a72.08,72.08,0,0,0,72-72A8,8,0,0,0,224,120Z\"/>"},"thumbs-down":{"b":"<path d=\"M243.78,156.53l-12-96A28,28,0,0,0,204,36H32A20,20,0,0,0,12,56v88a20,20,0,0,0,20,20H72.58l36.69,73.37A12,12,0,0,0,120,244a44.05,44.05,0,0,0,44-44V188h52a28,28,0,0,0,27.78-31.47ZM68,140H36V60H68Zm151,22.65a4,4,0,0,1-3,1.35H152a12,12,0,0,0-12,12v24a20,20,0,0,1-13.18,18.8L92,149.17V60H204a4,4,0,0,1,4,3.5l12,96A4,4,0,0,1,219,162.65Z\"/>","f":"<path d=\"M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Z\"/>"},"thumbs-up":{"b":"<path d=\"M237,77.47A28,28,0,0,0,216,68H164V56a44.05,44.05,0,0,0-44-44,12,12,0,0,0-10.73,6.63L72.58,92H32a20,20,0,0,0-20,20v88a20,20,0,0,0,20,20H204a28,28,0,0,0,27.78-24.53l12-96A28,28,0,0,0,237,77.47ZM36,116H68v80H36ZM220,96.5l-12,96a4,4,0,0,1-4,3.5H92V106.83L126.82,37.2A20,20,0,0,1,140,56V80a12,12,0,0,0,12,12h64a4,4,0,0,1,4,4.5Z\"/>","f":"<path d=\"M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32Z\"/>"},"user":{"b":"<path d=\"M234.38,210a123.36,123.36,0,0,0-60.78-53.23,76,76,0,1,0-91.2,0A123.36,123.36,0,0,0,21.62,210a12,12,0,1,0,20.77,12c18.12-31.32,50.12-50,85.61-50s67.49,18.69,85.61,50a12,12,0,0,0,20.77-12ZM76,96a52,52,0,1,1,52,52A52.06,52.06,0,0,1,76,96Z\"/>","f":"<path d=\"M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z\"/>"}};
-  var PH_JS = '/frontend/shared/oneway-icons.js?v=cb24a537';
+  var PH_BOOT = {"bookmark-simple":{"b":"<path d=\"M184,28H72A20,20,0,0,0,52,48V224a12,12,0,0,0,18.36,10.18l57.63-36,57.65,36A12,12,0,0,0,204,224V48A20,20,0,0,0,184,28Zm-4,174.35-45.65-28.53a12,12,0,0,0-12.72,0L76,202.35V52H180Z\"/>","f":"<path d=\"M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z\"/>"},"calendar-blank":{"b":"<path d=\"M208,28H188V24a12,12,0,0,0-24,0v4H92V24a12,12,0,0,0-24,0v4H48A20,20,0,0,0,28,48V208a20,20,0,0,0,20,20H208a20,20,0,0,0,20-20V48A20,20,0,0,0,208,28ZM68,52a12,12,0,0,0,24,0h72a12,12,0,0,0,24,0h16V76H52V52ZM52,204V100H204V204Z\"/>","f":"<path d=\"M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,48H48V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24Z\"/>"},"chat":{"b":"<path d=\"M216,44H40A20,20,0,0,0,20,64V224A19.82,19.82,0,0,0,31.56,242.1a20.14,20.14,0,0,0,8.49,1.9,19.91,19.91,0,0,0,12.82-4.72l.12-.11L84.47,212H216a20,20,0,0,0,20-20V64A20,20,0,0,0,216,44Zm-4,144H80a11.93,11.93,0,0,0-7.84,2.92L44,215.23V68H212Z\"/>","f":"<path d=\"M232,64V192a16,16,0,0,1-16,16H83l-32.6,28.16-.09.07A15.89,15.89,0,0,1,40,240a16.05,16.05,0,0,1-6.79-1.52A15.84,15.84,0,0,1,24,224V64A16,16,0,0,1,40,48H216A16,16,0,0,1,232,64Z\"/>"},"chat-circle":{"b":"<path d=\"M128,20A108,108,0,0,0,31.85,177.23L21,209.66A20,20,0,0,0,46.34,235l32.43-10.81A108,108,0,1,0,128,20Zm0,192a84,84,0,0,1-42.06-11.27,12,12,0,0,0-6-1.62,12.1,12.1,0,0,0-3.8.62l-29.79,9.93,9.93-29.79a12,12,0,0,0-1-9.81A84,84,0,1,1,128,212Z\"/>","f":"<path d=\"M232,128A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Z\"/>"},"compass":{"b":"<path d=\"M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm0,192a84,84,0,1,1,84-84A84.09,84.09,0,0,1,128,212ZM163.27,77l-56,24a12,12,0,0,0-6.3,6.3l-24,56A12,12,0,0,0,92.73,179l56-24a12,12,0,0,0,6.3-6.3l24-56A12,12,0,0,0,163.27,77Zm-28.41,57.89-24,10.29,10.29-24,24-10.29Z\"/>","f":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm51.58,57.79-32,64a4.08,4.08,0,0,1-1.79,1.79l-64,32a4,4,0,0,1-5.37-5.37l32-64a4.08,4.08,0,0,1,1.79-1.79l64-32A4,4,0,0,1,179.58,81.79Z\"/>"},"export":{"b":"<path d=\"M220,112v96a20,20,0,0,1-20,20H56a20,20,0,0,1-20-20V112A20,20,0,0,1,56,92H76a12,12,0,0,1,0,24H60v88H196V116H180a12,12,0,0,1,0-24h20A20,20,0,0,1,220,112ZM96.49,72.49,116,53v83a12,12,0,0,0,24,0V53l19.51,19.52a12,12,0,1,0,17-17l-40-40a12,12,0,0,0-17,0l-40,40a12,12,0,1,0,17,17Z\"/>","f":"<path d=\"M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66L120,43.31V96h16Z\"/>"},"eye":{"b":"<path d=\"M251,123.13c-.37-.81-9.13-20.26-28.48-39.61C196.63,57.67,164,44,128,44S59.37,57.67,33.51,83.52C14.16,102.87,5.4,122.32,5,123.13a12.08,12.08,0,0,0,0,9.75c.37.82,9.13,20.26,28.49,39.61C59.37,198.34,92,212,128,212s68.63-13.66,94.48-39.51c19.36-19.35,28.12-38.79,28.49-39.61A12.08,12.08,0,0,0,251,123.13Zm-46.06,33C183.47,177.27,157.59,188,128,188s-55.47-10.73-76.91-31.88A130.36,130.36,0,0,1,29.52,128,130.45,130.45,0,0,1,51.09,99.89C72.54,78.73,98.41,68,128,68s55.46,10.73,76.91,31.89A130.36,130.36,0,0,1,226.48,128,130.45,130.45,0,0,1,204.91,156.12ZM128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Z\"/>"},"hammer":{"b":"<path d=\"M250.18,105.17,186.71,41.25a100.11,100.11,0,0,0-141.43,0l-.13.14L31.37,55.61a12,12,0,1,0,17.24,16.7L62.32,58.16A75.68,75.68,0,0,1,77.49,46.43L119,88,25.85,181.16a20,20,0,0,0,0,28.29l20.69,20.69a20,20,0,0,0,28.28,0L168,137l1.51,1.51h0l23.65,23.66a20,20,0,0,0,28.29,0l28.69-28.7A20,20,0,0,0,250.18,105.17ZM60.68,210.34l-15-15L108,133l15,15ZM140,131l-15-15,19.51-19.51a12,12,0,0,0,0-17L102.24,37.24a75.94,75.94,0,0,1,67.47,20.95l31.44,31.67L178,113l-1.51-1.51a12,12,0,0,0-17,0Zm67.32,11.31L195,130l23.09-23.09,12.3,12.39Z\"/>","f":"<path d=\"M251.34,112,183.88,44.08a96.1,96.1,0,0,0-135.77,0l-.09.09L34.25,58.4A8,8,0,0,0,45.74,69.53L59.47,55.35a79.92,79.92,0,0,1,18.71-13.9L124.68,88l-96,96a16,16,0,0,0,0,22.63l20.69,20.69a16,16,0,0,0,22.63,0l96-96,32,32a16,16,0,0,0,22.63,0l28.69-28.69A16,16,0,0,0,251.34,112Zm-89,2.33L140,136.67,119.31,116l22.35-22.35a8,8,0,0,0,0-11.32L94.32,35a80,80,0,0,1,78.23,20.41l44.22,44.51L188,128.66l-14.34-14.34A8,8,0,0,0,162.34,114.32Zm49,37.66-12-12L228,111.25l12,12Z\"/>"},"heart":{"b":"<path d=\"M178,36c-20.09,0-37.92,7.93-50,21.56C115.92,43.93,98.09,36,78,36a66.08,66.08,0,0,0-66,66c0,72.34,105.81,130.14,110.31,132.57a12,12,0,0,0,11.38,0C138.19,232.14,244,174.34,244,102A66.08,66.08,0,0,0,178,36Zm-5.49,142.36A328.69,328.69,0,0,1,128,210.16a328.69,328.69,0,0,1-44.51-31.8C61.82,159.77,36,131.42,36,102A42,42,0,0,1,78,60c17.8,0,32.7,9.4,38.89,24.54a12,12,0,0,0,22.22,0C145.3,69.4,160.2,60,178,60a42,42,0,0,1,42,42C220,131.42,194.18,159.77,172.51,178.36Z\"/>","f":"<path d=\"M240,102c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,228.66,16,172,16,102A62.07,62.07,0,0,1,78,40c20.65,0,38.73,8.88,50,23.89C139.27,48.88,157.35,40,178,40A62.07,62.07,0,0,1,240,102Z\"/>"},"house":{"b":"<path d=\"M222.14,105.85l-80-80a20,20,0,0,0-28.28,0l-80,80A19.86,19.86,0,0,0,28,120v96a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V164h24v52a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V120A19.86,19.86,0,0,0,222.14,105.85ZM204,204H164V152a12,12,0,0,0-12-12H104a12,12,0,0,0-12,12v52H52V121.65l76-76,76,76Z\"/>","f":"<path d=\"M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z\"/>"},"lightbulb":{"b":"<path d=\"M180,232a12,12,0,0,1-12,12H88a12,12,0,0,1,0-24h80A12,12,0,0,1,180,232Zm40-128a91.51,91.51,0,0,1-35.17,72.35A12.26,12.26,0,0,0,180,186v2a20,20,0,0,1-20,20H96a20,20,0,0,1-20-20v-2a12,12,0,0,0-4.7-9.51A91.57,91.57,0,0,1,36,104.52C35.73,54.69,76,13.2,125.79,12A92,92,0,0,1,220,104Zm-24,0a68,68,0,0,0-69.65-68C89.56,36.88,59.8,67.55,60,104.38a67.71,67.71,0,0,0,26.1,53.19A35.87,35.87,0,0,1,100,184h56.1A36.13,36.13,0,0,1,170,157.49,67.68,67.68,0,0,0,196,104Zm-20.07-5.32a48.5,48.5,0,0,0-31.91-40,12,12,0,0,0-8,22.62,24.31,24.31,0,0,1,16.09,20,12,12,0,0,0,23.86-2.64Z\"/>","f":"<path d=\"M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-32.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z\"/>"},"repeat":{"b":"<path d=\"M20,128A76.08,76.08,0,0,1,96,52h99l-3.52-3.51a12,12,0,1,1,17-17l24,24a12,12,0,0,1,0,17l-24,24a12,12,0,0,1-17-17L195,76H96a52.06,52.06,0,0,0-52,52,12,12,0,0,1-24,0Zm204-12a12,12,0,0,0-12,12,52.06,52.06,0,0,1-52,52H61l3.52-3.51a12,12,0,1,0-17-17l-24,24a12,12,0,0,0,0,17l24,24a12,12,0,1,0,17-17L61,204h99a76.08,76.08,0,0,0,76-76A12,12,0,0,0,224,116Z\"/>","f":"<path d=\"M24,128A72.08,72.08,0,0,1,96,56h96V40a8,8,0,0,1,13.66-5.66l24,24a8,8,0,0,1,0,11.32l-24,24A8,8,0,0,1,192,88V72H96a56.06,56.06,0,0,0-56,56,8,8,0,0,1-16,0Zm200-8a8,8,0,0,0-8,8,56.06,56.06,0,0,1-56,56H64V168a8,8,0,0,0-13.66-5.66l-24,24a8,8,0,0,0,0,11.32l24,24A8,8,0,0,0,64,216V200h96a72.08,72.08,0,0,0,72-72A8,8,0,0,0,224,120Z\"/>"},"storefront":{"b":"<path d=\"M236,96a12,12,0,0,0-.44-3.3L221.2,42.51A20.08,20.08,0,0,0,202,28H54A20.08,20.08,0,0,0,34.8,42.51L20.46,92.7A12,12,0,0,0,20,96h0v16a43.94,43.94,0,0,0,16,33.92V216a12,12,0,0,0,12,12H208a12,12,0,0,0,12-12V145.92A43.94,43.94,0,0,0,236,112V96ZM57.05,52H199l9.14,32H47.91Zm91,56v4a20,20,0,0,1-40,0v-4ZM53,128.71A20,20,0,0,1,44,112v-4H84v4a20,20,0,0,1-20,20,19.76,19.76,0,0,1-9.07-2.2A11.54,11.54,0,0,0,53,128.71ZM196,204H60V155.81c1.32.12,2.65.19,4,.19a43.86,43.86,0,0,0,32-13.85,43.89,43.89,0,0,0,64,0A43.86,43.86,0,0,0,192,156c1.35,0,2.68-.07,4-.19Zm16-92a20,20,0,0,1-9,16.71,11.66,11.66,0,0,0-1.88,1.09A20,20,0,0,1,172,112v-4h40Z\"/>","f":"<path d=\"M231.69,93.81,217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.81A7.94,7.94,0,0,0,24,96v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96A7.94,7.94,0,0,0,231.69,93.81ZM88,112a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8H88Zm64,0a24,24,0,0,1-48,0v-8h48Zm64,0a24,24,0,0,1-11.07,20.2,8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48Z\"/>"},"thumbs-down":{"b":"<path d=\"M243.78,156.53l-12-96A28,28,0,0,0,204,36H32A20,20,0,0,0,12,56v88a20,20,0,0,0,20,20H72.58l36.69,73.37A12,12,0,0,0,120,244a44.05,44.05,0,0,0,44-44V188h52a28,28,0,0,0,27.78-31.47ZM68,140H36V60H68Zm151,22.65a4,4,0,0,1-3,1.35H152a12,12,0,0,0-12,12v24a20,20,0,0,1-13.18,18.8L92,149.17V60H204a4,4,0,0,1,4,3.5l12,96A4,4,0,0,1,219,162.65Z\"/>","f":"<path d=\"M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Z\"/>"},"thumbs-up":{"b":"<path d=\"M237,77.47A28,28,0,0,0,216,68H164V56a44.05,44.05,0,0,0-44-44,12,12,0,0,0-10.73,6.63L72.58,92H32a20,20,0,0,0-20,20v88a20,20,0,0,0,20,20H204a28,28,0,0,0,27.78-24.53l12-96A28,28,0,0,0,237,77.47ZM36,116H68v80H36ZM220,96.5l-12,96a4,4,0,0,1-4,3.5H92V106.83L126.82,37.2A20,20,0,0,1,140,56V80a12,12,0,0,0,12,12h64a4,4,0,0,1,4,4.5Z\"/>","f":"<path d=\"M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32Z\"/>"},"user":{"b":"<path d=\"M234.38,210a123.36,123.36,0,0,0-60.78-53.23,76,76,0,1,0-91.2,0A123.36,123.36,0,0,0,21.62,210a12,12,0,1,0,20.77,12c18.12-31.32,50.12-50,85.61-50s67.49,18.69,85.61,50a12,12,0,0,0,20.77-12ZM76,96a52,52,0,1,1,52,52A52.06,52.06,0,0,1,76,96Z\"/>","f":"<path d=\"M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z\"/>"}};
+  var PH_JS = '/frontend/shared/oneway-icons.js?v=2b35eb18';
   var PH_PICK = '/frontend/shared/oneway-iconpicker.js?v=e8e956ef';
   /* PHOSPHOR BOOT END */
   var PH = {}, PH_NAMES = null, PH_TAGS = null, PH_LOAD = {}, PH_ALL = '/assets/icons/phosphor/all/';
@@ -1085,6 +1292,11 @@
     opts = opts || {};
     var n = doc.createElement('span');
     n.className = 'ow-globe';
+    /* ★ FOUNDER/1353: a LOADING globe is plain - the mode's own ink, never the person's hue.
+       "a normal plain loading state with the globe in the middle and like a grayed out like white
+       plain loading state or a black plain loading state depending on light mode or dark mode."
+       The hued globe stays the hued globe everywhere it is the mark rather than a wait. */
+    if (opts.plain) n.setAttribute('data-plain', '1');
     if (opts.size) {
       n.style.setProperty('--g', opts.size + 'px');
       /* the cage needs room; below this it becomes a smudge (see the CSS) */
@@ -1162,6 +1374,158 @@
     return new Promise(function (res) { global.setTimeout(res, ms || 2080); });
   };
 
+  /* ═══ THE CARD SKELETON — where cards load, the cards are grey and already there ═══════════════════════
+     ★ FOUNDER/1302: "The post page, rather than having the globe loading bumper when you click on it, I want the individual
+       postcards themselves to have a grayed out state, like loading, like how Instagram does ... When a user searches a page
+       that has multiple cards posts loading at once rather than one globe bumper loading, it makes them feel like they're
+       already scanning the page rather than waiting for something to come to them in the first place."
+
+     ONE BUILDER, and it draws the card's own boxes (the same classes the real card wears: .po-card__who, __av, __n, __nm,
+     __when, __body, __d, __media, __cover, __foot), so the stylesheet that sizes the real card in light, dark, Simple and Popit
+     sizes this one: nothing here is a measured copy of a number. Only the fill is its own (grey, in the page's ink, never a hue).
+
+     WHERE IT IS USED: a Post's page, Home's feed, a feed of the person's own, a profile's and a Center's posts, Discovery's grid and
+     its search. The globe stays elsewhere (a sign-in, a payment, an upload; founder/471, 499). `loading(host, n, word, shape)` in
+     popit-live.js is the one door: with a shape it draws these, without one the globe, as before.
+
+     IT NEVER STANDS ALONE. A caller replaces it with the cards, or with its own honest state (OW.states.refused / nothing: S11);
+     the skeleton carries no timer of its own that would let it outlast the answer, and `OW.skeleton.out` is how the caller says so. */
+  OW.skeleton = (function () {
+    /* THE GLOBE GOES BY INSIDE EACH GREY CARD (founder/1303: "The cards themselves should show the globe bumper going by before they load. We
+       shouldn't phase out the globe for this"): the ONE mark, OW.globe, drawn once per size and put in the card as its shimmer. It crosses the
+       card left to right, slow, one card a beat after the next; reduced motion leaves it still. No second drawing of it, no second kind of shimmer. */
+    var passHTML = {};
+    function pass(i, size) {
+      if (!passHTML[size]) passHTML[size] = OW.globe({ size: size, plain: true }).outerHTML;   /* founder/1353: a wait is plain */
+      /* an <i>, not a <span>: Simple lays the card's spans out in a grid (.po-river>.po-card>span), and a grid-placed box would take its column's area as its ground */
+      return '<i class="ow-skel__pass" aria-hidden="true" style="--i:' + i + ';--pg:' + size + 'px">' + passHTML[size] + '</i>';
+    }
+    /* SKEL-CARD-BEGIN: tools/build_app.mjs draws the first screen's grey cards from these same lines, so the page holds them before this file has come */
+    function t(cls, w, text) { return '<span class="' + cls + ' ow-skel__t" style="width:' + w + '">' + (text || 'Loading') + '</span>'; }
+    function line(w) { return '<i class="ow-skel__l" style="width:' + w + '"></i>'; }
+    function lines(ws) { return ws.map(line).join(''); }
+    var WIDTHS = [['100%', '96%', '58%'], ['100%', '72%'], ['94%', '100%', '88%', '40%']];
+    /* a feed card: who, the words, (a picture), the foot. `media` reserves the cover's box at the card's own 4:5 */
+    function card(i, media) {
+      var w = WIDTHS[i % WIDTHS.length];
+      return '<div class="po-card po-card--skel"' + (media ? '' : ' data-text="1"') + ' aria-hidden="true">' +
+        '<span class="po-card__face"></span>' +
+        '<span class="po-card__who"><span class="po-card__av"></span>' +
+          '<span class="po-card__n">' + t('po-card__nm', (84 + (i % 3) * 22) + 'px') + t('po-card__when', '44px') + '</span></span>' +
+        (media ? '<span class="po-card__media"><span class="po-card__cover"></span></span>' : '') +
+        '<span class="po-card__body"><span class="po-card__d">' + lines(w) + '</span></span>' +
+        '<span class="po-card__foot"><span class="po-acts"><i class="ow-skel__a"></i><i class="ow-skel__a"></i><i class="ow-skel__a"></i></span></span>' +
+        pass(i, 72) +
+        '</div>';
+    }
+    /* SKEL-CARD-END */
+    /* a Post's own page: the who row, the words, the picture and the acts of .ow-post */
+    function post() {
+      return '<div class="ow-skel__post" aria-hidden="true">' +
+        '<div class="ow-post__who"><span class="ow-skel__f"></span><div class="ow-post__nm">' +
+          t('ow-skel__nm', '120px') + t('ow-skel__wh', '64px') + '</div></div>' +
+        '<div class="ow-skel__pbody">' + lines(['100%', '94%', '100%', '62%']) + '</div>' +
+        '<div class="ow-skel__pic"></div>' +
+        '<div class="ow-skel__acts"><i class="ow-skel__a"></i><i class="ow-skel__a"></i><i class="ow-skel__a"></i></div>' +
+        pass(0, 96) +
+        '</div>';
+    }
+    /* Discovery's three-column grid of tiles, the sheet's own ow-ds__grid and ow-ds__tile */
+    function tiles(n) {
+      var h = '';
+      for (var i = 0; i < n; i++) h += '<div class="ow-ds__tile ow-skel__tile' + (i === 1 ? ' is-tall' : '') + '"></div>';
+      return h;
+    }
+    var SHAPES = {
+      card: function (n) { var h = ''; for (var i = 0; i < n; i++) h += card(i, i % 2 === 0); return '<div class="po-river">' + h + '</div>'; },
+      post: function () { return post(); },
+      tiles: function (n) { return '<div class="ow-ds__grid">' + tiles(n) + '</div>' + pass(1, 56); },
+      /* the search's rows (Discovery's list of hits): a face and two lines, the sheet's own .ow-ds__hit */
+      hits: function (n) {
+        var h = '';
+        for (var i = 0; i < n; i++) h += '<div class="po-act ow-ds__hit ow-skel__hit" aria-hidden="true"><span class="ow-ds__face"></span><span class="ow-ds__rt">' +
+          '<b class="ow-skel__t" style="width:' + (120 + (i % 3) * 36) + 'px">Loading</b><span class="ow-skel__t" style="width:' + (80 + (i % 2) * 40) + 'px">Loading</span></span></div>';
+        return h + pass(0, 48);
+      },
+      /* DISCOVERY'S FIRST FRAME (v52/discovery-loading; founder/1302, 1303: the screen is there at the press, grey, with the globe going by).
+         The ground is the map's own earth colour; the search, the two round controls and the sheet's bar stand in the boxes sheet.js gives
+         them (one geometry: SHEET below, which sheet.js reads too), so the real map arrives under it and nothing moves. */
+      discover: function () { return discoverHTML(); },
+      /* what the sheet's body holds before its first read has answered (a docked sheet shows it at once): a short list and the grid */
+      sheet: function () {
+        /* its own boxes (ow-skel__*), not the sheet's: this is drawn at the press, before sheet.js and its stylesheet have come */
+        var h = '', i;
+        for (i = 0; i < 3; i++) h += '<div class="ow-skel__row"><i class="ow-skel__face"></i><span class="ow-skel__rt">' +
+          '<b class="ow-skel__t" style="width:' + (120 + (i % 3) * 36) + 'px">Loading</b><span class="ow-skel__t" style="width:' + (80 + (i % 2) * 40) + 'px">Loading</span></span></div>';
+        var g = '';
+        for (i = 0; i < 6; i++) g += '<i class="ow-skel__cell' + (i === 1 ? ' is-tall' : '') + '"></i>';
+        return '<div class="ow-skel__sh">' + t('ow-skel__shh', '96px') + '</div>' + h + '<div class="ow-skel__sh">' + t('ow-skel__shh', '84px') + '</div><div class="ow-skel__grid">' + g + '</div>' + pass(2, 56);
+      }
+    };
+    /* ONE GEOMETRY FOR THE SHEET AND ITS SKELETON: the widths at which the sheet docks, read by sheet.js too, so a change here moves both */
+    var SHEET = { WIDE: 900, TAB: 700, SHORT: 500, SHORT_WIDE: 640, DOCK_W: 440, TITLE: 'Explore' };
+    function discoverHTML() {
+      var glass = OW.glyph ? OW.glyph('magnifying-glass') : '';
+      var glassHTML = typeof glass === 'string' ? glass : (glass && glass.outerHTML) || '';
+      return '<i class="ow-skel__ground" aria-hidden="true"></i>' +
+        '<span class="ow-skel__find" aria-hidden="true">' + glassHTML + '<span class="ow-skel__ph">Search</span></span>' +
+        '<i class="ow-skel__ctl ow-skel__you" aria-hidden="true"></i><i class="ow-skel__ctl ow-skel__add" aria-hidden="true"></i>' +
+        '<div class="ow-skel__sheet" aria-hidden="true"><div class="ow-skel__bar"><i class="ow-skel__grab"></i>' +
+          '<div class="ow-skel__hd"><span class="ow-skel__title">' + SHEET.TITLE + '</span>' + t('ow-skel__where', '96px') + '</div>' + pass(0, 48) + '</div>' +
+          '<div class="ow-skel__body">' + SHAPES.sheet() + '</div></div>';
+    }
+    /* the boxes the real sheet is placed in, from the same measures (sheet.js fit(): the header's foot, the dock's top, a rail on the left),
+       set on the skeleton as the vars its CSS reads, so a wide screen, a tablet and a phone each draw it where the sheet will stand */
+    function geometry(wrap) {
+      var vw = global.innerWidth || 390, vh = global.innerHeight || 800;
+      var top = doc.querySelector('.ow-top'), nav = doc.querySelector('.ow-nav');
+      var tr = top ? top.getBoundingClientRect() : null, nr = nav ? nav.getBoundingClientRect() : null;
+      if (nr && !nr.width) nr = null;
+      var rail = !!nr && nr.height > nr.width;
+      var wide = vw >= SHEET.WIDE || (vh < SHEET.SHORT && vw >= SHEET.SHORT_WIDE), tab = !wide && vw >= SHEET.TAB;
+      var foot = nr && !rail ? Math.max(0, Math.round(vh - nr.top)) : 0;
+      wrap.style.setProperty('--ds-top', Math.max(12, Math.round((tr && tr.width > 0 ? tr.bottom : 0) + 6)) + 'px');
+      if (rail && nr.left < 200) wrap.style.setProperty('--ds-left', Math.max(12, Math.round(nr.right + 12)) + 'px');
+      wrap.style.setProperty('--ds-bot', (foot + 12) + 'px');
+      wrap.style.setProperty('--ds-foot', foot + 'px');
+      if (wide || tab) wrap.style.setProperty('--ds-w', Math.min(SHEET.DOCK_W, Math.round(vw * 0.52)) + 'px');
+      wrap.classList.toggle('is-wide', wide); wrap.classList.toggle('is-tab', tab); wrap.classList.toggle('is-short', wide && vh < SHEET.SHORT);
+    }
+    var COUNT = { card: 3, post: 1, tiles: 9, hits: 3, discover: 1, sheet: 1 };
+    /* into(host, shape, n): the skeleton in the host at once, no globe. Returns the node; `aria-busy` tells a reader of the page it is coming. */
+    function into(host, shape, n, word) {
+      var make = SHAPES[shape] || SHAPES.card;
+      var wrap = doc.createElement('div');
+      wrap.className = 'ow-skel ow-skel--' + (SHAPES[shape] ? shape : 'card');
+      wrap.setAttribute('role', 'status');
+      wrap.setAttribute('aria-busy', 'true');
+      wrap.setAttribute('aria-label', word || 'Loading');
+      wrap.innerHTML = make(n || COUNT[shape] || 3);
+      host.appendChild(wrap);
+      if (shape === 'discover') geometry(wrap);
+      return wrap;
+    }
+    /* done(host): the first frame of a screen that is one whole picture (Discovery's) leaves when the real one stands under it: it fades over
+       the screen's leave beat and is taken away, never cut. Reduced motion takes it at once. */
+    function done(host) {
+      var s = host && host.querySelectorAll ? host.querySelectorAll('.ow-skel--discover') : [];
+      for (var i = 0; i < s.length; i++) (function (el) {
+        if (el.__owGoing) return; el.__owGoing = true;
+        var ms = OW.motion ? OW.motion.ms('leave') : 0;
+        var gone = function () { if (el.parentNode) el.parentNode.removeChild(el); };
+        if (ms <= 1) { gone(); return; }
+        el.setAttribute('aria-busy', 'false'); el.classList.add('is-done');
+        global.setTimeout(gone, ms + 60);
+      })(s[i]);
+    }
+    /* out(host): taken away the moment the caller has its answer (cards, an honest empty, or a refusal), so none outlasts it */
+    function out(host) {
+      var s = host && host.querySelectorAll ? host.querySelectorAll('.ow-skel') : [];
+      for (var i = 0; i < s.length; i++) if (s[i].parentNode) s[i].parentNode.removeChild(s[i]);
+    }
+    return { into: into, out: out, done: done, sheet: SHEET };
+  })();
+
   /* ═══ THE MARK WEARS THE SAME LIGHT AS THE WORLD ═══════════════════════
      Founder (2026-08-02): the app and web icon should correspond to the
      user's — or the viewed Center's — hue.
@@ -1186,8 +1550,37 @@
      BLUE). So: a person's chosen hue paints the icon; the platform's own
      purple — nobody's hue — paints it blue. */
   var PLATFORM_HUE = '124,45,255', ICON_BLUE = '31,143,255';
+
+  /* NO HUE BAR AT THE TOP (founder/1176, 2026-11-02: "i do not like the hue bar at the top"). The browser's chrome took the
+     person's hue here (theme-color = the hue), so Safari painted a band of it over the top of every page. It takes the
+     room's own ground now, the colour the App's theme writer gives it (oneway-app.html: light #eceaf3, dark #000000), so
+     the top of the browser reads as the page. The hue stays on the icon and the tab.
+     THE ROOM IN FORCE, AND LIVE (the founder, 2026-11-09: "It should sync to device automatically"). A page that leaves the
+     room to the device (no data-theme: sign-in, reset) was given the dark bar in a light room, because only data-theme was
+     read; and a device that switched kept the bar it had, because this ran only when the hue changed. The room in force is
+     the person's choice, else the device's, and the bar follows either the moment it changes. */
+  var lightQ = null;
+  try { lightQ = global.matchMedia ? global.matchMedia('(prefers-color-scheme: light)') : null; } catch (_) {}
+  function paintChrome() {
+    if (!doc || !doc.head) return;
+    var t = root.getAttribute('data-theme');
+    var light = t === 'light' || (t !== 'dark' && !!(lightQ && lightQ.matches));
+    var tc = doc.querySelector('meta[name="theme-color"]');
+    if (!tc) { tc = doc.createElement('meta'); tc.name = 'theme-color';
+               doc.head.appendChild(tc); }
+    tc.removeAttribute('media');
+    tc.setAttribute('content', light ? (tc.getAttribute('data-light') || '#eceaf3') : (tc.getAttribute('data-dark') || '#000000'));
+  }
+  OW.paintChrome = paintChrome;
+  try {
+    if (lightQ) { if (lightQ.addEventListener) lightQ.addEventListener('change', paintChrome); else if (lightQ.addListener) lightQ.addListener(paintChrome); }
+    if (global.MutationObserver && root) new global.MutationObserver(paintChrome).observe(root, { attributes: true, attributeFilter: ['data-theme'] });
+    paintChrome();
+  } catch (_) {}
+
   OW.paintIcon = function () {
     if (!doc || !doc.head) return;
+    paintChrome();
     var rgb = getComputedStyle(root).getPropertyValue('--ow-h1').trim();
     if (!rgb || rgb === lastIcon) return;
     lastIcon = rgb;
@@ -1201,16 +1594,6 @@
     try {
       if (global.owTabHue && global.owTabHue.context) global.owTabHue.context(inContext ? hue.angleOf(rgb) : null);
     } catch (_) {}
-
-    /* THE BROWSER CHROME TAKES THE SAME LIGHT — and it is the HUE, not the
-       ground. Setting theme-color to the near-black ground meant the status bar
-       and the task switcher stayed identically dark in every Center, so the one
-       piece of platform chrome a person actually sees on a phone was the one
-       piece that never corresponded to anything. */
-    var tc = doc.querySelector('meta[name="theme-color"]');
-    if (!tc) { tc = doc.createElement('meta'); tc.name = 'theme-color';
-               doc.head.appendChild(tc); }
-    tc.setAttribute('content', 'rgb(' + rgb + ')');
 
     /* THE INSTALLED ICON, which the tab trick cannot reach. A home-screen icon
        is fetched ONCE, at install, and the OS owns the bitmap after that — no
@@ -1236,537 +1619,8 @@
     if (l.getAttribute('href') !== href) l.setAttribute('href', href);
   }
 
-  /* ═══ THE SKY — the constellation, which is the real ONEWAY background ═════
-     Founder (2026-08-03): the sign-up page "is a perfect basis for how the final
-     should look… the main things are backgrounds and layouts."
-
-     I HAD INVENTED SOMETHING ELSE. My first version was drifting nebulae —
-     plausible, atmospheric, and nowhere in this product. The actual background,
-     already shipping on sign-up, is a NETWORK: points that drift and draw a line
-     to every neighbour they come close to. That is not decoration, it is the thesis —
-     Centers are only interesting because of what connects them — which is
-     exactly why it was the wrong thing to replace with clouds.
-
-     THREE THINGS CHANGE AS IT BECOMES SHARED:
-     · it takes the HUE, so the world is this person's world (sign-up drew it in
-       flat white, which was fine when it lived on one page and wrong the moment
-       every surface carries it);
-     · the mobile safe floor gets a STATIC field instead — canon is explicit that
-       touch devices get no always-on canvas, and a page that quietly runs one
-       anyway is the safe floor being observed in comment only;
-     · it PARKS when the tab is hidden, because a rAF loop nobody is looking at
-       is pure battery. */
-  /* EVERY POINT WAS THE SAME POINT — and that is why it read as a mesh rather
-     than a sky. One size, one speed, one link distance, one opacity: a regular
-     lattice wearing a colour. A real constellation has magnitude, depth and
-     clustering, and those are what make it feel found rather than drawn.
-
-     FIVE VARIABLES NOW, and each does something a person can feel:
-
-       z     DEPTH. Drives size, brightness AND speed together, so far points
-             drift slowly and dim while near ones move and shine. Parallax with
-             no second layer to keep in sync.
-       r     MAGNITUDE. A few bright anchors among many faint ones, so the eye
-             finds structure instead of texture.
-       link  REACH, per point. Uniform reach is what produced the even mesh;
-             varying it lets dense knots and empty gulfs appear on their own.
-       tw    A slow, out-of-phase brightness drift. Never a blink — a blinking
-             background is a nervous tic.
-       seeds CLUSTERING. Uniform random is not random-looking: it is evenly
-             grey. Most points gather loosely around a few seeds, the rest
-             scatter, which is how actual star fields read.
-
-     Deliberately NOT seeded per person: the hue already carries whose world
-     this is, and a fixed layout would make every reload identical — the sky
-     should be different every time you arrive, the way a sky is. */
-  /* ── A SKY WITH STRUCTURE, NOT AN EVEN SPRINKLE ─────────────────────────
-     ★ FOUNDER, 2026-08-26: *"in the galaxy itself make sure patterns don't look
-       too close to each other or duplicates of each to avoid it feeling cheap"*
-       — and, after the star tiles were fixed: *"still has repetition with
-       patterns."* The tiles were only half of it; this is the other half.
-
-     WHY EVERY REGION LOOKED THE SAME. Four things, and none of them was random
-     enough to hide the other three:
-
-       · the count was CAPPED AT 90 however wide the screen — so a 2226px
-         canvas got the same handful of points as a laptop, spread thinner;
-       · there were only 2-4 seeds;
-       · every seed used the SAME spread formula and the same 62% gather
-         probability, so every knot had an identical statistical shape;
-       · `link` sat in a narrow band (9000-22000), so mesh density was uniform
-         across the whole field — every triangle the same size as every other.
-
-     Uniform randomness is not variety. It is noise with one texture, and the
-     eye reads one texture as a repeat however random the individual dots are.
-
-     WHAT MAKES A SKY READ AS REAL IS THE EMPTINESS. Real skies are mostly
-     nothing, with a few dense cores and long bare stretches between them. So
-     each region now has its OWN character — its own population, tightness and
-     link reach — and some of the field is deliberately left bare. */
-  function skyPoints(w, h) {
-    var pts = [], i, j;
-    var R = Math.random;
-    /* SCALED BY AREA, so a wide screen gets a fuller sky instead of the same
-       ninety points stretched across it. Still bounded — the cost law applies
-       to a field that is redrawn every frame, and the pair loop below is
-       quadratic, so this is a ceiling rather than a target. */
-    var area = Math.max(1, w * h);
-    var n = Math.max(38, Math.min(150, Math.round(area / 15000)));
-
-    /* EACH REGION IS ITS OWN KIND OF PLACE. A core is tight, populous and
-       heavily linked; a drift is wide, sparse and barely linked at all. Giving
-       every seed the same character is what made four knots look like one knot
-       drawn four times. */
-    var sn = 3 + ((R() * 4) | 0);                     /* 3-6 regions */
-    var seeds = [];
-    for (i = 0; i < sn; i++) {
-      var core = R() < .45;
-      seeds.push({
-        x: R() * w, y: R() * h,
-        tight: core ? (.05 + R() * .07) : (.16 + R() * .20),
-        weight: core ? (1.4 + R() * 1.6) : (.4 + R() * .8),
-        /* the reach of a line, PER REGION and across a wide range — a core
-           webs densely, a drift is nearly bare */
-        link: core ? (16000 + R() * 20000) : (2500 + R() * 7000)
-      });
-    }
-    var total = seeds.reduce(function (a, s) { return a + s.weight; }, 0);
-
-    /* A VOID. One region of the field is kept empty, because bare sky is what
-       the eye uses to tell one part from another — an evenly covered field has
-       no landmarks and therefore no scale. */
-    var void_ = { x: R() * w, y: R() * h, r: Math.min(w, h) * (.18 + R() * .14) };
-
-    function inVoid(x, y) {
-      var dx = x - void_.x, dy = y - void_.y;
-      return (dx * dx + dy * dy) < (void_.r * void_.r);
-    }
-
-    /* gaussian-ish, so a core actually has a CORE rather than a flat disc */
-    function bell() { return (R() + R() + R() - 1.5) / 1.5; }
-
-    var guard = 0;
-    while (pts.length < n && guard < n * 30) {
-      guard++;
-      var x, y, seed = null;
-      var roll = R();
-      if (roll < .78) {                               /* most belong to a region */
-        var t = R() * total, acc = 0;
-        for (j = 0; j < seeds.length; j++) {
-          acc += seeds[j].weight;
-          if (t <= acc) { seed = seeds[j]; break; }
-        }
-        seed = seed || seeds[0];
-        var spread = Math.min(w, h) * seed.tight;
-        x = seed.x + bell() * spread * 2.2;
-        y = seed.y + bell() * spread * 2.2;
-      } else {                                        /* the rest are between */
-        x = R() * w; y = R() * h;
-      }
-      /* REFLECTED, NOT CLAMPED. Clamping stacks every stray point onto the
-         edge, which draws a bright line down the side of the screen. */
-      if (x < 0) x = -x; if (x > w) x = w - (x - w);
-      if (y < 0) y = -y; if (y > h) y = h - (y - h);
-      if (x < 0 || x > w || y < 0 || y > h) continue;
-      if (inVoid(x, y) && R() < .93) continue;        /* the void, mostly kept */
-
-      var z = .3 + R() * .7;
-      var bright = R() < .10;
-      /* A FEW LONERS — bright, isolated, linked to nothing. They are what stop
-         the field reading as one connected mesh. */
-      var loner = R() < .08;
-      pts.push({
-        x: x, y: y, z: z,
-        vx: (R() - .5) * .26 * z,
-        vy: (R() - .5) * .26 * z,
-        r: (bright ? 1.7 : .7) + R() * .9 * z,
-        link: loner ? 300 : ((seed ? seed.link : 3500) * (.7 + R() * .6)),
-        tw: R() * 6.283,
-        tws: .0004 + R() * .0011
-      });
-    }
-    return pts;
-  }
-
-  /* ═══ THE BACKING GALAXY — an environment, not wallpaper ══════════════════
-     ★ FOUNDER, 2026-08-26: *"the faint backing/secondary constellation field
-       behind them is still visibly repetitive... Don't generate a collection of
-       randomized versions of one constellation. Generate an environment whose
-       regions have fundamentally different statistical structures."*
-
-     WHAT IT WAS. `.ow-sky::after` was a 420x420 SVG holding ONE hand-drawn
-     constellation — five paths, eleven stars — set to `background-repeat`. On a
-     2226px screen that is the same constellation 5.3 times across and 2.5 times
-     down, at opacity .5. Not "randomness that reads as repetitive": literally
-     one picture, tiled. No amount of extra points would have fixed it, which is
-     exactly why the founder said not to try.
-
-     WHAT IT IS NOW. Position-dependent deterministic generation:
-
-         world position -> regional seed -> regional MORPHOLOGY -> stars
-
-     The middle step is the one that matters. Seeding coordinates randomly still
-     produces wallpaper if every region runs the same generator — same topology,
-     same spread formula, same connection rule. So a region first draws WHAT KIND
-     OF PLACE IT IS from seven genuinely different grammars, and each grammar has
-     its own scale, orientation, density, opacity, node size and linking
-     behaviour. A filament and a globular cluster are not two samples of one
-     distribution; they are different objects.
-
-     STABLE, BECAUSE THE SEED IS THE POSITION. The same region generates
-     identically on every reload and at every viewport, so nothing flickers when
-     the window resizes and a person does not get a different galaxy for turning
-     their phone. Viewport only decides WHICH cells are drawn.
-
-     NOT A GRID, THOUGH IT IS GENERATED FROM ONE. Structures are centred anywhere
-     within a cell and are frequently LARGER than one, so they cross boundaries;
-     cells hold zero, one or two of them; and the draw walks a one-cell margin so
-     off-screen structures bleed in. A cell is where a seed comes from, never a
-     frame anything is drawn inside. */
-  var FAR_CELL = 1180;
-
-  /* integer hash — deterministic, order-independent, no Math.random anywhere in
-     this file's far-field path (that is what would make it flicker) */
-  function fhash(x, y, salt) {
-    var h = (x | 0) * 374761393 + (y | 0) * 668265263 + (salt | 0) * 1442695040;
-    h = (h ^ (h >>> 13)) * 1274126177;
-    return (h ^ (h >>> 16)) >>> 0;
-  }
-  function frand(seed) {                       /* mulberry32 */
-    var a = seed >>> 0;
-    return function () {
-      a = (a + 0x6D2B79F5) >>> 0;
-      var t = a;
-      t = Math.imul(t ^ (t >>> 15), t | 1);
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-
-  /* ── WHERE THE GALAXY IS RICH AND WHERE IT IS BARREN ────────────────────
-     ★ FOUNDER, 2026-08-26: *"don't make the spacing mechanically uniform. I
-       want natural gaps: sometimes two relatively close, sometimes a huge empty
-       stretch, then one faint constellation far away."*
-
-     ROLLING EACH CELL INDEPENDENTLY CANNOT PRODUCE THAT. Independent rolls give
-     a Poisson field, which is statistically uniform — every stretch of sky is
-     as likely to be empty as every other, so the gaps all come out the same
-     SIZE. That reads as mechanical however random each individual roll is, and
-     it is why "reduce the probability" alone would only have made a uniformly
-     emptier sky.
-
-     Natural clustering needs SPATIAL CORRELATION: a slow field, several cells
-     across, that says how rich this whole area is. Two neighbouring cells share
-     almost the same value, so structures arrive in loose company; a barren
-     stretch stays barren for its whole width. Smoothed value noise over the
-     same deterministic hash, so it costs nothing and stays stable. */
-  function fnoise(x, y, salt) {           /* value noise in [0,1] */
-    var xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
-    var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
-    function at(a, b) { return fhash(a, b, salt) / 4294967296; }
-    var a = at(xi, yi), b = at(xi + 1, yi), c = at(xi, yi + 1), d = at(xi + 1, yi + 1);
-    return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v;
-  }
-  function richness(cx, cy) {
-    /* two octaves — the broad continent, and a little relief on it */
-    var n = fnoise(cx / 5.5, cy / 5.5, 31) * .72 + fnoise(cx / 2.1, cy / 2.1, 57) * .28;
-    /* PUSHED TOWARD THE EXTREMES so most of the sky is genuinely empty and the
-       rich parts are unmistakably rich — a mid-heavy field is the uniform one
-       again, wearing different numbers. */
-    /* TUNED AGAINST THE FIELD IT REPLACED, not against taste. The tiled original
-       measured 58,980 lit pixels on a 2560x1640 buffer. At exponent 1.75 this
-       came out at 74,716 — DENSER than the thing the founder called too
-       frequent. The lever is frequency, not brightness: fewer structures, each
-       keeping its own character and its own distance, which is what "more
-       widely spaced" actually asks for. */
-    return Math.pow(n, 2.45);
-  }
-
-  /* ── THE GRAMMARS. Each returns {pts:[{x,y,r,a}], links:[[i,j,a]]} in local
-     coordinates around (0,0). They differ in TOPOLOGY, not in parameters. */
-  var FAR_MORPH = {
-    /* barely anything — the bare stretches that give the sky its scale */
-    void: function (R) {
-      var n = (R() * 3) | 0, pts = [], i;
-      for (i = 0; i < n; i++)
-        pts.push({ x: (R() - .5) * 900, y: (R() - .5) * 900,
-                   r: 1.1 + R() * .9, a: .40 + R() * .28 });
-      return { pts: pts, links: [] };
-    },
-    /* unstructured haze — many faint points, no links, no centre */
-    dust: function (R) {
-      var n = 26 + ((R() * 60) | 0), pts = [], i;
-      var sx = 300 + R() * 700, sy = 300 + R() * 700;
-      for (i = 0; i < n; i++)
-        pts.push({ x: (R() - .5) * sx * 2, y: (R() - .5) * sy * 2,
-                   r: .8 + R() * .7, a: .30 + R() * .26 });
-      /* A FEW VERY LONG, VERY FAINT THREADS. Measured against the tiled field
-         it replaced: that had 1,562 bright pixels and 57,418 FAINT ones — its
-         whole presence was long barely-visible line work, and dropping it is
-         what made this read as removed rather than as distant. */
-      var links = [];
-      for (i = 0; i + 1 < pts.length; i++)
-        if (R() < .24) links.push([i, (R() * pts.length) | 0, .042 + R() * .045]);
-      return { pts: pts, links: links };
-    },
-    /* a long thread of stars, linked in sequence — thin, directional, nothing
-       like a cluster */
-    filament: function (R) {
-      var n = 11 + ((R() * 16) | 0), pts = [], links = [], i;
-      var len = 1000 + R() * 1900, ang = R() * 6.283;
-      var bow = (R() - .5) * 620, wob = 14 + R() * 46;
-      for (i = 0; i < n; i++) {
-        var t = i / (n - 1), off = Math.sin(t * Math.PI) * bow;
-        var lx = (t - .5) * len, ly = off + (R() - .5) * wob;
-        pts.push({ x: lx * Math.cos(ang) - ly * Math.sin(ang),
-                   y: lx * Math.sin(ang) + ly * Math.cos(ang),
-                   r: 1.1 + R() * .9, a: .40 + R() * .32 });
-        if (i) links.push([i - 1, i, .07 + R() * .07]);
-      }
-      return { pts: pts, links: links };
-    },
-    /* a dense core falling off radially — links only near the middle */
-    globular: function (R) {
-      var n = 26 + ((R() * 46) | 0), pts = [], links = [], i, j;
-      var core = 40 + R() * 120, halo = 2.4 + R() * 3.2;
-      var sx = .6 + R() * .9, sy = .6 + R() * .9, ang = R() * 6.283;
-      for (i = 0; i < n; i++) {
-        var rr = core * Math.pow(R(), .45) * halo, a2 = R() * 6.283;
-        var lx = Math.cos(a2) * rr * sx, ly = Math.sin(a2) * rr * sy;
-        pts.push({ x: lx * Math.cos(ang) - ly * Math.sin(ang),
-                   y: lx * Math.sin(ang) + ly * Math.cos(ang),
-                   r: .75 + (1 - rr / (core * halo)) * 1.7,
-                   a: .26 + (1 - rr / (core * halo)) * .5 });
-      }
-      for (i = 0; i < pts.length; i++)
-        for (j = i + 1; j < pts.length; j++) {
-          var dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-          if (dx * dx + dy * dy < core * core * 2.1 && R() < .42)
-            links.push([i, j, .05 + R() * .06]);
-        }
-      return { pts: pts, links: links };
-    },
-    /* two knots and a bridge — a topology no single cluster produces */
-    pair: function (R) {
-      var gap = 260 + R() * 700, ang = R() * 6.283, pts = [], links = [], k, i;
-      var anchors = [];
-      for (k = 0; k < 2; k++) {
-        var cx = (k ? gap / 2 : -gap / 2), n = 5 + ((R() * 12) | 0);
-        var spread = 30 + R() * 90;
-        anchors.push(pts.length);
-        for (i = 0; i < n; i++) {
-          var lx = cx + (R() - .5) * spread * 2, ly = (R() - .5) * spread * 2;
-          pts.push({ x: lx * Math.cos(ang) - ly * Math.sin(ang),
-                     y: lx * Math.sin(ang) + ly * Math.cos(ang),
-                     r: 1.15 + R() * 1.0, a: .42 + R() * .32 });
-        }
-      }
-      links.push([anchors[0], anchors[1], .07 + R() * .06]);
-      return { pts: pts, links: links };
-    },
-    /* a far-off smudge: many tiny dim points, no links at all */
-    smudge: function (R) {
-      var n = 40 + ((R() * 90) | 0), pts = [], i;
-      var rx = 120 + R() * 300, ry = rx * (.25 + R() * .5), ang = R() * 6.283;
-      for (i = 0; i < n; i++) {
-        var rr = Math.pow(R(), .7), a2 = R() * 6.283;
-        var lx = Math.cos(a2) * rr * rx, ly = Math.sin(a2) * rr * ry;
-        pts.push({ x: lx * Math.cos(ang) - ly * Math.sin(ang),
-                   y: lx * Math.sin(ang) + ly * Math.cos(ang),
-                   r: .7 + R() * .6, a: .26 + (1 - rr) * .3 });
-      }
-      return { pts: pts, links: [] };
-    },
-    /* loose scatter, sparsely webbed — the only grammar resembling the old one,
-       and it is now ONE of seven rather than all of them */
-    web: function (R) {
-      var n = 12 + ((R() * 16) | 0), pts = [], links = [], i, j;
-      var spread = 300 + R() * 620, reach = spread * (.5 + R() * .58);
-      for (i = 0; i < n; i++)
-        pts.push({ x: (R() - .5) * spread * 2, y: (R() - .5) * spread * 2,
-                   r: .55 + R() * .85, a: .32 + R() * .34 });
-      for (i = 0; i < n; i++)
-        for (j = i + 1; j < n; j++) {
-          var dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-          if (Math.sqrt(dx * dx + dy * dy) < reach && R() < .7)
-            links.push([i, j, .06 + R() * .07]);
-        }
-      return { pts: pts, links: links };
-    },
-    /* a handful of unrelated bright loners, no structure whatsoever */
-    loners: function (R) {
-      var n = 2 + ((R() * 4) | 0), pts = [], i;
-      for (i = 0; i < n; i++)
-        pts.push({ x: (R() - .5) * 1300, y: (R() - .5) * 1300,
-                   r: 1.5 + R() * 1.5, a: .55 + R() * .34 });
-      return { pts: pts, links: [] };
-    }
-  };
-  /* WEIGHTED SO EMPTINESS DOMINATES. A sky that is mostly structure is a
-     texture; a sky that is mostly nothing, with things in it, is space. */
-  /* BALANCED BY MEASUREMENT, NOT BY FEEL. The first weighting had three voids
-     in twelve plus a 42% empty-cell roll, and measuring eight distant regions
-     found FIVE of them completely blank — emptiness is right, invisibility is
-     not. A galaxy is mostly nothing WITH THINGS IN IT; this is the second half
-     of that sentence. */
-  var FAR_TABLE = ['void', 'void', 'smudge', 'smudge', 'dust', 'dust',
-                   'filament', 'filament', 'globular', 'globular',
-                   'pair', 'loners', 'web', 'web'];
-
-  /* A NAME IN THE TABLE THAT IS NOT A GRAMMAR FALLS BACK TO `web` AND NOBODY
-     NOTICES — the variety quietly halves while the code still runs. Checked at
-     load instead: `dust_web` was in this table for exactly that reason. */
-  (function () {
-    for (var i = 0; i < FAR_TABLE.length; i++) {
-      if (!FAR_MORPH[FAR_TABLE[i]]) {
-        try { console.warn('farField: no grammar named ' + FAR_TABLE[i]); } catch (e) {}
-      }
-    }
-  })();
-
-  /* WHAT A REGION ACTUALLY CONTAINS, without drawing it. The acceptance test
-     for this field is "would a person say that is the same constellation
-     again" — which is a question about STRUCTURE, not about pixel counts. This
-     reports the grammars a region chose and how big each came out, so the
-     answer can be measured across distant regions rather than eyeballed. */
-  OW.farPlan = function (ox, oy, w, h) {
-    var out = [];
-    var c0 = Math.floor(ox / FAR_CELL) - 1, c1 = Math.ceil((ox + w) / FAR_CELL) + 1;
-    var r0 = Math.floor(oy / FAR_CELL) - 1, r1 = Math.ceil((oy + h) / FAR_CELL) + 1;
-    for (var cy = r0; cy <= r1; cy++) {
-      for (var cx = c0; cx <= c1; cx++) {
-        /* THE SAME ROLLS IN THE SAME ORDER AS `draw`, or this reports a
-           galaxy nobody is looking at. Kept adjacent to it on purpose. */
-        var R = frand(fhash(cx, cy, 7));
-        var rich = richness(cx, cy);
-        var count = 0;
-        if (R() < rich * 1.35) count = 1;
-        if (count && R() < rich * .5) count = 2;
-        for (var k = 0; k < count; k++) {
-          var kind = FAR_TABLE[(R() * FAR_TABLE.length) | 0];
-          R(); R();                                  /* the two placement rolls */
-          var o = (FAR_MORPH[kind] || FAR_MORPH.web)(R);
-          var far = Math.pow(R(), .55);
-          var scale = 1.6 - far * 1.3;
-          var xs = o.pts.map(function (p) { return p.x; });
-          var ys = o.pts.map(function (p) { return p.y; });
-          var span = o.pts.length
-            ? Math.round(Math.max(Math.max.apply(null, xs) - Math.min.apply(null, xs),
-                                  Math.max.apply(null, ys) - Math.min.apply(null, ys)) * scale)
-            : 0;
-          out.push({ kind: kind, n: o.pts.length, links: o.links.length,
-                     span: span, scale: +scale.toFixed(2),
-                     far: +far.toFixed(2), rich: +rich.toFixed(3) });
-        }
-      }
-    }
-    return out;
-  };
-
-  OW.farField = function (cv, opts) {
-    opts = opts || {};
-    var ctx = cv.getContext('2d');
-    var DPR = Math.min(global.devicePixelRatio || 1, 2);
-    /* WHERE IN THE GALAXY THE APP OPENS. The generator is infinite and
-       position-seeded, so (0,0) is not special — and measuring it found it
-       nearly empty: three lit pixels in a 1200x700 screenful. An honest galaxy
-       contains such regions, but opening the product in one is a choice, not
-       honesty.
-
-       So the App starts at a region measured for BALANCE rather than for
-       maximum content: ten structures on a 1400x800 screenful, drawn from
-       seven different grammars, with a depth spread of .87 — some near enough
-       to read at scale 1.44, some so distant they render at .31 and are barely
-       there. Chosen by scanning two hundred regions for that combination.
-
-       This is a view of the world, not a special place in it: every other
-       region generates identically and the distribution across sixty sampled
-       screenfuls is min 0, median 6, p75 11, max 26, with six of the sixty
-       completely empty. Landing on a median-to-good one is a choice about
-       where the front door is. */
-    var ox = opts.ox == null ? 15730 : opts.ox;
-    var oy = opts.oy == null ? 6110 : opts.oy;
-
-    function draw() {
-      var w = cv.clientWidth || innerWidth, h = cv.clientHeight || innerHeight;
-      cv.width = Math.max(1, w * DPR); cv.height = Math.max(1, h * DPR);
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      ctx.clearRect(0, 0, w, h);
-      var rgb = (getComputedStyle(root).getPropertyValue('--ow-h1').trim() || '124,45,255');
-
-      var c0 = Math.floor(ox / FAR_CELL) - 1, c1 = Math.ceil((ox + w) / FAR_CELL) + 1;
-      var r0 = Math.floor(oy / FAR_CELL) - 1, r1 = Math.ceil((oy + h) / FAR_CELL) + 1;
-
-      for (var cy = r0; cy <= r1; cy++) {
-        for (var cx = c0; cx <= c1; cx++) {
-          var R = frand(fhash(cx, cy, 7));
-          /* HOW MANY OBJECTS THIS REGION HOLDS — set by how rich this part of
-             the galaxy is, not by an independent coin flip. A barren stretch
-             stays barren across its whole width; a rich one occasionally puts
-             two near each other. Most of the sky is the former. */
-          var rich = richness(cx, cy);
-          var count = 0;
-          if (R() < rich * 1.35) count = 1;
-          if (count && R() < rich * .5) count = 2;
-          for (var k = 0; k < count; k++) {
-            var kind = FAR_TABLE[(R() * FAR_TABLE.length) | 0];
-            var gen = FAR_MORPH[kind] || FAR_MORPH.web;
-            /* centred ANYWHERE in the cell, and most structures are wider than
-               a cell — so the grid that produced the seed never becomes a
-               visible frame */
-            var px = cx * FAR_CELL + R() * FAR_CELL - ox;
-            var py = cy * FAR_CELL + R() * FAR_CELL - oy;
-            var o = gen(R);
-            /* ── DEPTH, WHICH IS WHAT MAKES IT AN ENVIRONMENT ──────────────
-               ★ FOUNDER: *"let some be extremely faint/distant... some larger
-                 but much farther apart... think depth and distance."*
-               One scale range gave everything the same apparent distance, so
-               the field read as a flat layer of decoration rather than as
-               something you look INTO. Distance is drawn from a curve that
-               mostly returns FAR, and opacity falls with it — a distant thing
-               is dimmer, not merely smaller. */
-            var far = Math.pow(R(), .55);          /* 0 near ... 1 far */
-            var scale = 1.6 - far * 1.3;           /* 1.6 near -> .30 far */
-            /* A FLOOR UNDER DISTANCE. At .74 the farthest objects came out
-               around alpha .03 once the grammar's own opacity was applied —
-               present in the data and invisible on screen, which is the
-               "almost entirely gone" the founder rejected. Distance still
-               dims, it just cannot dim to nothing. */
-            var dim = 1 - far * .42;
-            var pts = o.pts, i;
-
-            ctx.lineWidth = Math.max(.9, 1.25 * scale);
-            for (i = 0; i < o.links.length; i++) {
-              var L = o.links[i], A = pts[L[0]], B = pts[L[1]];
-              if (!A || !B) continue;
-              ctx.strokeStyle = 'rgba(' + rgb + ',' + (L[2] * dim).toFixed(3) + ')';
-              ctx.beginPath();
-              ctx.moveTo(px + A.x * scale, py + A.y * scale);
-              ctx.lineTo(px + B.x * scale, py + B.y * scale);
-              ctx.stroke();
-            }
-            for (i = 0; i < pts.length; i++) {
-              var P = pts[i];
-              ctx.fillStyle = 'rgba(' + rgb + ',' + (P.a * dim).toFixed(3) + ')';
-              ctx.beginPath();
-              ctx.arc(px + P.x * scale, py + P.y * scale, P.r * Math.max(.6, scale * .9), 0, 6.283);
-              ctx.fill();
-            }
-          }
-        }
-      }
-    }
-    draw();
-    var t;
-    try {
-      global.addEventListener('resize', function () {
-        clearTimeout(t); t = setTimeout(draw, 160);
-      }, { passive: true });
-      global.addEventListener('ow:hue', function () { draw(); });
-    } catch (e) {}
-    return draw;
-  };
-
+  /* ═══ THE SKY: the hue wash under every surface (.ow-sky, .ow-worldwash; oneway-popit.css). The washes need no script, so a phone, a reduced-motion
+     reader and the first paint all get a real background. Opted out with {sky:false} by a page that paints its own world. */
   OW.sky = function (opts) {
     opts = opts || {};
     if (doc.querySelector('.ow-sky')) return;
@@ -1780,81 +1634,7 @@
     wash.className = 'ow-worldwash'; wash.setAttribute('aria-hidden', 'true');
     host.appendChild(wash);
 
-    /* THE SAFE FLOOR GETS THE FIELD AND NOTHING THAT TICKS. .ow-sky already
-       carries a hue-tinted static network in CSS, so a phone is not left with a
-       flat black page — it simply does not get the motion. */
-    var RM = global.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var safe = root.getAttribute('data-fx') === 'safe';
-    if (safe || RM || opts.still) return;
-
-    var c = doc.createElement('canvas');
-    c.className = 'ow-net'; c.setAttribute('aria-hidden', 'true');
-    host.appendChild(c);
-    var ctx = c.getContext('2d');
-    var DPR = Math.min(global.devicePixelRatio || 1, 2);
-    var pts = [], raf = 0;
-
-    function size() {
-      c.width = innerWidth * DPR; c.height = innerHeight * DPR;
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      pts = skyPoints(innerWidth, innerHeight);
-    }
-    /* the line colour is READ FROM THE LIVE HUE each frame batch, so walking
-       into a Center re-colours the network with everything else — one truth,
-       not a copy of the hue kept here */
-    function hueRGB() {
-      return (getComputedStyle(root).getPropertyValue('--ow-h1').trim() || '124,45,255');
-    }
-    var _t = 0;
-    function frame() {
-      var w = innerWidth, h = innerHeight, i, j, rgb = hueRGB();
-      _t++;
-      ctx.clearRect(0, 0, w, h);
-      for (i = 0; i < pts.length; i++) {
-        var p = pts[i];
-        p.x += p.vx; p.y += p.vy;
-        if (p.x < 0 || p.x > w) p.vx *= -1;
-        if (p.y < 0 || p.y > h) p.vy *= -1;
-
-        /* A LINE BELONGS TO THE PAIR, not to the field: reach is the nearer
-           point's, and depth fades it — so a far knot whispers and a near one
-           is legible, which is what gives the field its sense of space. */
-        for (j = i + 1; j < pts.length; j++) {
-          var q = pts[j], dx = p.x - q.x, dy = p.y - q.y, d = dx * dx + dy * dy;
-          var reach = p.link < q.link ? q.link : p.link;
-          if (d < reach) {
-            var depth = (p.z + q.z) * .5;
-            ctx.strokeStyle = 'rgba(' + rgb + ','
-              + ((1 - d / reach) * .30 * depth).toFixed(3) + ')';
-            ctx.lineWidth = depth > .8 ? 1.1 : .7;
-            ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.stroke();
-          }
-        }
-
-        /* magnitude + a slow, out-of-phase drift in brightness */
-        var tw = .78 + Math.sin(p.tw + _t * p.tws * 60) * .22;
-        ctx.fillStyle = 'rgba(' + rgb + ',' + (p.z * .55 * tw).toFixed(3) + ')';
-        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill();
-      }
-      raf = requestAnimationFrame(frame);
-    }
-    /* SIMPLE HOLDS STILL (oneway-surface.css; the founder, 2026-10-19: "visual clean interface built for simple mode"):
-       in Simple the network is the last frame drawn, a still picture, and moves again the moment Simple is off */
-    function still() { return root.getAttribute('data-simple') === '1'; }
-    size(); frame();
-    if (still()) { cancelAnimationFrame(raf); raf = 0; }
-    var t; global.addEventListener('resize', function () {
-      clearTimeout(t); t = setTimeout(function () { size(); if (still()) { frame(); cancelAnimationFrame(raf); raf = 0; } }, 140);
-    }, { passive: true });
-    /* parked with the tab — canon §4 */
-    doc.addEventListener('visibilitychange', function () {
-      if (doc.hidden) { cancelAnimationFrame(raf); raf = 0; }
-      else if (!raf && !still()) raf = requestAnimationFrame(frame);
-    });
-    if (global.MutationObserver) new MutationObserver(function () {
-      if (still()) { cancelAnimationFrame(raf); raf = 0; }
-      else if (!raf && !doc.hidden) raf = requestAnimationFrame(frame);
-    }).observe(root, { attributes: true, attributeFilter: ['data-simple'] });
+    /* NO NET (S39, founder/1309: "Arrows not dots"): the live canvas of points joined by lines is gone at every tier. The hue wash is the sky. */
   };
 
   /* ═══ WHAT ACTUALLY WENT WRONG ═════════════════════════════════════════
@@ -2194,7 +1974,7 @@
        deterministic, inspectable in the DOM, and cannot be out-specified by
        anything else on the page. The world layers and the stage are excluded by
        name, which is also the honest way to say what is happening. */
-    var KEEP = /(^|\s)(ow-sky|ow-net|ow-worldwash|ow-crossing)(\s|$)/;
+    var KEEP = /(^|\s)(ow-sky|ow-worldwash|ow-crossing)(\s|$)/;
     var safeFloor = root.getAttribute('data-fx') === 'safe';
     [].forEach.call((doc.body || {}).children || [], function (el) {
       if (KEEP.test(el.className || '')) return;
@@ -2378,6 +2158,8 @@
     var other = card.querySelector('[data-po-rail]');
     if (other) other.innerHTML = '';
     var inter = g.interactions || {}, offers = inter.offers || [], mine = inter.mine || '';
+    var guest = typeof OW.signedIn === 'function' && !OW.signedIn();
+    if (guest) offers = offers.filter(function (verb) { return verb === 'like'; });
     var counts = inter.counts || {};
     /* ★ FOUNDER/471: *"why doesnt saves and reposts have a count."* The
        tallies for repost, share and save arrive on the row's `actions`
@@ -2507,9 +2289,8 @@
        because different acts happen to be at zero. A person reads that as
        the interface being unfinished, which it was.
 
-       ONE RULE, NO CONDITION: the tally is always drawn. A zero is a fact
-       about a Post and stating it plainly is not a judgement — withholding
-       it was what made the feed look arbitrary.
+       HIS WORD SINCE, 2026-11-07 (L7, "Hide until it's 1"): the tally is always in the row, so the row keeps its
+       shape and a press has its number to move, and a count of 0 is not shown (`data-zero`, oneway-popit.css).
 
        THE ONE ABSENCE THAT REMAINS is `counts_hidden` — the author or the
        viewer has HIDDEN the numbers (founder, 2026-09-06: *"UNLESS USER HAS
@@ -2518,7 +2299,7 @@
        once, here, rather than per act. */
     function tally(n) {
       if (hideCounts) return '';
-      return '<b>' + esc(String(n == null ? 0 : n)) + '</b>';
+      return '<b' + (+n ? '' : ' data-zero') + '>' + esc(String(n == null ? 0 : n)) + '</b>';     /* a count shows from 1 (his word, 2026-11-07, L7) */
     }
     function act(verb, icon, label, on, count) {
       return '<button type="button" class="po-act po-act--icon"'
@@ -2559,6 +2340,7 @@
        reaches the same place a tap on the card does, so there is one way into
        a Post's conversation rather than two. */
     html += '<button type="button" class="po-act po-act--icon" data-po-comment'
+      + (guest ? ' disabled aria-disabled="true" title="Sign in to comment"' : '')
       + ' data-obj="' + esc(g.id) + '" data-okind="' + esc(okind) + '"'
       + ' aria-label="' + esc(nComments
           ? (nComments === 1 ? '1 comment' : nComments + ' comments')
@@ -2582,10 +2364,16 @@
         + esc(reposts === 1 ? '1 repost' : (reposts || 0) + ' reposts') + '">'
         + OW.glyph('repost') + tally(reposts) + '</span>';
     } else {
+      /* A POST IS REPOSTED ONLY AFTER IT IS LIKED, AND NEVER AFTER IT IS DISLIKED (the founder, 2026-11-03: "You have to like a
+         post before you could repost it ... if you dislike a post, you cannot repost it"). The server refuses it
+         (service.repost); the button shows why before it is pressed. A repost already made stays a button that takes it back. */
+      var repostWhy = (!guest && !reposted && okind === 'post' && ('liked' in you))
+        ? (you.disliked ? 'dislike' : (you.liked ? '' : 'like')) : '';
       html += '<button type="button" class="po-act po-act--icon" data-po-repost'
         + ' data-obj="' + esc(g.id) + '" data-okind="' + esc(okind) + '"'
         + ' aria-pressed="' + (reposted ? 'true' : 'false') + '"'
         + ' aria-label="Repost"'
+        + (repostWhy ? ' aria-disabled="true" data-repost-needs="' + repostWhy + '" title="' + esc(REPOST_NEEDS[repostWhy]) + '"' : '')
         + ' data-act="' + (reposted ? 'on' : 'off') + '">'
         + OW.glyph('repost')
         + tally(reposts) + '</button>';
@@ -2594,8 +2382,9 @@
     /* SAVE STANDS AT THE ROW'S RIGHT END (founder/831: the interactions "spaced exactly like Instagram"): the acts
        that answer the Post sit together on the left, and keeping it for yourself is the one at the far edge. It is
        built here and placed last, after Share and the views. */
-    var saves = hideCounts ? 0 : ((counts.save != null) ? counts.save : (g.saves || 0));
-    var saveHTML = '<button type="button" class="po-act po-act--icon po-act--end" data-po-save'
+    /* A FAVORITE IS YOURS (the founder, 2026-10-30: "posts shouldnt have the faviorite count go up like that when users fav a post"): no number on the button, for anyone */
+    var saves = 0;
+    var saveHTML = '<button type="button" class="po-act po-act--icon" data-po-save'
       + ' data-obj="' + esc(g.id) + '" data-okind="' + esc(okind) + '"'
       + ' aria-pressed="' + (saved ? 'true' : 'false') + '"'
       + ' aria-label="' + (saved ? 'Saved' : 'Save') + '"'
@@ -2627,6 +2416,17 @@
         + '<b>' + esc(g.views) + '</b></span>';
     }
     html += saveHTML;
+    /* MORE (the half-baked audit, 2026-11-01, unit 5): Not interested, Mute, Add a note and Report, in the one menu a More opens
+       (OW.cards.menu; the App's OW.postMenu says what each choice does). The backend's doors existed since 2026-10-31 and no
+       post reached them. Not signed out, and only where a page wires it. At the row's end, after Save: the head's right is
+       where the post was made (PROPOSED, for his eye: Instagram and X put it at the head's right). ON YOUR OWN POST it is the
+       author's More (founder/1204, the pages inside a Post): Edit, Insights and Delete, as Instagram's is; before, your own
+       post had no More at all and its Edit and Delete lived only on the post's own page. */
+    if (!guest && OW.postMenu && OW.cards && OW.cards.mark) {
+      html += '<button type="button" class="po-act po-act--icon po-act--more" data-po-more-menu' + (you.mine ? ' data-po-mine="1"' : '') + (you.may_remove_from_center ? ' data-po-takeoff="1"' : '')
+        + ' data-obj="' + esc(g.id) + '" data-okind="' + esc(okind) + '"'
+        + ' aria-label="More" aria-expanded="false">' + OW.cards.mark('more') + '</button>';
+    }
     /* THE MARK THE LIVE PATH READS. Every optimistic press in popit-live.js
        creates a `<b>` when the server answers with a tally — so without this a
        card that correctly rendered no numbers would grow one the moment its
@@ -2683,6 +2483,9 @@
   OW.originOpen = function (from, target, opts) {
     opts = opts || {};
     var reduced = RM || root.getAttribute('data-motion') === 'reduced';
+    /* SIMPLE OPENS PLAINLY (his walk, 2026-11-08, item 22: "On simple mode, they don't have to have the pop-it opening animation"):
+       the plate is the Popit material in flight, so in Simple there is none; the page's own short fade is the whole opening */
+    if (root.getAttribute('data-simple') === '1') return Promise.resolve(false);
     if (reduced || !from || !from.rect || !target) return Promise.resolve(false);
     var a = from.rect;
     if (!a.width || !a.height) return Promise.resolve(false);
@@ -2720,6 +2523,13 @@
       });
     }
     if (opts._measured) b = opts._measured;
+    /* IT LANDS ON WHAT IS SEEN (item 23: "on pop-it mode, that opening animation should be perfect"): a Post's page runs far below
+       the screen, and a plate sized to the whole of it grew past the bottom edge and faded out while still growing, so the eye
+       never saw it arrive. It lands on the part of the destination the screen shows. */
+    try {
+      var vh = global.innerHeight || doc.documentElement.clientHeight || 0, top = Math.max(b.top, 0), bot = vh ? Math.min(b.bottom, vh) : b.bottom;
+      if (bot - top > 40) b = { left: b.left, top: top, width: b.width, height: bot - top };
+    } catch (_) {}
 
     var plate = doc.createElement('div');
     plate.className = 'ow-openflip';
@@ -2745,6 +2555,10 @@
     plate.style.width = b.width + 'px';
     plate.style.height = b.height + 'px';
     (doc.body || doc.documentElement).appendChild(plate);
+    /* THE PAGE LEFT GOES UNDER THE PLATE (item 23): the plate is light on cloth, not a wall, and the page being left faded across the
+       new one for the whole flight, its words showing through both (measured at real speed: Home's greeting over the Post's words at
+       480 to 640 ms). It goes in the first quarter of the flight now (the shell's OW.ghostsAway), so the plate lands on the Post alone. */
+    if (OW.ghostsAway) { try { OW.ghostsAway(Math.round((opts.ms || OW.motion.ms('open')) * 0.25)); } catch (_) {} }
 
     var sx = a.width / b.width, sy = a.height / b.height;
     var dx = a.left - b.left, dy = a.top - b.top;
@@ -2921,12 +2735,10 @@
          tile. `face.shape` is the owner's answer; absent, the kind decides. */
       var shp = String(data.face.shape || (data.face.kind === 'person' ? 'round' : '') || '').toLowerCase();
       if (shp === 'round' || shp === 'rounded' || shp === 'square') fc.setAttribute('data-shape', shp);
-      var src = OW.imageUrl ? OW.imageUrl(data.face.image) : (data.face.image || '');
-      if (src) fc.innerHTML = '<img src="' + esc(src) + '" alt="" loading="lazy" decoding="async">';
-      /* WITH NO PICTURE, EVERY FACE IS ITS INITIALS ON ITS OWN COLOUR (the founder, 2026-10-17, of the landing's cards:
-         "These look absolutely fantastic, and all default profile pictures platform-wide should look like this"); the
-         outline of founder/495 is retired for a person, as for a Center */
-      else fc.appendChild(el('i', '', esc(OW.initials ? OW.initials(data.face.name || data.label) : String(data.label || '').slice(0, 2).toUpperCase())));
+      /* THE ONE FACE (founder/1221): its picture whole, else its initials on its own colour (the founder, 2026-10-17). A row
+         names the picture `picture`, the one field; discovery.js still hands `image` until its own turn (v52/faces) */
+      fc.innerHTML = OW.face.inner({ name: data.face.name || data.label, picture: data.face.picture || data.face.image },
+                                   { letters: 'i', img: ' loading="lazy"' });
       n.appendChild(fc);
     } else if (data.icon && ICONS[data.icon]) {
       n.appendChild(el('span', 'po-glance__ic', svg(data.icon)));
@@ -3011,25 +2823,71 @@
      WAS LIT takes the slot the counts use. One card, two inputs — because a
      second card component is exactly the duplication this codebase's first
      build rule forbids, and it would drift from this one within a week. */
-  /* A POST IS BOTH THE PERSON AND THE PLACE (founder, 2026-08-15).
-     Cards took the actor's hue alone, so a feed drawn from five different
-     Centers read as one world — the place a thing was said contributed nothing
-     to how it looked. This blends the two angles on the colour wheel, by the
-     SHORT way round, so violet + teal lands between them rather than travelling
-     through the grey on the far side. Weighted toward the place (.55), because
-     what a feed most needs to tell you at a glance is WHERE you are. */
-  function blendHues(actorHue, placeHue) {
-    var a = hue.angleOf(actorHue) != null ? hue.angleOf(actorHue) : hue.fromHex
-      ? (function () { var t = hue.fromHex(actorHue); return t ? hue.angleOf(t) : null; })()
-      : null;
-    if (a == null && typeof actorHue === 'number') a = actorHue;
-    var b = (typeof placeHue === 'number') ? placeHue
-          : (placeHue ? (function () { var t = hue.fromHex(placeHue); return t ? hue.angleOf(t) : null; })() : null);
-    if (a == null) return (b == null) ? null : hue.fromAngle(b);
-    if (b == null) return hue.fromAngle(a);
-    var d = ((b - a + 540) % 360) - 180;          /* the short way round */
-    return hue.fromAngle((a + d * 0.55 + 360) % 360);
+  /* ★ FOUNDER/1041, 2026-10-26: *"User's posts on home when pop-it cards are being used need to be each user's own hue.
+       They shouldn't match the user who's viewing hue. It should be a reflection of each user's hue and each center's hue.
+       So each card, post, etc. should be colored to the own hue, whether it's in simple or pop-it mode."* And that night:
+       *"not just a blend of blue on every single post on home because I set my hue to that. It should just be the
+       background in my post and my profile that change."*
+     EACH POST WEARS ITS AUTHOR'S OWN HUE: a person's post in that person's, a Center's (speaking as itself) in the
+     Center's. MEASURED at df4ec323 on an isolated runtime, a viewer in Blue (228) on Home: Rosa's Red (0) post, Gil's
+     Green (115) and Nia's (no hue) were all drawn in 228, the viewer's. The server sends `author.hue` as an ANGLE and the
+     card read it as a triplet (parseTriplet(0) is null), so a card had a colour only when the post also carried the place's
+     hue, which a person's own home never does to anyone but them (social/service.hides_home_scope); every other card fell
+     through to `--ow-h1`, whoever was looking. Where it did have one it was the founder's 2026-08-15 blend of person and
+     place, weighted .55 to the place: Otto's Aqua (172) post in the Pink Pier Arcade (302) was drawn in 243, the viewer's
+     own post in 307 (her 228 bent toward the hash colour of her home). founder/1041 replaces the blend: the card is its
+     author's. A person with no hue chosen wears what they wear on their own screen, the month's (founder/891-897,
+     OW.hue.fromAngle with no angle); a Center always has one (store.place_hue: chosen, else derived from its id). */
+  function authorPair(v) {
+    if (v == null || v === '') return null;
+    if (typeof v === 'number' || /^\s*\d{1,3}\s*$/.test(String(v))) return hue.fromAngle(v);
+    var t = parseTriplet(v);                       /* a triplet or a hex, as a gallery's actor carries it */
+    return t ? [t.join(','), t.join(',')] : null;
   }
+  /* THE VIEWER'S OWN POSTS WEAR THE VIEWER'S OWN LIGHT, AS IT IS NOW (S22): the pair hue.bind resolved (an exact pair
+     wins, the month's when none), and a change of it repaints every one of them (paintMine, after hue.bind). Before the
+     viewer is known, the post's own author.hue stands, which is the same colour by the server's account. */
+  var ownBound = false;
+  function minePair() { if (ctxPair) return [ctxPair.h1, ctxPair.h2 || ctxPair.h1]; var u = unknownPair(); return [u.h1, u.h2]; }
+  function wearPair(n, pair) {
+    n.style.setProperty('--ch1', pair[0]);
+    n.style.setProperty('--ch2', pair[1] || pair[0]);
+    n.style.setProperty('--h', pair[0]);
+    n.style.setProperty('--h2', pair[1] || pair[0]);
+    /* and the third (founder/459): the face's gradients fall back to `--ow-h3`, THE VIEWER'S, when a card does not say */
+    n.style.setProperty('--h3', hue.third(pair[0]) || pair[1] || pair[0]);
+  }
+  function paintMine() {
+    if (!doc.querySelectorAll) return;
+    var p = minePair();
+    [].forEach.call(doc.querySelectorAll('.po-card[data-po-mine]'), function (n) { wearPair(n, p); });
+  }
+  var bindSelf = hue.bind;
+  hue.bind = function (opts) {
+    var out = bindSelf(opts);
+    ownBound = true;
+    paintMine();
+    return out;
+  };
+  /* THE ONE ANSWER TO "WHAT COLOUR IS THIS POST?": OW.hue.ofPost(post) -> [h1, h2], for the card (OW.card) and for a
+     Post opened as a Popit (popit-live.js postData), so the two cannot disagree. `post` is the canonical Post
+     (social/service.to_post). Its `mine` says the viewer wrote it in her own name (never a Center's voice). */
+  function ownPost(p) {
+    return !!(p && p.you && p.you.mine && String((p.author || {}).kind || '') !== 'center');
+  }
+  hue.ofPost = function (p) {
+    p = p || {};
+    var au = p.author || {};
+    if (ownPost(p) && ownBound) return minePair();
+    return authorPair(au.hue)
+        || (String(au.kind || '') === 'center' ? authorPair(p.destination_hue) : null)
+        || hue.fromAngle();
+  };
+
+  function networkBoostHTML() {
+    return '<span class="po-card__when po-card__known" data-po-network-boost aria-label="The count includes Oneway network boosts, not individual people">Oneway boost</span>';
+  }
+  OW.networkBoostHTML = networkBoostHTML;
 
   function postFace(p) {
     var mm = p.media || [];
@@ -3056,11 +2914,14 @@
          means nobody the viewer knows has — which is a different fact from
          "no likes" and must render as nothing rather than as a zero. */
       _known: p.known_likers || null,
+      network_boost: p.network_boost || null,   /* the server sends it only to who uploaded the post (founder/1053) */
       title: p.title || '',
       description: p.body || '',
       cover: (m && (m.url || m.src || m)) || '',
       _coverSizes: (m && m.sizes) || null,
       _coverWidth: (m && m.width) || 0,
+      /* a video's poster (research unit C1): the picture of its first frame, painted before the clip's first byte */
+      _coverPoster: (m && (m.thumb || m.poster)) || '',
       _hue: p.destination_hue != null ? p.destination_hue : null,
       _post: true,
       /* THE ROOM, ONLY WHEN THE ROOM IS NOT THE AUTHOR. A post to a person's
@@ -3068,13 +2929,21 @@
          "Walk Tester · 1m ago · in Walk Tester" — the same person named as the
          writer and as the place. Where a post lives earns its line when it is
          a community; said of yourself it is noise. */
-      _place: (p.destination_name
-               && String(p.destination || '') !== String(p.center_id || ''))
-        ? p.destination_name : '',
+      _place: OW.postPlace(p),
+      _placeId: String(p.destination || ''),
+      _placePic: String(p.destination_picture || ''),     /* the place's own face beside its name (item 8) */
       /* WHERE A CARRIED POST WAS POSTED (founder/758, 759): a place's feed carries the posts of the places inside
          it, the posts about it and the feeds merged with it, and each says where it came from ("from Broad
          Channel"), the server's own words; absent on a Center's own post. */
       _from: (p.posted_in && p.posted_in.words) ? String(p.posted_in.words) : '',
+      /* AND AN IMPORTED POST SAYS WHERE IT CAME FROM (founder/1143): "From TikTok", the server's words, beside where it was posted */
+      _imported: (p.imported_from && p.imported_from.words) ? String(p.imported_from.words) : '',
+      /* THE PLATFORM'S OWN PLAYER (founder/1139): a platform and an id the server read again, drawn by OW.embed */
+      _embed: (p.embed && p.embed.provider && p.embed.id) ? p.embed : null,
+      /* the post's own page on its platform, the server's address (players.page_of), where its one mark goes (founder/1307) */
+      _origin: (p.imported_from && p.imported_from.url) ? String(p.imported_from.url) : '',
+      /* its platform's mark only when it came from there; a post that links someone else's video was made here */
+      platform: (p.imported_from && p.imported_from.platform) || '',
       /* AND, ON HOME, WHICH PLACE YOU FOLLOW BROUGHT IT (founder/760: following the Rockaways brings Broad Channel's
          posts): "via the Rockaways", or "about Hamels" for a post about the place followed; the server's words, absent
          on the carrying place's own page. */
@@ -3108,6 +2977,44 @@
       edit_count: p.edit_count || 0
     };
   }
+
+  /* ── A VIDEO'S FIRST FRAME, AS A PICTURE (research unit C1, 2026-10-31) ────────────────────────────────────────────────
+     The poster a clip is stored with: drawn here from the file before it is sent, by the composer and by Messages alike, and
+     kept by the server as one small WebP (api/media/sizes.py poster). Without it a card's <video preload="metadata"> is an
+     empty box until its first bytes arrive, and iOS Safari loads none until it plays. WebP where the browser encodes it,
+     JPEG where it does not (Safari); '' when the browser cannot draw the clip, and the player's own first frame is all there is. */
+  var STILL_EDGE = 1080, STILL_WAIT_MS = 6000;
+  OW.videoStill = function (blob) {          /* a Blob or File, or an object URL the caller already holds (and keeps) */
+    return new Promise(function (ok) {
+      var held = typeof blob === 'string';
+      if (!blob || (!held && !(global.URL && global.URL.createObjectURL))) { ok(''); return; }
+      var url = held ? blob : global.URL.createObjectURL(blob), v = doc.createElement('video'), over = false;
+      function end(still) {
+        if (over) return;
+        over = true;
+        global.clearTimeout(wait);
+        v.removeAttribute('src');
+        try { v.load(); } catch (_) {}
+        if (!held) global.URL.revokeObjectURL(url);
+        ok(still);
+      }
+      var wait = global.setTimeout(function () { end(''); }, STILL_WAIT_MS);
+      v.muted = true; v.playsInline = true; v.preload = 'auto';
+      v.addEventListener('error', function () { end(''); });
+      v.addEventListener('loadeddata', function () { try { v.currentTime = 0.001; } catch (_) { end(''); } }, { once: true });
+      v.addEventListener('seeked', function () {
+        try {
+          var k = Math.min(1, STILL_EDGE / Math.max(v.videoWidth, v.videoHeight));
+          var cv = doc.createElement('canvas');
+          cv.width = Math.round(v.videoWidth * k); cv.height = Math.round(v.videoHeight * k);
+          cv.getContext('2d').drawImage(v, 0, 0, cv.width, cv.height);
+          var webp = cv.toDataURL('image/webp', 0.8);
+          end(webp.indexOf('data:image/webp') === 0 ? webp : cv.toDataURL('image/jpeg', 0.86));
+        } catch (_) { end(''); }
+      }, { once: true });
+      v.src = url;
+    });
+  };
 
   /* ── A VIDEO PLAYS IN ITS OWN FRAME, AND ONLY THE PART THAT WAS KEPT (founder/831) ──────────────────────────────
      The editor (oneway-editor.js) keeps a clip whole and sends its frame beside it: `crop` {x, y, w, h}, fractions of
@@ -3208,6 +3115,54 @@
     ['loadedmetadata', 'play'].forEach(function (ev) { doc.addEventListener(ev, heard, true); });
     return { note: note, apply: apply, clear: clear, frameOf: function (u) { return seen[key(u)] || null; } };
   }());
+  /* A SPOT'S OWN GHOST (his word, 2026-11-07, L9: "that Rotating globe shadow state on the cards or posts that give that ghost loading state to each visual focus point that will load rather then the whole page"):
+     each picture or video spot on a card is the grey of the grey cards, and once it has been on screen and waiting 160 ms it wears the one globe, turning, until its own picture comes. A cached picture never shows it;
+     a spot off screen draws no globe; one that never answers lets go after 8 s of being seen. A video with a poster or no preload has nothing to wait for. */
+  var spotIO = null, spotMark = '';
+  OW.spotGhost = function (box, media) {
+    if (!box || !media || box.hasAttribute('data-spot')) return;
+    var isV = media.tagName === 'VIDEO';
+    if (isV ? (media.readyState >= 2 || media.poster || media.preload === 'none') : (media.complete && media.naturalWidth)) return;
+    var done = false, g = null, wait = 0, off = 0;
+    box.setAttribute('data-spot', '');
+    function take() { if (g && g.parentNode) g.parentNode.removeChild(g); g = null; }
+    function end() { if (done) return; done = true; global.clearTimeout(wait); global.clearTimeout(off); take(); box.removeAttribute('data-spot'); box.__owSpot = null; if (spotIO) spotIO.unobserve(box); }
+    box.__owSpot = function (on) {
+      global.clearTimeout(wait);
+      if (!on) { take(); return; }
+      if (!off) off = global.setTimeout(end, 8000);
+      wait = global.setTimeout(function () {
+        if (done || g || !OW.globe) return;
+        if (!spotMark) spotMark = OW.globe({ size: 44 }).outerHTML;
+        g = doc.createElement('i'); g.className = 'ow-spot'; g.setAttribute('aria-hidden', 'true'); g.innerHTML = spotMark; box.appendChild(g);
+      }, 160);
+    };
+    ['load', 'loadeddata', 'canplay', 'error'].forEach(function (ev) { media.addEventListener(ev, end, { once: true }); });
+    if (!global.IntersectionObserver) { box.__owSpot(true); return; }
+    if (!spotIO) spotIO = new global.IntersectionObserver(function (es) { es.forEach(function (e) { if (e.target.__owSpot) e.target.__owSpot(e.isIntersecting); }); });
+    spotIO.observe(box);
+  };
+  // Warm nearby card media before native lazy loading waits for a skipped card to paint.
+  /* SIX SCREENS AHEAD (the founder, 2026-11-09: "the post pops in"): a fast fling crosses two screens in a third of a second, and a
+     picture fetched and decoded two screens ahead finished loading on screen 14 times in 100 posts at 390, four ahead 3 times
+     (tools/probe/feed-fling-walk.cjs) */
+  var MEDIA_AHEAD_SCREENS=6;
+  var mediaAheadObserver=null,mediaAheadFallback=0;
+  OW.mediaAhead=function(card){
+    function warm(){
+      var near=card.getBoundingClientRect(),visible=near.top<global.innerHeight&&near.bottom>0;
+      Array.prototype.forEach.call(card.querySelectorAll('.po-card__cover > img,.po-shot:first-child > img,.po-card__who img'),function(img){
+        img.loading='eager';img.decoding='async';if(visible)img.fetchPriority='high';
+      });
+    }
+    if(!global.IntersectionObserver){if(mediaAheadFallback++<3)warm();return;}
+    if(!mediaAheadObserver){
+      var saver=global.navigator&&global.navigator.connection&&global.navigator.connection.saveData;
+      mediaAheadObserver=new global.IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){if(e.target.__owWarm)e.target.__owWarm();mediaAheadObserver.unobserve(e.target);}});},{rootMargin:(saver?0:Math.max(800,global.innerHeight*MEDIA_AHEAD_SCREENS))+'px 0px'});
+    }
+    card.__owWarm=warm;mediaAheadObserver.observe(card);
+  };
+
   postFace = (function (face) {
     return function (p) { if (p && p.media) OW.mediaFrame.note(p.media); return face(p); };
   }(postFace));
@@ -3233,29 +3188,26 @@
        server-side once per person per page; a plain string from an older payload still reads as its local part. */
     return knownParts(k).map(function (x) { return x.t; }).join('');
   }
-  /* "Liked by <someone> and N others", AS INSTAGRAM SAYS IT (founder/832). One person is named (the server puts the
-     people the viewer follows first); the rest is the Post's whole like count from the counter, so "21 others" is a
-     number the server stands behind. When it cannot (`capped`: the counts are hidden) it says "and others" and no
-     figure. Parts, so the names and the count can be set bold while the label reads the same words. */
+  /* "Liked by <someone> and others", AS INSTAGRAM SAYS IT (founder/832). One person is named (the server puts the
+     people the viewer follows first). No figure on any post: a boost is known only to who uploaded it (founder/1053), and a
+     number on some posts and none on others would say which. `others` is the server's. Parts, so the name can be set
+     bold while the label reads the same words. */
   function knownParts(k) {
     var who = (k.people || []).map(function (e) {
       if (e && typeof e === 'object') return String(e.name || '').trim() || String(e.email || '').split('@')[0];
       return String(e).split('@')[0];
     }).filter(Boolean);
     if (!who.length) return [];
-    var others = Math.max(0, (k.n || who.length) - 1);
     var out = [{ t: 'Liked by ' }, { t: who[0], b: 1 }];
-    if (k.capped && (k.people || []).length > 1) out.push({ t: ' and ' }, { t: 'others', b: 1 });
-    else if (!k.capped && others) out.push({ t: ' and ' }, { t: others + (others === 1 ? ' other' : ' others'), b: 1 });
+    if (k.others) out.push({ t: ' and ' }, { t: 'others', b: 1 });
     return out;
   }
   function knownHTML(k) {
     var faces = (k.people || []).filter(function (p) { return p && typeof p === 'object'; }).slice(0, 3);
     var stack = faces.length
       ? '<span class="po-card__kfaces" aria-hidden="true">' + faces.map(function (p) {
-          var pic = p.picture ? (OW.imageUrl ? OW.imageUrl(p.picture) : p.picture) : '';
-          return pic ? '<i style="background-image:url(\'' + esc(pic) + '\')"></i>'
-                     : '<i data-ini="1">' + esc(String(p.name || '?').trim().charAt(0).toUpperCase()) + '</i>';
+          /* the one face, small (founder/1221): their picture whole, else their initials */
+          return '<i' + (OW.face.picture(p) ? '' : ' data-ini="1"') + '>' + OW.face.inner(p) + '</i>';
         }).join('') + '</span>'
       : '';
     return stack + '<span>' + knownParts(k).map(function (x) {
@@ -3284,6 +3236,76 @@
     ready.then(function () { OW.suggested('center', cid, h); }, function () { h.hidden = true; });
     return h;
   }
+  /* ── A POST'S #TAG AND ITS PLACE ARE PRESSES (founder/1258, "discovery better work perfect for the entire platform"; the verifier: a #tag was
+     plain text with no code and no route, a post's place the same) ──
+     A #tag opens Discovery's one search on that tag (the sheet's grid), a place opens the map there, through the App's own addresses
+     (#discovery/tag/<word>, #discovery/at/<Center>). What counts as a tag is feed/topics.py _HASHTAG's rule, so a press names what the
+     server has indexed: after a space, a bracket or the start, a letter first, 2 to 40 letters, digits, _ and -, never ending on a -.
+     Spans, not buttons, inside the card's button (as data-po-product); one listener here, for the App, the OS and a Center's site. */
+  var TAG_RE = null;
+  try { TAG_RE = new RegExp('(^|[\\s(])#(\\p{L}[\\p{L}\\p{N}_-]*)', 'gu'); } catch (e) { TAG_RE = /(^|[\s(])#([A-Za-z][\w-]*)/g; }
+  OW.tagParts = function (text) {
+    var s = String(text == null ? '' : text), out = [], last = 0, m;
+    TAG_RE.lastIndex = 0;
+    while ((m = TAG_RE.exec(s))) {
+      var word = m[2].replace(/-+$/, ''), at = m.index + m[1].length;
+      if (word.length < 2 || word.length > 40) continue;
+      if (at > last) out.push({ text: s.slice(last, at) });
+      out.push({ text: '#' + word, tag: word.toLowerCase() });
+      last = at + 1 + word.length;
+    }
+    if (last < s.length) out.push({ text: s.slice(last) });
+    return out;
+  };
+  OW.postWords = function (text) {
+    return OW.tagParts(text).map(function (p) {
+      return p.tag ? '<span class="po-tag" role="link" tabindex="0" data-po-tag="' + esc(p.tag) + '">' + esc(p.text) + '</span>' : esc(p.text);
+    }).join('');
+  };
+  /* A POST'S PLACE, NAMED (founder/1258; PROPOSED for his eye: the line is back on the card). Measured: nothing on a post has named its place since
+     2026-09-06, when the post contract made center_id and destination one value (contracts.py) and the old guard, destination != center_id, could
+     never hold again. The rule that guard was for stands: the room, only when the room is not the author (a Center posting as itself, or a person's
+     own space under their own name), and not on that Center's own page, where every post is there. */
+  OW.postPlace = function (p) {
+    var name = String((p && p.destination_name) || '').trim(), au = (p && p.author) || {};
+    if (!name || !p.destination) return '';
+    if (au.kind === 'center' || name.toLowerCase() === String(au.name || '').trim().toLowerCase()) return '';
+    if (String((OW.here ? OW.here() : global.location.hash) || '') === '#center/' + encodeURIComponent(p.destination)) return '';
+    return name;
+  };
+  /* THE PLACE IS ITS FACE AND ITS NAME, NEVER AN UNDERLINE (his walk, 2026-11-08, item 8: "rather than showing in Boardwalk with an
+     underline ... the underline just makes it feel dated. Just show the center's profile picture and just let their name be clickable
+     and highlight in their hues color when somebody hovers over it"; item 9: "make sure collision won't be an issue for people's fingers
+     on mobile"). The Center's canonical round face (OW.face, S14) and its name; the name takes the Center's own hue only under a real
+     pointer (oneway-popit.css, .po-place). `look` is { picture, hue } from the post (destination_picture, destination_hue). */
+  OW.placePress = function (id, name, look) {
+    look = look || {};
+    var h = (typeof look.hue === 'number' && OW.hue && OW.hue.fromAngle) ? OW.hue.fromAngle(look.hue)[0] : '';
+    return '<span class="po-place" role="link" tabindex="0" data-po-place="' + esc(id) + '" aria-label="' + esc(name) + '"' +
+      (h ? ' style="--po-place-h:' + esc(h) + '"' : '') + '>' +
+      OW.face({ kind: 'center', name: name, picture: look.picture || '', hue: typeof look.hue === 'number' ? look.hue : undefined }, { size: 18, cls: 'po-place__f' }) +
+      '<span class="po-place__n">' + esc(name) + '</span></span>';
+  };
+  function intoDiscovery(el) {
+    var tag = el.getAttribute('data-po-tag');
+    var path = 'discovery/' + (tag ? 'tag/' + encodeURIComponent(tag) : 'at/' + encodeURIComponent(el.getAttribute('data-po-place') || ''));
+    if (/^\/(app|oneway-app)/.test(global.location.pathname)) (OW.go ? OW.go('#' + path) : (global.location.hash = '#' + path));
+    else global.location.href = '/app#' + path;
+  }
+  doc.addEventListener('click', function (e) {
+    var el = e.target && e.target.closest && e.target.closest('[data-po-tag],[data-po-place]');
+    if (!el) return;
+    e.preventDefault(); e.stopPropagation();       /* the card under it neither opens nor likes */
+    intoDiscovery(el);
+  }, true);
+  doc.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var el = e.target && e.target.matches && e.target.matches('[data-po-tag],[data-po-place]') ? e.target : null;
+    if (!el) return;
+    e.preventDefault(); e.stopPropagation();
+    intoDiscovery(el);
+  }, true);
+
   OW.card = function (item, opts) {
     item = item || {}; opts = opts || {};
     var g = item.post ? postFace(item.post) : (item.gallery || item),
@@ -3296,36 +3318,24 @@
 
     /* the ACTOR wears their own hue — a feed is people showing you things, and
        whose thing it is must be visible at a glance (§17) */
-    /* A POST WEARS BOTH: the person who said it and the place it was said.
-       A gallery or a person keeps their own hue alone — only a post has two
-       owners. Blend, never replace: whose thing it is must still be visible. */
-    var ah = parseTriplet(who.hue);
-    var blended = (g._post && g._hue != null) ? blendHues(who.hue, g._hue) : null;
-    var bh = blended ? parseTriplet('rgb(' + blended[0] + ')') || blended : null;
-    var pair = blended || (ah ? [ah.join(','), ah.join(',')] : null);
-    var avHue = pair ? ('--ch1:' + pair[0] + ';--ch2:' + (pair[1] || pair[0])) : '';
+    /* ★ FOUNDER/1041: A POST WEARS ITS AUTHOR'S OWN HUE, in Simple and in Popit, never the viewer's (OW.hue.ofPost, above):
+       the person's for a person's post, the Center's for a Center speaking as itself (its author.hue is the Center's; the
+       place's hue stands in only if a Center's came without one), the month's for a person who chose none, and the
+       viewer's own bound pair on her own. A gallery or a person keeps the actor's own. */
+    var mine = !!(g._post && ownPost(item.post));
+    var pair = g._post ? hue.ofPost(item.post) : authorPair(who.hue);
 
-    /* THE WHOLE CARD WEARS IT, not just the avatar.
-       The blend was reaching `po-card__av` only, so the little circle changed
-       colour and the post it belonged to did not — which is not what "a post is
-       a blend of the person and the place" means. The card carries the pair too
-       now, so its ground, its edge and its glow all come from the same two
-       owners. The avatar keeps its own copy: it is the PERSON in a card that is
-       person-and-place, and it must stay legible when the two are close. */
+    /* THE WHOLE CARD WEARS IT, not just the avatar (which inherits it from here, so a repaint reaches both).
+       `.po-card__face` draws its wash, its rim and its glow from `--h`/`--h2`/`--h3`, and those default to `--ow-h1`,
+       THE READER'S hue. So every card in the feed was the colour of whoever was looking at it. Setting the pair here is
+       what turns the feed into an array of the people and places in it rather than a stack of identical panels.
+       `data-blended` is the closed Post Popit's material (oneway-popit.css); every Post now wears it, where it reached only
+       the Posts that also carried a place's hue, so the same Post was one material to its author and another to everyone
+       else. */
     if (pair) {
-      n.style.setProperty('--ch1', pair[0]);
-      n.style.setProperty('--ch2', pair[1] || pair[0]);
-      /* AND THE CARD'S OWN FACE, which is the part that was making a feed of
-         many people look like one thing.
-         `.po-card__face` draws its wash, its rim and its glow from `--h`/`--h2`
-         — and those default to `--ow-h1`, THE READER'S hue. So every card in
-         the feed was the colour of whoever was looking at it, and the blend I
-         had set on `--ch1` was a variable the face never reads. Setting the
-         pair here is what turns the feed into an array of the people and places
-         in it rather than a stack of identical panels. */
-      n.style.setProperty('--h', pair[0]);
-      n.style.setProperty('--h2', pair[1] || pair[0]);
+      wearPair(n, pair);
       if (g._post) n.setAttribute('data-blended', '1');
+      if (mine) n.setAttribute('data-po-mine', '1');
     }
 
     var media = (g.media_count || 0), posts = (g.post_count || 0);
@@ -3340,7 +3350,7 @@
          point of it — "in Food & Dining" is what makes it a post to a Center
          rather than a note to nobody. Absent when the runtime cannot name the
          place, never an id. */
-      if (g._place) counted.push('in ' + g._place);
+      if (g._imported) counted.push(g._imported);
       if (g._from) counted.push(g._from);
       if (g._via) counted.push(g._via);
     } else {
@@ -3404,20 +3414,38 @@
       var w = m0 && +m0.width, h = m0 && +m0.height;
       if (!w || !h || !isFinite(w) || !isFinite(h)) return;
       var r = Math.min(1.91, Math.max(0.5625, w / h));
-      coverAR = ' style="--po-ar:' + r.toFixed(4) + '"';
+      /* A PICTURE PAST THE BOUNDS IS SHOWN WHOLE inside them (founder/1193: the editor keeps a panorama's own shape, so the card must not
+         cut what the person kept): the card stops at 1.91:1 or 9:16 and the picture sits whole in it on the card's ground. PROPOSED for
+         his eye: Instagram never lets a post past 1.91:1, so there is no reference card for it. */
+      /* --po-w: its own width, so a desktop never draws it wider than its pixels (oneway-popit.css, "THE WHOLE POST IN ONE WINDOW") */
+      coverAR = ' style="--po-ar:' + r.toFixed(4) + ';--po-w:' + Math.round(w) + 'px"' + (Math.abs(r / (w / h) - 1) > 0.004 ? ' data-whole' : '');
     }());
     /* A VIDEO COVER IS NOT AN IMAGE, AND RENDERING IT AS ONE PAINTED THE BLACK
        BOX. The first media item becomes the Gallery's cover, the runtime
        accepts MP4/MOV/WebM (`_sniff_media`), so the first thing anyone films
        arrives here as `cover: "….mp4"` — loaded into an <img>, which fails,
-       fires `onerror="this.remove()"`, and leaves the bare cover ground: a
+       fires its onerror (OW.imgFail), and leaves the bare cover ground: a
        4:3 near-black slab where the person's video should be. Video only ever
        played in IMMERSIVE mode, where `OW.media` pools real players; the
        standard feed had no video path at all.
-       Poster-less by design — the runtime stores no thumbnail, and inventing
-       one would be inventing content (Law 15). `preload="metadata"` is enough
-       for the browser to paint the first frame. */
+       ITS POSTER IS ITS OWN FIRST FRAME (research unit C1, 2026-10-31): the
+       upload keeps the picture the App drew from the clip (OW.videoStill) or the
+       platform an import came from made, never an invented one (Law 15), and the
+       card paints it before the clip's first byte; with none, `preload="metadata"`
+       paints the first frame once it arrives, as before. */
     var isVid = /\.(mp4|m4v|mov|webm)(\?|#|$)/i.test(coverSrc || '');
+    /* ── A POST THAT PLAYS IN ITS PLATFORM'S OWN PLAYER (founder/1139) ─────────────────────────────────────────────────
+       Its light card (our own copy of the cover, the platform's mark) stands where a photo would, shaped as the player is;
+       the player itself is made by OW.embed only once the card is in view (frontend/shared/oneway-links.js). A page without
+       the helper draws the cover alone, never an empty frame. */
+    var embedFace = (g._embed && !(g._media && g._media.length) && OW.embed) ? OW.embed.face(g._embed) : '';
+    if (g._embed && !(g._media && g._media.length)) {
+      if (!coverSrc && g._embed.cover) coverSrc = OW.imageUrl(g._embed.cover);
+      var ear = +g._embed.aspect;
+      /* --fa: a platform's player keeps its own shape on a desktop too (oneway-surface.css, "THE WHOLE POST IN ONE WINDOW" cuts a photo to 4:5) */
+      if (ear > 0 && isFinite(ear)) coverAR = ' style="--po-ar:' + Math.min(1.91, Math.max(0.5625, ear)).toFixed(4) + ';--fa:var(--po-ar)"';
+      if (embedFace) { isVid = false; if (!coverSrc) coverSrc = 'embed'; }
+    }
 
     /* ── MORE THAN ONE PIECE IS A STRIP, NOT A STACK ──────────────────────
        ★ FOUNDER: *"Horizontal swiping changes the media item and therefore its
@@ -3436,15 +3464,19 @@
     /* A PHOTO'S SIZES (CP-02, 2026-10-19): the upload writes WebP at the widths narrower than the photo
        (api/media/sizes.py) and the item carries them; the browser takes the one its screen needs, and the
        original stays the widest choice and the fallback. */
+    /* THE PHOTO AS SENT IS NEVER A CHOICE WHEN ITS OWN WIDTH IS THERE IN WEBP (feed speed, 2026-11-10: "I need speed big time"): the upload
+       also writes the photo's own width (media/sizes.py), so the JPEG as sent (265 to 750 KB measured) is listed only for a photo stored
+       before that, and only when it is wider than every size. `sizes` is the card's own room: the screen's width on a phone, at most
+       MEDIA_MAX_PX beside the window on a desktop (oneway-popit.css, "THE WHOLE POST IN ONE WINDOW"). */
     var srcsetOf = function (sizes, orig, ow) {
       if (!sizes || !sizes.length) return '';
-      var set = [], k;
+      var set = [], k, widest = 0;
       for (k = 0; k < sizes.length; k++) {
         var su = OW.imageUrl((sizes[k] || {}).url || '');
-        if (su && sizes[k].w) set.push(su + ' ' + sizes[k].w + 'w');
+        if (su && sizes[k].w) { set.push(su + ' ' + sizes[k].w + 'w'); widest = Math.max(widest, +sizes[k].w); }
       }
-      if (ow && orig) set.push(orig + ' ' + ow + 'w');
-      return set.length ? ' srcset="' + esc(set.join(', ')) + '" sizes="(max-width: 680px) 100vw, 680px"' : '';
+      if (ow && orig && ow > widest) set.push(orig + ' ' + ow + 'w');
+      return set.length ? ' srcset="' + esc(set.join(', ')) + '" sizes="(max-width: 660px) 100vw, ' + MEDIA_MAX_PX + 'px"' : '';
     };
     var shots = (g._media && g._media.length > 1) ? g._media : null;
     var shotsHTML = '';
@@ -3462,9 +3494,10 @@
         cells += '<span class="po-shot" data-i="' + i2 + '">'
           + (vid
              ? '<video src="' + esc(u) + '" muted playsinline preload="metadata"'
+               + ((it.thumb || it.poster) ? ' poster="' + esc(OW.imageUrl(it.thumb || it.poster)) + '"' : '')
                + ' tabindex="-1" aria-hidden="true" onerror="this.remove()"></video>'
              : '<img src="' + esc(u) + '"' + srcsetOf(it.sizes, u, it.width) + ' alt="' + esc(it.alt || '')
-               + '" loading="lazy" decoding="async" onerror="this.remove()">')
+               + '" loading="lazy" decoding="async" onerror="OW.imgFail(this)">')
           + '</span>';
       }
       var dots = '';
@@ -3479,6 +3512,7 @@
     }
 
     var cover = shotsHTML ? shotsHTML
+      : embedFace ? embedFace
       : !coverSrc ? ''
       : isVid
         /* SAME FALLBACK THE IMAGE PATH HAS. A dead reference, an expired signed
@@ -3487,9 +3521,10 @@
            a slower route. Removing it lets the hue treatment underneath be the
            cover, exactly as a broken <img> already does. */
         ? '<video src="' + esc(coverSrc) + '" muted playsinline preload="metadata"'
+          + (g._coverPoster ? ' poster="' + esc(OW.imageUrl(g._coverPoster)) + '"' : '')
           + ' tabindex="-1" aria-hidden="true" onerror="this.remove()"></video>'
         : '<img src="' + esc(coverSrc) + '"' + srcsetOf(g._coverSizes, coverSrc, g._coverWidth)
-          + ' alt="" loading="lazy" decoding="async" onerror="this.remove()">';
+          + ' alt="" loading="lazy" decoding="async" onerror="OW.imgFail(this)">';
     /* an empty Gallery is honest about being empty rather than being dressed
        up as a picture — nothing is ever invented to fill a frame (Law 15).
        It is a QUIET LINE now, not a photo-shaped hole: see the `[data-empty]`
@@ -3514,12 +3549,14 @@
        POST IS ITS BODY: forcing "Untitled" onto a post that simply has no
        headline would put a placeholder where the person's own words belong —
        a Gallery still gets the fallback, because a Gallery is a named thing. */
+    /* A POST'S WORDS: its #tags are presses (OW.postWords); anything else a card carries stays plain words */
+    var saidHTML = function (s) { return g._post ? OW.postWords(s) : esc(s); };
     var bodyHTML =
       '<span class="po-card__body">' +
         (g._post
-          ? (g.title ? '<span class="po-card__t">' + esc(g.title) + '</span>' : '')
+          ? (g.title ? '<span class="po-card__t">' + saidHTML(g.title) + '</span>' : '')
           : '<span class="po-card__t">' + esc(g.title || 'Untitled') + '</span>') +
-        (g.description ? '<span class="po-card__d">' + esc(g.description) + '</span>' : '') +
+        (g.description ? '<span class="po-card__d">' + saidHTML(g.description) + '</span>' : '') +
       '</span>';
     /* WHAT THE POST SELLS (commerce SHOP-2), under its words: the Center page's own thing row (its picture, its
        name, its price) and the one-source button. Pressing the row opens the product; Buy opens the Center's own
@@ -3542,7 +3579,7 @@
           + esc(g._productGone) + '</b><span>No longer sold here</span></span></span>'
         : '');
     /* a reel: the cover is a video, or the first piece of a strip is */
-    var capAbove = !!(cover && (isVid || (shots && shots[0] &&
+    var capAbove = !!(cover && (isVid || (embedFace && +g._embed.aspect < 1) || (shots && shots[0] &&
       ((shots[0].kind === 'video') || /\.(mp4|m4v|mov|webm)(\?|#|$)/i.test(String(shots[0].url || shots[0].src || ''))))));
     /* A PHOTO'S CAPTION COMES AFTER WHO LIKED IT (founder/832: "leave space under the interactions for it to say liked
        by the mutuals and then also have the caption on photos"): the picture, the icons, the liked-by line, then the
@@ -3551,10 +3588,10 @@
     var capBelow = !capAbove && !!coverSrc && !!(g.description || g.title);
     var captionHTML = capBelow
       ? '<span class="po-card__body po-card__body--cap">' +
-          (g.title && g._post ? '<span class="po-card__t">' + esc(g.title) + '</span>' : '') +
+          (g.title && g._post ? '<span class="po-card__t">' + saidHTML(g.title) + '</span>' : '') +
           (g.description || (!g._post && g.title)
             ? '<span class="po-card__d"><b class="po-card__capby">' + esc(who.name || '') + '</b> '
-              + esc(g.description || g.title) + '</span>'
+              + saidHTML(g.description || g.title) + '</span>'
             : '') +
         '</span>'
       : '';
@@ -3595,24 +3632,30 @@
     }());
     /* ★ FOUNDER/475: *"the globe icon should always be there if it's
        obviously posted to one way"* — a Post in this feed is on ONEWAY, so
-       the globe leads and the platforms it also came from follow it; *"put
-       the icons in a small … triangle like formation when multiple"* — the
-       CSS lays 2+ out as a cluster (`data-many`), the globe at the apex; and
-       *"always keep the icons small on the post"* — 18px alone, 15px in the
-       cluster. 476: the globe is drawn white, in the page's ink, like every
+       the globe leads and *"always keep the icons small on the post"*: 18px. 476: the globe is drawn white, in the page's ink, like every
        mark beside it. */
-    var marks = ['oneway'].concat(fromKeys).slice(0, 4);   /* the globe and up to three platforms — the base of the triangle */
-    var fromHTML = '<span class="po-card__from"' + (marks.length > 1 ? ' data-many="' + marks.length + '"' : '') + '>' +
-      marks.map(function (k) {
-        /* the platform's colour rides on the mark so ONE stylesheet rule
-           colours every platform in colour mode (founder/496) */
-        var mkHue = (OW.links && OW.links.hueOf) ? OW.links.hueOf(k) : '';
-        return '<i class="po-card__from__i" data-platform="' + esc(k) + '"'
-          + (mkHue ? ' style="--mk:' + esc(mkHue) + '"' : '')
-          + ' aria-label="' + esc(k === 'oneway' ? 'Oneway' : k) + '">'
-          + (OW.links && OW.links.icon ? OW.links.icon(k) : '') + '</i>';
-      }).join('') +
-      '</span>';
+    /* ★ FOUNDER/1307: *"THE SOCIAL ICONS R STILL STACKED ... THEY CLICK SOCIAL ICON TO BE TAIEN TO ORGIJAL POST"*, and 1245: *"should never
+       stack"*: ONE mark on a card. A post that came from a platform wears that platform's, and pressing it opens the original there
+       (OW.embed's press, oneway-links.js); any other post the globe (475). Over a live player the player's own mark is the one, so
+       this one steps aside (1235: no duplicate; oneway-popit.css). */
+    var oneKey = (embedFace && g._embed.provider) || fromKeys[0] || 'oneway';
+    var oneTo = oneKey === 'oneway' ? '' : (embedFace ? OW.embed.watch(g._embed) : (/^https:\/\//.test(g._origin || '') ? g._origin : ''));
+    var oneHue = (OW.links && OW.links.hueOf) ? OW.links.hueOf(oneKey) : '';
+    var oneName = oneKey === 'oneway' ? 'Oneway' : (embedFace ? OW.embed.table.players[oneKey].label : oneKey);
+    var fromHTML = '<span class="po-card__from"><i class="po-card__from__i" data-platform="' + esc(oneKey) + '"'
+      + (oneHue ? ' style="--mk:' + esc(oneHue) + '"' : '')
+      + (oneTo ? ' data-ow-orig="' + esc(oneTo) + '" role="link" tabindex="0" aria-label="See the original on ' + esc(oneName) + '"' : ' aria-label="' + esc(oneName) + '"') + '>'
+      + (OW.links && OW.links.icon ? OW.links.icon(oneKey) : '') + '</i></span>';
+    /* THE ORIGINAL, SAID SMALL (his words, 2026-11-10: "no big deal on Instagram button. That's kind of the whole point of the social icon
+       being in the top right, dude, unless that button is needed. But make it as small as possible."). The mark above is the link. Where
+       the platform's own player is not drawn (it refused, or it is never framed, as X) the post still names where it is from and links to
+       it, as its terms ask: one small line under the words, shown only then (oneway-popit.css, "THE MARK IS THE LINK"), never a button
+       over the picture. */
+    var origWho = embedFace && g._embed.author && g._embed.author.handle ? '@' + String(g._embed.author.handle).replace(/^@/, '').slice(0, 60) : '';
+    var origHTML = (embedFace && oneTo)
+      ? '<a class="ow-orig" hidden href="' + esc(oneTo) + '" data-ow-orig="' + esc(oneTo) + '" target="_blank" rel="noopener noreferrer">'
+        + esc((OW.embed.table.players[oneKey].verb || 'View') + ' on ' + oneName + (origWho ? ' · ' + origWho : '')) + '</a>'
+      : '';
     if (g._post && !coverSrc) n.setAttribute('data-text', '1');   /* a text Post: the words are the card (470) */
 
     n.innerHTML =
@@ -3705,25 +3748,19 @@
             }
             return '';
           })() + '>' +
-        /* THE NOTE IS ABOVE THE NAME (founder/878, 2026-10-21; it rode the face
-           since 2026-08-17): drawn first in the name's own block below, so a
-           person with no note costs this row nothing. */
+        /* THE NOTE IS DRAWN IN THE NAME'S OWN BLOCK BELOW, to the right of the
+           name (founder/1261; above it from founder/878), so a person with no
+           note costs this row nothing. */
         '<span class="po-card__av" data-kind="' + esc(/^(user|profile|)$/.test(String(who.kind || '')) ? 'person' : who.kind) + '"' +
           /* the author's own cut, when they chose one (founder/409) */
           (/^(round|rounded|square)$/.test(String(who.shape || '')) ? ' data-shape="' + esc(who.shape) + '"' : '') +
-          (avHue ? ' style="' + avHue + '"' : '') +
           ' data-ini="' + esc(OW.initials(who.name)) + '">' +
           /* ★ FOUNDER/495: a person with no picture is an OUTLINE OF A
              PERSON, not their initials. A Center keeps a monogram — it is an
              organisation and "FC" is a mark somebody could actually have —
              but a person is a person. One drawing, `OW.faceMark`. */
-          (OW.imageUrl(who.image)
-             ? '<img src="' + esc(OW.imageUrl(who.image)) + '" alt="" onerror="OW.faceFail(this)">'
-             /* the feed names a person's kind `user` (and older reads
-                `profile`); all three are a person — only a Center or a
-                community keeps its monogram (2026-09-26 sweep: every person
-                on Home drew initials because the check read only `person`) */
-             : '<i>' + esc(OW.initials(who.name)) + '</i>') +   /* no picture: the initials, a person's as a Center's (2026-10-17) */
+          /* THE ONE FACE (founder/1221): the author's one picture, `picture`, drawn whole; no picture, their initials */
+          OW.face.inner(who, { letters: 'i' }) +
         '</span>' +
         /* ── THE AUTHOR'S NAME WEARS THE FACE THEY CHOSE ──────────────────
            ★ FOUNDER, 2026-09-10: *"custom wordmarks on peoples profiles and
@@ -3737,14 +3774,21 @@
            sets in something chosen. Size and weight of the row do not move:
            only the FACE changes, or a person with a wordmark would have a
            taller card than a person without one. */
-        '<span class="po-card__n">' + OW.noteHTML(who.note, 'sm') + '<span class="po-card__nm'
+        '<span class="po-card__n"><span class="po-card__nm'
           + (who.wordmark && who.wordmark.stack ? ' ow-wm' : '') + '"'
           + (who.wordmark && who.wordmark.stack
              ? ' style="--wm:' + esc(who.wordmark.stack)
                + ';--wm-w:' + esc(String(who.wordmark.weight || 700)) + '"'
              : '')
           + '>' + esc(who.name || '') + '</span>' +
+        /* THE NOTE IS TO THE RIGHT OF THE NAME (founder/1261, 2026-11-04: "the note should go to the right of user name so it
+           does not stretch the post bubble"; it was above the name since founder/878): after the name, on the name's line, so a
+           card whose author has a note is exactly as tall as one without */
+        OW.noteHTML(who.note, 'sm') +
         '<span class="po-card__when">' + esc(OW.when(item.at)) +
+          /* WHERE IT WAS LIT, a press into the map there (founder/1258; OW.postPlace, PROPOSED: on the line the time is on, as the post page says it; the foot's
+             slot for it is hidden on a feed card) */
+          (g._post && g._place && g._placeId ? ' · ' + OW.placePress(g._placeId, g._place, { picture: g._placePic, hue: g._hue }) : '') +
           /* ── WHAT ACTUALLY HAPPENED, WHICH THE FEED HAS ALWAYS KNOWN ──────
              Home is an ACTIVITY stream by design: a gallery made on Monday and
              photographs added to it on Wednesday are TWO things that happened,
@@ -3791,6 +3835,9 @@
           })() +
         '</span></span>' +
       '</span>' +
+      /* A TRENDING POST SAYS SO (founder/1261): "#N in Trending", blue, N the server's rank (OW.trending, oneway-cards.js;
+         api/oneway/map/trending.py); nothing for a post the board does not rank */
+      (OW.trending ? OW.trending.chip(g) : '') +
       /* A TEXT POST HAS NO PICTURE, AND THAT IS NOT AN ABSENCE.
          The empty-cover treatment says "nothing in it yet", which is true and
          useful for a GALLERY — a gallery is a container someone has not filled.
@@ -3807,7 +3854,7 @@
          row on every card; the Scroll's media page shapes that row into the
          TikTok rail with CSS. A second slot here was a second set of the
          same controls — and, on Home, a rail over the photograph. */
-      '<span class="po-card__media"><span class="po-card__cover"' + emptyNote + coverAR + '>' + cover + '</span></span>') +
+      '<span class="po-card__media"><span class="po-card__cover' + (shotsHTML ? ' ow-shotsbox' : '') + '"' + emptyNote + coverAR + '>' + cover + '</span></span>') +
       (capAbove || capBelow ? '' : bodyHTML) +
       productHTML +
       /* ── SOCIAL PROOF, WHERE A PERSON LOOKS FOR IT ─────────────────────
@@ -3842,13 +3889,14 @@
          the interactions of a post without creating a stupid amount of deadspace for them"). It sat between the words
          and the icons; the foot gives up its bottom padding when this follows (oneway-popit.css, "LIKED BY UNDER THE
          ICONS"), so the card grows by the line and nothing else. */
+      (g.network_boost ? networkBoostHTML() : '') +
       (g._known && g._known.people && g._known.people.length
         ? '<button type="button" class="po-card__known" data-po-likers'
           + ' data-obj="' + esc(g.id) + '"'
           + ' aria-label="' + esc(knownWords(g._known)) + '. Open the list.">'
           + knownHTML(g._known) + '</button>'
         : '') +
-      captionHTML;
+      captionHTML + origHTML;
 
 
     /* THE PRODUCT ROW KEEPS ITS OWN PRESS: it opens the product, its Buy opens the checkout, and neither opens
@@ -3899,6 +3947,7 @@
        because a cached image finishes before any handler is attached and never
        fires `load` — which is the common case on a second visit, i.e. exactly
        when a person is most likely to see it. */
+    [].forEach.call(n.querySelectorAll('.po-card__cover > img,.po-card__cover > video,.po-shot > img,.po-shot > video'), function (m) { OW.spotGhost(m.parentNode, m); });
     (function () {
       var box = n.querySelector('.po-card__cover');
       var im = box && box.querySelector('img');
@@ -3968,47 +4017,31 @@
       var RATIO_MIN = 0.5625;           /* 9:16 — the tallest a Post may be */
       var RATIO_MAX = 1.91;             /* 1.91:1 — the widest */
       var shape = function () {
+        /* THE ROOM THE SERVER SAID IS THE ROOM (--po-ar, from the upload's own size): a srcset's narrower candidate rounds to a slightly different
+           ratio, which moved the card by a pixel as its picture arrived (measured 2026-10-30) */
+        if (im && box.style.getPropertyValue('--po-ar')) return;
         var w = im ? im.naturalWidth : vd.videoWidth;
         var h = im ? im.naturalHeight : vd.videoHeight;
         if (!w || !h) return;
         var r = Math.max(RATIO_MIN, Math.min(RATIO_MAX, w / h));
         box.style.aspectRatio = r.toFixed(4);
+        if (Math.abs(r / (w / h) - 1) > 0.004) box.setAttribute('data-whole', '');   /* past the bounds: whole, never cut (founder/1193) */
       };
       if (!im) {
         if (vd.videoWidth) shape();
         else vd.addEventListener('loadedmetadata', shape, { once: true });
         return;
       }
-      /* ── AND THE FAILURE PATH, WHICH WAS NEVER WIRED ────────────────────
-         ★ FOUNDER, 2026-08-31 (founder/358): failed loading must be PROVEN,
-           and *"a video failure must never become a feed failure."*
-
-         `judge()` only ever ran on `load`. A broken or missing file fires
-         `error`, so nothing collapsed the frame — measured with a deliberately
-         truncated JPEG and a 404: the card kept a **414px EMPTY `.po-card__
-         cover`**, a photo-shaped hole with nothing in it. That is the "black
-         box" the founder named on 2026-08-16, arrived at from the other
-         direction: not an empty Gallery published by accident, but a real Post
-         whose picture did not come back.
-
-         The `[data-empty]` treatment already exists and is already right — it
-         collapses `aspect-ratio` to auto and prints one quiet line. It simply
-         was not reachable from a failure. Now it is, and it says something
-         DIFFERENT from the never-had-a-picture case, because those are
-         different facts and a person can act on one of them. */
-      var failed = function () {
-        try { im.remove(); } catch (_) {}
-        box.style.aspectRatio = '';
-        box.style.removeProperty('--po-ar');
-        if (!box.hasAttribute('data-empty')) {
-          box.setAttribute('data-empty', 'this picture could not be loaded');
-        }
-      };
-      if (im.complete && !im.naturalWidth) failed();
+      /* ── THE FAILURE PATH (founder/358: failed loading must be PROVEN, and "a video failure must never become a feed failure"; the founder,
+         2026-10-30: a like, a send and a picture hold the page still). A picture that fails is OW.imgFail's: its one retry, then the card's own hue
+         where the picture was. This collapsed the frame to a dashed band saying "this picture could not be loaded" on the FIRST error, so a blip
+         on a phone took the picture away for good and pulled up to 450 px out from under the person reading (measured 2026-10-30, 250 px on a
+         1.4:1 cover at 390). The frame now keeps its room, and the fact is said to a screen reader (OW.imgFail). [FOR THE FOUNDER'S EYE: he
+         named a black hole in 358 and 2026-08-16; this ground is the card's hue, and a Post that never had a picture still collapses.] */
+      if (im.complete && !im.naturalWidth && !im.__owAskedAgain && im.getAttribute('src')) OW.imgFail(im);    /* it failed before anyone was listening */
       else if (im.complete) { judge(); shape(); }
       else {
         im.addEventListener('load', function () { judge(); shape(); }, { once: true });
-        im.addEventListener('error', failed, { once: true });
       }
     })();
 
@@ -4083,6 +4116,16 @@
         });
       });
     }
+    if(OW.mediaAhead)OW.mediaAhead(n);
+    if(embedFace && OW.embed)OW.embed.watch_in(n);   /* the platform's player, once this card is in view (founder/1139) */
+    if(OW.cards && OW.cards.identityReady)OW.cards.identityReady(n.querySelector('.po-card__who'));
+    /* A FINGER ON THE WORDS OPENS THE POST, NEVER THE AUTHOR ABOVE THEM (his walk, 2026-11-08, item 9: "make sure collision won't be an
+       issue for people's fingers on mobile"). Measured in WebKit at 390 in Simple: a tap on a post's first line opened its author's
+       profile, because iOS's finger adjustment moves a tap to the nearest thing that answers a press, and the words had none of
+       their own (only the card around them, which the adjustment passes over for the author's press inside it), while Simple's
+       head sits flush on them. The words answer the press themselves now; the press still bubbles to the card, which opens the post. */
+    var words = n.querySelector('.po-card__body');
+    if (words) words.addEventListener('click', function () {});
     return n;
   };
 
@@ -4093,7 +4136,16 @@
   /* LETTERS ONLY (founder, 2026-10-17: his own face showed '＠'): a name-less account's name is its handle, so each word
      gives its first letter or digit, never a sigil or a mark ('＠williamrauert' is W, '$cash.app' is C, 'maya.cole' is M).
      The one place initials are made; api/test_profile_header.py holds it. */
-  OW.initials = function (name) {
+  /* A CENTER'S LETTERS, ASKED FOR (opts.center; the renders' rule, Menu.dc.html and Main.dc.html: 'The Ocean Pier Hotel' is OP,
+     'Pier Grill' PG): the first two words that name it, an article, a bare number and the small words between names left out.
+     Only a caller that says it draws a Center asks (the OS menu's faces); a person's letters, and every caller that passes one
+     argument, are as before. */
+  var CENTER_SMALL = /^(the|a|an|on|of|at|in|by|and|for|to|de|la|le|el|du|des|del|da|di|&|\+)$/i;
+  OW.initials = function (name, opts) {
+    if (opts && opts.center) {
+      var named = String(name || '').trim().split(/\s+/).filter(function (w) { return w && !CENTER_SMALL.test(w) && !/^\d+$/.test(w) && /[\p{L}\p{N}]/u.test(w); });
+      if (named.length) return named.slice(0, 2).map(function (w) { return w.match(/[\p{L}\p{N}]/u)[0]; }).join('').toUpperCase();
+    }
     var parts = String(name || '').trim().split(/\s+/).map(function (w) {
       var m = w.match(/[\p{L}\p{N}]/u); return m ? m[0] : '';
     }).filter(Boolean);
@@ -4139,6 +4191,112 @@
     i.textContent = box.getAttribute('data-ini') || '';
     box.innerHTML = '';
     box.appendChild(i);
+  };
+
+  /* ══ THE ONE FACE ════════════════════════════════════════════════════════
+     ★ FOUNDER/1221, 2026-11-03: *"they r still not showing exact PFP's i want
+       one pfp everywhere"*.
+
+     MEASURED THAT DAY (context/audits/faces-2026-11-03): a person who cut her
+     own picture and wore it was drawn by each surface its own way. The likes
+     list and the followers and following lists were sent no picture at all
+     and drew her letters; the story bar drew one letter on a hue of its own;
+     her profile drew an outline when a read came without one; the feed, the
+     comments and Messages read a field named `image` while the rest read
+     `picture`. Each was a copy of "how a face is drawn", and each copy was
+     fixed or not on its own.
+
+     ONE MODULE, HERE, beside OW.initials and OW.imageUrl, which every page that
+     draws a person loads. Every surface asks it (B6: import the one):
+       OW.face(who, opts)            the markup of a face: <span class="ow-face">
+       OW.face.fill(box, who, opts)  a surface's own holder (its class, its size,
+                                     its place kept), filled by the same rule
+       OW.face.inner(who, opts)      what a holder holds: the picture, or letters
+       OW.face.picture(who)          the one picture's address, or ''
+     who:  {kind, name, picture, shape, hue, ref|handle, presence, letters}.
+           `picture` IS THE ONE FIELD: an address, or {url} as a card carries it.
+     opts: {cls, size (px), letters ('i': the letters in an <i>), img (further
+           attributes, as written), ring ({unseen, hue}: the story ring, in the
+           author's hue), here (true: the online dot), label (read aloud)}.
+
+     THE PICTURE IS DRAWN WHOLE. A person cuts their picture in the editor's
+     circle (1080 by 1080, oneway-editor.js), so the holder is square, round
+     (S14), and the picture covers it from its centre: what they cut is what
+     every surface shows, at any size, never cut a second time.
+     NO PICTURE: their initials on the holder's ground (founder/816; OW.initials
+     makes them). A picture that does not load becomes those (OW.faceFail). */
+  var FACE_CSS = [
+    /* :where() — no weight: a surface's own holder rule (its size, its border, its place) always wins over these defaults */
+    ':where(.ow-face){position:relative;display:inline-grid;place-items:center;flex:none;box-sizing:border-box;width:var(--ow-face-size,40px);',
+    'height:var(--ow-face-size,40px);border-radius:50%;overflow:hidden;color:#fff;',
+    /* no picture: the initials on the person's own colour (founder/816), flat as on a post (his word, 2026-11-07, L6: "Make both flat"); deepened in the light room */
+    'background:rgb(var(--h,var(--ow-h1,124,45,255)));',
+    'font-weight:700;font-size:calc(var(--ow-face-size,40px) * .38);line-height:1;letter-spacing:0;-webkit-user-select:none;user-select:none}',
+    ':where(.ow-face>img,img.ow-face__img){display:block;width:100%;height:100%;object-fit:cover;object-position:50% 50%;border-radius:inherit}',
+    ':where(.ow-face>i){font-style:normal}',
+    ':where(html[data-theme="light"] .ow-face:not(:has(img))){background:color-mix(in srgb,rgb(var(--h,var(--ow-h1,124,45,255))) 78%,#000)}',
+    '.ow-face-on{position:relative;display:inline-grid;flex:none}',
+    '.ow-face-on>.ow-face__on{position:absolute;right:0;bottom:0;width:26%;height:26%;min-width:9px;min-height:9px;max-width:14px;max-height:14px;',
+    'border-radius:50%;background:#2fd27a;box-shadow:0 0 0 2px var(--ow-ground,#000)}'
+  ].join('');
+  function faceCss() {
+    if (!doc || doc.getElementById('ow-face-css')) return;
+    var st = doc.createElement('style'); st.id = 'ow-face-css'; st.textContent = FACE_CSS;
+    (doc.head || doc.documentElement).appendChild(st);
+  }
+  function facePicture(who) {
+    var p = who && who.picture;
+    if (p && typeof p === 'object') p = p.url;
+    return OW.imageUrl(p);
+  }
+  function faceInner(who, opts) {
+    who = who || {}; opts = opts || {};
+    faceCss();
+    var src = facePicture(who);
+    if (src) return '<img class="ow-face__img" src="' + esc(src) + '" alt="" decoding="async" draggable="false"' + (opts.img || '') +
+      ' onerror="OW.faceFail&&OW.faceFail(this)">';
+    var ini = esc(who.letters != null ? who.letters : OW.initials(who.name || String(who.ref || who.handle || '').replace(/^@/, ''), faceAsks(who)));
+    return opts.letters === 'i' ? '<i>' + ini + '</i>' : ini;
+  }
+  function faceAsks(who) { return who && who.kind === 'center' ? { center: true } : undefined; }     /* a Center's letters ('The Ocean Pier Hotel' OP), 11-04 */
+  function faceKind(who) {
+    var k = String((who && who.kind) || '');
+    return /^(user|profile|person|)$/.test(k) ? 'person' : k;
+  }
+  function faceRef(who) {
+    var r = String((who && (who.handle || who.ref)) || '');
+    return r && r.indexOf('@') <= 0 && !/\s/.test(r) ? '@' + r.replace(/^@/, '') : '';
+  }
+  OW.face = function (who, opts) {
+    who = who || {}; opts = opts || {};
+    faceCss();
+    var ring = opts.ring, hue = ring && typeof ring.hue === 'number' && OW.hue && OW.hue.fromAngle ? OW.hue.fromAngle(ring.hue) : null;
+    var own = typeof who.hue === 'number' && OW.hue && OW.hue.fromAngle ? OW.hue.fromAngle(who.hue) : null;      /* their colour, under letters */
+    var style = (opts.size ? '--ow-face-size:' + (+opts.size) + 'px;' : '') + (hue && hue[0] ? '--sh1:' + hue[0] + ';--sh2:' + (hue[1] || hue[0]) + ';' : '') +
+      (own && own[0] ? '--h:' + own[0] + ';--h2:' + (own[1] || own[0]) + ';' : '');
+    var html = '<span class="ow-face' + (opts.cls ? ' ' + esc(opts.cls) : '') + (ring ? ' ow-sts-has' : '') + '"' +
+      ' data-kind="' + esc(faceKind(who)) + '" data-ini="' + esc(OW.initials(who.name || '', faceAsks(who))) + '"' +
+      (ring && ring.unseen ? ' data-unseen' : '') + (style ? ' style="' + style + '"' : '') +
+      (opts.label ? ' role="img" aria-label="' + esc(opts.label) + '"' : '') + '>' +
+      faceInner(who, { letters: opts.letters || 'i', img: opts.img }) + '</span>';
+    if (!opts.here) return html;
+    /* THE ONLINE DOT (founder/863, 954): drawn when the read says online; a face with a handle is marked for presence.js,
+       the one reader and writer of every dot, which keeps it true on the screen's beat */
+    var ref = faceRef(who), on = opts.here === true || who.presence === 'online';
+    return '<span class="ow-face-on"' + (ref ? ' data-dot="' + esc(ref) + '" data-dot-seed="' + (on ? 'online' : 'offline') + '"' : '') + '>' + html +
+      (on ? '<i class="ow-face__on" role="img" aria-label="Online"></i>' : '') + '</span>';
+  };
+  OW.face.inner = faceInner;
+  OW.face.picture = facePicture;
+  OW.face.fill = function (box, who, opts) {
+    if (!box) return box;
+    who = who || {}; opts = opts || {};
+    faceCss();
+    box.setAttribute('data-kind', faceKind(who));
+    box.setAttribute('data-ini', OW.initials(who.name || '', faceAsks(who)));
+    box.innerHTML = faceInner(who, opts);
+    if (opts.ring && OW.stories && OW.stories.ringFrom) OW.stories.ringFrom(box, opts.ring);
+    return box;
   };
 
   /* ── THE NOTE ──────────────────────────────────────────────────────────
@@ -4204,7 +4362,12 @@
        no such block, before the face as it was */
     var above = function () {
       var named = avatarEl.nextElementSibling;
-      if (named && named !== n && !named.classList.contains('po-note')) { named.insertBefore(n, named.firstChild); return true; }
+      if (named && named !== n && !named.classList.contains('po-note')) {
+        /* a POST's byline holds it to the RIGHT of the name (founder/1261): after the name's own element, on its line */
+        var nameEl = named.matches && named.matches('.ow-post__nm,.po-card__n') ? named.firstElementChild : null;
+        named.insertBefore(n, nameEl ? nameEl.nextSibling : named.firstChild);
+        return true;
+      }
       return false;
     };
     if (!above()) {
@@ -4321,20 +4484,93 @@
      already-wrapped row passes through untouched and a bare Post is wrapped.
      One place, no contract for a caller to remember, and a fourth caller
      written next week cannot get it wrong. */
+  /* A CARD RESERVES ITS OWN HEIGHT BEFORE IT IS DRAWN (the founder, 2026-11-09: "the whole frame just kind of studders and the post pops
+     in"). The river skips drawing a card that is off screen (content-visibility) and stands it at a guess, 190 px or 420 with media; a tall
+     photo is 650 at 390, so in a fast fling a card grew from the guess to its size as it reached the screen and moved what was there. The
+     picture's shape is in the post's own data (--po-ar from the upload's size, --ow-emb-ar from the player's table), so the card's height is
+     reserved from it, at the river's width; once drawn, `auto` keeps the drawn size. RIVER_CHROME_PX: the who row, a line of words and the
+     acts around a picture (the stylesheet's text-card guess). */
+  var RIVER_CHROME_PX = 190;
+  OW.riverWidth = 0;
+  /* AND THE GUESS IS LEARNED FROM THE CARDS ALREADY DRAWN (rc-2 walk, 2026-11-09: a fling at 390 jumped past cards it had not drawn yet,
+     and drawn late, on the screen, each photo card fell 53 px from its guess (425 to 372) and each card of words 60 (190 to 130): a
+     layout shift of 0.063). 190 is a guess at the room around a picture, and the stylesheet's 190 a guess at a card of words. What they
+     really take is read once from cards on the screen, which are drawn: around a picture, the room above and below it and how much
+     narrower it is than the river; for words, the room around them, their line and how many letters a line holds. Every card still
+     waiting undrawn is then reserved from those and its own words. `auto` keeps a drawn card's own size, so no drawn card moves. */
+  var learned = { key: '' };
+  /* what was learned holds for one look at one river width; never window.innerWidth here, which makes the browser lay the page out
+     again, and this is asked for every card drawn (measured: the next page took 1.1 s to draw, a card a frame, instead of 80 ms) */
+  function learnKey() { return (doc.documentElement.getAttribute('data-simple') || '0') + '|' + OW.riverWidth; }
+  function wordsPx(m, card) {
+    var d = card.querySelector('.po-card__d'), n = d ? (d.textContent || '').length : 0;
+    return n && m.lineH ? m.lineH * Math.min(m.clamp, Math.max(1, Math.ceil(n / m.cpl))) : 0;
+  }
+  function reserve(card, host) {
+    var c = card.querySelector('.po-card__cover'), e = card.querySelector('.ow-emb');
+    var L = learned.key === learnKey() ? learned : null;
+    if (!c && !e) {
+      if (L && L.text && !card.querySelector('.po-shots, video')) card.style.containIntrinsicSize = 'auto ' + Math.round(L.text.base + wordsPx(L.text, card)) + 'px';
+      return;
+    }
+    var ar = +((c && c.style.getPropertyValue('--po-ar')) || (e && e.style.getPropertyValue('--ow-emb-ar')) || 0.8);
+    if (!(ar > 0)) return;
+    var w = (host && host.isConnected && host.clientWidth) || OW.riverWidth || Math.min((global.innerWidth || 390) - 24, 600);
+    if (host && host.isConnected && host.clientWidth) OW.riverWidth = host.clientWidth;
+    var M = L && L.cover;
+    if (M) w = Math.max(1, w - M.inset);
+    /* a player's card stops at seven tenths of the screen's height (.po-card__cover:has(>.ow-emb)) */
+    var media = w / ar;
+    if (e) media = Math.min(media, (global.innerHeight || 800) * 0.7, 720);
+    card.style.containIntrinsicSize = 'auto ' + Math.round((M ? M.base + wordsPx(M, card) : RIVER_CHROME_PX) + media) + 'px';
+  }
+  function measure(card, mediaH) {
+    var d = card.querySelector('.po-card__d'), m = { base: card.getBoundingClientRect().height - mediaH, lineH: 0, cpl: 1, clamp: 12 };
+    if (d) {
+      var cs = global.getComputedStyle(d), fs = parseFloat(cs.fontSize) || 16;
+      m.lineH = parseFloat(cs.lineHeight) || fs * 1.45;
+      m.cpl = Math.max(8, d.clientWidth / (fs * 0.5));          /* letters a line holds: half an em each, on average */
+      m.clamp = parseInt(cs.webkitLineClamp, 10) || 12;
+      m.base -= d.getBoundingClientRect().height;
+    }
+    return m;
+  }
+  function learn() {
+    var key = learnKey(), L = learned.key === key ? learned : { key: key };
+    if (L.cover && L.text) return;
+    var vh = global.innerHeight || 800, rows = doc.querySelectorAll('.po-river > .po-card:not(.po-card--skel)'), got = false;
+    for (var i = 0; i < rows.length && !(L.cover && L.text); i++) {
+      var k = rows[i], r = k.getBoundingClientRect();
+      if (r.bottom <= 0 || r.top >= vh || r.height < 20) continue;             /* only a card on the screen is surely drawn */
+      var cv = k.querySelector('.po-card__cover'), inner = cv || k.querySelector('.po-card__body');
+      if (k.querySelector('.ow-emb, .po-shots, video') || !inner || (inner.checkVisibility && !inner.checkVisibility({ contentVisibilityAuto: true }))) continue;
+      if (cv && !L.cover) { var cb = cv.getBoundingClientRect(); if (cb.height > 20) { L.cover = measure(k, cb.height); L.cover.inset = k.parentNode.clientWidth - cb.width; got = true; } }
+      else if (!cv && !L.text) { L.text = measure(k, 0); got = true; }
+    }
+    if (!got) return;
+    learned = L;
+    [].forEach.call(rows, function (k) { try { reserve(k, k.parentNode); } catch (_) {} });
+  }
   OW.mountRiver = function (host, items, opts) {
     if (!host) return 0;
     host.classList.add('po-river');
     var frag = doc.createDocumentFragment(), n = 0;
     (items || []).forEach(function (it) {
-      frag.appendChild(OW.card(OW.riverRow(it), opts)); n++;
+      var card = OW.card(OW.riverRow(it), opts);
+      try { reserve(card, host); } catch (_) {}
+      frag.appendChild(card); n++;
     });
     host.appendChild(frag);
+    /* once cards are on the screen and drawn, they teach the guess (a page drawn into a pen joins the river before the second frame) */
+    if (!(learned.key === learnKey() && learned.cover && learned.text) && global.requestAnimationFrame) {
+      global.requestAnimationFrame(function () { global.requestAnimationFrame(function () { try { learn(); } catch (_) {} }); });
+    }
     return n;
   };
 
   /* ═══ 6 · THE SHEET — depth 2, "Enter" ═════════════════════════════════ */
-  var scrim, stage, sheet, outHint, beam, originEl = null, lockY = 0, locked = false;
-  var outTimer = 0, hintTimer = 0, worldTweened = false, lastFocus = null;
+  var scrim, stage, sheet, beam, originEl = null, lockY = 0, locked = false;
+  var outTimer = 0, worldTweened = false, lastFocus = null;
   /* what is open right now — the room's controls act on the same widget the
      tile does, and a listener bound once at ensure() has no other way to know */
   var openData = {};
@@ -4354,12 +4590,11 @@
     sheet.setAttribute('role', 'dialog');
     sheet.setAttribute('aria-modal', 'true');
     sheet.tabIndex = -1;
-    outHint = el('div', 'po-out', 'tap away &middot; esc');
     beam = el('div', 'po-beam');
     beam.setAttribute('aria-hidden', 'true');
     stage.appendChild(sheet);
     doc.body.appendChild(scrim); doc.body.appendChild(beam);
-    doc.body.appendChild(stage); doc.body.appendChild(outHint);
+    doc.body.appendChild(stage);
     scrim.addEventListener('click', OW.close);
     /* §18: a handcrafted world stays physically coherent WHILE it is resized,
        and a beam is exactly the kind of measured geometry that goes wrong. It
@@ -4409,8 +4644,6 @@
     /* the way out speaks up only when someone is visibly hunting for it (§5) */
     doc.addEventListener('mousemove', function () {
       if (!sheet.classList.contains('is-open')) return;
-      clearTimeout(hintTimer);
-      hintTimer = setTimeout(function () { outHint.classList.add('is-on'); }, 2600);
     }, { passive: true });
     attachDrag();
   }
@@ -4875,7 +5108,7 @@
     }
     var hasImg = !!(d.image && d.image.url);
     var img = hasImg
-      ? '<img src="' + esc(d.image.url) + '" alt="" loading="lazy" decoding="async">' +
+      ? '<img src="' + esc(d.image.url) + '" alt="" loading="lazy" decoding="async" onerror="OW.imgFail(this)">' +
         (d.image.source ? '<span class="po-sheet__src">' + esc(d.image.source) + '</span>' : '')
       : '';
     var face = hasImg ? '' : faceOf(d);
@@ -5033,7 +5266,7 @@
   /* back from starting a recurring charge (commerce/recurring): "<charge>.back|cancel"; what it is now, in the server's words */
   OW.recurringBack = function (center, ref) {
     var m = /^(rc_[a-f0-9]+)\.(back|cancel)$/.exec(String(ref || ''));
-    try { global.history.replaceState(global.history.state, '', global.location.pathname + '#/c/' + encodeURIComponent(center)); } catch (e) {}
+    try { global.history.replaceState(global.history.state, '', (OW.url ? OW.url('#/c/' + encodeURIComponent(center)) : global.location.pathname + '#/c/' + encodeURIComponent(center))); } catch (e) {}
     if (!m || !OW.data) { return; }
     if (m[2] === 'cancel') { OW.toast('Not started. Nothing was charged.'); return; }
     OW.data.get('/api/oneway/me/recurring', { fresh: true }).then(function (r) {
@@ -5046,11 +5279,13 @@
   /* back from Stripe: "<order>.<key>.back|cancel", read once; the key leaves the address at once */
   OW.orderBack = function (center, ref) {
     var m = /^(ord_[a-f0-9]+)\.([A-Za-z0-9_-]+)\.(back|cancel)$/.exec(String(ref || ''));
-    try { global.history.replaceState(global.history.state, '', global.location.pathname + '#/c/' + encodeURIComponent(center)); } catch (e) {}
+    try { global.history.replaceState(global.history.state, '', (OW.url ? OW.url('#/c/' + encodeURIComponent(center)) : global.location.pathname + '#/c/' + encodeURIComponent(center))); } catch (e) {}
     if (!m || !OW.data) { return; }
     OW.data.post('/api/oneway/orders/' + m[1] + '/receipt', { key: m[2], came: m[3] }).then(function (r) {
       var d = r && r.ok && r.data;
       if (d && d.words) { OW.toast(d.words, { tone: d.state === 'paid' || m[3] === 'cancel' ? 'ok' : 'bad' }); }
+      /* a pickup order paid now (pickup/payable.py): its card opens again, saying it is paid, or still to pay at the counter */
+      if (d && d.kind === 'pickup_order' && d.ref && OW.pickup && OW.pickup.open) { OW.pickup.open(center, d.ref); }
     });
   };
   if (!doc.__owPayBound) {
@@ -5107,7 +5342,7 @@
     var buy = !OW.canBuy(p) ? ''
       : p.pays_here
       ? '<button type="button" class="ow-popit-btn ow-popit-btn--fill" data-po-pay>Buy</button>'
-        + '<span class="ow-product__whose">Checkout on Stripe</span>'
+        + '<span class="ow-product__whose">Paying takes you to Stripe\u2019s page, which will see your internet address and the card you type.</span>'
       : '<a class="ow-popit-btn ow-popit-btn--fill" href="' + esc(p.checkout_url) + '" target="_blank"'
         + ' rel="noopener noreferrer" data-po-buy>Buy</a>'
         + (p.checkout_host ? '<span class="ow-product__whose">Checkout on ' + esc(p.checkout_host) + '</span>' : '');
@@ -5154,7 +5389,7 @@
     data = data || {};
     openData = data;
     openSeq++;
-    clearTimeout(outTimer); clearTimeout(hintTimer);
+    clearTimeout(outTimer);
     if (originEl) originEl.style.visibility = '';
     lastFocus = doc.activeElement;
 
@@ -5185,6 +5420,15 @@
     /* FLIP — the sheet unfolds FROM the bead's box. Nothing teleports. */
     var m = sheet.getBoundingClientRect();
     var o = originEl ? originEl.getBoundingClientRect() : null;
+    /* SIMPLE OPENS PLAINLY (his walk, 2026-11-08, item 22: "On simple mode, they don't have to have the pop-it opening animation. But on
+       pop-it mode, that opening animation should be perfect"): no unfold from the piece and no beam, the sheet fades in where it rests */
+    var plain = doc.documentElement.getAttribute('data-simple') === '1';
+    if (plain) {
+      sheet.style.transform = restTransform();
+      sheet.animate([{ opacity: 0 }, { opacity: 1 }], { duration: OW.motion.ms('press'), easing: OW.motion.ease('ease-out') });
+      sheet.focus({ preventScroll: true });
+      return;
+    }
     if (o && o.width && m.width) {
       var sx = Math.max(o.width / m.width, .04), sy = Math.max(o.height / m.height, .04);
       /* the emitter's offset is measured from the pane's CENTRED box, so the
@@ -5242,8 +5486,7 @@
 
   OW.close = function () {
     if (!sheet || !sheet.classList.contains('is-open')) return;
-    clearTimeout(outTimer); clearTimeout(hintTimer);
-    outHint.classList.remove('is-on');
+    clearTimeout(outTimer);
     scrim.classList.remove('is-on');
     if (beam) beam.classList.remove('is-on');   /* the light goes first */
     if (worldTweened) { hue.reset(700); worldTweened = false; }
@@ -5267,7 +5510,11 @@
        be added back or the pane folds into a point one step off the object —
        visible as a miss on every Popit that stepped, and invisible on every one
        that did not, which is exactly the kind of half-right that survives. */
-    var a = sheet.animate([
+    /* Simple closes as it opened: a fade where it rests (item 22) */
+    var a = doc.documentElement.getAttribute('data-simple') === '1'
+      ? sheet.animate([{ transform: restTransform(), opacity: 1 }, { transform: restTransform(), opacity: 0 }],
+                      { duration: OW.motion.ms('press'), easing: OW.motion.ease('ease-leave'), fill: 'forwards' })
+      : sheet.animate([
       { transform: restTransform(), opacity: 1, offset: 0 },
       { opacity: 1, offset: .72 },
       { transform: 'translate(' + (o.tx + restAt.x) + 'px,' + (o.ty + restAt.y) + 'px) scale('
@@ -5823,6 +6070,11 @@
      the sheet. */
   var WIDGET = {
 
+    /* THE STORY BAR ON HOME'S CANVAS (founder/1220): canvas.js draws the strip itself in its piece; this names it for the one list */
+    stories: { eyebrow:'Stories', size:'4x1', minSize:'4x1', rank:90, body: function () { return ''; } },
+    /* a Center's week (founder/1209 Q23): the one widget renderer draws its anatomy; this names it for the one list */
+    hours: { eyebrow:'Hours', size:'2x2', minSize:'2x2', rank:60, body: function () { return ''; } },
+
     /* WHERE SHE'S BEEN — places she actually went, laid out by proximity.
        No threads: near is not the same as related. Weight is real returns. */
     visited: { eyebrow:'Been to', size:'2x2', minSize:'2x2', rank:20,
@@ -6224,7 +6476,7 @@
            honest absence. */
         return '<div class="po-cover">'
           + (d.cover ? '<img src="' + esc(d.cover) + '" alt="" loading="lazy" decoding="async"'
-                       + ' onerror="this.remove()">' : '')
+                       + ' onerror="OW.imgFail(this)">' : '')
           + '</div>'; },
       /* ── A GALLERY OPENED IS STILL THE COVER, PLUS WHAT IT IS ────────────
          The face carries the cover across at room scale (that is what `face`
@@ -6286,7 +6538,7 @@
         var said = (d.title || d.body || '').trim();
         if (d.cover) {
           return '<div class="po-cover"><img src="' + esc(d.cover) + '" alt=""'
-            + ' loading="lazy" decoding="async" onerror="this.remove()"></div>';
+            + ' loading="lazy" decoding="async" onerror="OW.imgFail(this)"></div>';
         }
         return said
           ? '<span class="po-said" style="font-style:normal">' + esc(said) + '</span>'
@@ -6297,7 +6549,7 @@
       face: function (d) {
         if (d.cover) {
           return '<div class="po-cover"><img src="' + esc(d.cover) + '" alt=""'
-            + ' loading="lazy" decoding="async" onerror="this.remove()"></div>';
+            + ' loading="lazy" decoding="async" onerror="OW.imgFail(this)"></div>';
         }
         var said = (d.body || d.title || '').trim();
         return said
@@ -6763,7 +7015,7 @@
       el.setAttribute('aria-labelledby', id);
       var row = doc.createElement('div'); row.className = 'ow-sure__acts';
       var no = doc.createElement('button'); no.type = 'button'; no.className = 'po-act'; no.textContent = opts.no || 'Cancel';
-      var yes = doc.createElement('button'); yes.type = 'button'; yes.className = 'po-act po-act--primary'; yes.textContent = opts.yes || 'Yes';
+      var yes = doc.createElement('button'); yes.type = 'button'; yes.className = 'po-act po-act--primary' + (opts.tone === 'danger' ? ' po-act--danger' : ''); yes.textContent = opts.yes || 'Yes';
       if (opts.tone === 'danger') yes.setAttribute('data-tone', 'danger');
       row.appendChild(no); row.appendChild(yes); el.appendChild(t); el.appendChild(row);
       aboveDock(el);

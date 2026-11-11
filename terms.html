@@ -4,8 +4,8 @@
   <meta charset="UTF-8" /><script>/* OLD BROWSERS (tools/old_browsers.py): html.ow-old where :is() is not understood (Safari before 14, Chrome before 88), html.ow-nogap where a flex row has no gap (Safari before 14.1, Chrome before 84); the published copy's fallbacks wear these */(function(d){var h=d.documentElement,c=' ';try{if(!(window.CSS&&CSS.supports&&CSS.supports('selector(:is(a))')))c+='ow-old '}catch(e){c+='ow-old '}var f=d.createElement('div');f.style.cssText='display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';f.appendChild(d.createElement('div'));f.appendChild(d.createElement('div'));h.appendChild(f);if(f.scrollHeight!==1)c+='ow-nogap ';h.removeChild(f);h.className+=c})(document)</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
-  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,null)</script>
-  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else purple. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='purple',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'purple':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,null)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-purple-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
   <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
@@ -32,28 +32,29 @@
   <meta name="twitter:description" content="The rules for using Oneway.">
   <meta name="twitter:image" content="https://oneway.center/og-card.jpg">
   <meta name="twitter:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
-  <meta name="theme-color" content="#05050b">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f4fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","disambiguatingDescription":"Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","areaServed":"US","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","publisher":{"@id":"https://oneway.center/#organization"},"mainEntity":{"@id":"https://oneway.center/#app"}},{"@type":"WebPage","@id":"https://oneway.center/terms#webpage","url":"https://oneway.center/terms","name":"Terms of Service","headline":"Terms of Service · Oneway","description":"Oneway's Terms of Service: the rules for using the Oneway App, Oneway OS, Sign in with Oneway and oneway.center, published by Oneway Technologies LLC.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-21","breadcrumb":{"@id":"https://oneway.center/terms#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability","description":"Free; in a closed beta, by invitation, in New York City and Long Island."},"applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://onewayos.com/","isRelatedTo":{"@id":"https://oneway.center/#app"},"sameAs":["https://onewayos.com/"],"offers":[{"@type":"Offer","name":"Oneway OS","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Business OS","price":"330","priceCurrency":"USD","description":"Per Center per month, set up by contact; in a closed beta, by invitation, in New York City and Long Island."}]},{"@type":"BreadcrumbList","@id":"https://oneway.center/terms#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Terms of Service","item":"https://oneway.center/terms"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","disambiguatingDescription":"Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","areaServed":"US","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","publisher":{"@id":"https://oneway.center/#organization"},"mainEntity":{"@id":"https://oneway.center/#app"}},{"@type":"WebPage","@id":"https://oneway.center/terms#webpage","url":"https://oneway.center/terms","name":"Terms of Service","headline":"Terms of Service · Oneway","description":"Oneway's Terms of Service: the rules for using the Oneway App, Oneway OS, Sign in with Oneway and oneway.center, published by Oneway Technologies LLC.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-11-08","breadcrumb":{"@id":"https://oneway.center/terms#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability","description":"Free; in a selective server test launch in New York City."},"applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/the-app","applicationSuite":"Oneway"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://onewayos.com/","applicationSuite":"Oneway","sameAs":["https://onewayos.com/"],"offers":[{"@type":"Offer","name":"Oneway OS","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Business OS","price":"330","priceCurrency":"USD","description":"Per Center per month, set up by contact; in a selective server test launch in New York City."}]},{"@type":"BreadcrumbList","@id":"https://oneway.center/terms#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Terms of Service","item":"https://oneway.center/terms"}]}]}</script>
   <!-- /SEO -->
-  <meta name="color-scheme" content="dark light" />
-  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=6d7e4f0b">
-  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=26ba29ee">
-  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only) */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=71e11b04"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=47bc6f29">
+  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=1d20fd82">
+  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only). The browser's bar takes the same room: the pair of theme-colors follows the device, and a choice paints both (oneway-legal.css: light #f5f4fa, dark #000). */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);var m=document.querySelectorAll('meta[name="theme-color"]');for(var i=0;i<m.length;i++)m[i].setAttribute('content',t==='light'?'#f5f4fa':'#000000')}}catch(e){}})()</script>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e8823d91"/>
 </head>
 <body>
 
 <nav class="owbar owbar--solid owbar--fly" aria-label="Oneway">
   <div class="owbar-brand">
-    <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+    <a href="/" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
     <div class="owbar-pages">
       <a href="/mission">Our Mission</a>
-      <a href="/app">App</a>
-      <a href="/os">OS</a>
+      <a href="/the-app">App</a>
+      <a href="/the-os">OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
     </div>
@@ -62,7 +63,7 @@
     <a href="/beta" class="owbar-signin">Sign in</a>
   </div>
 </nav>
-<script src="/frontend/shared/oneway-bar.js?v=609e62c0"></script>
+<script src="/frontend/shared/oneway-bar.js?v=cb58fb5a"></script>
 
 <div class="hero">
   <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" data-owbar-hero />
@@ -70,177 +71,306 @@
 </div>
 
 <div class="wrap">
-  <p class="scope"><strong>This is the Terms of Service for the Oneway ecosystem:</strong> the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in closed beta. Last updated October 18, 2026.</p>
+<style>
+  /* THE LEGAL PAGES' REWRITE (founder/1021, 2026-10-26): the date line, the What changed box, the line under a heading that
+     names the features it covers, an open point for the founder and his lawyer, and a plain line beside wording the law asks
+     for. The same block is on privacy.html and security.html. */
+  .updated{font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:var(--lg-ink3);margin:0 0 14px}
+  .changed{margin:0 0 30px;padding:16px 18px 12px;border:1px solid var(--lg-rim);border-radius:14px;background:var(--lg-card)}
+  .changed h2{font-size:var(--lp-fs-body);font-weight:700;line-height:var(--lp-lh-body);letter-spacing:var(--lp-ls-body);margin:0 0 4px}
+  .changed li{padding:3px 0}
+  .covers{font-size:var(--lp-fs-caption);font-weight:500;line-height:var(--lp-lh-caption);letter-spacing:var(--lp-ls-caption);color:var(--lg-ink3);margin:-2px 0 10px}
+  .confirm{font-weight:600;color:var(--lg-accent)}
+  .plain{border-left:2px solid var(--lg-rim);padding-left:12px}
+</style>
+<p class="updated">Last updated: November 1, 2026</p>
 
-  <nav class="toc" aria-label="Contents"><span class="toc-h">Contents</span><a href="#closed-beta">Closed beta</a><a href="#who-can-use-it">Who can use it</a><a href="#your-account">Your account</a><a href="#what-you-post">What you post</a><a href="#rules">Rules</a><a href="#reports-and-appeals">Reports and appeals</a><a href="#copyright">Copyright</a><a href="#messages">Messages</a><a href="#connected-accounts">Connected accounts</a><a href="#centers-and-the-os">Centers and the OS</a><a href="#data-processing-for-centers">Data processing for Centers</a><a href="#sign-in-with-oneway">Sign in with Oneway</a><a href="#ai-features">AI features</a><a href="#privacy">Privacy</a><a href="#our-rights">Our rights</a><a href="#third-party-services">Third-party services</a><a href="#plans-and-billing">Plans and billing</a><a href="#no-warranty">No warranty</a><a href="#limit-of-liability">Limit of liability</a><a href="#your-responsibility">Your responsibility</a><a href="#ending">Ending</a><a href="#governing-law-and-disputes">Governing law and disputes</a><a href="#notices">Notices</a><a href="#changes">Changes</a><a href="#the-rest">The rest</a></nav>
+<aside class="changed" aria-labelledby="what-changed">
+<h2 id="what-changed">What changed</h2>
+<ul>
+<li>The whole of the Terms is rewritten in plain English, and each section names the features it covers.</li>
+<li>New sections: <a href="#marketplace">the Marketplace</a>, <a href="#bookings-and-payments">bookings, tickets, deposits and disputes</a>, <a href="#rewards">rewards and loyalty programs</a>, <a href="#take-it-down">removing intimate pictures</a> and <a href="#child-safety">child safety</a>.</li>
+<li>New parts: <a href="#your-account">workspace profiles and your birthday</a>, <a href="#what-you-post">edited posts</a>, <a href="#reports-and-appeals">automatic moderation and account standing</a>, and <a href="#ai-features">what the Brain may do</a>.</li>
+<li>New: <a href="#boosts">Oneway boosts</a>: the author is told, and boosts never count in anything a business pays for or earns from.</li>
+<li>Corrected: Oneway&#8217;s fee on a sale has a 10 cent minimum.</li>
+<li>The legal wording that must stay exact now has a plain line beside it.</li>
+</ul>
+</aside>
 
-  <hr class="divider" />
+<p class="scope"><strong>This is the Terms of Service for the Oneway ecosystem:</strong> the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in a selective server test launch.</p>
 
-  <h2 id="closed-beta">1. Closed beta</h2>
-  <p>The Service is in closed beta, by invitation. It can change, break or be withdrawn. We may remove features and, where we have to, reset beta data, and we will tell you first where we can. Tell us what is wrong: any feedback you send may be used by us freely and without payment.</p>
 
-  <h2 id="who-can-use-it">2. Who can use it</h2>
-  <p>You must be 13 or older. If you are under 18, or under the age of majority where you live, a parent or guardian must agree to these Terms with you. Accounts for people under 18 carry the protections the Privacy Policy describes. Some features, such as casino features, carry a higher legal age in some places, and you must meet it. You may not use the Service if you are barred from receiving it under United States law, including export and sanctions law. If you act for a Center, you confirm you have the authority to.</p>
+<nav class="toc" aria-label="Contents"><span class="toc-h">Contents</span><a href="#closed-beta">1. Selective server test launch</a><a href="#who-can-use-it">2. Who can use it</a><a href="#your-account">3. Your account, your workspace profile and your birthday</a><a href="#what-you-post">4. What you post</a><a href="#boosts">5. Oneway boosts</a><a href="#rules">6. Rules</a><a href="#reports-and-appeals">7. Reports, moderation and account standing</a><a href="#take-it-down">8. Removing intimate pictures</a><a href="#child-safety">9. Child safety</a><a href="#copyright">10. Copyright</a><a href="#messages">11. Messages and email</a><a href="#connected-accounts">12. Connected accounts</a><a href="#centers-and-the-os">13. Centers and the OS</a><a href="#data-processing-for-centers">14. Data processing for Centers</a><a href="#bookings-and-payments">15. Bookings, tickets, deposits and disputes</a><a href="#marketplace">16. The Marketplace</a><a href="#rewards">17. Rewards and loyalty programs</a><a href="#sign-in-with-oneway">18. Sign in with Oneway and apps</a><a href="#ai-features">19. AI features and the Brain</a><a href="#privacy">20. Privacy</a><a href="#our-rights">21. Our rights</a><a href="#third-party-services">22. Third-party services</a><a href="#plans-and-billing">23. Plans and billing</a><a href="#no-warranty">24. No warranty</a><a href="#limit-of-liability">25. Limit of liability</a><a href="#your-responsibility">26. Your responsibility</a><a href="#ending">27. Ending</a><a href="#governing-law-and-disputes">28. Governing law and disputes</a><a href="#notices">29. Notices</a><a href="#changes">30. Changes</a><a href="#the-rest">31. The rest</a></nav>
 
-  <h2 id="your-account">3. Your account</h2>
-  <p>Give accurate information. Keep your password and your two-step codes to yourself and tell us at once if someone else has them. You are responsible for what happens under your account. You may hold one personal account. You do not need an account to look around, to message or book a Center from its page, or to pay a Center; these Terms apply to you when you do.</p>
+<hr class="divider" />
 
-  <h2 id="what-you-post">4. What you post</h2>
-  <ul>
-    <li>What you post is yours. You give Oneway a worldwide licence, free of charge, to host, store, copy, format and show it, to the people your settings allow, so that we can run the Service. The licence ends when you delete the content or your account, except for copies we are required to keep, backups until they are replaced, and content other people have already received, reposted or quoted.</li>
-    <li>Posts, profiles and followers are public unless you change your settings. You choose your audience.</li>
-    <li>You promise that you have the right to post what you post, and that it does not break the law or anyone's rights.</li>
-    <li>Deleting a post removes it from view. The Privacy Policy says what we keep.</li>
-  </ul>
+<h2 id="closed-beta">1. Selective server test launch</h2>
+<p class="covers">Covers: the whole Service</p>
+<p>The Service is in a selective server test launch, by invitation. It can change, break or be withdrawn. We may remove features and, where we have to, reset beta data, and we will tell you first where we can. Tell us what is wrong: any feedback you send may be used by us freely and without payment.</p>
 
-  <h2 id="rules">5. Rules</h2>
-  <p>Do not use Oneway to:</p>
-  <ul>
-    <li>break the law, or help anyone else break it;</li>
-    <li>harass, threaten, stalk or target a person, or share someone's private information or location without their consent;</li>
-    <li>post sexual content involving minors, or anything that exploits or endangers a child;</li>
-    <li>post content that promotes violence or terrorism, or threatens to hurt someone;</li>
-    <li>impersonate a person, a business or an organization, or pretend to be Oneway;</li>
-    <li>send spam, run scams, or post fake reviews or manufactured engagement;</li>
-    <li>upload malware, or attack the Service or get around its limits, security or sign-in;</li>
-    <li>scrape the Service, or copy data from it, without our written permission;</li>
-    <li>use recognition, the guest list, location or StreetPass to identify, follow or pursue someone against their wishes;</li>
-    <li>resell the Service, or build a competing product from it.</li>
-  </ul>
-  <p>If you find a security problem, tell us at the address below, give us a reasonable time to fix it, and do not read, change or keep other people's data to prove it. We will not take action against good-faith research that follows this.</p>
-  <p>We may remove content, limit features, or suspend or end accounts that break these rules or put people at risk. Where we can, we say why.</p>
+<h2 id="who-can-use-it">2. Who can use it</h2>
+<p class="covers">Covers: sign-up for the App and for a workspace</p>
+<p>You must be 13 or older. If you are 13 to 17, you can use Oneway with the teen protections the Privacy Policy describes, which are on from the start. We do not ask a parent to agree to these Terms for you. Accounts for people under 18 carry the protections the Privacy Policy describes. Some features carry a higher age: Waypass, and selling or messaging a seller on the Marketplace, are for people 18 and over, and casino offers are for people 21 and over. Where the law sets a higher age for a feature, you must meet it. You may not use the Service if you are barred from receiving it under United States law, including export and sanctions law. If you act for a Center, you confirm you have the authority to.</p>
 
-  <h2 id="reports-and-appeals">6. Reports and appeals</h2>
-  <p>Anyone can report a post, comment, person or Center, including hateful conduct, from the App or the website. People review reports. Automated checks can raise or lower a report's priority but cannot act on it. We tell the person who reported what we decided. If we act on your content or account, you can appeal at the address below, and someone who did not make the first decision will look again.</p>
+<h2 id="your-account">3. Your account, your workspace profile and your birthday</h2>
+<p class="covers">Covers: Me, Settings, workspace sign-up, the OS</p>
+<ul>
+<li>Give accurate information. Keep your password and your two-step codes to yourself and tell us at once if someone else has them. You are responsible for what happens under your account.</li>
+<li>You may hold one personal account. You do not need an account to look around, to message or book a Center from its page, or to pay a Center; these Terms apply to you when you do.</li>
+<li><strong>Your workspace profile</strong> is a work name and title you use at the Centers where you work, kept apart from your personal profile. Use your real working name. The Privacy Policy says who sees it.</li>
+<li><strong>Your birthday.</strong> Give your real birthday. You can change it once, in Settings. In Texas, and in Tennessee, Mississippi and Georgia for some changes, a person at Oneway reviews the change before it applies, as those states&#8217; laws require.</li>
+</ul>
 
-  <h2 id="copyright">7. Copyright</h2>
-  <p>If you believe something on Oneway infringes your copyright, email us the work, where it is on Oneway, your contact details, a statement that you believe in good faith the use is not allowed, and a statement, under penalty of perjury, that the notice is accurate and that you own or act for the owner. We remove infringing content and may end the accounts of people who repeatedly infringe. If we remove yours and you think we were wrong, you can send a counter-notice to the same address.</p>
+<h2 id="what-you-post">4. What you post</h2>
+<p class="covers">Covers: Create, Home, Me, comments, stories, a Center&#8217;s page</p>
+<ul>
+<li><strong>What you post is yours.</strong> You give Oneway a worldwide licence, free of charge, to host, store, copy, format and show it, to the people your settings allow, so that we can run the Service. The licence ends when you delete the content or your account, except for copies we are required to keep, backups until they are replaced, and content other people have already received, reposted or quoted.</li>
+<li>Posts, profiles and followers are public unless you change your settings. You choose your audience.</li>
+<li>You promise that you have the right to post what you post, and that it does not break the law or anyone's rights.</li>
+<li><strong>Edited posts</strong> show Edited. Once others can see a post, an edit that changes what it is (most of its words, its meaning, its picture, a name or a link, or adding more words than it has, though up to 30 is always fine) is refused: post it as a new post instead. Fixing a typo, a price, the hours or a date, or adding a sentence, is fine. The original is shown only to you, unless you choose Show the original to readers, and then only while its words pass the same automatic moderation a post does.</li>
+<li>Deleting a post removes it from view. The Privacy Policy says what we keep.</li>
+</ul>
 
-  <h2 id="messages">8. Messages</h2>
-  <p>Messages are between the people in the conversation. New conversations start with messages that disappear after 2 days, and the room's settings decide who can change that. A message to a business goes to whoever it set up to receive it, and the conversation says whether that is an AI assistant, a person or a team. Do not rely on a disappearing message to stay private: anyone who receives one can copy it.</p>
+<h2 id="boosts">5. Oneway boosts</h2>
+<p class="covers">Covers: new public posts in Home and For you</p>
+<ul>
+<li>Oneway may add boosts to a new public post to help it get seen, spread over one to three days.</li>
+<li>A boost comes from Oneway itself, never from a person or from an account made to look like one.</li>
+<li>A post&#8217;s like count may include Oneway boosts, and the author is told when their post is boosted. The list of who liked a post shows only people.</li>
+<li>Boosts, and views that come from them, never count toward advertising reach, Center insights, creator earnings or paid placement.</li>
+<li>Posts by people under 18, and posts that are not public, are never boosted.</li>
+</ul>
 
-  <h2 id="connected-accounts">9. Connected accounts</h2>
-  <ul>
-    <li>You can connect accounts on other platforms. Before each connection, Oneway lists each permission it asks for and why, and you agree to each one. The platform's own terms and its own consent screen also apply.</li>
-    <li>Oneway posts to a platform only what you pick to post.</li>
-    <li>You are responsible for following each platform's rules for what you post there. A platform can end or limit a connection, and we are not responsible when it does.</li>
-    <li>Disconnect any time in Settings.</li>
-  </ul>
+<h2 id="rules">6. Rules</h2>
+<p class="covers">Covers: everything you do on Oneway; the <a href="/community-guidelines">Community Guidelines</a> say more</p>
+<p>Do not use Oneway to:</p>
+<ul>
+<li>break the law, or help anyone else break it;</li>
+<li>harass, threaten, stalk or target a person, or share someone's private information or location without their consent;</li>
+<li>post sexual content involving minors, or anything that exploits or endangers a child;</li>
+<li>share an intimate picture of someone without their consent;</li>
+<li>post content that promotes violence or terrorism, or threatens to hurt someone;</li>
+<li>impersonate a person, a business or an organization, or pretend to be Oneway;</li>
+<li>copy another site&#8217;s, app&#8217;s or brand&#8217;s design, layout or words to pass it off as theirs or as your own;</li>
+<li>send spam, run scams, or post fake reviews or manufactured engagement;</li>
+<li>coordinate false reports to get someone else&#8217;s account restricted;</li>
+<li>upload malware, or attack the Service or get around its limits, security or sign-in;</li>
+<li>scrape the Service, or copy data from it, without our written permission;</li>
+<li>use recognition, the guest list, location or Waypass to identify, follow or pursue someone against their wishes;</li>
+<li>sell anything the <a href="#marketplace">Marketplace</a> does not allow;</li>
+<li>resell the Service, or build a competing product from it.</li>
+</ul>
+<p>If you find a security problem, tell us at the address below, give us a reasonable time to fix it, and do not read, change or keep other people's data to prove it. We will not take action against good-faith research that follows this. The <a href="/security">Security page</a> says how to report one.</p>
+<p>Oneway has no tolerance for objectionable content or abusive users. We may remove content, limit features, or suspend or end accounts that break these rules or put people at risk. Where we can, we say why.</p>
 
-  <h2 id="centers-and-the-os">10. Centers and the OS</h2>
-  <ul>
-    <li>Every organization, business and city can have a Center. The people who run a Center manage it from the OS. The Center is its operators' responsibility: its content, its staff, its customers, its records and its compliance with the law.</li>
-    <li>A Center keeps its own records about its customers. Oneway stores and handles them for the Center. The Center decides how they are used, must have a lawful basis to hold them, tell its customers about them, and answer their requests.</li>
-    <li>Oneway is software. It is not a gaming operator, does not hold a gaming licence, and does not give legal, tax or compliance advice. A Center is responsible for the reports it files, the records it keeps and the rules that apply to it, including gaming, anti-money-laundering and privacy law.</li>
-    <li>A Center must not use Oneway to contact, recognise, reward or admit a person it is required to exclude, such as someone on a self-exclusion list.</li>
-    <li>A Center must treat a recognition suggestion as unconfirmed until a person at the Center has checked it, and must not use one to harass, discriminate against or pursue someone.</li>
-    <li>If a Center sends email or text messages through Oneway, it is the sender. It must have the recipients' consent where the law requires it, honor opt-outs at once, and follow the CAN-SPAM Act and the Telephone Consumer Protection Act.</li>
-    <li>Oneway does not provide facial recognition. A Center must not use Oneway to run face recognition on people, and must follow the law, including posting any notice it requires, for anything it does with its own tools.</li>
-    <li>Two-step sign-in is required in casino, guest, rewards and credential areas. Do not share access.</li>
-    <li>If you own a Center, hand it over before you delete your account.</li>
-  </ul>
+<h2 id="reports-and-appeals">7. Reports, moderation and account standing</h2>
+<p class="covers">Covers: Report on any post, comment, person, Center or listing; appeals; automatic checks; Shield</p>
+<ul>
+<li>Anyone can report a post, comment, person, Center or listing, including hateful conduct, from the App or the website. People review reports. Automated checks can raise or lower a report's priority but cannot act on it. We tell the person who reported what we decided.</li>
+<li>If we act on your content or account, you can appeal at the address below, and someone who did not make the first decision will look again.</li>
+<li><strong>Automatic checks.</strong> Everything you write is read by an automatic check before it shows. Clear harm (threats, slurs, sexual words beside a child, asking a child to keep secrets or to meet) is refused everywhere, messages included. Words that could be harm may hold a post, so only you see it until you change it or a person reviews it. Cursing at a person is not allowed in public. A message to a Center from someone without an account is not sent if the check finds any flagged word or a link. If we read your words wrong, ask for a review.</li>
+<li><strong>Account standing.</strong> Each account has one standing: normal, watched, held or locked. Refusals by the check move it (three in an hour put an account under watch), and our team can restrict an account or change its standing, with a reason. A watched account&#8217;s unsure words are refused, a held account&#8217;s posts wait for a person, and a locked account cannot post or send for a time. During an attack we may switch on stricter rules for a while (Shield), and a Center&#8217;s managers can do the same for their own pages.</li>
+</ul>
 
-  <h2 id="data-processing-for-centers">11. Data processing for Centers</h2>
-  <p>For the records a Center keeps about its customers, staff and guests, the Center decides why and how they are used, and Oneway is its processor. As the processor, Oneway will:</p>
-  <ul>
-    <li>use those records only to provide the Service to the Center and on its instructions, which are the Center's settings and its use of the Service, and for no purpose of our own;</li>
-    <li>keep them confidential, and let only people who need them to run the Service see them;</li>
-    <li>protect them with reasonable administrative, technical and physical safeguards;</li>
-    <li>use the service providers named in the Privacy Policy, hold each to the same duties, and name any new one in the Privacy Policy;</li>
-    <li>help the Center answer a customer's or staff member's request to see, correct or delete a record;</li>
-    <li>tell the Center without undue delay, and within 72 hours, if we learn of a breach that affects its records, so it can notify the people and the authorities the law requires;</li>
-    <li>delete or return the records when the Center ends its use of the Service, within 30 days of its request, except where the law requires us to keep them; and</li>
-    <li>give the Center, on request, the information it needs to show that we meet these duties.</li>
-  </ul>
-  <p>The Center must give its customers and staff the notices the law requires, and must not give us records it has no right to hold.</p>
+<h2 id="take-it-down">8. Removing intimate pictures</h2>
+<p class="covers">Covers: the request form</p>
+<p>If an intimate picture of you was shared on Oneway without your consent, you, or someone acting for you, can ask us to remove it at. The request needs your name and a way to reach you, the address of each post that shows it, a statement that you believe in good faith it was shared without consent, and your signature (your name, typed). After you confirm the request from the email we send, a person at Oneway reviews it and takes down what it reports, with every identical copy of the same file, within 48 hours. If you tell us the picture shows someone under 18, the posts you named come down as soon as you confirm, while the person reviews it. The person who posted it is never told who asked, and there is no counter-notice that brings it back.</p>
+<p class="plain">The law: under the TAKE IT DOWN Act (section 3), a covered platform must, on a valid request, remove the intimate image and make reasonable efforts to remove known identical copies, as soon as possible and no later than 48 hours after the request. In plain words: we take it down fast, and we look for copies.</p>
 
-  <h2 id="sign-in-with-oneway">12. Sign in with Oneway</h2>
-  <p>This section applies to anyone who builds a site, app or integration on Oneway, including every Sign in with Oneway gateway and any app a Center installs.</p>
-  <ul>
-    <li>Ask only for what you need, and use only what the person or Center agreed to share. A grant is per person or per Center, and it can be revoked at any time. Stop using the data, and delete what you hold, when it is revoked.</li>
-    <li>Do not sell the data, use it for advertising, use it to train AI models, or combine it with other data to identify people elsewhere.</li>
-    <li>Publish a privacy policy that says what you collect from Oneway and why, and keep the data secure.</li>
-    <li>Do not scrape, and do not reach Oneway data except through the access you were given.</li>
-    <li>Tell us promptly if the data you received from Oneway is exposed.</li>
-    <li>We may limit or disable an app that breaks these rules or puts people at risk.</li>
-  </ul>
+<h2 id="child-safety">9. Child safety</h2>
+<p class="covers">Covers: every photo and video upload</p>
+<p>Never upload sexual content involving a minor. Matching photos and videos against lists of known child sexual abuse material needs approval from the service that keeps those lists, which Oneway does not have yet, so that check is not running. When it runs, on a match the file is never shown, the account is held at once, the file is kept locked as evidence, and a person at Oneway reports it to the National Center for Missing &amp; Exploited Children (NCMEC).</p>
+<p class="plain">The law: 18 U.S.C. 2258A requires a provider that learns of apparent child sexual abuse material on its service to report it to NCMEC&#8217;s CyberTipline, and to preserve what it reported for one year. In plain words: we report it, we keep the evidence, and we do not warn the uploader.</p>
 
-  <h2 id="ai-features">13. AI features</h2>
-  <p>Some features use AI to write or suggest text and images. It can be wrong or unsuitable. Nothing is published for you without your choice. You are responsible for what you choose to post or send, for the accuracy of what you publish, and for following each platform's rules for it. Where an AI answers a message for a Center, the conversation says so. If you use AI to make an advertisement with an AI-generated person in it, you must disclose that as New York law requires. As between you and Oneway, you own what an AI feature produces for you, subject to these Terms and to the rights of anyone whose content it may resemble. Your Brain page is counted from your own activity and does not call an AI model.</p>
+<h2 id="copyright">10. Copyright</h2>
+<p class="covers">Covers: the</p>
+<p>If you believe something on Oneway infringes your copyright, send a notice at or to <a href="mailto:hello@oneway.center">hello@oneway.center</a>, and we answer each one. Include the work, where it is on Oneway, your contact details, a statement that you believe in good faith the use is not allowed, and a statement, under penalty of perjury, that the notice is accurate and that you own or act for the owner. On a valid notice, once you confirm it from the link we email you (or a person at Oneway accepts it), we take the post down and tell its author how to answer. If we remove yours and you think we were wrong, you can send a counter-notice: unless the person who complained tells us they have gone to court, the post comes back after 14 days. We may end the accounts of people who repeatedly infringe; three posts with a standing notice open a case about the person.</p>
+<p class="plain">The law: these steps follow the Digital Millennium Copyright Act (17 U.S.C. 512). In plain words: tell us what is yours and where it is, and promise it is true; the poster can answer, and repeat infringers lose their accounts.</p>
 
-  <h2 id="privacy">14. Privacy</h2>
-  <p>The <a href="privacy.html">Privacy Policy</a> says what we collect, how we use it and what you control. It is part of these Terms.</p>
+<h2 id="messages">11. Messages and email</h2>
+<p class="covers">Covers: Messages, group chats, a Center&#8217;s inbox, the Marketplace chat, the email inbox</p>
+<ul>
+<li>Messages are between the people in the conversation. New conversations start with messages that disappear after 2 days, and the room's settings decide who can change that. Do not rely on a disappearing message to stay private: anyone who receives one can copy it.</li>
+<li>A message to a business goes to whoever it set up to receive it, and the conversation says whether that is an AI assistant, a person or a team.</li>
+<li>A Marketplace chat keeps its messages, and warns you when someone asks you to pay ahead.</li>
+<li><strong>The email inbox.</strong> You can link mail accounts you are allowed to use and read them in Oneway. When you send mail from Oneway, it goes as that account, and you are responsible for it, as you would be in that provider&#8217;s own app. If you give a business address to a Center&#8217;s inbox, its team can read and reply to that mail until you take it back.</li>
+</ul>
 
-  <h2 id="our-rights">15. Our rights</h2>
-  <p>Oneway owns the Service: its software, design, name and marks. You may use it as these Terms allow and for no other purpose. You may not copy or reverse-engineer it except where the law lets you.</p>
+<h2 id="connected-accounts">12. Connected accounts</h2>
+<p class="covers">Covers: Settings under Connected accounts, a Center&#8217;s connected accounts and Marketing in the OS</p>
+<ul>
+<li>You can connect accounts on other platforms, such as Instagram, Facebook, YouTube and Google Business Profile. Before each connection, Oneway lists each permission it asks for and why, and you agree to each one. The platform's own terms and its own consent screen also apply.</li>
+<li>When you connect YouTube, Oneway uses YouTube API Services, and by using that connection you agree to be bound by the <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener">YouTube Terms of Service</a>. Google&#8217;s <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> covers what Google does with your data.</li>
+<li>Oneway posts to a platform only what you pick to post.</li>
+<li>You are responsible for following each platform's rules for what you post there. A platform can end or limit a connection, and we are not responsible when it does.</li>
+<li>A post can show another platform&#8217;s video player. That platform&#8217;s terms apply to its player.</li>
+<li>Disconnect any time in Settings.</li>
+</ul>
 
-  <h2 id="third-party-services">16. Third-party services</h2>
-  <p>The Service connects to services we do not run, such as the platforms you connect, maps, email and AI providers. Their terms govern your use of them. We do not control them and are not responsible for them.</p>
+<h2 id="centers-and-the-os">13. Centers and the OS</h2>
+<p class="covers">Covers: a Center&#8217;s page in the App, its operating side in the OS, its team and workspace profiles, its Brain</p>
+<ul>
+<li>Every organization, business and city can have a Center. A Center has two sides: its page in the App, which people see and follow, and its operating side in the OS, where its team works. The people who run a Center manage it from the OS. The Center is its operators' responsibility: its content, its staff, its customers, its records and its compliance with the law.</li>
+<li>A Center keeps its own records about its customers. Oneway stores and handles them for the Center. The Center decides how they are used, must have a lawful basis to hold them, tell its customers about them, and answer their requests.</li>
+<li>A Center may list its people by their work names. It must not use a coworker&#8217;s workspace profile to find their personal one.</li>
+<li>Oneway is software. It is not a gaming operator, does not hold a gaming licence, and does not give legal, tax or compliance advice. A Center is responsible for the reports it files, the records it keeps and the rules that apply to it, including gaming, anti-money-laundering and privacy law.</li>
+<li>A Center must not use Oneway to contact, recognise, reward or admit a person it is required to exclude, such as someone on a self-exclusion list.</li>
+<li>A Center must treat a recognition suggestion as unconfirmed until a person at the Center has checked it, and must not use one to harass, discriminate against or pursue someone.</li>
+<li>If a Center sends email or text messages through Oneway, it is the sender. It must have the recipients' consent where the law requires it, honor opt-outs at once, and follow the CAN-SPAM Act and the Telephone Consumer Protection Act.</li>
+<li>Oneway does not provide facial recognition. A Center must not use Oneway to run face recognition on people, and must follow the law, including posting any notice it requires, for anything it does with its own tools.</li>
+<li>A Center that offers itself as a safe meetup spot for the Marketplace confirms it is public, staffed and lit.</li>
+<li>Two-step sign-in is required in casino, guest, rewards and credential areas. Do not share access.</li>
+<li>If you own a Center, hand it over before you delete your account.</li>
+</ul>
 
-  <h2 id="plans-and-billing">17. Plans and billing</h2>
-  <ul>
-    <li><strong>Oneway</strong> is free for people, and <strong>Oneway OS</strong> is free for any Center.</li>
-    <li><strong>Business OS</strong> is $330 per month for one Center, and Oneway sets it up with you by contact; more than one Business Center is priced by agreement. Any other plan&#8217;s price is shown to you before you agree to it. No plan stops your work at a limit it does not show you.</li>
-    <li>When a Center sells through Oneway, Oneway&#8217;s fee is at most 1% of the sale, and it is refunded when the sale is refunded.</li>
-    <li>When you buy from a Center, you do not need an account; the Center is the seller and is responsible for what it sells. You pay on Stripe&#8217;s page, to the Center&#8217;s own Stripe account, and Stripe&#8217;s terms apply to the payment.</li>
-    <li>Nothing is charged today. When billing opens, the price, the billing period, the renewal date and how to cancel are shown to you before you agree, and nothing is charged without your agreement.</li>
-    <li>Paid plans renew each month until you cancel. You can cancel online at any time, and it takes effect at the end of the period you have paid for. We will tell you before the renewal if a plan renews for a year or longer.</li>
-    <li>We give 30 days' notice before a price changes. Prices do not include taxes. Fees are not refunded, except where the law requires it.</li>
-  </ul>
+<h2 id="data-processing-for-centers">14. Data processing for Centers</h2>
+<p class="covers">Covers: a Center&#8217;s customer, guest and staff records in the OS</p>
+<p>For the records a Center keeps about its customers, staff and guests, the Center decides why and how they are used, and Oneway is its processor. In plain words: they are the Center&#8217;s records, and we only handle them for it. As the processor, Oneway will:</p>
+<ul>
+<li>use those records only to provide the Service to the Center and on its instructions, which are the Center's settings and its use of the Service, and for no purpose of our own;</li>
+<li>keep them confidential, and let only people who need them to run the Service see them;</li>
+<li>protect them with reasonable administrative, technical and physical safeguards;</li>
+<li>use the service providers named in the Privacy Policy, hold each to the same duties, and name any new one in the Privacy Policy;</li>
+<li>help the Center answer a customer's or staff member's request to see, correct or delete a record;</li>
+<li>tell the Center without undue delay, and within 72 hours, if we learn of a breach that affects its records, so it can notify the people and the authorities the law requires;</li>
+<li>delete or return the records when the Center ends its use of the Service, within 30 days of its request, except where the law requires us to keep them; and</li>
+<li>give the Center, on request, the information it needs to show that we meet these duties.</li>
+</ul>
+<p>The Center must give its customers and staff the notices the law requires, and must not give us records it has no right to hold.</p>
 
-  <h2 id="no-warranty">18. No warranty</h2>
-  <p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. WE DO NOT PROMISE THAT IT WILL BE UNINTERRUPTED, ERROR-FREE OR SECURE, OR THAT CONTENT WILL NOT BE LOST. THIS IS A CLOSED BETA.</p>
+<h2 id="bookings-and-payments">15. Bookings, tickets, deposits and disputes</h2>
+<p class="covers">Covers: booking on a Center&#8217;s page, event tickets, booking and stay deposits, buying from a Center</p>
+<ul>
+<li><strong>The Center is the seller.</strong> When you book, buy a ticket or pay a deposit, your agreement is with the Center, and it is responsible for what it sells, its prices, its cancellations and its refunds.</li>
+<li>You pay on Stripe&#8217;s page, to the Center&#8217;s own Stripe account, and Stripe&#8217;s terms apply to the payment. You do not need a Oneway account to pay.</li>
+<li><strong>Deposits.</strong> A booking&#8217;s deposit is set by the Center&#8217;s rule when you book, and a later change to that rule does not change it.</li>
+<li><strong>Disputes.</strong> If you dispute a payment with your bank, the bank and Stripe decide it with the Center. While a dispute is open, what you bought may be paused, for example a ticket put on hold. Talk to the Center first; most problems are solved faster that way.</li>
+</ul>
 
-  <h2 id="limit-of-liability">19. Limit of liability</h2>
-  <p>TO THE EXTENT THE LAW ALLOWS, Oneway'S TOTAL LIABILITY TO YOU FOR ANY CLAIM ABOUT THE SERVICE OR THESE TERMS IS LIMITED TO THE GREATER OF WHAT YOU PAID US IN THE 12 MONTHS BEFORE THE CLAIM AND $100. WE ARE NOT LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS OR DATA. NOTHING HERE LIMITS LIABILITY THAT THE LAW DOES NOT ALLOW US TO LIMIT.</p>
+<h2 id="marketplace">16. The Marketplace</h2>
+<p class="covers">Covers: Marketplace listings, Message the seller, the listing chat, safe meetup spots</p>
+<ul>
+<li><strong>Who.</strong> Selling and messaging a seller are for people 18 and over. Under 18, you can browse.</li>
+<li><strong>Your listing</strong> must be yours to sell, honest about its condition, and in the right category. A listing shows an approximate area, never your address.</li>
+<li><strong>Never sold here:</strong> weapons (knives, swords and tasers too), drugs (prescription pills, CBD and delta-8 too), alcohol, tobacco and vapes, adult items, live animals, fireworks, counterfeits and gift cards. We refuse a listing that names them, and you can report one that slips through.</li>
+<li><strong>Meet safely.</strong> Meet in a busy public place in daylight. The chat suggests safe meetup spots first: Centers that offer themselves as public, staffed and lit.</li>
+<li><strong>Paying.</strong> Today you pay in person at pickup, after you check the item. Never pay ahead by Zelle, Venmo, Cash App, a deposit or a gift card, and never share a code sent to your phone. Oneway is not a party to the sale and does not handle the money. Paying through Oneway and shipping are not available on the Marketplace yet.</li>
+</ul>
 
-  <h2 id="your-responsibility">20. Your responsibility</h2>
-  <p>You will defend and reimburse Oneway against claims, losses and reasonable legal costs that come from your content, your breach of these Terms or your breach of the law. If you use the Service for a Center, this also covers your Center's records and its operators' acts.</p>
+<h2 id="rewards">17. Rewards and loyalty programs</h2>
+<p class="covers">Covers: a Center&#8217;s rewards program in the OS, your rewards standing</p>
+<ul>
+<li>A Center&#8217;s rewards program is the Center&#8217;s. Its points, tiers and offers are set by the Center under its own rules, and Oneway does not guarantee them.</li>
+<li>A Center can link your number in its program to you only on something you have proven, such as your verified email. Your standing moves between businesses only if you turn that on.</li>
+<li>Casino offers are for people 21 and over, everywhere.</li>
+</ul>
 
-  <h2 id="ending">21. Ending</h2>
-  <p>You can stop using Oneway and delete your account at any time, in Settings. We may suspend or end your access if you break these Terms, if the law requires it, or if we close the Service. Sections that by their nature should continue, such as what you post, our rights, no warranty, the limit of liability, your responsibility and disputes, continue after that.</p>
+<h2 id="sign-in-with-oneway">18. Sign in with Oneway and apps</h2>
+<p class="covers">Covers: Sign in with Oneway on other sites, Popit apps, integrations a Center installs, widgets</p>
+<p>This section applies to anyone who builds a site, app or integration on Oneway, including every Sign in with Oneway gateway, any Popit app, and any app a Center installs.</p>
+<ul>
+<li>Ask only for what you need, and use only what the person or Center agreed to share. A grant is per person or per Center, and it can be revoked at any time. Stop using the data, and delete what you hold, when it is revoked.</li>
+<li>Do not sell the data, use it for advertising, use it to train AI models, or combine it with other data to identify people elsewhere.</li>
+<li>Publish a privacy policy that says what you collect from Oneway and why, and keep the data secure.</li>
+<li>Do not scrape, and do not reach Oneway data except through the access you were given.</li>
+<li>Tell us promptly if the data you received from Oneway is exposed.</li>
+<li>We may limit or disable an app that breaks these rules or puts people at risk.</li>
+</ul>
 
-  <h2 id="governing-law-and-disputes">22. Governing law and disputes</h2>
-  <ul>
-    <li><strong>Law.</strong> New York law governs these Terms and any dispute about the Service, without regard to its conflict-of-laws rules, and the Federal Arbitration Act governs the arbitration clause below.</li>
-    <li><strong>Talk first.</strong> Write to us at the address below and give us 30 days to put it right before you start a claim.</li>
-    <li><strong>Arbitration.</strong> If we cannot resolve it, any claim between you and Oneway goes to binding arbitration run by the American Arbitration Association under its rules for consumers or for businesses, whichever applies. It is decided by one arbitrator, on an individual basis, and the arbitrator can give the same relief a court could. We pay the fees beyond what a court filing would cost you.</li>
-    <li><strong>Not covered.</strong> Either of us may bring a claim in small claims court, and either may go to court to stop misuse of intellectual property or of the Service.</li>
-    <li><strong>No class actions.</strong> Claims are brought only on your own behalf, not as a plaintiff or class member in a class or representative action.</li>
-    <li><strong>Your choice.</strong> You can opt out of arbitration and the class waiver by emailing us within 30 days of first accepting these Terms, saying that you opt out. Then the courts of the State of New York, and the federal courts located there, hear the dispute, and you and we consent to them.</li>
-  </ul>
+<h2 id="ai-features">19. AI features and the Brain</h2>
+<p class="covers">Covers: AI features in Create, a Center&#8217;s AI assistant in its inbox, your Brain in Me, a Center&#8217;s Brain in the OS</p>
+<ul>
+<li>Some features use AI to write or suggest text and images. It can be wrong or unsuitable. Nothing is published for you without your choice. You are responsible for what you choose to post or send, for the accuracy of what you publish, and for following each platform's rules for it.</li>
+<li>Where an AI answers a message for a Center, the conversation says so.</li>
+<li>If you use AI to make an advertisement with an AI-generated person in it, you must disclose that as New York law requires.</li>
+<li>As between you and Oneway, you own what an AI feature produces for you, subject to these Terms and to the rights of anyone whose content it may resemble.</li>
+<li>Your Brain page is counted from your own activity and does not call an AI model.</li>
+<li><strong>A Center&#8217;s Brain</strong> recommends, and a person at the Center decides. It acts by itself only within what the Center&#8217;s owner allowed, and never moves money or acts on a person&#8217;s identity alone. The Center is responsible for what its Brain does under its settings.</li>
+</ul>
 
-  <h2 id="notices">23. Notices</h2>
-  <p>We may notify you in the App, by email to the address on your account, or on this page. You may notify us at the address below. You agree to receive notices electronically.</p>
+<h2 id="privacy">20. Privacy</h2>
+<p>The <a href="privacy.html">Privacy Policy</a> says what we collect, how we use it and what you control. It is part of these Terms.</p>
 
-  <h2 id="changes">24. Changes</h2>
-  <p>We may change these Terms. We will show a material change in the App at least 14 days before it takes effect, and ask again where the law or a platform requires it. If you keep using the Service after that date, you accept the change. If you do not accept it, delete your account.</p>
+<h2 id="our-rights">21. Our rights</h2>
+<p>Oneway owns the Service: its software, design, name and marks. You may use it as these Terms allow and for no other purpose. You may not copy or reverse-engineer it except where the law lets you.</p>
+
+<h2 id="third-party-services">22. Third-party services</h2>
+<p>The Service connects to services we do not run, such as the platforms you connect, mail providers, maps, payments, email and AI providers. Their terms govern your use of them. We do not control them and are not responsible for them.</p>
+
+<h2 id="plans-and-billing">23. Plans and billing</h2>
+<p class="covers">Covers: Oneway OS, Business OS, selling through Oneway</p>
+<ul>
+<li><strong>Oneway</strong> is free for people, and <strong>Oneway OS</strong> is free for any Center.</li>
+<li><strong>Business OS</strong> is $330 per month for one Center, and Oneway sets it up with you by contact; more than one Business Center is priced by agreement. Any other plan&#8217;s price is shown to you before you agree to it. No plan stops your work at a limit it does not show you.</li>
+<li><strong>When a Center sells through Oneway,</strong> Oneway&#8217;s fee is 1% of the sale or less. An order with a fee pays at least 10 cents, never more than the price of what was bought. The Center pays Stripe&#8217;s card fees. The fee is refunded in the same share as the sale is refunded, or lost in a dispute.</li>
+<li>When you buy from a Center, you do not need an account; the Center is the seller and is responsible for what it sells. You pay on Stripe&#8217;s page, to the Center&#8217;s own Stripe account, and Stripe&#8217;s terms apply to the payment. The Center&#8217;s Stripe account is a Standard account: its own, with its own Stripe dashboard.</li>
+<li>Nothing is charged today. When billing opens, the price, the billing period, the renewal date and how to cancel are shown to you before you agree, and nothing is charged without your agreement.</li>
+<li>Paid plans renew each month until you cancel. You can cancel online at any time, and it takes effect at the end of the period you have paid for. We will tell you before the renewal if a plan renews for a year or longer.</li>
+<li>We give 30 days' notice before a price changes. Prices do not include taxes. Fees are not refunded, except where the law requires it.</li>
+</ul>
+
+<h2 id="no-warranty">24. No warranty</h2>
+<p>THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE", WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. WE DO NOT PROMISE THAT IT WILL BE UNINTERRUPTED, ERROR-FREE OR SECURE, OR THAT CONTENT WILL NOT BE LOST. THIS IS A SELECTIVE SERVER TEST LAUNCH.</p>
+<p class="plain">In plain words: Oneway is a test launch. We work hard on it, but we cannot promise it will always work, never lose anything, or suit your purpose.</p>
+
+<h2 id="limit-of-liability">25. Limit of liability</h2>
+<p>TO THE EXTENT THE LAW ALLOWS, ONEWAY'S TOTAL LIABILITY TO YOU FOR ANY CLAIM ABOUT THE SERVICE OR THESE TERMS IS LIMITED TO THE GREATER OF WHAT YOU PAID US IN THE 12 MONTHS BEFORE THE CLAIM AND $100. WE ARE NOT LIABLE FOR INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL OR PUNITIVE DAMAGES, OR FOR LOST PROFITS OR DATA. NOTHING HERE LIMITS LIABILITY THAT THE LAW DOES NOT ALLOW US TO LIMIT.</p>
+<p class="plain">In plain words: if something goes wrong, the most we owe you is what you paid us in the last 12 months, or $100 if that is more, unless the law says otherwise.</p>
+
+<h2 id="your-responsibility">26. Your responsibility</h2>
+<p>You will defend and reimburse Oneway against claims, losses and reasonable legal costs that come from your content, your breach of these Terms or your breach of the law. If you use the Service for a Center, this also covers your Center's records and its operators' acts.</p>
+<p class="plain">In plain words: if someone sues us over something you posted or did, you cover it.</p>
+
+<h2 id="ending">27. Ending</h2>
+<p>You can stop using Oneway and delete your account at any time, in Settings. Deleting takes 30 days: your profile is hidden at once, and you can change your mind in that time. We may suspend or end your access if you break these Terms, if the law requires it, or if we close the Service. Sections that by their nature should continue, such as what you post, our rights, no warranty, the limit of liability, your responsibility and disputes, continue after that.</p>
+
+<h2 id="governing-law-and-disputes">28. Governing law and disputes</h2>
+<ul>
+<li><strong>Law.</strong> New York law governs these Terms and any dispute about the Service, without regard to its conflict-of-laws rules, and the Federal Arbitration Act governs the arbitration clause below.</li>
+<li><strong>Talk first.</strong> Write to us at the address below and give us 30 days to put it right before you start a claim.</li>
+<li><strong>Arbitration.</strong> If we cannot resolve it, any claim between you and Oneway goes to binding arbitration run by the American Arbitration Association under its rules for consumers or for businesses, whichever applies. It is decided by one arbitrator, on an individual basis, and the arbitrator can give the same relief a court could. We pay the fees beyond what a court filing would cost you.</li>
+<li><strong>Not covered.</strong> Either of us may bring a claim in small claims court, and either may go to court to stop misuse of intellectual property or of the Service.</li>
+<li><strong>No class actions.</strong> Claims are brought only on your own behalf, not as a plaintiff or class member in a class or representative action.</li>
+<li><strong>Your choice.</strong> You can opt out of arbitration and the class waiver by emailing us within 30 days of first accepting these Terms, saying that you opt out. Then the courts of the State of New York, and the federal courts located there, hear the dispute, and you and we consent to them.</li>
+</ul>
+<p class="plain">In plain words: tell us first. If we still disagree, a single arbitrator decides instead of a court, one person&#8217;s claim at a time, unless you opt out by email within 30 days.</p>
+
+<h2 id="notices">29. Notices</h2>
+<p>We may notify you in the App, by email to the address on your account, or on this page. You may notify us at the address below. You agree to receive notices electronically.</p>
+
+<h2 id="changes">30. Changes</h2>
+<p>We may change these Terms. We will show a material change in the App at least 14 days before it takes effect, and ask again where the law or a platform requires it. If you keep using the Service after that date, you accept the change. If you do not accept it, delete your account.</p>
 
 <h3 id="network-boosts">Oneway network boosts</h3>
 <p>Oneway may give an eligible public post labeled network boosts over one to three days. A boosted post's displayed like count includes those boosts; they do not represent individual people and never appear as people in its likes list. We tell the author when a boost is planned. Network boosts do not count toward advertising results, paid placement, business engagement insights or creator earnings. They can stop if the post becomes private, is removed, or the network turns boosts off.</p>
+<h2 id="the-rest">31. The rest</h2>
+<p>These Terms and the Privacy Policy are the whole agreement between you and Oneway about the Service. If a part cannot be enforced, the rest still applies. If we do not enforce a part right away, we have not given it up. Neither of us is responsible for a delay caused by something beyond its control. No one else has rights under these Terms. You may not transfer your account or these Terms. We may transfer ours if Oneway is merged or sold.</p>
 
-  <h2 id="the-rest">25. The rest</h2>
-  <p>These Terms and the Privacy Policy are the whole agreement between you and Oneway about the Service. If a part cannot be enforced, the rest still applies. If we do not enforce a part right away, we have not given it up. Neither of us is responsible for a delay caused by something beyond its control. No one else has rights under these Terms. You may not transfer your account or these Terms. We may transfer ours if Oneway is merged or sold.</p>
-
-  <div class="contact-block">
-    <h3>Contact</h3>
-    <p>Oneway Technologies LLC, a New York limited liability company<br><a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a></p>
-  </div>
+<div class="contact-block">
+<h3>Contact</h3>
+<p>Oneway Technologies LLC, a New York limited liability company<br><a href="mailto:hello@oneway.center">hello@oneway.center</a></p>
+</div>
 </div>
 
 <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
 <footer class="owfoot">
   <div class="owfoot-in">
-    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <a class="owfoot-mark" href="/" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
     <nav class="owfoot-pages" aria-label="Oneway's pages">
       <a href="/mission">Our Mission</a>
-      <a href="/app">App</a>
-      <a href="/os">OS</a>
+      <a href="/the-app">App</a>
+      <a href="/the-os">OS</a>
       <a href="/os-business">Business OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
       <a href="/discovery">Discovery</a>
       <a href="/changelog">Changelog</a>
+      <a href="/profiles">Profiles</a>
+      <a href="/centers">Centers</a>
+      <a href="/waypass">Waypass</a>
+      <a href="/opportunities">Opportunities</a>
+      <a href="/cross-projection">Cross Projection</a>
+      <a href="/about">About</a>
     </nav>
     <nav class="owfoot-help" aria-label="Help">
       <a href="/support">Support</a>

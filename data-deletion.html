@@ -4,8 +4,8 @@
   <meta charset="UTF-8" /><script>/* OLD BROWSERS (tools/old_browsers.py): html.ow-old where :is() is not understood (Safari before 14, Chrome before 88), html.ow-nogap where a flex row has no gap (Safari before 14.1, Chrome before 84); the published copy's fallbacks wear these */(function(d){var h=d.documentElement,c=' ';try{if(!(window.CSS&&CSS.supports&&CSS.supports('selector(:is(a))')))c+='ow-old '}catch(e){c+='ow-old '}var f=d.createElement('div');f.style.cssText='display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';f.appendChild(d.createElement('div'));f.appendChild(d.createElement('div'));h.appendChild(f);if(f.scrollHeight!==1)c+='ow-nogap ';h.removeChild(f);h.className+=c})(document)</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
-  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,null)</script>
-  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else purple. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='purple',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'purple':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,null)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-purple-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
   <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- SEO: projected by tools/site_seo.py, never edit by hand -->
@@ -32,28 +32,29 @@
   <meta name="twitter:description" content="How to delete your data and your account on Oneway.">
   <meta name="twitter:image" content="https://oneway.center/og-card.jpg">
   <meta name="twitter:image:alt" content="Oneway. We give every person one profile and every community or business a Center.">
-  <meta name="theme-color" content="#05050b">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f5f4fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <meta name="application-name" content="Oneway">
   <meta name="apple-mobile-web-app-title" content="Oneway">
   <link rel="manifest" href="/site.webmanifest">
   <link rel="author" href="/.well-known/security.txt" title="Security contact">
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","disambiguatingDescription":"Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","areaServed":"US","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","publisher":{"@id":"https://oneway.center/#organization"},"mainEntity":{"@id":"https://oneway.center/#app"}},{"@type":"WebPage","@id":"https://oneway.center/data-deletion#webpage","url":"https://oneway.center/data-deletion","name":"Data Deletion","headline":"Data Deletion · Oneway","description":"How to delete your data and your account on Oneway: what goes at once, what is kept and why, and how to delete what Oneway received from Facebook.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-10-21","breadcrumb":{"@id":"https://oneway.center/data-deletion#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability","description":"Free; in a closed beta, by invitation, in New York City and Long Island."},"applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/app"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://onewayos.com/","isRelatedTo":{"@id":"https://oneway.center/#app"},"sameAs":["https://onewayos.com/"],"offers":[{"@type":"Offer","name":"Oneway OS","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Business OS","price":"330","priceCurrency":"USD","description":"Per Center per month, set up by contact; in a closed beta, by invitation, in New York City and Long Island."}]},{"@type":"BreadcrumbList","@id":"https://oneway.center/data-deletion#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Data Deletion","item":"https://oneway.center/data-deletion"}]}]}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://oneway.center/#organization","name":"Oneway","alternateName":["oneway.center","Oneway App","Oneway OS"],"legalName":"Oneway Technologies LLC","url":"https://oneway.center/","logo":{"@type":"ImageObject","@id":"https://oneway.center/#logo","url":"https://oneway.center/app-icon-1024.png","width":1024,"height":1024,"caption":"Oneway"},"image":{"@id":"https://oneway.center/#logo"},"description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","disambiguatingDescription":"Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","contactPoint":{"@type":"ContactPoint","contactType":"customer support","email":"williamrau78@gmail.com","telephone":"+1-516-261-2413","areaServed":"US","availableLanguage":["en"]},"address":{"@type":"PostalAddress","addressRegion":"NY","addressCountry":"US"},"sameAs":["https://www.instagram.com/oneway.app/","https://www.tiktok.com/@onewayapp"],"owns":[{"@id":"https://oneway.center/#app"},{"@id":"https://oneway.center/#os"}]},{"@type":"WebSite","@id":"https://oneway.center/#website","url":"https://oneway.center/","name":"Oneway","alternateName":["oneway.center"],"inLanguage":"en","description":"Oneway is an integrated ecosystem for social networking, messaging, discovering people, places, businesses and communities, and managing business operations. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. Discovery is how Oneway grows: a map and search of the people, places and Centers near you, where a Center can start as an information page, its facts checked by a person, and be found and followed before its owner claims it. Connect with friends, share content, explore local events, create customizable Profiles and Centers, and build online communities. Businesses and organizations can manage customers, employees, reservations, communications, marketing and daily operations through Oneway OS, bringing social media, community engagement and business management together in one connected platform.","publisher":{"@id":"https://oneway.center/#organization"},"mainEntity":{"@id":"https://oneway.center/#app"}},{"@type":"WebPage","@id":"https://oneway.center/data-deletion#webpage","url":"https://oneway.center/data-deletion","name":"Data Deletion","headline":"Data Deletion · Oneway","description":"How to delete your data and your account on Oneway: what goes at once, what is kept and why, and how to delete what Oneway received from Facebook.","inLanguage":"en","isPartOf":{"@id":"https://oneway.center/#website"},"about":{"@id":"https://oneway.center/#organization"},"publisher":{"@id":"https://oneway.center/#organization"},"primaryImageOfPage":{"@type":"ImageObject","url":"https://oneway.center/og-card.jpg","width":1200,"height":630,"caption":"Oneway. We give every person one profile and every community or business a Center."},"dateModified":"2026-11-08","breadcrumb":{"@id":"https://oneway.center/data-deletion#breadcrumb"}},{"@type":"SoftwareApplication","@id":"https://oneway.center/#app","name":"Oneway App","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability","description":"Free; in a selective server test launch in New York City."},"applicationCategory":"SocialNetworkingApplication","operatingSystem":"Web","description":"The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. See what your friends and the places you love are posting, and what is coming up at each of them.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://oneway.center/the-app","applicationSuite":"Oneway"},{"@type":"SoftwareApplication","@id":"https://oneway.center/#os","name":"Oneway OS","applicationCategory":"BusinessApplication","operatingSystem":"Web","description":"From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds.","publisher":{"@id":"https://oneway.center/#organization"},"url":"https://onewayos.com/","applicationSuite":"Oneway","sameAs":["https://onewayos.com/"],"offers":[{"@type":"Offer","name":"Oneway OS","price":"0","priceCurrency":"USD"},{"@type":"Offer","name":"Business OS","price":"330","priceCurrency":"USD","description":"Per Center per month, set up by contact; in a selective server test launch in New York City."}]},{"@type":"BreadcrumbList","@id":"https://oneway.center/data-deletion#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Oneway","item":"https://oneway.center/"},{"@type":"ListItem","position":2,"name":"Data Deletion","item":"https://oneway.center/data-deletion"}]}]}</script>
   <!-- /SEO -->
-  <meta name="color-scheme" content="dark light" />
-  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=6d7e4f0b">
-  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=26ba29ee">
-  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only) */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=71e11b04"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=47bc6f29">
+  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=1d20fd82">
+  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only). The browser's bar takes the same room: the pair of theme-colors follows the device, and a choice paints both (oneway-legal.css: light #f5f4fa, dark #000). */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);var m=document.querySelectorAll('meta[name="theme-color"]');for(var i=0;i<m.length;i++)m[i].setAttribute('content',t==='light'?'#f5f4fa':'#000000')}}catch(e){}})()</script>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e8823d91"/>
 </head>
 <body>
 
 <nav class="owbar owbar--solid owbar--fly" aria-label="Oneway">
   <div class="owbar-brand">
-    <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+    <a href="/" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
     <div class="owbar-pages">
       <a href="/mission">Our Mission</a>
-      <a href="/app">App</a>
-      <a href="/os">OS</a>
+      <a href="/the-app">App</a>
+      <a href="/the-os">OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
     </div>
@@ -62,7 +63,7 @@
     <a href="/beta" class="owbar-signin">Sign in</a>
   </div>
 </nav>
-<script src="/frontend/shared/oneway-bar.js?v=609e62c0"></script>
+<script src="/frontend/shared/oneway-bar.js?v=cb58fb5a"></script>
 
 <div class="hero">
   <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" data-owbar-hero />
@@ -104,7 +105,7 @@
   </div>
 
   <div class="block" id="a-connected-account">
-    <div class="block-label">Instagram, Facebook, Threads, X and the others</div>
+    <div class="block-label">Instagram, Facebook, Threads and the others</div>
     <h2>A connected account</h2>
     <ol class="steps">
       <li>In the Oneway App, open <strong>Settings</strong>, then <strong>Connected accounts</strong></li>
@@ -112,13 +113,13 @@
       <li>The access the platform gave Oneway is deleted straight away, and nothing more is sent there. Where connecting it verified that account on your profile, the verified mark goes with it.</li>
     </ol>
     <p>An account connected for a Center you run is disconnected the same way, in Oneway OS under <strong>Settings</strong>, then <strong>Connected accounts</strong>.</p>
-    <p>Posts already sent stay on the platform, where you can delete them. Posts you imported from it stay on Oneway as your posts, and you delete each one like any other post. The platform keeps Oneway in its own list of connected apps until you remove it there too.</p>
+    <p>Posts already sent stay on the platform, where you can delete them. Posts you imported from it stay on Oneway as your posts, and you delete each one like any other post. Instagram is the exception: disconnecting it deletes every post Oneway brought from Instagram, with its picture. The platform keeps Oneway in its own list of connected apps until you remove it there too.</p>
   </div>
 
   <div class="block" id="a-copy">
     <div class="block-label">Before you delete anything</div>
     <h2>A copy of your data</h2>
-    <p>In the Oneway App, <strong>Settings</strong>, then <strong>What Oneway knows about you</strong>, shows what Oneway understands about you. For a full copy, email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a> from the address on your account. We answer within 30 days, and may need to confirm it is you.</p>
+    <p>In the Oneway App, open <strong>Settings</strong>, then <strong>Download your data</strong>. Enter your password and press <strong>Make my copy</strong>. You get one file with your profile, posts, messages, follows, Centers and the links to your photos and videos. It is made in the background, you are told when it is ready, and its download lasts 72 hours. In the same Settings, <strong>What Oneway knows about you</strong> shows what Oneway understands about you. If you cannot sign in, email <a href="mailto:hello@oneway.center">hello@oneway.center</a> from the address on your account. We answer within 30 days, and may need to confirm it is you.</p>
   </div>
 
   <div class="block" id="your-account">
@@ -129,9 +130,9 @@
       <li>Enter your password, and the code from your authenticator app if two-step is on</li>
       <li>Press <strong>Delete your account</strong>, then <strong>Tap again to delete it in 30 days</strong></li>
     </ol>
-    <p>If you own a Center, hand it over to someone in Oneway OS first; you are told which one. Your own space is not a Center you run, and it goes with your account.</p>
+    <p>If you are the only owner of a Center, hand it to someone else or close it first, in Oneway OS; you are told which one. Your own space is not a Center you run, and it goes with your account.</p>
     <p><strong>At once:</strong> every session, on every device, and your profile leaves view and search. <strong>For 30 days</strong> you can change your mind: sign in and press <strong>Keep my account</strong>.</p>
-    <p><strong>What goes after the 30 days:</strong> your profile, picture and search listings. Your posts from view, and your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected on your profile, with the access we held for them. Your linked identities. Your shared location and your Footsteps. What reached your screen, and what the feed learned from it. Your list of bookings. Your notifications.</p>
+    <p><strong>What is removed:</strong> Every session on every device, and every other way in: passkeys, device sign-ins and your widgets&#8217; keys. Your profile, picture, @handle and search listings. Your posts, with their words and pictures, including posts you deleted before. Your comments. Your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected, with the access we held for them, and your linked mail accounts with their mail. Your linked identities. Your shared location, your Footsteps and your Waypass. What reached your screen, and what the feed learned from it. Your list of bookings, your Marketplace listings, your work name and title, your settings, your custom feeds and plans, the record of when you were online, and your notifications. Your profile strength score.</p>
     <p>After the 30 days it cannot be undone, and nobody can sign in to it again. If you cannot sign in, email us from the address on the account.</p>
   </div>
 
@@ -142,12 +143,12 @@
       <thead><tr><th>What</th><th>How long, and why</th></tr></thead>
       <tbody>
         <tr><td>Your email address, the day you joined and the day you left</td><td>Kept, with no end date, so no one else can register the address and inherit your history.</td></tr>
-        <tr><td>Comments and messages you left in other people's conversations</td><td>They stay, shown as Deleted account with no picture, because they are part of other people's conversations.</td></tr>
+        <tr><td>Comments and messages you left in other people's conversations</td><td>Your comments are removed. Messages you sent stay in the other person&#8217;s chat, as their copy, shown as from Oneway user with no picture or profile.</td></tr>
         <tr><td>A post or a comment you deleted</td><td>Gone from view at once. Its record stays in our database, so a reply or a share that pointed at it can say it was removed.</td></tr>
         <tr><td>What a Center keeps</td><td>Its own records, its bookings, the pictures uploaded for it and the accounts connected for it stay with the Center: they are its records, not your profile's.</td></tr>
         <tr><td>The security log</td><td>Kept after you delete your account, because it is the record of sign-ins and changes to who can get in. We have not set an end date. We will set one and publish it in the <a href="/privacy">Privacy Policy</a> before the App opens to the public.</td></tr>
         <tr><td>Casino compliance records</td><td>At least five years, as the law requires. They cannot be deleted on request.</td></tr>
-        <tr><td>Backups</td><td>We will state the backup period in the Privacy Policy before the App opens to the public.</td></tr>
+        <tr><td>Backups</td><td>A copy of the database is made once a day and kept 14 days, so a copy that still holds your account is gone within 14 days after it is removed.</td></tr>
         <tr><td>Legal holds</td><td>Longer only when the law, a regulator or a legal claim requires it, and only for as long as it does.</td></tr>
       </tbody>
     </table>
@@ -157,15 +158,43 @@
     <h2>We made this page for Meta, Threads, Instagram and Facebook. Hello!</h2>
   </div>
 
+  <div class="block" id="status" hidden>
+    <div class="block-label">Your deletion request</div>
+    <h2>Where it stands</h2>
+    <p id="status-words" role="status"></p>
+  </div>
+
   <div class="block" id="facebook-data">
     <div class="block-label">What Oneway receives from Facebook</div>
     <h2>When you connect a Facebook Page</h2>
     <ul>
       <li>The access Facebook gives Oneway: a key for your Facebook account and one for each Page you chose. They are kept encrypted and are never shown back to anyone.</li>
-      <li>Each Page's name and ID, and, for the Page Oneway posts to, the ID of the Instagram professional account linked to it, if it has one. Instagram comes through the same Facebook sign-in.</li>
+      <li>Each Page's name and ID, and, for the Page Oneway posts to, the ID of the Instagram professional account linked to it, if it has one. Instagram can come through this Facebook sign-in, or through its own, below.</li>
       <li>If you start an import: the Page's posts, with their photos and videos, copied onto Oneway as posts.</li>
     </ul>
     <p>Oneway uses it to send the posts you pick to that Page and its Instagram account, and to copy the Page's posts when you start an import. It never receives your Facebook password, and it does not ask Facebook for your friends or your messages. Threads connects through its own sign-in and gives Oneway its own key, with your Threads account's ID and username.</p>
+  </div>
+
+  <div class="block" id="instagram-data">
+    <div class="block-label">What Oneway receives from Instagram</div>
+    <h2>When you connect Instagram with its own sign-in</h2>
+    <ul>
+      <li>The access Instagram gives Oneway, kept encrypted and never shown back to anyone.</li>
+      <li>Your Instagram account's ID, username, name and account type (Business or Creator).</li>
+      <li>When you press Import, or while Bring my new posts is on (Oneway then reads your newest posts every 15 minutes): each post's caption, its link and a copy of its picture, kept as a Oneway post that plays in Instagram's own player, marked From Instagram.</li>
+    </ul>
+    <p>Oneway posts to Instagram only what you pick on a post. It never receives your Instagram password, your messages or your followers.</p>
+  </div>
+
+  <div class="block">
+    <div class="block-label">On Instagram</div>
+    <h2>Remove Oneway from your Instagram account</h2>
+    <ol class="steps">
+      <li>In Instagram, open <strong>Settings</strong>, then <strong>Website permissions</strong></li>
+      <li>Open <strong>Apps and websites</strong>, then <strong>Active</strong></li>
+      <li>Press <strong>Remove</strong> beside Oneway</li>
+      <li>Meta tells Oneway, and Oneway deletes the access it held and every post it brought from that Instagram account, with its picture.</li>
+    </ol>
   </div>
 
   <div class="block">
@@ -187,9 +216,9 @@
       <li>In the Oneway App, open <strong>Settings</strong>, then <strong>Connected accounts</strong>. For a Center, open Oneway OS, then <strong>Settings</strong>, then <strong>Connected accounts</strong></li>
       <li>Press <strong>Disconnect</strong> beside Facebook, then press it again. Do the same beside Instagram</li>
       <li>Oneway deletes the access it held for them straight away, with each Page's name and ID, and nothing more is sent to them.</li>
-      <li>Posts you imported from Facebook are Oneway posts: delete each one like any other post.</li>
+      <li>Posts you imported from Facebook are Oneway posts: delete each one like any other post. Posts brought from Instagram are deleted when you disconnect Instagram, with their pictures.</li>
     </ol>
-    <p>Deleting your Oneway account deletes the Facebook and Instagram connections on your profile too. Or email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a> from the address on your Oneway account with the name of the Facebook Page, and we delete what Oneway received from Facebook for it. We answer within 30 days, and may need to confirm it is you.</p>
+    <p>Deleting your Oneway account deletes the Facebook and Instagram connections on your profile too, and every post brought from Instagram. Or email <a href="mailto:williamrau78@gmail.com">williamrau78@gmail.com</a> from the address on your Oneway account with the name of the Facebook Page, and we delete what Oneway received from Facebook for it. We answer within 30 days, and may need to confirm it is you.</p>
   </div>
 
   <div class="contact-block">
@@ -204,16 +233,22 @@
 <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
 <footer class="owfoot">
   <div class="owfoot-in">
-    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <a class="owfoot-mark" href="/" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
     <nav class="owfoot-pages" aria-label="Oneway's pages">
       <a href="/mission">Our Mission</a>
-      <a href="/app">App</a>
-      <a href="/os">OS</a>
+      <a href="/the-app">App</a>
+      <a href="/the-os">OS</a>
       <a href="/os-business">Business OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
       <a href="/discovery">Discovery</a>
       <a href="/changelog">Changelog</a>
+      <a href="/profiles">Profiles</a>
+      <a href="/centers">Centers</a>
+      <a href="/waypass">Waypass</a>
+      <a href="/opportunities">Opportunities</a>
+      <a href="/cross-projection">Cross Projection</a>
+      <a href="/about">About</a>
     </nav>
     <nav class="owfoot-help" aria-label="Help">
       <a href="/support">Support</a>
@@ -233,5 +268,10 @@
   </div>
 </footer>
 
+<script>/* WHERE A DELETION REQUEST STANDS (Meta's callback answers this page with ?confirm=<code>; distribution/meta_deletion.status) */
+(function(){try{var c=(new URLSearchParams(location.search)).get('confirm')||'';if(!/^del_[0-9a-f]{16}$/.test(c))return;
+var box=document.getElementById('status'),w=document.getElementById('status-words');if(!box||!w)return;box.hidden=false;w.textContent='Reading where it stands\u2026';
+fetch('/api/data-deletion/status?code='+encodeURIComponent(c),{credentials:'omit'}).then(function(r){return r.json()}).then(function(d){w.textContent=(d&&d.words)||'This could not be read just now. Try again in a moment.'})
+.catch(function(){w.textContent='This could not be read just now. Try again in a moment.'})}catch(e){}})()</script>
 </body>
 </html>

@@ -4,31 +4,33 @@
   <meta charset="UTF-8" /><script>/* OLD BROWSERS (tools/old_browsers.py): html.ow-old where :is() is not understood (Safari before 14, Chrome before 88), html.ow-nogap where a flex row has no gap (Safari before 14.1, Chrome before 84); the published copy's fallbacks wear these */(function(d){var h=d.documentElement,c=' ';try{if(!(window.CSS&&CSS.supports&&CSS.supports('selector(:is(a))')))c+='ow-old '}catch(e){c+='ow-old '}var f=d.createElement('div');f.style.cssText='display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';f.appendChild(d.createElement('div'));f.appendChild(d.createElement('div'));h.appendChild(f);if(f.scrollHeight!==1)c+='ow-nogap ';h.removeChild(f);h.className+=c})(document)</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <!-- TAB GLOBE: projected by tools/site_seo.py, never edit by hand -->
-  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else blue. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='blue',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'blue':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,null)</script>
-  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-blue-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
+  <script>/* THE TAB'S GLOBE (founder/829): the one icon link, written while the head is read, in the hue this page is about to paint: the person's, else the page's own choice this load, else its ground's, else purple. Projected by tools/site_seo.py; oneway-hue.js keeps it in step. */(function(w,d,ground){var h=null,from='purple',page=null;try{var c=localStorage.getItem('ow_user_hue'),n=parseInt(c,10);if(c!==null&&c!==''&&!isNaN(n)){h=Math.max(0,Math.min(360,n));from='person'}}catch(_){}if(typeof w.__owPageHue==='number'&&isFinite(w.__owPageHue))page=w.__owPageHue;if(h===null&&page!==null){h=page;from='page'}if(h===null&&ground!==null){h=ground;from='ground'}var k=h===null?'purple':('00'+(Math.round((((h%360)+360)%360)/10)*10%360)).slice(-3);var l=d.createElement('link');l.rel='icon';l.type='image/png';l.setAttribute('sizes','32x32');l.setAttribute('data-ow-globe','1');l.href='/assets/icons/globe/globe-'+k+'-32.png';w.__owTabGlobe={hue:h,from:from,page:page,ground:ground,file:l.getAttribute('href')};(d.head||d.documentElement).appendChild(l);var t=d.createElement('link');t.rel='apple-touch-icon';t.setAttribute('sizes','180x180');t.href='/assets/icons/globe/globe-'+k+'-touch-180.png';(d.head||d.documentElement).appendChild(t)})(window,document,null)</script>
+  <noscript><link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/globe/globe-purple-32.png"><link rel="apple-touch-icon" href="/assets/icons/oneway-globe-180.png"></noscript>
   <!-- /TAB GLOBE -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark light" />
+  <meta name="theme-color" content="#f5f4fa" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <meta name="robots" content="noindex" />
   <title>Not here — Oneway</title>
-  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=6d7e4f0b">
-  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=26ba29ee">
+  <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=47bc6f29">
+  <link rel="stylesheet" href="/frontend/shared/oneway-legal.css?v=1d20fd82">
   <!-- The page GitHub Pages serves for an address oneway.center does not have, in the legal pages' own layout
        (founder/493), so a mistyped address lands on ONEWAY instead of GitHub's page. Every link is absolute:
        this page is served at whatever address was asked for. -->
   </script>
-  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only) */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=71e11b04"/>
+  <script>/* the App's own light/dark choice, when there is one; otherwise the system's setting decides (read only). The browser's bar takes the same room: the pair of theme-colors follows the device, and a choice paints both (oneway-legal.css: light #f5f4fa, dark #000). */(function(){try{var t=localStorage.getItem('ow_theme')||localStorage.getItem('ow_mode');if(t==='light'||t==='dark'){document.documentElement.setAttribute('data-theme',t);var m=document.querySelectorAll('meta[name="theme-color"]');for(var i=0;i<m.length;i++)m[i].setAttribute('content',t==='light'?'#f5f4fa':'#000000')}}catch(e){}})()</script>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e8823d91"/>
 </head>
 <body>
 
 <nav class="owbar owbar--solid owbar--fly" aria-label="Oneway">
   <div class="owbar-brand">
-    <a href="/index.html" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
+    <a href="/" class="owbar-mark" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway"/></a>
     <div class="owbar-pages">
       <a href="/mission">Our Mission</a>
-      <a href="/app">App</a>
-      <a href="/os">OS</a>
+      <a href="/the-app">App</a>
+      <a href="/the-os">OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
     </div>
@@ -37,7 +39,7 @@
     <a href="/beta" class="owbar-signin">Sign in</a>
   </div>
 </nav>
-<script src="/frontend/shared/oneway-bar.js?v=609e62c0"></script>
+<script src="/frontend/shared/oneway-bar.js?v=cb58fb5a"></script>
 
 <div class="hero">
   <img class="hero-mark" src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="" aria-hidden="true" data-owbar-hero />
@@ -51,16 +53,22 @@
 <!-- THE ONE FOOTER (founder/801: "put all pages at bottom with privacy terms data deltion and corporate charter"): every page, then the legal ones, the same on every landing page; drawn by oneway-bar.css ("THE ONE FOOTER"), held by api/test_site_bar.py -->
 <footer class="owfoot">
   <div class="owfoot-in">
-    <a class="owfoot-mark" href="/index.html" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
+    <a class="owfoot-mark" href="/" aria-label="Oneway home"><img src="/logo-white.png" srcset="/logo-white@2x.png 2x" alt="Oneway" width="400" height="86"/></a>
     <nav class="owfoot-pages" aria-label="Oneway's pages">
       <a href="/mission">Our Mission</a>
-      <a href="/app">App</a>
-      <a href="/os">OS</a>
+      <a href="/the-app">App</a>
+      <a href="/the-os">OS</a>
       <a href="/os-business">Business OS</a>
       <a href="/security">Security</a>
       <a href="/contact">Contact</a>
       <a href="/discovery">Discovery</a>
       <a href="/changelog">Changelog</a>
+      <a href="/profiles">Profiles</a>
+      <a href="/centers">Centers</a>
+      <a href="/waypass">Waypass</a>
+      <a href="/opportunities">Opportunities</a>
+      <a href="/cross-projection">Cross Projection</a>
+      <a href="/about">About</a>
     </nav>
     <nav class="owfoot-help" aria-label="Help">
       <a href="/support">Support</a>

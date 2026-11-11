@@ -51,7 +51,7 @@ html[data-theme="light"] .lc.lc.lc{--lc-ink:#15131f;--lc-ink-2:rgba(21,19,31,.72
 .lc.lc.lc[data-banner-style="fade"][data-banner="1"] .ow-ocard__id{padding-top:0!important;margin-top:calc(var(--lc-face) * -.22)!important}
 .lc.lc.lc .ow-ocard__id{display:flex!important;flex-direction:column!important;min-width:0!important;align-items:flex-start!important;align-self:center!important;padding:0!important;min-height:0!important}
 .lc.lc.lc .ow-ocard__id > *{align-self:auto!important;grid-area:auto!important;justify-self:auto!important}
-.lc.lc.lc .ow-ocard__name{margin:0!important;padding:0!important;font-weight:750!important;font-size:19px!important;line-height:1.2!important;letter-spacing:-.01em!important;
+.lc.lc.lc .ow-ocard__name{margin:0!important;padding:0!important;font-weight:750!important;font-size:var(--lc-name,19px)!important;line-height:1.2!important;letter-spacing:-.01em!important;
   color:var(--lc-ink)!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%;min-block-size:0!important;display:block!important}
 .lc.lc.lc .ow-ocard__sub{font-weight:500!important;font-size:13.5px!important;line-height:1.35!important;color:var(--lc-ink-3)!important;margin-top:1px!important;opacity:1!important;
   white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%}
@@ -78,7 +78,8 @@ html[data-theme="light"] .lc.lc.lc{--lc-ink:#15131f;--lc-ink-2:rgba(21,19,31,.72
 .lc.lc.lc .lc-fact > span > i{font-style:normal;font-weight:600;color:var(--lc-ink-3)}
 .lc.lc.lc .lc-fact > span > b{font-weight:600;color:var(--lc-ink)}
 .lc.lc.lc .lc-ic{flex:none;display:grid;place-items:center;width:15px;height:17px;font-style:normal;color:var(--lc-ink-3)}
-.lc.lc.lc .lc-ic svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* the renderer's detail icons are filled shapes on a 256 grid: a 1.8 stroke with no fill drew nothing, an empty gap before every fact (founder/1110, seen on the walk) */
+.lc.lc.lc .lc-ic svg{width:15px;height:15px;fill:currentColor;stroke:none}
 .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 80% 72%)}
 html[data-theme="light"] .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 62% 42%)}
 .lc.lc.lc .lc-where{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:500;line-height:1.35;color:var(--lc-ink-2)}html.ow-nogap .lc.lc.lc .lc-where>*+*{margin-left:6px}
@@ -127,12 +128,14 @@ html[data-theme="light"] .lc.lc.lc .lc-fact--place .lc-ic{color:hsl(var(--lc-h) 
 .lc.lc.lc[data-layout="above"] .ow-ocard__id > *{align-self:center!important}
 .lc.lc.lc[data-layout="above"][data-banner="1"] .ow-ocard__id{padding-top:0!important}
 
-/* SIMPLE MODE: the plain card, Simple's own feed surface (oneway-popit.css "27 · SIMPLE MODE", .po-river): the ground with 3%
-   of the account's own hue, a hairline edge, the feed's corners; no light, no grain, no grey (founder, 2026-10-19: "the darker
-   tones might have to be a little bit blacker. I don't know if gray cards really work"). The same anatomy as Pop-it. */
-html[data-simple="1"] .lc.lc.lc{--lc-ring:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%);border-radius:24px!important;background:var(--ow-ground,#000)!important;background:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)!important;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ow-ink,#fff) 10%,transparent)!important}html.ow-old[data-simple="1"] .lc.lc.lc{background:var(--ow-ground,#000)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,0.1)!important}
+/* SIMPLE MODE: the plain card is HIS CARD (the founder, 2026-11-08: a plain white card on his hue at 3%, radius 22, one soft
+   shadow, no line; oneway-popit.css --ow-scard / --ow-scard-shadow, light and dark): the same card every post in the feed now
+   is, in place of October's feed surface (the ground with 3% of the hue and a hairline). No light, no grain, no grey (founder,
+   2026-10-19: "I don't know if gray cards really work"). The same anatomy as Pop-it. A page that names no card keeps the old
+   surface (the fallbacks). */
+html[data-simple="1"] .lc.lc.lc{--lc-ring:var(--ow-scard,color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%));border-radius:var(--ow-r-card,20px)!important;background:var(--ow-scard,var(--ow-ground,#000))!important;background:var(--ow-scard,color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h)) 3%))!important;box-shadow:var(--ow-scard-shadow,inset 0 0 0 1px rgba(255,255,255,0.1))!important;box-shadow:var(--ow-scard-shadow,inset 0 0 0 1px color-mix(in srgb,var(--ow-ink,#fff) 10%,transparent))!important}html.ow-old[data-simple="1"] .lc.lc.lc{background:var(--ow-scard,var(--ow-ground,#000))!important;box-shadow:var(--ow-scard-shadow,inset 0 0 0 1px rgba(255,255,255,0.1))!important}
 html[data-simple="1"] .lc.lc.lc::before,html[data-simple="1"] .lc.lc.lc::after{display:none!important}
-html[data-simple="1"] .lc.lc.lc .lc-banner{border-top-left-radius:24px;border-top-right-radius:24px}
+html[data-simple="1"] .lc.lc.lc .lc-banner{border-top-left-radius:var(--ow-r-card,20px);border-top-right-radius:var(--ow-r-card,20px)}
 html[data-simple="1"] .lc.lc.lc .ow-ocard__face{background:hsl(var(--lc-h) 58% 46%)!important}
 html[data-simple="1"] .lc.lc.lc .lc-acts .lc-follow,html[data-simple="1"] .lc.lc.lc[data-ink="light"] .lc-acts .lc-follow{background:hsl(var(--lc-h) 70% 50%);color:#fff}
 
@@ -143,3 +146,13 @@ html[data-simple="1"] .lc.lc.lc .lc-acts .lc-follow,html[data-simple="1"] .lc.lc
    card behind would show under a shorter one; the faces under the deck choose which stands in front */
 .deck .lc.lc.lc.pcard:not([data-at="0"]){opacity:0!important;transform:none!important;filter:none!important;pointer-events:none}
 .deck .lc.lc.lc.pcard{transition:opacity .35s ease!important}
+
+/* AND A 290 SCREEN'S CARD, ABOUT 250 WIDE (founder/1110's walk): "The Boardwalk Hall" and "Harbor Lights Market" stand whole */
+@container (max-width:230px){
+  .lc.lc.lc.lc .ow-ocard__top{--lc-face:48px;column-gap:10px!important}
+  .lc.lc.lc.lc .ow-ocard__name{--lc-name:15px}
+  .lc.lc.lc.lc .ow-ocard__face i{font-size:18px!important}
+}
+@container (max-width:205px){.lc.lc.lc.lc .ow-ocard__name{--lc-name:14px}}
+/* a card is as tall as what it says, whatever row it stands in (founder/1110) */
+.lc.lc.lc[data-live-ref]{height:auto!important}

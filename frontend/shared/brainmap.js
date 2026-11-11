@@ -16,6 +16,24 @@
 (function(){
   'use strict';
 
+  /* THE CANONICAL CORE, ROW BY ROW: drawCore below draws these and shared/oneway-brainmark.js turns the same parts (row A-18e55f6,
+     "TAKE THE EXACT ROTATING SPRITES FROM THE BRAIN"; founder/624). `r` of the core's radius, `turn` per frame's 0.021 radians. */
+  var CORE = {
+    rate: 0.021, across: 0.39,
+    parts: [
+      { id: 'octagon',   r: 1,    sides: 8, turn: 0.32,  at: 0,           h: 0,   s: 78, l: 60, a: 0.16, solo: 0.55, lw: 1 },
+      { id: 'hexagon',   r: 0.70, sides: 6, turn: -0.55, at: 0,           h: 24,  s: 78, l: 62, a: 0.22, solo: 0.62, lw: 1.2 },
+      { id: 'triangle',  r: 0.46, sides: 3, turn: 1.05,  at: 0,           h: -24, s: 80, l: 66, a: 0.30, solo: 0.72, lw: 1.3 },
+      { id: 'triangle2', r: 0.46, sides: 3, turn: -1.05, at: Math.PI,     h: 40,  s: 82, l: 66, a: 0.30, solo: 0.72, lw: 1.3 },
+      { id: 'square',    r: 0.26, sides: 4, turn: 1.7,   at: Math.PI / 4, h: 50,  s: 85, l: 70, a: 0.26, solo: 0.68, lw: 1.1 }
+    ],
+    ring:   { h: 0, s: 80, l: 60, solo: 0.62, lw: 1.4 },
+    dots:   { part: 'hexagon', n: 6, h: 24, s: 85, l: 66 },
+    spokes: { r: 0.2, n: 6, turn: 2.2, h: 30, s: 95, l: 76, lw: 1.4 },
+    heart:  { h: 30, s: 95, l: 82 },
+    hsla: function (h, s, l, a, light) { if (light) l = Math.max(18, l - 30); return 'hsla(' + ((h%360+360)%360) + ',' + s + '%,' + l + '%,' + a + ')'; }
+  };
+
   function readHue(explicit){
     if (typeof explicit === 'function') explicit = explicit();
     if (explicit != null && !isNaN(explicit)) return parseInt(explicit, 10);
@@ -33,12 +51,12 @@
     var ctx = canvas.getContext('2d');
     var DPR = Math.min(window.devicePixelRatio || 1, 2);
     var nodes = [], links = [], agents = [], pendingSignals = [];
-    var W = 0, H = 0, frame = 0, raf = 0, stopped = false;
+    var W = 0, H = 0, frame = 0, lastAt = 0, raf = 0, stopped = false;
     var pal = { h: readHue(config.hue) };
 
     /* `light` (opt-in): the Brain drawn straight onto a light page rather than a dark screen (the OS's Brain web, founder/787:
        "built into page itself not a box"): every colour 30 points darker and the words in the room's ink. Off, nothing changes. */
-    function hsla(h, s, l, a){ if (config.light) l = Math.max(18, l - 30); return 'hsla(' + ((h%360+360)%360) + ',' + s + '%,' + l + '%,' + a + ')'; }
+    function hsla(h, s, l, a){ return CORE.hsla(h, s, l, a, config.light); }
 
     function neighborsOf(n){
       var out = [];
@@ -123,28 +141,24 @@
       ctx.stroke(); ctx.restore();
     }
     function drawCore(cx, cy, R, f){
-      var t0 = f*0.021, H2 = pal.h, i;
-      var r0=R, r1=R*0.70, r2=R*0.46, r3=R*0.26;
+      var t0 = f*CORE.rate, H2 = pal.h, i;
+      var r0=R, r1=R*CORE.parts[1].r;
       if (!config.coreOnly){
         var gl = ctx.createRadialGradient(cx, cy, 2, cx, cy, R*2.4);
         gl.addColorStop(0, hsla(H2, 90, 56, (0.16+Math.sin(f*0.05)*0.03).toFixed(3))); gl.addColorStop(1, 'rgba(0,0,0,0)');
         ctx.fillStyle = gl; ctx.beginPath(); ctx.arc(cx, cy, R*2.4, 0, Math.PI*2); ctx.fill();
       }
-      gPoly(cx, cy, r0, 8,  t0*0.32, hsla(H2,    78, 60, config.coreOnly ? 0.55 : 0.16), 1);
-      gPoly(cx, cy, r1, 6, -t0*0.55, hsla(H2+24, 78, 62, config.coreOnly ? 0.62 : 0.22), 1.2);
-      gPoly(cx, cy, r2, 3,  t0*1.05, hsla(H2-24, 80, 66, config.coreOnly ? 0.72 : 0.30), 1.3);
-      gPoly(cx, cy, r2, 3, -t0*1.05+Math.PI, hsla(H2+40, 82, 66, config.coreOnly ? 0.72 : 0.30), 1.3);
-      gPoly(cx, cy, r3, 4,  t0*1.7+Math.PI/4, hsla(H2+50, 85, 70, config.coreOnly ? 0.68 : 0.26), 1.1);
-      ctx.strokeStyle = hsla(H2, 80, 60, config.coreOnly ? 0.62 : (0.20+Math.sin(f*0.05)*0.06).toFixed(3)); ctx.lineWidth = 1.4;
+      CORE.parts.forEach(function(p){ gPoly(cx, cy, R*p.r, p.sides, t0*p.turn+p.at, hsla(H2+p.h, p.s, p.l, config.coreOnly ? p.solo : p.a), p.lw); });
+      ctx.strokeStyle = hsla(H2+CORE.ring.h, CORE.ring.s, CORE.ring.l, config.coreOnly ? CORE.ring.solo : (0.20+Math.sin(f*0.05)*0.06).toFixed(3)); ctx.lineWidth = CORE.ring.lw;
       ctx.beginPath(); ctx.arc(cx, cy, r0, 0, Math.PI*2); ctx.stroke();
       ctx.save(); ctx.translate(cx, cy);
-      for (i=0;i<6;i++){ var a=-t0*0.55+i*Math.PI/3, vx=r1*Math.cos(a), vy=r1*Math.sin(a); ctx.fillStyle=hsla(H2+24,85,66,(0.45+Math.sin(f*0.1+i)*0.12).toFixed(3)); ctx.beginPath(); ctx.arc(vx, vy, 1.7, 0, Math.PI*2); ctx.fill(); }
+      for (i=0;i<CORE.dots.n;i++){ var a=t0*CORE.parts[1].turn+i*Math.PI*2/CORE.dots.n, vx=r1*Math.cos(a), vy=r1*Math.sin(a); ctx.fillStyle=hsla(H2+CORE.dots.h,CORE.dots.s,CORE.dots.l,(0.45+Math.sin(f*0.1+i)*0.12).toFixed(3)); ctx.beginPath(); ctx.arc(vx, vy, 1.7, 0, Math.PI*2); ctx.fill(); }
       ctx.restore();
-      ctx.save(); ctx.translate(cx, cy); ctx.rotate(t0*2.2);
-      var sp=0.45+Math.sin(f*0.1)*0.35, r4=R*0.2;
-      for (i=0;i<6;i++){ var ba=i*Math.PI/3, grad=ctx.createLinearGradient(0,0,r4*Math.cos(ba),r4*Math.sin(ba)); grad.addColorStop(0,hsla(H2+30,95,76,sp.toFixed(3))); grad.addColorStop(1,'transparent'); ctx.strokeStyle=grad; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(r4*Math.cos(ba), r4*Math.sin(ba)); ctx.stroke(); }
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(t0*CORE.spokes.turn);
+      var sp=0.45+Math.sin(f*0.1)*0.35, r4=R*CORE.spokes.r;
+      for (i=0;i<CORE.spokes.n;i++){ var ba=i*Math.PI*2/CORE.spokes.n, grad=ctx.createLinearGradient(0,0,r4*Math.cos(ba),r4*Math.sin(ba)); grad.addColorStop(0,hsla(H2+CORE.spokes.h,CORE.spokes.s,CORE.spokes.l,sp.toFixed(3))); grad.addColorStop(1,'transparent'); ctx.strokeStyle=grad; ctx.lineWidth=1.4; ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(r4*Math.cos(ba), r4*Math.sin(ba)); ctx.stroke(); }
       ctx.restore();
-      ctx.fillStyle = hsla(H2+30, 95, 82, (0.8+Math.sin(f*0.09)*0.2).toFixed(3)); ctx.beginPath(); ctx.arc(cx, cy, 2.4, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = hsla(H2+CORE.heart.h, CORE.heart.s, CORE.heart.l, (0.8+Math.sin(f*0.09)*0.2).toFixed(3)); ctx.beginPath(); ctx.arc(cx, cy, 2.4, 0, Math.PI*2); ctx.fill();
     }
     function drawMiniCore(cx, cy, R, f, kind, highlight){
       var t0 = f*0.045;
@@ -173,10 +187,11 @@
       raf = requestAnimationFrame(tick);
       if (canvas.offsetParent === null) return;
       if (Math.abs((canvas.clientWidth || 0) - W) > 2 || Math.abs((canvas.clientHeight || 0) - H) > 2){ resize(); }
-      frame++;
+      /* timed by the clock, never by the frame ("120 fps all", "60 also"): `frame` counts sixtieths of a second, whatever the screen's rate */
+      var _at = performance.now(), fk = lastAt ? Math.min(3, (_at - lastAt) / 16.667) : 1; lastAt = _at; frame += fk;
       ctx.clearRect(0, 0, W, H);
       nodes.forEach(function(n){
-        n.x += (n.bx - n.x)*0.08; n.y += (n.by - n.y)*0.08;
+        var ease = 1 - Math.pow(0.92, fk); n.x += (n.bx - n.x)*ease; n.y += (n.by - n.y)*ease;
         var fx = n.hub ? 0 : Math.sin(frame*0.026 + n.born)*2.4;
         var fy = n.hub ? 0 : Math.cos(frame*0.03 + n.born)*2.4;
         n.dx = n.x + fx; n.dy = n.y + fy;
@@ -190,12 +205,12 @@
         var sig = pendingSignals.shift();
         if (sig && sig.a && sig.b) spawnAgent(sig.a, sig.b, sig.meta || {});
       }
-      if (!config.truthful && frame % 130 === 0 && agents.length < 6 && nodes.length > 1){
+      if (!config.truthful && Math.floor(frame / 130) !== Math.floor((frame - fk) / 130) && agents.length < 6 && nodes.length > 1){
         var src = nodes[Math.floor(Math.random()*nodes.length)]; var nb = neighborsOf(src);
         if (nb.length) spawnAgent(src, nb[Math.floor(Math.random()*nb.length)]);
       }
       agents.forEach(function(ag){
-        ag.t += ag.speed;
+        ag.t += ag.speed * fk;
         if (ag.t >= 1){ ag.b.pulse = 2.3; var nb = neighborsOf(ag.b); var nx = nb.length ? nb[Math.floor(Math.random()*nb.length)] : ag.a; ag.a = ag.b; ag.b = nx; ag.t = 0; ag.trail = []; return; }
         var x = ag.a.dx + (ag.b.dx - ag.a.dx)*ag.t, y = ag.a.dy + (ag.b.dy - ag.a.dy)*ag.t;
         ag.trail.push({ x: x, y: y }); if (ag.trail.length > 12) ag.trail.shift();
@@ -208,7 +223,7 @@
       nodes.forEach(function(n){
         var pr = n.r * (n.pulse > 1 ? n.pulse : 1); n.pulse += (1 - n.pulse)*0.07;
         if (n.hub){
-          drawCore(n.dx, n.dy, Math.min(W, H)*(config.coreOnly ? 0.39 : 0.135), frame);
+          drawCore(n.dx, n.dy, Math.min(W, H)*(config.coreOnly ? CORE.across : 0.135), frame);
           if (!config.coreOnly){
             ctx.font = (config.big ? "650 15px" : "600 12px") + " 'ONEWAY Sans', system-ui, sans-serif"; ctx.fillStyle = config.light ? 'rgba(20,19,31,0.92)' : 'rgba(226,242,255,0.92)'; ctx.textAlign = 'center';
             ctx.fillText(n.label, n.dx, n.dy + Math.min(W, H)*0.135 + 18);
@@ -374,7 +389,7 @@
     if (canvas._owAmbientCtl){ try { canvas._owAmbientCtl.stop(); } catch(_){} }
     var ctx = canvas.getContext('2d');
     var DPR = Math.min(window.devicePixelRatio || 1, 2);
-    var W = 0, H = 0, frame = 0, raf = 0, stopped = false;
+    var W = 0, H = 0, frame = 0, lastAt = 0, raf = 0, stopped = false;
     function hue(){ return readHue(opts.hue); }
     function isLight(){
       if (opts.mode === 'light') return true;
@@ -424,7 +439,8 @@
       if (stopped) return;
       raf = requestAnimationFrame(tick);
       if (Math.abs((canvas.clientWidth || 0) - W) > 2 || Math.abs((canvas.clientHeight || 0) - H) > 2) resize();
-      frame++;
+      /* timed by the clock, never by the frame ("120 fps all", "60 also"): `frame` counts sixtieths of a second, whatever the screen's rate */
+      var _at = performance.now(), fk = lastAt ? Math.min(3, (_at - lastAt) / 16.667) : 1; lastAt = _at; frame += fk;
       var light = isLight(), m = light ? 0.55 : 1, H2 = hue();
       ctx.clearRect(0, 0, W, H);
       // Two large faded cores anchor the composition (off to the sides).
@@ -432,7 +448,7 @@
       fadedCore(W*0.10, H*0.88, Math.min(W, H)*0.34, -frame*0.7, m*0.8);
       // Drift + draw floating nodes and their faint links.
       pts.forEach(function(p){
-        p.x += p.vx; p.y += p.vy;
+        p.x += p.vx * fk; p.y += p.vy * fk;
         if (p.x < 0 || p.x > 1) p.vx *= -1;
         if (p.y < 0 || p.y > 1) p.vy *= -1;
       });
@@ -458,7 +474,7 @@
         ctx.beginPath(); ctx.arc(c.x, c.y, p.r, 0, Math.PI*2); ctx.fill();
       });
       // Occasional signal travelling between two nodes.
-      if (frame % 90 === 0 && pts.length > 1 && sigs.length < 4){
+      if (Math.floor(frame / 90) !== Math.floor((frame - fk) / 90) && pts.length > 1 && sigs.length < 4){
         var s = Math.floor(Math.random()*pts.length), e = Math.floor(Math.random()*pts.length);
         if (s !== e) sigs.push({ a: pts[s], b: pts[e], t: 0, sp: 0.006 + Math.random()*0.006 });
       }
@@ -497,5 +513,5 @@
     ] };
   }
 
-  window.OW_BRAINMAP = { mount: mount, mountAmbient: mountAmbient, presetOneway: presetOneway, presetOS: presetOS, readHue: readHue };
+  window.OW_BRAINMAP = { mount: mount, mountAmbient: mountAmbient, presetOneway: presetOneway, presetOS: presetOS, readHue: readHue, CORE: CORE };
 })();

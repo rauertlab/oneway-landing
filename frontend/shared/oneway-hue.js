@@ -24,8 +24,10 @@
      telling. One event, so no surface has to poll `getComputedStyle`. */
   function announce(h){
     try {
+      announce.mine = true;                      /* dispatchEvent is synchronous: the flag covers exactly our listeners */
       window.dispatchEvent(new CustomEvent('ow:hue', { detail: { hue: h } }));
     } catch(_){}
+    announce.mine = false;
   }
 
   /* ★ FOUNDER/471 §12: ONEWAY's icon is the loading globe, and it takes the signed-in person's hue in every view — the
@@ -35,18 +37,18 @@
      THE GLOBE IS A FILE, NAMED WHILE THE HEAD IS READ. It was drawn here, after load, through a canvas into a data: PNG;
      Chromium followed, Safari never did (it draws no SVG tab icon and does not take one a script swaps in after load), so
      its tab kept the first static PNG, the blue globe. Now the transparent globe is pre-drawn in every hue at 10-degree
-     steps (assets/icons/globe/, tools/make_tab_globes.cjs: oneway-globe.svg with its strokes #1f8fff as hsl(h 92% 58%)),
+     steps (assets/icons/globe/, tools/make_tab_globes.cjs: oneway-globe.svg with its strokes #9000ff as hsl(h 92% 58%)),
      the head's first script writes the one icon link to the file of the hue the page is about to paint
      (tools/site_seo.py TAB_GLOBE_JS, which leaves what it decided in window.__owTabGlobe), and this keeps THAT link in
      step afterwards, pointing it at the same files: the account's answer, a colour the page chooses, a Center the App
      stands in. The order is the sync rule's: a context the surface stands in (owTabHue.context, oneway-popit.js), the
      person's hue, the colour the page chose this load (owTabHue(h)), its ground's (owTabHue(h, true) from the galaxy; the
-     head's ground), its world's (--ow-user-hue), else the globe as drawn, blue. */
+     head's ground), its world's (--ow-user-hue), else the globe as drawn, purple (founder/1147). */
   var GLOBE_DIR = '/assets/icons/globe/', GLOBE_STEP = 10, globeWant = null, pageHue = null, ctxHue = null;
   var headGlobe = window.__owTabGlobe || null;
   function norm(h){ if (h == null || h === '') return null; h = Number(h); return isFinite(h) ? ((h % 360) + 360) % 360 : null; }
   function globeFile(h){
-    if (h == null) return GLOBE_DIR + 'globe-blue-32.png';
+    if (h == null) return GLOBE_DIR + 'globe-purple-32.png';
     var k = Math.round(norm(h) / GLOBE_STEP) * GLOBE_STEP % 360;
     return GLOBE_DIR + 'globe-' + ('00' + k).slice(-3) + '-32.png';
   }
@@ -64,12 +66,35 @@
      it is back in the person's own): it wins while it lasts, and null hands the tab back to the rule above */
   window.owTabHue.context = function(h){ ctxHue = (h == null) ? null : norm(h); tabIcon(globeWant); };
   window.owTabHue.file = globeFile;
-  function brandHue(){
-    /* the hue the page is showing: its world's (--ow-user-hue, the App's purple for a visitor), else its brand's */
+  /* THE HUE A SCRIPT HAS PAINTED — the one authority over a hue baked into the HTML. Neither `--ow-user-hue` nor
+     `--ow-brand-hue` is declared in any stylesheet in this tree; their only writers are a script that decided what this
+     surface is wearing right now (apply below, oneway-popit.js applyPair, signup.html). So a number here is this load's
+     answer, never a projection's guess, and it is read on every call rather than kept. */
+  function paintedHue(){
     try {
       var cs = getComputedStyle(document.documentElement), bs = getComputedStyle(document.body || document.documentElement);
       var v = [cs.getPropertyValue('--ow-user-hue'), bs.getPropertyValue('--ow-user-hue'), bs.getPropertyValue('--ow-brand-hue')];
       for (var i = 0; i < v.length; i++) { var b = parseFloat(v[i]); if (isFinite(b)) return ((b % 360) + 360) % 360; }
+    } catch (_) {}
+    return null;
+  }
+  /* an "R,G,B" triplet as an angle. The hue pair is ONE representation platform-wide (oneway-popit.js §17) and it is the
+     only thing some surfaces write, so the tab can still read them; a stylesheet DOES declare `--ow-h1`, which is why
+     this sits below the head's ground rather than above it. */
+  function tripletAngle(v){
+    var m = /^\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*$/.exec(String(v == null ? '' : v));
+    if (!m) return null;
+    var r = +m[1] / 255, g = +m[2] / 255, b = +m[3] / 255;
+    var mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+    if (!d) return null;                         /* grey has no hue to follow */
+    var a = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+    return ((a * 60) % 360 + 360) % 360;
+  }
+  function brandHue(){
+    /* the pair this surface is painting, when it writes the pair and no angle */
+    try {
+      var cs = getComputedStyle(document.documentElement), bs = getComputedStyle(document.body || document.documentElement);
+      return tripletAngle(cs.getPropertyValue('--ow-h1') || bs.getPropertyValue('--ow-h1'));
     } catch (_) {}
     return null;
   }
@@ -98,8 +123,16 @@
       var hue = ctxHue != null ? ctxHue
               : globeWant != null ? globeWant
               : pageHue != null ? pageHue
-              : (headGlobe && headGlobe.ground != null) ? norm(headGlobe.ground)
-              : brandHue();
+              : paintedHue();
+      /* THE HEAD'S GROUND IS A GUESS MADE BEFORE ANY STYLESHEET IS PARSED (tools/site_seo.py bakes it from the
+         `--ow-h1` literal of frontend/shared/oneway-popit.css), so it is the answer only while nothing has painted yet.
+         It used to sit ABOVE the live reading, and the tab therefore kept the guess for the whole visit: measured
+         2026-11-07 on the App at 390 px, the room painting --ow-h1 255,0,0 and --ow-user-hue 0 (November's red, the
+         month's hue every person who has chosen none wears — founder/891, "when a user chooses no hue the button says
+         No hue (changes monthly)") while the tab wore globe-260, the violet of that CSS literal, which
+         oneway-popit.js overrides with the month's at boot. A projection cannot know the month. The room can. */
+      if (hue == null && headGlobe && headGlobe.ground != null) hue = norm(headGlobe.ground);
+      if (hue == null) hue = brandHue();
       var href = globeFile(hue);
       if (link.getAttribute('type') !== 'image/png') link.setAttribute('type', 'image/png');
       if (link.getAttribute('sizes') !== '32x32') link.setAttribute('sizes', '32x32');
@@ -215,8 +248,11 @@
            and it must clear a stale cache rather than leave a colour that was
            never theirs (the sign-up crossing measured on 2026-08-30 painted
            one hue and Home settled to another a second later). */
-        if (!u || u.hue_angle == null) { cache(null); apply(null); return null; }
-        cache(u.hue_angle); apply(u.hue_angle); return u.hue_angle;
+        if (!u || u.hue_angle == null) { cache(null); apply(null); if (u) { try { var H0 = window.OW && window.OW.hue; if (H0 && H0.heard) H0.heard(null); } catch(_){} } return null; }
+        cache(u.hue_angle); apply(u.hue_angle);
+        /* a page already wearing the neutral wears the person's own from this answer (his ruling, "Fixed per person"; oneway-popit.js hue.heard) */
+        try { var H = window.OW && window.OW.hue; if (H && H.heard) H.heard(u.hue_angle); } catch(_){}
+        return u.hue_angle;
       })
       .catch(function(){ return null; });    /* offline: the cache stands */
   }
@@ -232,6 +268,25 @@
     window.addEventListener('storage', function(e){
       if (e && e.key === 'ow_user_hue') apply(e.newValue);
     });
+  } catch(_){}
+  /* AND ONCE THE DOCUMENT HAS BEEN READ. This script runs in the head, before one stylesheet has been parsed, so a page
+     whose hue lives in CSS and whose script never repaints it — a shell opened without its backend behind it — had its
+     first answer as its only answer, and the tab kept the neutral globe. Measured 2026-11-07 on the OS shell served
+     flat, with no backend behind it: --ow-h1 124,45,255 in the room, globe-purple-32.png in the tab. Two more
+     readings, both free: `tabIcon` writes an href only when it changed. */
+  try {
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function(){ tabIcon(globeWant); });
+    if (document.readyState === 'complete') tabIcon(globeWant);
+    else window.addEventListener('load', function(){ tabIcon(globeWant); });
+  } catch(_){}
+
+  /* THE ROOM CHANGES COLOUR WITHOUT THIS SCRIPT, AND THE TAB FOLLOWS IT. oneway-popit.js re-paints the world on its own
+     — a person picking a hue, entering a Center, the month turning at midnight on the 1st (monthTurn) — and says so once,
+     on the frame that lands, with `ow:hue`. This script only ever DISPATCHED that event and never listened to it, so
+     every one of those changes left the tab wearing whatever it had. Our own announce is skipped: `apply` paints the tab
+     itself on the next line, and the same file is never asked for twice. */
+  try {
+    window.addEventListener('ow:hue', function(){ if (!announce.mine) tabIcon(globeWant); });
   } catch(_){}
   // Expose the painter for pages that draw the hue themselves.
   window.OnewayHue = { apply: apply, sync: sync };

@@ -24,6 +24,13 @@
     hueScript.src = '/frontend/shared/oneway-hue.js';
     document.head.appendChild(hueScript);
   }
+  /* INSIDE THE APPLE APP the website's links open in Safari and none leads to a "Coming soon" mark (oneway-inapp.js, the one
+     reader of the shell's OnewayApp/ mark): every page that wears this bar, the OS's included, loads it (app/release-21b) */
+  if (!(window.OW && window.OW.inApp) && !document.querySelector('script[src*="oneway-inapp.js"]')) {
+    var inAppScript = document.createElement('script');
+    inAppScript.src = '/frontend/shared/oneway-inapp.js';
+    document.head.appendChild(inAppScript);
+  }
   var bar = document.querySelector('.owbar');
   if (!bar || bar._owbar) return;
   bar._owbar = true;
@@ -57,14 +64,35 @@
   });
 
   /* the room the pages have: from beside the wordmark (where it sits when open) to short of the right side */
+  /* THE ROW TAKES THE WORDMARK'S ROOM WHILE THE WORDMARK IS NOT THERE (main's grade of the landing, 2026-11-09: "the top nav links clipped
+     at 390 ('Securi...' under Sign in)"). At the top of a page whose wordmark flies in from the hero (.owbar--fly), a narrow bar's own mark is
+     an empty slot 88 px wide at the left, and the row began after it: five pages in 174 px, the fourth cut under the fade. Until the page
+     moves, the row starts where the mark will stand and the five fit whole; the first scroll gives the mark its room back (scrolling also
+     folds the row away), and a docked mark always has it. */
+  var roomyQ = window.matchMedia ? window.matchMedia('(max-width:860px)') : null;
+  function roomy() {
+    return !!(roomyQ && roomyQ.matches && bar.classList.contains('owbar--fly') && (window.scrollY || 0) < 4 && !(flight && flight.docked()));
+  }
   function fit() {
     if (!pages || !mark) return;
+    var r0 = roomy();
+    pages.style.marginLeft = r0 ? (-mark.offsetWidth) + 'px' : '';
+    bar.classList.toggle('owbar--roomy', r0);
     var cs = getComputedStyle(bar), padL = parseFloat(cs.paddingLeft) || 0;
     var gap = parseFloat(getComputedStyle(pages).marginLeft) || 0;
     var start = bar.getBoundingClientRect().left + padL + mark.offsetWidth + gap;
     var stop = right && right.offsetWidth ? right.getBoundingClientRect().left - 12 : bar.getBoundingClientRect().right - padL;
     var room = Math.max(72, Math.floor(stop - start));
-    pages.style.maxWidth = room + 'px';
+    /* WHOLE WORDS (the same grade: "Secu" stood cut under the fade at 390 once the wordmark had docked too): a row that cannot show every
+       page ends after the last page it shows whole, and its fade covers only that page's own padding, so no word is ever half drawn; the
+       rest are a swipe away, as before (founder, 2026-10-10: "let users on condensed windows scroll through the pages ... with their finger") */
+    pages.style.maxWidth = 'none';
+    var whole = 0, list = pages.querySelectorAll('a'), x0 = list.length ? list[0].offsetLeft : 0;
+    if (pages.scrollWidth > room + 1) {
+      for (var i = 0; i < list.length; i++) { var end = list[i].offsetLeft - x0 + list[i].offsetWidth; if (end <= room) whole = end; }
+    }
+    bar.classList.toggle('owbar--whole', whole > 0);
+    pages.style.maxWidth = (whole > 0 ? whole : room) + 'px';
     edges();
   }
   /* which ends of the row hide more pages: the fade sits only on a side that has more to show */
@@ -177,7 +205,9 @@
       return;                                                       // a page: it opens, and the bar goes with the page
     }
     if (a) return;                                                   // the wordmark: decided on its own click, below
-    clearTimeout(linger); var was = isOpen(); set(!was, true); if (!was) openedAt = Date.now();
+    clearTimeout(linger); var was = isOpen();
+    if (was && onPhone()) return;                                    // a phone's bar stays open (below)
+    set(!was, true); if (!was) openedAt = Date.now();
   }, true);
   /* the wordmark, tapped: shut, it opens the bar (the click goes nowhere); open, it takes the person home */
   var mark = bar.querySelector('.owbar-mark');
@@ -186,11 +216,24 @@
     e.preventDefault(); e.stopPropagation(); clearTimeout(linger); set(true, true); openedAt = Date.now();
   });
 
+  /* ON A PHONE THE MENU IS SIMPLY THERE (the founder, 2026-10-22: "just have the menu at the top auto appear on mobile and
+     be scorrable through like that"): a narrow touch screen opens the bar as the page loads and keeps it open, at the top
+     and while scrolling; its pages are the one row they always were, scrolled sideways by a finger; a tap on the bar does
+     not fold it away, and a tap on a page opens that page at once (no tap opened it, so no click is held back). The
+     wordmark, tapped, still goes home. A mouse keeps the hover the bar always had. Held by tools/probe/bar-phone-open.cjs. */
+  var phoneQ = window.matchMedia ? matchMedia('(max-width: 560px) and (pointer: coarse)') : null;
+  function onPhone() { return !!(phoneQ && phoneQ.matches); }
+  function phoneOpen() { if (onPhone() && !isOpen()) { lastPointer = 'touch'; set(true, true); openedAt = 0; } }
+  phoneOpen();
+  window.addEventListener('load', function () { if (onPhone()) { if (isOpen()) fit(); else phoneOpen(); } });
+  if (phoneQ && phoneQ.addEventListener) phoneQ.addEventListener('change', function () { if (onPhone()) phoneOpen(); else { touchOpen = false; set(false); } });
+
   function grounded() {
     if (bar.classList.contains('owbar--solid')) return;
     bar.classList.toggle('owbar--scrolled', flight ? flight.docked() : window.scrollY > 16);
   }
   function onScroll() {
+    if (bar.classList.contains('owbar--roomy') !== roomy()) fit();
     if (isOpen() && !touchOpen && Math.abs(window.scrollY - openY) > 8) { clearTimeout(linger); set(false); }
     if (flight) flight.frame(); else grounded();
   }
@@ -303,7 +346,7 @@
       var ratio = H.h / H.w;
       fly.style.width = H.w + 'px';
       fly.style.transform = 'translate(' + (S.cx - S.w / 2) + 'px,' + (S.cy - S.w * ratio / 2) + 'px) scale(' + (S.w / H.w) + ')';
-      /* a page that fades its opening in (os.html's lockup) draws the wordmark with it: on the hero the flying mark is as
+      /* a page that fades its opening in (the-os.html's lockup) draws the wordmark with it: on the hero the flying mark is as
          faint as the hero's own would be, and it comes to full strength as it leaves for the bar */
       var a = 1;
       if (S.e < 1) for (var x = hero.parentElement; x && x !== document.body; x = x.parentElement) a *= parseFloat(getComputedStyle(x).opacity) || 0;
@@ -452,7 +495,7 @@
       }
       you.classList.add('owbar-you');
       /* for his eye: the face opens the person's own Me in the App (the dock's `center`, labelled Me) */
-      you.setAttribute('href', '/oneway-app.html#center');
+      you.setAttribute('href', '/app#center');
       you.setAttribute('aria-label', 'Your profile');
       you.innerHTML = '';
       you.appendChild(face);
@@ -506,25 +549,87 @@
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', goTo); } else { goTo(); }
   function goTo() {
   var marks = document.querySelectorAll ? document.querySelectorAll('[data-ow-go]') : [];
-  if (!marks.length || typeof XMLHttpRequest === 'undefined') return;
+  var hero = document.querySelector ? document.querySelector('[data-owbar-hero], .hero-mark') : null;
+  var closedNote = document.getElementById ? document.getElementById('owClosed') : null;
+  if ((!marks.length && !hero && !closedNote) || typeof XMLHttpRequest === 'undefined') return;
   var x = new XMLHttpRequest();
   x.open('GET', '/api/oneway/platform/public');
   x.onload = function () {
     var s = null;
     try { s = x.status === 200 ? JSON.parse(x.responseText) : null; } catch (e) { s = null; }
     if (!s || typeof s !== 'object') return;
+    /* the landing's closed note: said only when the switch answered closed, never when it could not be read */
+    if (closedNote) closedNote.hidden = !!(s.open && (s.app || s.os));
+    try { sticker(s, hero); } catch (e) {}                         /* a sticker that cannot be drawn never stops the doors */
     for (var i = 0; i < marks.length; i++) {
       var a = marks[i], side = a.getAttribute('data-ow-go');
       if ((side !== 'app' && side !== 'os') || s[side] !== true) continue;
-      var arrow = /\u2192|&rarr;|\u2192/.test(a.innerHTML) || a.textContent.indexOf('\u2192') >= 0;
+      /* shown only while that side is open (the landing's guest line); its words and door are its own */
+      if (a.hasAttribute('data-ow-go-show')) { a.hidden = false; a.removeAttribute('hidden'); continue; }
+      /* a door may name its own words (data-ow-go-text: the hero's "Go to App" / "Go to Oneway OS"); a door with a label of its
+         own (a span beside a logo) changes only that label, so the logo stays */
       var words = a.getAttribute('data-ow-go-text') || (side === 'app' ? 'Go to the App' : 'Go to the OS');
       var label = a.querySelector ? a.querySelector('span') : null;
       if (label) label.textContent = words;
-      else a.textContent = words + (arrow ? ' \u2192' : '');
+      else {
+        var arrow = /\u2192|&rarr;|\u2192/.test(a.innerHTML) || a.textContent.indexOf('\u2192') >= 0;
+        a.textContent = words + (arrow ? ' \u2192' : '');
+      }
       if (a.hasAttribute('aria-label')) a.setAttribute('aria-label', words);
-      a.setAttribute('href', side === 'app' ? '/oneway-app.html#home' : '/oneway-os.html');
+      a.setAttribute('href', side === 'app' ? '/app#home' : '/os');
     }
   };
   x.send();
+  }
+  /* THE WORDMARK'S STICKER, ON EVERY PAGE WITH A HERO WORDMARK (founder/913: a Minecraft-style splash beside the wordmark,
+     never on its letters, saying what the switch has open for sign-up; the founder, 2026-10-22: "that sticker card is still
+     broken make it thinner and longer to appear on phones" and "on app and os landing pages and others too the buttons and
+     the STICEKER"). One sticker, drawn here from the same one read of the switch as the go-to doors; its look is
+     oneway-bar.css's .ow-splash. On a phone it is two lines across most of the screen, and the wordmark keeps room under it
+     so the sticker never sits on the headline. Held by tools/probe/splash-phone.cjs. */
+  function sticker(s, hero) {
+    if (!hero || !s.open) return;
+    var x = s.app && s.os ? 'Oneway' : s.app ? 'The Oneway App' : s.os ? 'Oneway OS' : '';
+    if (!x) return;
+    var lockup = hero.parentNode; if (!lockup) return;
+    var lr0 = lockup.getBoundingClientRect(), hr0 = hero.getBoundingClientRect();
+    var isLock = hr0.height > 0 && lr0.height < hr0.height * 2.6;      /* the wordmark paired with a word in one small box */
+    /* the sticker lives BESIDE a lockup, never inside it: a page's rules for its lockup's word (.lk span) would style the
+       sticker's words too (measured: the App and Mission pages drew "Go learn the ecosystem!" blank) */
+    var box = isLock ? (lockup.parentNode || lockup) : lockup;
+    if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+    var el = document.createElement('a'); el.className = 'ow-splash'; el.href = '/beta';
+    el.innerHTML = '<b class="ow-splash__x"></b><span class="ow-splash__go">Go learn the ecosystem!</span><small>(Selective server test launch)</small>';
+    el.querySelector('.ow-splash__x').textContent = x + ' is as of now open for sign up,';
+    el.setAttribute('aria-label', x + ' is as of now open for sign up. Go learn the ecosystem! Selective server test launch.');
+    box.appendChild(el);
+    function narrow() { return (window.innerWidth || 0) <= 640; }
+    function place() {
+      var b = box.getBoundingClientRect(), m = hero.getBoundingClientRect();
+      if (!m.width) return;
+      /* the wordmark's own lockup: a page that pairs the wordmark with a word (App, OS, Mission) holds both in one small box,
+         and the sticker goes under the whole lockup, never on its word; the landing's wordmark stands alone */
+      var lock = isLock ? lockup : hero;
+      hero.style.marginBottom = ''; lockup.style.marginBottom = '';
+      /* Reserve the sticker's rotated height on every screen, including desktop. */
+      lock.style.marginBottom = Math.round(el.getBoundingClientRect().height + 12) + 'px';   /* its own room, off the headline */
+      m = hero.getBoundingClientRect(); b = box.getBoundingClientRect();
+      var lb = lock.getBoundingClientRect().bottom;
+      var w = el.offsetWidth, vw = window.innerWidth || document.documentElement.clientWidth;
+      var left;
+      {                                                      /* centred: on the SCREEN on a phone, on the lockup on a desktop */
+        var lr = lock.getBoundingClientRect();
+        left = narrow() ? (vw - w) / 2 - b.left : (lr.left + lr.right) / 2 - w / 2 - b.left;
+        left = Math.min(Math.max(left, 12 - b.left), vw - 12 - w - b.left);  /* inside the screen's 12px gutters */
+      }
+      el.style.left = left + 'px';
+      var tilt = (el.getBoundingClientRect().height - el.offsetHeight) / 2;   /* the tilt's overhang above its box */
+      el.style.top = (lb - b.top + 4 + Math.max(0, tilt)) + 'px';   /* it catches the wordmark's corner and leaves its letters */
+    }
+    function fade() { var away = (window.scrollY || 0) > 40; el.style.opacity = away ? '0' : '1'; el.style.pointerEvents = away ? 'none' : 'auto'; }
+    place(); fade();
+    if (hero.complete === false) hero.addEventListener('load', place);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+    window.addEventListener('resize', place); window.addEventListener('scroll', fade, { passive: true });
   }
 })();

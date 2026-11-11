@@ -45,7 +45,7 @@
     el.setAttribute('data-banner-style', pic && c.banner && c.banner.style === 'fade' ? 'fade' : 'framed');
     if (pic) {
       var band = document.createElement('span'); band.className = 'lc-banner';
-      band.innerHTML = '<img src="' + esc(pic) + '" alt="" loading="lazy" decoding="async">';
+      band.innerHTML = '<img src="' + esc(pic) + '" alt="" loading="lazy" decoding="async" onerror="OW.imgFail&&OW.imgFail(this)">';
       el.insertBefore(band, el.firstChild);
     }
     /* a Center's categories under its handle, as Instagram sets a business's kind */
@@ -57,6 +57,10 @@
     /* THE COUNTS, ONE ROW UNDER THE HEAD, hairlines between: a person's posts, followers, following; a Center's posts,
        followers and events */
     var row = document.createElement('span'); row.className = 'lc-counts';
+    /* NEVER BOASTING NOTHING (founder/1110, 2026-11-01: "none of them have any info"): when an account has neither a post nor a follower, those two figures are not drawn */
+    if (counts && !c.example && c.counts && !c.counts.posts && !c.counts.followers) {
+      [].forEach.call(counts.querySelectorAll('[data-count="posts"],[data-count="followers"]'), function (n) { n.remove(); });
+    }
     if (counts) {
       if (kind === 'center' && c.counts && typeof c.counts.events === 'number') {
         var ev = document.createElement('span'); ev.className = 'ow-ocard__count'; ev.setAttribute('data-count', 'events');
@@ -71,6 +75,11 @@
           n.innerHTML = (b ? b.outerHTML : '') + '<span>' + esc(word) + '</span>';
           row.appendChild(n);
         });
+      /* the row is the counts box now: it keeps its marks, or no write and no read could find these numbers again (oneway-cards.js setCount,
+         oneway-data.js syncFollowCounts). An example's numbers are an example's, and are left alone. */
+      if (!c.example) ['data-ow-of', 'data-ow-card', 'data-ow-self', 'aria-live', 'aria-atomic'].forEach(function (a) {
+        if (counts.hasAttribute(a)) row.setAttribute(a, counts.getAttribute(a));
+      });
       counts.remove();
     }
     /* THE ABOUT ROW: the bio at the left, the platforms under it; a Center's details at the right, its place last */
@@ -87,6 +96,11 @@
        side weather its card or profile ... in that one clean list"): a Center's details line by line, then where it is, said
        as the Center row says it ("Location: Atlantic City, NJ"); a person's place the same way. Never a city on a line of
        its own under the bio. */
+    /* ITS WEBSITE IS SAID ONCE (founder/1110, "not smart"): the row names it, so the row of marks does not repeat it with a lone globe */
+    if (links && facts.some(function (d) { return /^website$/i.test(String(d.label)); })) {
+      var web = links.querySelector('[data-platform="web"]'); if (web) web.remove();
+      if (!links.children.length) links = null;
+    }
     if (place) facts = facts.filter(function (d) { return !/^(address|location|place)$/i.test(String(d.label)); })
       .concat([{ label: 'Location', value: place, place: true }]);
     if (facts.length) {
@@ -112,6 +126,7 @@
     var acts = document.createElement('span'); acts.className = 'lc-acts';
     acts.innerHTML = '<span class="lc-follow">Follow</span><span class="lc-msg">Message</span>';
     el.appendChild(acts);
+    if (OW.cards.fit) OW.cards.fit(el);   /* a clamped text ends on a whole word (founder/1110) */
     if (c.example) { el.setAttribute('data-example', '1'); el.removeAttribute('tabindex'); el.querySelectorAll('a').forEach(function (a) { a.removeAttribute('href'); a.setAttribute('tabindex', '-1'); }); }
     return el;
   };

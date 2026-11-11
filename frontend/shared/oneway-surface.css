@@ -1,4 +1,5 @@
-/* oneway-surface.css — THE ONE POPIT SURFACE, in a sheet of its own (founder/822, 835).
+html.ow-old:not([data-simple="1"]) :matches(.ow-cal2__views.ow-seg,.ow-cal2__month,.ow-cal2__hours,.ow-mestart,.ow-set__list > .ow-set__sec,.ow-cv-begin__a,
+  .ow-lbh__t,.ow-lbh__rows,.ow-stp__card,.po-act--tile):not(.ow-popit *){--h:var(--ow-h1);--h2:var(--ow-h2);--h3:var(--ow-h3)}/* oneway-surface.css — THE ONE POPIT SURFACE, in a sheet of its own (founder/822, 835).
    It was the end of oneway-popit.css; it moved here, unchanged, so a page that is not the App can wear it too: the site's
    pricing boxes (founder/835: "i want to see the popit button surfaces united across the app, inculfuing the pricing")
    are named in its lists like every other surface, and the OS page, which does not load the App's sheet, loads this one.
@@ -6,6 +7,37 @@
    the end of that sheet. Its tokens carry the App's own :root values as their fallbacks (a page without the App's sheet
    has none); a page with it uses its own. Read by tools/apple_design.py with oneway-popit.css. Held by
    api/oneway/platform/test_site_pricebox.py, api/oneway/cards/test_card_surface.py and test_center_row.py. */
+/* A PANEL OUTSIDE A POPIT HAS NO --h OF ITS OWN (founder/1150's surfaces, 2026-11-01): the recipe below reads --h, --h2 and --h3, and
+   with them undefined the whole background-image is invalid and nothing draws (measured: Calendar's month and switcher computed
+   'none'). Such a panel wears the person's own hues; a panel inside a Popit keeps the Popit's. */
+html:not([data-simple="1"]) :is(.ow-cal2__views.ow-seg,.ow-cal2__month,.ow-cal2__hours,.ow-mestart,.ow-set__list > .ow-set__sec,.ow-cv-begin__a,
+  .ow-lbh__t,.ow-lbh__rows,.ow-stp__card,.po-act--tile):not(.ow-popit *){--h:var(--ow-h1);--h2:var(--ow-h2);--h3:var(--ow-h3)}
+html.ow-old:not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,html.ow-old:not([data-simple="1"]) .ow-cv-face,html.ow-old:not([data-simple="1"]) .ow-popit::before,html.ow-old:not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,html.ow-old:not([data-simple="1"]) .ow-pricebox,html.ow-old:not([data-simple="1"]) .ow-cv-pick__row,html.ow-old:not([data-simple="1"]) .ow-reqs,html.ow-old:not([data-simple="1"]) .ow-msg:not([data-mine]),html.ow-old:not([data-simple="1"]) .ow-cal2__views.ow-seg,html.ow-old:not([data-simple="1"]) .ow-cal2__month,html.ow-old:not([data-simple="1"]) .ow-cal2__hours,html.ow-old:not([data-simple="1"]) .ow-mestart,html.ow-old:not([data-simple="1"]) .ow-set__list > .ow-set__sec,html.ow-old:not([data-simple="1"]) .ow-mk__sec,html.ow-old:not([data-simple="1"]) .ow-mk__card,html.ow-old:not([data-simple="1"]) .ow-mk__hero,html.ow-old:not([data-simple="1"]) .ow-oc__sec,html.ow-old:not([data-simple="1"]) .ow-wk__sec,html.ow-old:not([data-simple="1"]) .ow-ds__say,html.ow-old[data-mode]:not([data-simple="1"]) .po-sheet:not(.is-open),html.ow-old[data-mode]:not([data-simple="1"]) .po-glance,html.ow-old[data-mode]:not([data-simple="1"]) .po-face,html.ow-old[data-mode]:not([data-simple="1"]) body .po-act.po-act--tile.po-act--tile,html.ow-old:not([data-simple="1"]) .ow-cv-begin__a,html.ow-old:not([data-simple="1"]) .ow-lbh__rows,html.ow-old:not([data-simple="1"]) .ow-stp__card,html.ow-old:not([data-simple="1"]):not([data-simple="1"]) body .ow-lbh__t.ow-lbh__t.ow-lbh__t:matches(.ow-btn,.po-act,[data-hub="write"]),html.ow-old:not([data-simple="1"]) .ow-crow{background-image:
+    radial-gradient(130% 80% at 18% -6%, rgba(var(--h),.46), transparent 64%),
+    radial-gradient(120% 90% at 92% 108%, rgba(var(--h2),.30), transparent 60%),
+    linear-gradient(158deg, rgba(var(--h),.18), rgba(var(--h3,var(--ow-h3,var(--h2))),.12) 46%,
+                            rgba(var(--h2),.10) 70%, var(--ow-tile-base,rgba(48,50,92,.50)));box-shadow:
+    inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),
+    inset 1px 1px 0 0 rgba(var(--h),.18),
+    inset -1px -1px 0 0 rgba(var(--h2),.15),
+    inset 5px 4px 16px -8px rgba(var(--h),.38),
+    inset -5px -4px 16px -8px rgba(var(--h2),.31),
+    -5px -6px 34px -12px rgba(var(--h),calc(.50 * var(--ow-pop-throw,1))),
+    5px 6px 34px -12px rgba(var(--h2),calc(.41 * var(--ow-pop-throw,1))),
+    0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html.ow-old:not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,html.ow-old:not([data-simple="1"]) .ow-cv-face,html.ow-old:not([data-simple="1"]) .ow-popit::before,html.ow-old:not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,html.ow-old:not([data-simple="1"]) .ow-pricebox,html.ow-old:not([data-simple="1"]) .ow-cv-pick__row,html.ow-old:not([data-simple="1"]) .ow-reqs,html.ow-old:not([data-simple="1"]) .ow-msg:not([data-mine]),html.ow-old:not([data-simple="1"]) .ow-cal2__views.ow-seg,html.ow-old:not([data-simple="1"]) .ow-cal2__month,html.ow-old:not([data-simple="1"]) .ow-cal2__hours,html.ow-old:not([data-simple="1"]) .ow-mestart,html.ow-old:not([data-simple="1"]) .ow-set__list > .ow-set__sec,html.ow-old:not([data-simple="1"]) .ow-mk__sec,html.ow-old:not([data-simple="1"]) .ow-mk__card,html.ow-old:not([data-simple="1"]) .ow-mk__hero,html.ow-old:not([data-simple="1"]) .ow-oc__sec,html.ow-old:not([data-simple="1"]) .ow-wk__sec,html.ow-old:not([data-simple="1"]) .ow-ds__say,html.ow-old[data-mode]:not([data-simple="1"]) .po-sheet:not(.is-open),html.ow-old[data-mode]:not([data-simple="1"]) .po-glance,html.ow-old[data-mode]:not([data-simple="1"]) .po-face,html.ow-old[data-mode]:not([data-simple="1"]) body .po-act.po-act--tile.po-act--tile,html.ow-old:not([data-simple="1"]) .ow-cv-begin__a,html.ow-old:not([data-simple="1"]) .ow-lbh__rows,html.ow-old:not([data-simple="1"]) .ow-stp__card,html.ow-old:not([data-simple="1"]):not([data-simple="1"]) body .ow-lbh__t.ow-lbh__t.ow-lbh__t:-webkit-any(.ow-btn,.po-act,[data-hub="write"]),html.ow-old:not([data-simple="1"]) .ow-crow{background-image:
+    radial-gradient(130% 80% at 18% -6%, rgba(var(--h),.46), transparent 64%),
+    radial-gradient(120% 90% at 92% 108%, rgba(var(--h2),.30), transparent 60%),
+    linear-gradient(158deg, rgba(var(--h),.18), rgba(var(--h3,var(--ow-h3,var(--h2))),.12) 46%,
+                            rgba(var(--h2),.10) 70%, var(--ow-tile-base,rgba(48,50,92,.50)));box-shadow:
+    inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),
+    inset 1px 1px 0 0 rgba(var(--h),.18),
+    inset -1px -1px 0 0 rgba(var(--h2),.15),
+    inset 5px 4px 16px -8px rgba(var(--h),.38),
+    inset -5px -4px 16px -8px rgba(var(--h2),.31),
+    -5px -6px 34px -12px rgba(var(--h),calc(.50 * var(--ow-pop-throw,1))),
+    5px 6px 34px -12px rgba(var(--h2),calc(.41 * var(--ow-pop-throw,1))),
+    0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
 /* ═══ THE ONE POPIT SURFACE ═══════════════════════════════════════════════════════════════════════════════════════════
    ★ FOUNDER/822, 2026-10-17: the OS switcher's Center buttons had "a slightly different pop-it button surface than the
      pop-its and posts do, and I want to unify the two together into one canonical pop-it surface that will be used for
@@ -28,18 +60,88 @@ html:not([data-simple="1"]) .ow-pricebox,
 html:not([data-simple="1"]) .ow-cv-pick__row,
 html:not([data-simple="1"]) .ow-reqs,
 html:not([data-simple="1"]) .ow-msg:not([data-mine]),
+/* EVERY PANEL THAT HOLDS CONTENT, IN THE CARD MESSAGES' BUTTON SITS ON (founder/1148, 1150: "the buttons and surfaces"): Calendar's
+   switcher, month and hours, the profile's Make it yours, a Settings group, a sheet, and the tiles of Create and of the Main. A tile
+   names itself three times: the buttons' older PRIMARY rule (oneway-popit.css) clears an image at that weight. */
+html:not([data-simple="1"]) .ow-cal2__views.ow-seg,
+html:not([data-simple="1"]) .ow-cal2__month,
+html:not([data-simple="1"]) .ow-cal2__hours,
+html:not([data-simple="1"]) .ow-mestart,
+html:not([data-simple="1"]) .ow-set__list > .ow-set__sec,
+/* MARKETPLACE, JOBS, BOOK SPACES AND WORKSPACE JOIN THE ONE MATERIAL (the founder, 2026-11-08: *"Marketplace still has no
+   visual coherence when it comes to the pop-it style. Same thing for jobs, book spaces, and more... The workspace page has
+   no visual coherence"*, said beside *"Calendar is actually looking good, pop it styling wise. It has the same type of glow
+   that posts do"*). Those surfaces were never incoherent by decision - their section wrappers were simply never added to this
+   list, so each one fell back to a plain panel. The SECTION takes the material and the rows inside it stay plain, which is
+   exactly how Settings - the screen he points at as the one to improve toward - already reads. */
+html:not([data-simple="1"]) .ow-mk__sec,
+html:not([data-simple="1"]) .ow-mk__card,
+html:not([data-simple="1"]) .ow-mk__hero,
+html:not([data-simple="1"]) .ow-oc__sec,
+html:not([data-simple="1"]) .ow-wk__sec,
+html:not([data-simple="1"]) .ow-ds__say,
+html[data-mode]:not([data-simple="1"]) .po-sheet:not(.is-open),
+html[data-mode]:not([data-simple="1"]) .po-glance,
+/* .po-face JOINS THE LIST (the founder, 2026-11-08: *"I want to see the same glow that the incorrect add one way to your home
+   screen button has that the other Poppets don't for some reason. I don't understand."*). He had found a real omission. The
+   install card is a .po-card__face, and that class, .ow-cv-face and .po-glance were all given founder/1152's holograph sweep -
+   two hue pools, --h from the top left and --h2 toward the bottom right. .po-face, the Popit's own face, was never added, so it
+   kept the older single pool at a flat .50 that does not even read --ow-pop-throw. Measured in the browser at 390px, dark, hue
+   255,70,120: .po-card__face two pools at alpha .75 and .616; .po-face ONE at .50. That is exactly the difference he could see
+   and could not name. One selector, no new recipe - building a second copy of this glow is the fault CLAUDE.md section 5 calls
+   a concept built twice. */
+html[data-mode]:not([data-simple="1"]) .po-face,
+html[data-mode]:not([data-simple="1"]) body .po-act.po-act--tile.po-act--tile,
+html:not([data-simple="1"]) .ow-cv-begin__a,
+html:not([data-simple="1"]) .ow-lbh__rows,
+html:not([data-simple="1"]) .ow-stp__card,
+html:not([data-simple="1"]):not([data-simple="1"]) body .ow-lbh__t.ow-lbh__t.ow-lbh__t:is(.ow-btn,.po-act,[data-hub="write"]),
 html:not([data-simple="1"]) .ow-crow{
   background-image:
     radial-gradient(130% 80% at 18% -6%, rgba(var(--h),.46), transparent 64%),
     radial-gradient(120% 90% at 92% 108%, rgba(var(--h2),.30), transparent 60%),
     linear-gradient(158deg, rgba(var(--h),.18), rgba(var(--h3,var(--ow-h3,var(--h2))),.12) 46%,
                             rgba(var(--h2),.10) 70%, var(--ow-tile-base,rgba(48,50,92,.50)));
+  /* THE GLOW IS THE CALENDAR'S TODAY (founder/1152, 2026-11-01: "the glow that the green gives over 1 should be the same type of
+     holograph glow the messages card and posts and profile cards should have"): the today marker is the person's two hues as one sweep,
+     linear-gradient(150deg, --ow-h1 .95, --ow-h2 .78). A shadow takes one colour, so each light the surface had in its first hue
+     alone (its edge, its inner light, the light it throws) is now that sweep's two ends: --h from the top left, --h2 toward the bottom
+     right, the second at the marker's own ratio (.78/.95), the strength, blur and reach as they were. Nothing is added to look at. */
   box-shadow:
     inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),
-    inset 0 0 0 1px rgba(var(--h),.18),
-    inset 0 0 16px -6px rgba(var(--h),.38),
-    0 0 34px -10px rgba(var(--h),.50),
+    inset 1px 1px 0 0 rgba(var(--h),.18),
+    inset -1px -1px 0 0 rgba(var(--h2),.15),
+    inset 5px 4px 16px -8px rgba(var(--h),.38),
+    inset -5px -4px 16px -8px rgba(var(--h2),.31),
+    -5px -6px 34px -12px rgba(var(--h),calc(.50 * var(--ow-pop-throw,1))),
+    5px 6px 34px -12px rgba(var(--h2),calc(.41 * var(--ow-pop-throw,1))),
     0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html.ow-old[data-theme="light"]:not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cv-face,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-popit::before,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-pricebox,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cv-pick__row,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-reqs,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-msg:not([data-mine]),html.ow-old[data-theme="light"]:not([data-simple="1"]) .po-sheet,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cpage__ev,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-claims__row,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-map__tile,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cal2__views.ow-seg,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cal2__month,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cal2__hours,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mestart,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-set__list > .ow-set__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mk__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mk__card,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mk__hero,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-oc__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-wk__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cv-begin__a,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-lbh__rows,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-stp__card,html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance,html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) body .po-act.po-act--tile.po-act--tile,html.ow-old[data-theme="light"]:not([data-simple="1"]) body .ow-lbh__t.ow-lbh__t.ow-lbh__t:matches(.ow-btn,.po-act,[data-hub="write"]),html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow{background-image:
+    radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.32), transparent 62%),
+    radial-gradient(92% 62% at 50% 116%, rgba(var(--h2),.22), transparent 64%),
+    linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97));box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -26px 46px rgba(76,66,120,.055),
+    inset 1px 1px 0 0 rgba(var(--h),.28),
+    inset -1px -1px 0 0 rgba(var(--h2),.23),
+    inset 4px 4px 14px -7px rgba(var(--h),.22),
+    inset -4px -4px 14px -7px rgba(var(--h2),.18),
+    -4px -5px 26px -13px rgba(var(--h),.38),
+    4px 5px 26px -13px rgba(var(--h2),.31),
+    0 14px 28px -14px rgba(48,40,80,.3)}
+html.ow-old[data-theme="light"]:not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cv-face,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-popit::before,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-pricebox,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cv-pick__row,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-reqs,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-msg:not([data-mine]),html.ow-old[data-theme="light"]:not([data-simple="1"]) .po-sheet,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cpage__ev,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-claims__row,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-map__tile,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cal2__views.ow-seg,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cal2__month,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cal2__hours,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mestart,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-set__list > .ow-set__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mk__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mk__card,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-mk__hero,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-oc__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-wk__sec,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-cv-begin__a,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-lbh__rows,html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-stp__card,html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance,html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) body .po-act.po-act--tile.po-act--tile,html.ow-old[data-theme="light"]:not([data-simple="1"]) body .ow-lbh__t.ow-lbh__t.ow-lbh__t:-webkit-any(.ow-btn,.po-act,[data-hub="write"]),html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow{background-image:
+    radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.32), transparent 62%),
+    radial-gradient(92% 62% at 50% 116%, rgba(var(--h2),.22), transparent 64%),
+    linear-gradient(178deg, rgba(252,251,255,.96), rgba(238,236,247,.97));box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 -26px 46px rgba(76,66,120,.055),
+    inset 1px 1px 0 0 rgba(var(--h),.28),
+    inset -1px -1px 0 0 rgba(var(--h2),.23),
+    inset 4px 4px 14px -7px rgba(var(--h),.22),
+    inset -4px -4px 14px -7px rgba(var(--h2),.18),
+    -4px -5px 26px -13px rgba(var(--h),.38),
+    4px 5px 26px -13px rgba(var(--h2),.31),
+    0 14px 28px -14px rgba(48,40,80,.3)}
 html[data-theme="light"]:not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,
 html[data-theme="light"]:not([data-simple="1"]) .ow-cv-face,
 html[data-theme="light"]:not([data-simple="1"]) .ow-popit::before,
@@ -52,6 +154,22 @@ html[data-theme="light"]:not([data-simple="1"]) .po-sheet,
 html[data-theme="light"]:not([data-simple="1"]) .ow-cpage__ev,
 html[data-theme="light"]:not([data-simple="1"]) .ow-claims__row,
 html[data-theme="light"]:not([data-simple="1"]) .ow-map__tile,
+html[data-theme="light"]:not([data-simple="1"]) .ow-cal2__views.ow-seg,
+html[data-theme="light"]:not([data-simple="1"]) .ow-cal2__month,
+html[data-theme="light"]:not([data-simple="1"]) .ow-cal2__hours,
+html[data-theme="light"]:not([data-simple="1"]) .ow-mestart,
+html[data-theme="light"]:not([data-simple="1"]) .ow-set__list > .ow-set__sec,
+html[data-theme="light"]:not([data-simple="1"]) .ow-mk__sec,
+html[data-theme="light"]:not([data-simple="1"]) .ow-mk__card,
+html[data-theme="light"]:not([data-simple="1"]) .ow-mk__hero,
+html[data-theme="light"]:not([data-simple="1"]) .ow-oc__sec,
+html[data-theme="light"]:not([data-simple="1"]) .ow-wk__sec,
+html[data-theme="light"]:not([data-simple="1"]) .ow-cv-begin__a,
+html[data-theme="light"]:not([data-simple="1"]) .ow-lbh__rows,
+html[data-theme="light"]:not([data-simple="1"]) .ow-stp__card,
+html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance,
+html[data-theme="light"][data-mode]:not([data-simple="1"]) body .po-act.po-act--tile.po-act--tile,
+html[data-theme="light"]:not([data-simple="1"]) body .ow-lbh__t.ow-lbh__t.ow-lbh__t:is(.ow-btn,.po-act,[data-hub="write"]),
 html[data-theme="light"]:not([data-simple="1"]) .ow-crow{
   background-image:
     radial-gradient(115% 62% at 50% -10%, rgba(var(--h),.32), transparent 62%),
@@ -60,25 +178,130 @@ html[data-theme="light"]:not([data-simple="1"]) .ow-crow{
   box-shadow:
     inset 0 1px 0 rgba(255,255,255,.9),
     inset 0 -26px 46px rgba(76,66,120,.055),
-    inset 0 0 0 1px rgba(var(--h),.28),
-    inset 0 0 14px -6px rgba(var(--h),.22),
-    0 0 26px -12px rgba(var(--h),.38),
+    inset 1px 1px 0 0 rgba(var(--h),.28),
+    inset -1px -1px 0 0 rgba(var(--h2),.23),
+    inset 4px 4px 14px -7px rgba(var(--h),.22),
+    inset -4px -4px 14px -7px rgba(var(--h2),.18),
+    -4px -5px 26px -13px rgba(var(--h),.38),
+    4px 5px 26px -13px rgba(var(--h2),.31),
     0 14px 28px -14px rgba(48,40,80,.3)}
-html.ow-old:not([data-simple="1"]) .ow-crow:matches(:hover,:focus){box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.32),inset 0 0 18px -6px rgba(var(--h),.55),
-    0 0 42px -10px rgba(var(--h),.62),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
-html.ow-old:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus){box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.32),inset 0 0 18px -6px rgba(var(--h),.55),
-    0 0 42px -10px rgba(var(--h),.62),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
-/* the Center row (oneway-centerrow.css) takes its Center's own pair there, and lights up a little more under the pointer or the keyboard */
-html:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible){
-  box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.32),inset 0 0 18px -6px rgba(var(--h),.55),
-    0 0 42px -10px rgba(var(--h),.62),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
-html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:matches(:hover,:focus){box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
-    inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}
-html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus){box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
-    inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}
-html[data-theme="light"]:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible){
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.42),
-    inset 0 0 16px -6px rgba(var(--h),.32),0 0 30px -12px rgba(var(--h),.5),0 14px 28px -14px rgba(48,40,80,.3)}
+/* OUTSIDE THE APP AND THE OS (no data-mode: the landing, its pricing boxes and cards, sign-in) the surface keeps the one-hue light it had
+   before founder/1152; the landing's look is the web session's to move (W10). Written last so it outweighs the two blocks above. */
+html:not([data-mode]):not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,
+html:not([data-mode]):not([data-simple="1"]) .ow-cv-face,
+html:not([data-mode]):not([data-simple="1"]) .ow-popit::before,
+html:not([data-mode]):not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,
+html:not([data-mode]):not([data-simple="1"]) .ow-pricebox,
+html:not([data-mode]):not([data-simple="1"]) .ow-cv-pick__row,
+html:not([data-mode]):not([data-simple="1"]) .ow-reqs,
+html:not([data-mode]):not([data-simple="1"]) .ow-msg:not([data-mine]),
+html:not([data-mode]):not([data-simple="1"]) .ow-crow{
+  box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 0 0 0 1px rgba(var(--h),.18),inset 0 0 16px -6px rgba(var(--h),.38),
+    0 0 34px -10px rgba(var(--h),.50),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .po-card:not(.ow-fpos .po-card) > .po-card__face,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-cv-face,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-popit::before,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-ocard.lc.ow-popit::before,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-pricebox,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-cv-pick__row,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-reqs,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-msg:not([data-mine]),
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .po-sheet,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-cpage__ev,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-claims__row,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-map__tile,
+html[data-theme="light"]:not([data-mode]):not([data-simple="1"]) .ow-crow{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 0 0 0 1px rgba(var(--h),.28),
+    inset 0 0 14px -6px rgba(var(--h),.22),0 0 26px -12px rgba(var(--h),.38),0 14px 28px -14px rgba(48,40,80,.3)}
+/* A ROW OF A LIST (OW.mountList's .po-glance: Home's lists, the events widgets, Create's list, Discovery, a profile, opportunities) wears
+   the one surface too, and in the light room its words, its mark and its date take the ink the surface is drawn for, as Simple's light
+   room does (below): it was the dark recipe's white on a light page. Popit mode in the App and the OS only. */
+html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance{color:var(--ow-ink)}
+html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance :matches(.po-glance__lb,.po-glance__sig,.po-glance__day){color:var(--ow-ink);text-shadow:none}
+html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance :-webkit-any(.po-glance__lb,.po-glance__sig,.po-glance__day){color:var(--ow-ink);text-shadow:none}
+html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance :is(.po-glance__lb,.po-glance__sig,.po-glance__day){color:var(--ow-ink);text-shadow:none}
+html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance .po-glance__ic svg{stroke:currentColor}
+html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance .po-glance__date{background:var(--ow-wash);box-shadow:inset 0 0 0 1px var(--ow-hair)}
+html.ow-old:not([data-simple="1"]) .ow-crow:matches(:hover,:focus),html.ow-old[data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 1px 1px 0 0 rgba(var(--h),.32),inset -1px -1px 0 0 rgba(var(--h2),.26),
+    inset 5px 4px 18px -8px rgba(var(--h),.55),inset -5px -4px 18px -8px rgba(var(--h2),.45),
+    -6px -7px 42px -12px rgba(var(--h),.62),6px 7px 42px -12px rgba(var(--h2),.51),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html.ow-old:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus),html.ow-old[data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 1px 1px 0 0 rgba(var(--h),.32),inset -1px -1px 0 0 rgba(var(--h2),.26),
+    inset 5px 4px 18px -8px rgba(var(--h),.55),inset -5px -4px 18px -8px rgba(var(--h2),.45),
+    -6px -7px 42px -12px rgba(var(--h),.62),6px 7px 42px -12px rgba(var(--h2),.51),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+/* the Center row (oneway-centerrow.css) takes its Center's own pair there, and lights up a little more under the pointer or the keyboard;
+   a list's row the same under the pointer */
+html:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible),
+html[data-mode]:not([data-simple="1"]) .po-glance:hover{
+  box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 1px 1px 0 0 rgba(var(--h),.32),inset -1px -1px 0 0 rgba(var(--h2),.26),
+    inset 5px 4px 18px -8px rgba(var(--h),.55),inset -5px -4px 18px -8px rgba(var(--h2),.45),
+    -6px -7px 42px -12px rgba(var(--h),.62),6px 7px 42px -12px rgba(var(--h2),.51),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:matches(:hover,:focus),html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 1px 1px 0 0 rgba(var(--h),.42),
+    inset -1px -1px 0 0 rgba(var(--h2),.34),inset 4px 4px 16px -7px rgba(var(--h),.32),inset -4px -4px 16px -7px rgba(var(--h2),.26),
+    -4px -5px 30px -13px rgba(var(--h),.5),4px 5px 30px -13px rgba(var(--h2),.41),0 14px 28px -14px rgba(48,40,80,.3)}
+html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus),html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 1px 1px 0 0 rgba(var(--h),.42),
+    inset -1px -1px 0 0 rgba(var(--h2),.34),inset 4px 4px 16px -7px rgba(var(--h),.32),inset -4px -4px 16px -7px rgba(var(--h2),.26),
+    -4px -5px 30px -13px rgba(var(--h),.5),4px 5px 30px -13px rgba(var(--h2),.41),0 14px 28px -14px rgba(48,40,80,.3)}
+html[data-theme="light"]:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible),
+html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance:hover{
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 1px 1px 0 0 rgba(var(--h),.42),
+    inset -1px -1px 0 0 rgba(var(--h2),.34),inset 4px 4px 16px -7px rgba(var(--h),.32),inset -4px -4px 16px -7px rgba(var(--h2),.26),
+    -4px -5px 30px -13px rgba(var(--h),.5),4px 5px 30px -13px rgba(var(--h2),.41),0 14px 28px -14px rgba(48,40,80,.3)}
+html.ow-old:not([data-simple="1"]):not([data-fx="safe"]) :matches(.po-card__face,.po-face,.ow-cv-face,.po-glance){-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
+html.ow-old:not([data-simple="1"]):not([data-fx="safe"]) :-webkit-any(.po-card__face,.po-face,.ow-cv-face,.po-glance){-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
+/* A POST'S LIGHT RUNS ACROSS IT, NEVER DOWN IT (the founder, 2026-11-01: "on posts i want the header to not look like it has a shadow
+   or highlight behind it on any theme type"). The one surface above lit a Post from a pool at its top and another at its foot, so the
+   header sat on a hue band (measured at 390, content hidden, header against body: light ΔE 7.9-13, dark 23.8; the foot 13-35) and,
+   in dark, the 54px glow of the card above showed through its translucent top. A Post keeps the surface's material (its hue, the
+   hairline and the inner light at every edge, the grain) with the light laid side to side, the author's hue where the face is and
+   the place's at the right, so no row of the card is lit more than another; its outer glow stays within the gap. Posts only
+   (`[data-po-id]`): every other Popit keeps the block above. Held by api/oneway/cards/test_post_header.py. For his eye. */
+/* LIQUID GLASS, THE SAME GLASS AS THE BAR (the founder, 2026-11-08: "make them support liquid glass with the bar and
+   match to ios"; and at line 523 of this file, "buttons should be like liquid glass bars like the bottom change i want but
+   do it carefully"). The dock already refracts what is behind it with blur(16px) saturate(1.25) - measured on it - and a
+   Popit's own ground is already translucent on live (color-mix(in srgb, var(--ow-ground) 78%, transparent)), so the glass
+   only needs the backdrop. NOTHING ABOUT THE MATERIAL CHANGES: no colour, no gradient, no shadow, no radius. The blur
+   composites BEHIND the face and is seen through the 22 percent the ground already leaves open, which is what makes a pane
+   read as glass on iOS rather than as paint. Simple keeps its flat ground, and the no-blur tier (data-fx=safe) is excluded
+   because backdrop filters are off there by definition. */
+html:not([data-simple="1"]):not([data-fx="safe"]) :is(.po-card__face,.po-face,.ow-cv-face,.po-glance){
+  -webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
+
+/* A POST IS A POPIT, AND A POPIT IS WHAT ONEWAY.CENTER ALREADY IS (the founder, 2026-11-08: "leave popits to the
+   oneway.center look and fix the discoloring of them anywhere it exists but DO NOT CHANGE THEM LIKE YOUVE BEEN DOING,
+   AND THEN MAKE SURE THE POPITS EVERYWHERE ELSE MATCH IT").
+   MEASURED against the live sheet (oneway-popit.css?v=b5f8653d, fetched from oneway.center): this file's generic
+   .po-card__face is BYTE-IDENTICAL to live's - three hue radials over linear-gradient(178deg, --ow-panel-1,
+   --ow-panel-2), with inset lift, inset weight, a 0 0 34px -8px hue glow and the drop. The Popit material never drifted.
+   What drifted was an override that sat HERE, keyed on [data-po-id], which threw that material away for posts only and
+   replaced it with a lateral wash on an opaque --ow-tile-base plate - a dark slab with colour painted on it instead of a
+   hue-lit body. That is the discolouring, and it is why a post looked unlike every other Popit on the same screen.
+   The override is gone. A post now takes the one material, live's, the same as a Popit, a canvas tile and a row. Nothing
+   here redefines it; there is one declaration and this is not it. */
+/* A POST'S OUTER GLOW HAS TO LEAVE THE POST (the founder, 2026-11-08: *"the rest of the posts now lack [the glow] for some
+   reason"*). He was right and it was one number. This carried the SAME alpha as the install card standing directly above it in
+   the same river, with a geometry that cannot be seen: 0 0 14px -8px is a reach of (14/2) - 8 = MINUS 1px, so the light never
+   crossed the element's own edge, while the install card's 0 0 54px -5px reaches 22px. Matched to that card, because it is the
+   one he points at and it is its neighbour. His 2026-11-01 ruling is untouched: the FACE above keeps its flat side-to-side
+   light and the header stays unlit - only the reach outside the card changes, which that ruling never spoke about. */
+html:not([data-simple="1"]) .po-river > [data-po-id]:not(.ow-fpos [data-po-id]){box-shadow:0 0 54px -5px rgba(var(--h),calc(.62 * var(--ow-pop-throw,1)))}
+@media (hover:hover) and (pointer:fine){
+  html:not([data-simple="1"]) .po-river > [data-po-id]:not(.ow-fpos [data-po-id]):hover{box-shadow:0 0 60px -4px rgba(var(--h),calc(.82 * var(--ow-pop-throw,1)))}
+}
+/* Scroll's text page: the same light, laid across */
+html:not([data-simple="1"]) .ow-fpos .po-card[data-po-id] > .po-card__face{
+  background:linear-gradient(90deg, rgba(var(--h),.20), rgba(var(--h2),.14)), linear-gradient(rgba(255,255,255,.05), rgba(255,255,255,.05));
+  box-shadow:inset 0 0 0 1px rgba(var(--h),.34)}
+html[data-theme="light"]:not([data-simple="1"]) .ow-fpos .po-card[data-po-id] > .po-card__face{
+  background:linear-gradient(90deg, rgba(var(--h),.10), rgba(var(--h2),.08)), linear-gradient(rgba(255,255,255,.95), rgba(255,255,255,.95));
+  box-shadow:inset 0 0 0 1px rgba(var(--h),.30)}
+/* Scroll's photo page: no shade over the top of the picture; the name, the time and the mark carry their own tight edge */
+html body .ow-fpos[data-kind="media"] .po-card[data-po-id] .po-card__cover::after{
+  background:linear-gradient(180deg, transparent 0%, transparent 44%, rgba(0,0,0,.7) 100%)}
+html.ow-old body .ow-fpos[data-kind="media"] .po-card[data-po-id] .po-card__who :matches(.po-card__nm,.po-card__when){text-shadow:0 1px 2px rgba(0,0,0,.6)}
+html.ow-old body .ow-fpos[data-kind="media"] .po-card[data-po-id] .po-card__who :-webkit-any(.po-card__nm,.po-card__when){text-shadow:0 1px 2px rgba(0,0,0,.6)}
+html body .ow-fpos[data-kind="media"] .po-card[data-po-id] .po-card__who :is(.po-card__nm,.po-card__when){text-shadow:0 1px 2px rgba(0,0,0,.6)}
+html body .ow-fpos[data-kind="media"] .po-card[data-po-id] > .po-card__from{filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))}
+
 
 /* ═══ THE SIMPLE SURFACE: the same components in the Simple material (the founder, 2026-10-19: "visual clean interface built for
    simple mode"; the dispatcher's brief: the same layouts and information as Pop-it, flat, calm, clear, real pictures and
@@ -96,6 +319,7 @@ html[data-simple="1"][data-simple="1"] .ow-cv-pick__row,
 html[data-simple="1"][data-simple="1"] .ow-reqs,
 html[data-simple="1"][data-simple="1"] .ow-crow,
 html[data-simple="1"][data-simple="1"] .ow-pricebox,
+html[data-mode][data-simple="1"] body .po-act.po-act--tile,
 /* the components that light themselves with the hue outside the one surface's lists (measured: every rule in oneway-popit.css
    whose background is a radial light of --h), their boxes only: sheets, Popit faces and glance beads, the Center page's
    events, claims rows, map tiles, Discovery's rows, Create's panels. Buttons, faces and pictures keep their own. */
@@ -110,11 +334,26 @@ html[data-simple="1"][data-simple="1"] .ow-find__row,
 html[data-simple="1"][data-simple="1"] .ow-compose__lens,
 html[data-simple="1"][data-simple="1"] .ow-compose__lensdoor,
 html[data-simple="1"][data-simple="1"] .ow-compose__way,
+/* ── NAMED HERE INSTEAD OF DRAWING THEMSELVES (the release gate, 2026-11-09) ──────────────────────────────────────
+   Three components had each written their own white card for Simple light — the OS menu's stage and its side
+   (.ow-stg__card, .ow-stg__side), and the card an add flow pops up (.ow-pqs__card). A hand-written #fff is a flat
+   white at rest with no hue in it, which is the fill S20 bans and test_design_rules counts; it is also three more
+   places to change when the card changes. They are named here, and their own rules are gone. */
+html[data-simple="1"][data-simple="1"] .ow-stg__card,
+html[data-simple="1"][data-simple="1"] .ow-stg__side,
+html[data-simple="1"][data-simple="1"] .ow-pqs__card,
 html[data-simple="1"][data-simple="1"] .ow-compose__write{
-  --ow-simple-ground:color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h,var(--ow-h1,139,92,255))) 3%);
+  --ow-simple-ground:var(--ow-scard,color-mix(in srgb,var(--ow-ground,#000) 97%,rgb(var(--h,var(--ow-h1,139,92,255))) 3%));
   --ow-simple-edge:color-mix(in srgb,var(--ow-ink,#fff) 10%,transparent);
-  background:var(--ow-simple-ground);background-image:none;box-shadow:inset 0 0 0 1px var(--ow-simple-edge);
+  background:var(--ow-simple-ground);background-image:none;box-shadow:var(--ow-scard-shadow,inset 0 0 0 1px var(--ow-simple-edge));
   animation:none}
+/* HIS CARD (the founder, 2026-11-08: "a white card on a 3%-hue ground with one soft shadow and no lines"): where the page names
+   the Simple card (oneway-popit.css --ow-scard, light and dark), every component above IS that card, plain white on his ground
+   in light and the flat near-black in dark, no hairline; the mixes above are only the fallback for a page that names none. */
+/* Simple's ground is the theme's own (near white in light): the words take the theme's ink, not the lens's white (the visual
+   red team, 2026-10-24: 1.19:1 in Simple light) */
+html[data-simple="1"][data-simple="1"] .ow-compose__write .ow-compose__words{color:var(--ow-ink);text-shadow:none}
+html[data-simple="1"][data-simple="1"] .ow-compose__write .ow-compose__words::placeholder{color:rgba(255,255,255,0.58);color:color-mix(in srgb,var(--ow-ink) 58%,transparent)}html.ow-old[data-simple="1"][data-simple="1"] .ow-compose__write .ow-compose__words::placeholder{color:rgba(255,255,255,0.58)}
 html[data-simple="1"][data-simple="1"] .po-card:not(.ow-fpos .po-card) > .po-card__face::after,
 html[data-simple="1"][data-simple="1"] .ow-cv-face::after,
 html[data-simple="1"][data-simple="1"] .ow-popit::after,
@@ -148,8 +387,8 @@ html[data-simple="1"][data-simple="1"] .ow-door .ow-globe__hot{display:none}
    moves when it arrives, changes or goes. A beating red dot when something is on now, green when open, amber when soon,
    grey otherwise. Simple holds still (no beat), as does a person who asked for less motion. No flex gap: Safari 12. */
 .ow-live{position:absolute;top:10px;right:10px;z-index:3;display:inline-flex;align-items:center;max-width:64%;
-  padding:4px 10px 4px 8px;border-radius:999px;font:600 11.5px/1.25 'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-  color:#fff;background:rgba(10,10,18,.66);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16);white-space:nowrap;
+  padding:4px 10px 4px 8px;border-radius:999px;font:600 12px/1.25 'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:#fff;background:rgba(10,10,18,.66);box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);white-space:nowrap;
   overflow:hidden;opacity:0;transition:opacity .28s ease;pointer-events:none}
 .ow-live[data-on="1"]{opacity:1}
 .ow-live[data-beside="menu"]{right:48px}
@@ -159,16 +398,13 @@ html[data-simple="1"][data-simple="1"] .ow-door .ow-globe__hot{display:none}
 .ow-live[data-tone="open"] i{background:#34c759}
 .ow-live[data-tone="soon"] i{background:#ff9f0a}
 @keyframes ow-live-beat{0%{box-shadow:0 0 0 0 rgba(255,59,92,.55)}100%{box-shadow:0 0 0 7px rgba(255,59,92,0)}}
-html[data-theme="light"] .ow-live{color:#111;background:rgba(255,255,255,.86);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
+html[data-theme="light"] .ow-live{color:#111;background:rgba(255,255,255,.9);box-shadow:inset 0 0 0 1px rgba(0,0,0,.1)}
 html[data-simple="1"][data-simple="1"] .ow-live[data-tone="live"] i{animation:none}
 @media (prefers-reduced-motion:reduce){.ow-live i{animation:none!important}.ow-live{transition:none}}
 
-/* THE X BESIDE A RESERVED NAME (home.js releaseButton): a quiet circle, then, armed, the word in the delete red */
-.ow-claims__x{flex:none;display:inline-flex;align-items:center;justify-content:center;min-width:36px;height:36px;padding:0;border:0;
-  border-radius:999px;background:none;color:var(--ow-ink-3);cursor:pointer;font:inherit;font-size:13px;font-weight:600}
+/* THE X BESIDE A RESERVED NAME (home.js releaseButton): the family's round, then, armed, its secondary pill in the danger red */
+.ow-claims__x{flex:none}
 .ow-claims__x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
-.ow-claims__x:hover{color:var(--ow-ink);background:rgba(var(--ow-h1),.10)}
-.ow-claims__x.is-armed{padding:0 14px;background:rgba(255,92,108,.16);box-shadow:inset 0 0 0 1px rgba(255,92,108,.55);color:#ff5c6c}
 html.ow-old .ow-claims__x:focus{outline:2px solid var(--ow-ink);outline-offset:2px}
 .ow-claims__x:focus-visible{outline:2px solid var(--ow-ink);outline-offset:2px}
 
@@ -178,23 +414,244 @@ html.ow-old .ow-claims__x:focus{outline:2px solid var(--ow-ink);outline-offset:2
 .ow-menu__now{margin:0 0 8px;font-size:13px;font-weight:600;opacity:.72}
 .ow-menu__chips{display:flex;flex-wrap:nowrap;overflow-x:auto;margin:0 -4px 8px;padding-bottom:2px;-webkit-overflow-scrolling:touch}
 .ow-menu__chip{flex:none;margin:0 4px;padding:7px 14px;border:0;border-radius:999px;font:inherit;font-size:13px;font-weight:700;color:inherit;
-  background:rgba(127,127,127,.14);cursor:pointer}
+  background:var(--ow-wash-on);cursor:pointer}
 .ow-menu__chip.is-on{background:rgba(124,92,255,.85);color:#fff}
 .ow-menu__sec{margin:0 0 12px}
 .ow-menu__sh{margin:6px 0 8px;font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.7}
 .ow-menu__grid{display:flex;flex-wrap:wrap;margin:0 -5px}
 .ow-menu__dish{position:relative;display:flex;flex-direction:column;box-sizing:border-box;flex:1 1 220px;max-width:calc(50% - 10px);min-width:150px;
-  margin:5px;padding:0;border:0;border-radius:18px;overflow:hidden;text-align:left;color:inherit;font:inherit;cursor:pointer;
-  background:rgba(127,127,127,.1);box-shadow:inset 0 0 0 1px rgba(127,127,127,.2)}
+  margin:5px;padding:0;border:0;border-radius:20px;overflow:hidden;text-align:left;color:inherit;font:inherit;cursor:pointer;
+  background:var(--ow-wash);box-shadow:inset 0 0 0 1px var(--ow-hair)}
 .ow-menu__pic{display:block;width:100%;padding-top:62%;background-size:cover;background-position:center}
 .ow-menu__pic--none{position:relative;background:radial-gradient(120% 90% at 30% 10%,rgba(var(--h),.95),rgba(var(--h),.45) 72%)}
-.ow-menu__pic--none i{position:absolute;left:0;right:0;top:50%;margin-top:-22px;text-align:center;font:800 40px/44px 'ONEWAY Head','ONEWAY Sans',system-ui,sans-serif;
+.ow-menu__pic--none i{position:absolute;left:0;right:0;top:50%;margin-top:-22px;text-align:center;font:800 44px/44px 'ONEWAY Head','ONEWAY Sans',system-ui,sans-serif;
   font-style:normal;color:#fff;opacity:.92}
 .ow-menu__b{display:block;padding:10px 12px 12px}
 .ow-menu__b b{display:block;font-size:15px;line-height:1.25}
-.ow-menu__d{display:block;margin-top:3px;font-size:12.5px;line-height:1.35;opacity:.7;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ow-menu__d{display:block;margin-top:3px;font-size:13px;line-height:1.35;opacity:.7;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .ow-menu__p{display:block;margin-top:6px;font-weight:800;font-variant-numeric:tabular-nums}
-.ow-menu__tag{display:inline-block;margin-top:6px;padding:3px 9px;border-radius:999px;font-style:normal;font-size:11.5px;font-weight:700;background:rgba(255,69,58,.18)}
+.ow-menu__tag{display:inline-block;margin-top:6px;padding:3px 9px;border-radius:999px;font-style:normal;font-size:12px;font-weight:700;background:rgba(255,69,58,.18)}
 .ow-menu__dish.is-out .ow-menu__pic{filter:grayscale(.7);opacity:.6}
 @media (max-width:420px){.ow-menu__dish{max-width:calc(50% - 10px);min-width:0}.ow-menu__b b{font-size:14px}}
 @media (min-width:760px){.ow-menu__dish{max-width:calc(33.333% - 10px);flex-basis:200px}}
+
+/* ═══ SIMPLE ON LIGHT, ITS SURFACES (the founder, 2026-10-30, founder/1059: "simple mode still feels a little like too grayish in areas on
+   light mode"; founder/1055). The tokens are in oneway-popit.css ("SIMPLE ON LIGHT"); these are the components that painted a gray of
+   their own over them: an ink wash, a lavender haze, a filled box. What is selected wears the person's hue; a card is white, told from the
+   page (his hue at 3%, 2026-11-08) by his one soft shadow and no line; a Popit in Simple is that card with its words in ink (they were white on white, 1.2:1). Dark and
+   Popit never match this. Measured with rendered pixels before and after. For his eye (founder/264). */
+html[data-theme="light"][data-theme="light"][data-simple="1"]{--ow-b-wash:var(--ow-wash);--ow-b-sel:var(--ow-wash-on);--ow-bubble:rgba(var(--ow-h1),.09)}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] :matches(.ow-cv-face,.ow-cv-pick__row,.ow-reqs,.ow-crow,.ow-pricebox,.po-sheet,.po-glance__face,.po-plate,.ow-cpage__ev,.ow-claims__row,.ow-map__tile,.ow-find__row,.ow-compose__lens,.ow-compose__lensdoor,.ow-compose__way,.ow-compose__write){--ow-simple-edge:var(--ow-hair);box-shadow:var(--ow-scard-shadow,inset 0 0 0 1px var(--ow-hair),var(--ow-shade))}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] :-webkit-any(.ow-cv-face,.ow-cv-pick__row,.ow-reqs,.ow-crow,.ow-pricebox,.po-sheet,.po-glance__face,.po-plate,.ow-cpage__ev,.ow-claims__row,.ow-map__tile,.ow-find__row,.ow-compose__lens,.ow-compose__lensdoor,.ow-compose__way,.ow-compose__write){--ow-simple-edge:var(--ow-hair);box-shadow:var(--ow-scard-shadow,inset 0 0 0 1px var(--ow-hair),var(--ow-shade))}
+/* the one Simple surface stands on its shade here */
+html[data-theme="light"][data-theme="light"][data-simple="1"] :is(.ow-cv-face,.ow-cv-pick__row,.ow-reqs,.ow-crow,.ow-pricebox,.po-sheet,.po-glance__face,.po-plate,.ow-cpage__ev,.ow-claims__row,.ow-map__tile,.ow-find__row,.ow-compose__lens,.ow-compose__lensdoor,.ow-compose__way,.ow-compose__write){
+  --ow-simple-edge:var(--ow-hair);box-shadow:var(--ow-scard-shadow,inset 0 0 0 1px var(--ow-hair),var(--ow-shade))}
+/* THE SELECTED ONE OF A SET: the person's hue, softly, its words in the hue's ink */
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-surface .ow-worlds .ow-worlds__b.is-here,
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-surface .ow-feedswitch button[aria-pressed="true"],
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-prof .ow-tabs .ow-tab[aria-selected="true"],
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-cf .ow-cf__tabs .ow-cf__tab[aria-selected="true"]{background:var(--ow-wash-on);color:var(--ow-h1-ink)}
+/* AND POPIT'S LIGHT LOOK: the two rows of Home's feed bar agree, the selected one the person's hue, softly, never a grey (S20, founder/871; his "no more ugly grey buttons") */
+html[data-theme="light"][data-theme="light"]:not([data-simple="1"]){--ow-bar-on:rgba(var(--ow-h1),.14);--ow-bar-ink:var(--ow-h1-ink)}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-find__chip[aria-pressed="true"]{background:var(--ow-wash-on);color:var(--ow-h1-ink);box-shadow:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-nav__b[aria-current="page"]{color:var(--ow-h1-ink)}
+/* THE DOCK: solid, in every look (the founder, 2026-10-31: no text showing through behind it; it was 72% with a blur); a map keeps its own. Never a black bar.
+   THE MAP IS THE PAGE ON SCREEN, NOT ONE KEPT OR FADING (2026-11-01): a page kept hidden, or the picture of the one just left,
+   still in the body with the map's class, matched :has(.ow-surface--map), and the dock was dark on every page after Discovery.
+   :where(#surface) names the live surface and adds no weight. */
+/* AND ITS TONE IS THE ROOM'S OWN (the founder, 2026-11-07: "why does messages still have that black top bar and black bottom ... it
+   should be clear over the galaxy"; "black header bar ... this is insane"). BOTH of his asks hold at once and neither is dropped:
+   it stays SOLID (10-31, no text showing through), and it stops being near-black. Measured at 390 in rendered pixels before: the
+   dock painted rgb(4,5,12), 13.6 from pure black, on a room measuring rgb(13,0,3) beside it — DARKER than the world it lay on.
+   Now it is a pane of that world: the room's pair tinting its ground (--ow-chrome-solid, oneway-popit.css), the pair laid across it
+   the way the world lays it, and a lit top edge — which is what makes a solid bar read as glass rather than as paint. A mix, not a
+   literal, so it holds for any hue: November's is pure #FF0000. Popit only; Simple paints its own dock. */
+@media (max-width:899px){
+  html body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{background:rgb(var(--ow-chrome-rgb));-webkit-backdrop-filter:none;backdrop-filter:none}
+  html:not([data-simple="1"]) body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{background:linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 46%),
+      linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
+      var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));background:
+      linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 46%),
+      linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
+      color-mix(in srgb, var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12))) 92%, transparent);border-color:transparent;box-shadow:inset 0 1px 0 var(--ow-chrome-edge,var(--ow-lift)), inset 0 0 0 1px var(--ow-hair), 0 12px 30px -18px var(--ow-drop), var(--ow-chrome-glow);-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
+  html[data-fx="safe"]:not([data-simple="1"]) body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{
+    background:
+      linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 46%),
+      linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
+      var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));
+    -webkit-backdrop-filter:none;backdrop-filter:none}
+  html[data-theme="light"][data-theme="light"][data-simple="1"] body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{background:#fff;border-color:var(--ow-hair);box-shadow:var(--ow-shade)}
+}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] :matches(input.ow-bk__in,textarea.ow-bk__in,select.ow-bk__in,.ow-set__search){background:#fff;border-color:var(--ow-field-edge)}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] :-webkit-any(input.ow-bk__in,textarea.ow-bk__in,select.ow-bk__in,.ow-set__search){background:#fff;border-color:var(--ow-field-edge)}
+/* FIELDS: white with a hairline; what you type in is never a gray box */
+html[data-theme="light"][data-theme="light"][data-simple="1"] :is(input.ow-bk__in,textarea.ow-bk__in,select.ow-bk__in,.ow-set__search){background:#fff;border-color:var(--ow-field-edge)}
+/* ...but the message field is his card, with no edge at all (oneway-popit.css, THE MESSAGE FIELD IS HIS CARD) */
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-send:disabled{background:var(--ow-wash-on);color:var(--ow-h1-ink);opacity:.55}
+/* A MESSAGE FROM SOMEONE ELSE: the same quiet bubble in the person's hue, not the Popit's lavender and never gray */
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-msgs.ow-msgs .ow-msg.ow-msg.ow-msg:not([data-mine]),
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-msg.ow-msg.ow-typing__bub{background:none;background-image:linear-gradient(var(--ow-bubble),var(--ow-bubble));box-shadow:none}
+/* CREATE'S DOORS: cards, not filled slabs */
+html[data-theme="light"][data-theme="light"][data-simple="1"] body .ow-lbh__t.po-act,
+html[data-theme="light"][data-theme="light"][data-simple="1"] body .ow-lbh__t.po-act:hover,
+html[data-theme="light"][data-theme="light"][data-simple="1"] body .ow-lbh__t[data-hub="write"]{background:#fff;background:color-mix(in srgb,#fff 97%,rgb(var(--h,var(--ow-h1))) 3%);box-shadow:inset 0 0 0 1px var(--ow-hair),var(--ow-shade)}html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] body .ow-lbh__t.po-act,html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] body .ow-lbh__t.po-act:hover,html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] body .ow-lbh__t[data-hub="write"]{background:#fff}
+/* THE EVENT CARD: a card on the page, its date in the hue, its act the one button language's primary, never a black pill */
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-ecard{--ow-ecard-accent:rgb(var(--ow-h1));--ec-wash:transparent;background:#fff;box-shadow:inset 0 0 0 1px var(--ow-hair),var(--ow-shade)}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-ecard__date{background:var(--ow-wash);box-shadow:none}
+/* A POPIT IN SIMPLE: the card, its words in ink, its one colour the hue */
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w:not(.po--1x1) > .po-face,
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w > .po-face{background:#fff;background:color-mix(in srgb,#fff 97%,rgb(var(--h,var(--ow-h1))) 3%);background-image:none;box-shadow:inset 0 0 0 1px var(--ow-hair),var(--ow-shade)}html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-w:not(.po--1x1) > .po-face,html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-w > .po-face{background:#fff}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w::before,
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w > .po-face::before{display:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w{color:var(--ow-ink)}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-w :matches(.po-w__label,.po-num,.po-said,.po-w__head){color:var(--ow-ink);text-shadow:none}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-w :-webkit-any(.po-w__label,.po-num,.po-said,.po-w__head){color:var(--ow-ink);text-shadow:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w :is(.po-w__label,.po-num,.po-said,.po-w__head){color:var(--ow-ink);text-shadow:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w .po-w__eyebrow{color:var(--ow-h1-ink);text-shadow:none}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-w :matches(.po-w__foot,.po-w__note){color:var(--ow-ink-2);text-shadow:none}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-w :-webkit-any(.po-w__foot,.po-w__note){color:var(--ow-ink-2);text-shadow:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w :is(.po-w__foot,.po-w__note){color:var(--ow-ink-2);text-shadow:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-rhythm i{background:rgb(var(--ow-h1));box-shadow:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-rhythm i[data-off]{background:var(--ow-wash-on)}
+/* Discovery's Near here: the picture fills its card's width (it stood 22 px wide, the names ran over one another) */
+.ow-xp__nc.ow-xp__nc{align-items:stretch;min-width:0}
+.ow-xp__nc.ow-xp__nc>*{max-width:100%;min-width:0}
+.ow-xp__nc.ow-xp__nc>.ow-xp__nct{width:100%}
+/* S26: a caption is sentence case in the room's ink, no letter spacing; in Simple a Popit's small word says it plainly */
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-w .po-w__eyebrow{font-size:11px;letter-spacing:0;text-transform:none}
+
+/* ═══ MESSAGES: NO LINES BETWEEN CHATS (the founder, 2026-10-30, founder/1055: "the messages (not the lines separating them doesn't look or
+   feel modern)"). Every mode: rows stand apart by their own air, a soft wash under a pointer, the search a pill, not a ruled line.
+   In Simple a face is the person's own bright colour, as on a post, not a dark disc with a ring. For his eye. */
+.ow-threads .ow-thread + .ow-thread::before,
+html[data-theme="dark"] .ow-threads .ow-thread + .ow-thread::before,
+html[data-contrast="high"] .ow-threads .ow-thread + .ow-thread::before{display:none}
+html body .ow-threads .ow-thread{gap:12px;padding:10px 8px;margin-inline:-8px;width:calc(100% + 16px);border-radius:16px}
+.ow-thread:hover{background-color:var(--ow-wash)}
+.ow-threads .ow-thread .ow-thread__av{width:48px;height:48px;font-size:16px}
+.ow-threads .ow-thread .ow-thread__nm{font-size:15px}
+.ow-threads .ow-thread .ow-thread__last{font-size:14px;line-height:1.3;margin-top:2px}
+.ow-threads .ow-thread .ow-thread__t{font-size:12px}
+.ow-inbox__search.ow-inbox__search{height:44px;margin:0 0 12px;padding:0 16px;gap:8px;border:0;border-radius:999px;background:var(--ow-wash)}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-inbox__search.ow-inbox__search{background:#fff;box-shadow:inset 0 0 0 1px var(--ow-field-edge)}
+html[data-simple="1"] .ow-threads .ow-thread .ow-thread__av{box-shadow:none;background:linear-gradient(140deg,rgb(var(--ch1,var(--ow-h1))),rgb(var(--ch2,var(--ow-h2))))}
+html[data-simple="1"] .ow-threads .ow-thread .ow-thread__av[style*="background-image"],html[data-simple="1"] .ow-threads .ow-thread .ow-thread__av:has(img){background:none}
+html[data-theme="light"][data-simple="1"] .ow-thread__t{color:var(--ow-ink-3)}
+
+/* A NOTICE IN LIGHT SIMPLE IS A CLEAR ROUNDED BOX (S23, founder/871: "simple should be clear box. NO GREY BOXES"; his decision of 2026-11-10 over
+   9376c06a1, which had made the toast and the banner opaque white so the page would not read through where blur is off). Clear is white glass:
+   .84 of white, a deep frost, a hairline rim, rounded. Its words stay readable over any page with or without the blur: the ink over this ground laid
+   on black words, a dark photo or a white page keeps more than 7:1 (tests/alert_clear_box.test.js). Popit keeps its Popit in the person's hue. */
+html[data-theme="light"][data-theme="light"][data-simple="1"]{--ow-alert-ground:rgba(255,255,255,.84)}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-alert .ow-alert__card{background:var(--ow-alert-ground);background-image:none;
+  -webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);box-shadow:inset 0 0 0 1px var(--ow-hair),var(--ow-shade)}
+
+/* ═══ HOME'S POPITS, TWO DEFECTS IN EVERY MODE (2026-10-30, measured at 390; the material and arrangement unchanged). A post with no picture
+   kept the picture's empty column, so its words started 97 px in; a person's card overran its tile and "following" lost its tails. */
+.ow-w[data-card="post"][data-family="medium"] .po-card:not(:has(.po-card__media)){grid-template-columns:minmax(0,1fr);grid-template-areas:"w" "b" "f"}
+.ow-w[data-mode="card"] .ow-w__cards>.ow-ocard--row{align-items:start}
+.ow-w[data-mode="card"] .ow-w__cards>.ow-ocard--row .ow-ocard__id{margin-top:0}
+
+/* ═══ THE EVENT'S PAGE (founder/1055): its date as its poster when it has no picture, RSVP the same one-of-a-set switch as Feed and Scroll, every
+   mode. For his eye. */
+.ow-ev .ow-ev__poster{display:flex;flex-direction:column;justify-content:flex-end;gap:4px;min-height:150px;min-height:max(150px,min(38vw,220px));min-height:clamp(150px,38vw,220px);padding:20px;border-radius:20px;color:oklch(from rgb(var(--h,var(--ow-h1))) calc(.18 + 0 * .82) 0 0);color:oklch(from rgb(var(--h,var(--ow-h1))) calc(.18 + max(0,min(calc((.62 - l) * 1000),1)) * .82) 0 0);color:oklch(from rgb(var(--h,var(--ow-h1))) calc(.18 + clamp(0,calc((.62 - l) * 1000),1) * .82) 0 0);background:linear-gradient(140deg,rgb(var(--h,var(--ow-h1))),rgb(var(--h2,var(--ow-h2))))}html.ow-old .ow-ev .ow-ev__poster{color:oklch(from rgb(var(--h,var(--ow-h1))) calc(.18 + 0 * .82) 0 0)}html.ow-nogap .ow-ev .ow-ev__poster>*+*{margin-top:4px}
+.ow-ev__pday{font-family:var(--ow-head,'ONEWAY Head','ONEWAY Sans',sans-serif);font-weight:var(--ow-head-weight,1000);letter-spacing:var(--ow-head-track,-.025em);font-size:64px;line-height:1}
+.ow-ev__pmon{font-size:16px;font-weight:600}
+.ow-ev .ow-ev__acts{display:inline-flex;width:max-content;max-width:100%;gap:0;padding:3px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ow-hair)}
+.ow-ev .ow-ev__acts .po-act{flex:none;background:transparent}
+.ow-ev .ow-ev__acts .po-act[aria-pressed="true"]{background:var(--ow-wash-on);color:var(--ow-h1-ink);font-weight:700}
+.ow-ev .ow-ev__t{font-family:var(--ow-head,'ONEWAY Head','ONEWAY Sans',sans-serif);font-weight:var(--ow-head-weight,1000);letter-spacing:var(--ow-head-track,-.025em);line-height:1.15}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-ev .ow-ev__cover{box-shadow:var(--ow-shade)}
+/* words on the hue read on the hue: an unread count, Add a Popit (white on a light hue measured 1.5 to 2.7:1); the glance of a Popit in Simple is ink on its card */
+.ow-thread__n.ow-thread__n{color:var(--ow-on-h1,#fff)}
+.ow-cv-begin__a.is-lead.is-lead{color:var(--ow-on-h1,#fff)}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-glance :matches(.po-glance__lb,.po-glance__sig){color:var(--ow-ink);text-shadow:none}
+html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] .po-glance :-webkit-any(.po-glance__lb,.po-glance__sig){color:var(--ow-ink);text-shadow:none}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .po-glance :is(.po-glance__lb,.po-glance__sig){color:var(--ow-ink);text-shadow:none}
+
+/* ═══ A CENTER'S ROW IN DISCOVERY'S LISTS (Explore, every mode): its place line was pinned over its counts and they ran into one another. In the flow:
+   the name, the place, the counts; the counts' rule was a white hairline, gone. Real data in a clean stack. */
+.ow-explore__item .ow-ocard--row{grid-template-columns:auto minmax(0,1fr);align-items:center;column-gap:12px;padding:8px 0;min-height:0;height:auto}
+.ow-explore__item .ow-ocard--row .ow-ocard__id{margin-top:0;grid-column:2}
+.ow-explore__item .ow-ocard--row .ow-ocard__name{font-size:17px;line-height:1.25}
+.ow-explore__item .ow-ocard--row .ow-ocard__counts{margin-top:2px;padding-top:0;border-top:0;font-size:13px;gap:12px;opacity:1;color:var(--ow-ink-2)}
+.ow-explore__item .ow-ocard--row .ow-ocard__aside{position:static;grid-column:2;grid-row:2;justify-self:start;margin-top:-2px}
+.ow-explore__item .ow-ocard--row .ow-ocard__face{grid-row:1 / span 2}
+html[data-simple="1"] .ow-explore__item .ow-ocard--row{--ow-simple-ground:transparent}
+/* Discovery's own choice of a set, and its event rows, in Simple on light: the hue, a card */
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-explore [data-ow-cat][aria-pressed="true"]{background:var(--ow-wash-on);color:var(--ow-h1-ink)}
+/* the one segmented switch (Agenda, Day, Week, Month, and every .ow-seg) in Simple, both themes: words on nothing, the chosen one the hue;
+   no hairline and no slate plate (walk-35: Workspace's grey button was this track in Simple dark; THE OUTLINE RULE, oneway-popit.css) */
+html[data-simple="1"][data-simple="1"][data-simple="1"] .ow-seg{background:transparent;background-image:none;box-shadow:none;border-radius:999px;padding:3px}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-seg .ow-seg__b[aria-pressed="true"]{color:var(--ow-h1-ink)}
+.ow-cal2__cell[data-today] .ow-cal2__num.ow-cal2__num{color:var(--ow-on-h1,#fff)}
+.ow-explore__item .ow-ocard--row{row-gap:0;grid-template-rows:auto auto}
+.ow-explore__item .ow-ocard--row .ow-ocard__face{align-self:center}
+html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-ecard .ow-ecard__act:not([aria-disabled]){color:var(--ow-on-h1,#fff)}
+
+/* ══ POPIT DARK: THE HUE AND THE CANDY GLOW ARE HIS, AND HE HAS TAKEN THE QUIET BACK ══════════════════════════════════════════════
+   ★ FOUNDER, 2026-11-07, looking at this build in a browser: *"i liked how popits looked in dark mode dude"*; *"popit mode adds
+     that extra hue coloring and candy glow i see taken away in browser rn"*; *"i do not understand if these posts are simple or
+     popit mode ... horrible for popits"*; *"this feels like a huge regression"*.
+   WHAT WAS HERE: his 2026-11-05 night pick, "Only what needs you", written down in this block as PROPOSED strength for his eye
+   (S19). He has now seen it rendered and reversed it. It is not deleted from the record — it is superseded by his own later words,
+   which is the only thing that can supersede it.
+   SO THE DAMPING GOES, NOT THE SHAPE. Three things were tangled in that block and only two were ever about the glow:
+     · `--ow-pop-throw:0` turned off EVERY outer halo in the dark Popit room at once (oneway-popit.css .po-card/.ow-popit 54px,
+       .ow-cv-t/.ow-upcoming 54px, this sheet's river Post 14px and the one surface's two 34px lights). That IS the candy glow.
+     · the world went to .38 with its field at a third of its alphas and the stars at .35. That IS the "extra hue coloring".
+     · the Post's face lost its hue rim and its inner light and ran at HALF its sweep (.13/.08/.11 against .26/.16/.22).
+   MEASURED ON THIS BUILD BEFORE (390, signed out, Popit dark, hue #FF0000, rendered pixels and computed style): the card's face
+   computed `linear-gradient(90deg, rgba(85,255,0,.13), rgba(0,255,94,.08) 50%, rgba(255,153,0,.11))` with `background-color:
+   rgba(0,0,0,0)` and `box-shadow: none` — the one surface's two radial hue pools, its --ow-tile-base floor, its inner lift, its
+   34px hue light and its 44px drop all written and all overruled, from here.
+   WHAT IS KEPT, because it is NOT the glow and is his for its own reasons: a Post's light still runs ACROSS it and never down it
+   (the founder, 2026-11-01: "on posts i want the header to not look like it has a shadow or highlight behind it on any theme
+   type"), so the sweep above this block is the shape that returns, at its own full strength — the top-and-foot pools are NOT
+   restored on a Post and api/oneway/cards/test_post_header.py holds that; the greeting's name stays plain ink (founder/1325); and
+   the bell with something unread keeps its one red light, which was the good half of "only what needs you".
+   Held by api/oneway/platform/test_chrome_and_candy.py, which measures the pools and the halo in rendered pixels. ══ */
+/* WHAT NEEDS YOU: the bell with something unread, a soft red light on it */
+html[data-theme="dark"]:not([data-simple="1"]) .ow-top__bell[data-unread] svg{filter:drop-shadow(0 0 6px #ff3b4f)}
+/* ══ THE WAY IN HAS AN EDGE, AND A BAR-SHAPED CONTROL IS A PANE OF GLASS ══════════════════════════════════════════════════════
+   ★ FOUNDER, 2026-11-07: *"sign up sign un buttons should have like a visual outline to them and the feed scroll and other
+     buttons should be like liquid glass bars like the bottom change i want but do it carefully"*.
+   MEASURED BEFORE (390, guest, Popit dark, computed style): both of `.ow-feedhead__acts`'s anchors were `background-color:
+   rgba(0,0,0,0)`, `box-shadow:none`, `border:0px none` — two words floating on the galaxy with nothing saying where the button
+   was; and `.ow-feedswitch` (Feed / Scroll) the same, `rgba(0,0,0,0)` with no shadow, its pixels identical to the room's.
+   NOTHING NEW IS INVENTED: "like the bottom change i want" is the dock, so both wear the dock's own material — the room's tone
+   (--ow-chrome-solid), the room's pair laid across it (--ow-chrome-wash) and the lit top edge (--ow-chrome-edge) that is what
+   makes a flat fill read as glass. The way in carries the hue in its ring, because it is the one act on the screen. Simple takes
+   the same two shapes in its own plain language (a hairline, no light), so the pair reads the same in either mode. ══ */
+/* ★ FOUNDER/1385, 2026-11-08: *"I said canonical pop-up buttons. The same ones seen on the home and other surfaces. Do not
+   reinvent them. Refine them, not reinvent."* This pair's recipe WAS written here, on this one selector, while every other
+   button in Popit mode wore a flat glass instead. It now lives once, for the whole platform, at the end of oneway-popit.css
+   ("THE CANONICAL POPIT BUTTON, EVERY SURFACE"), and the pair is drawn by the family like everything else — nothing of its
+   character changed, it simply stopped being a copy. Simple's two hairline rings went with it: *"simple should be exactly
+   like that though like bar for bar"* — the hue solid, the hue soft, words, and no drawn line anywhere. */
+
+/* FEED / SCROLL IS A BAR, not two words on the galaxy. The same pane, at a bar's proportions. */
+html:not([data-simple="1"]) .ow-feedswitch{padding:4px 8px;border-radius:999px;background:linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 50%),
+    linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
+    var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));background:
+    linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 50%),
+    linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
+    color-mix(in srgb, var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12))) 76%, transparent);box-shadow:inset 0 1px 0 var(--ow-chrome-edge,var(--ow-lift)), inset 0 0 0 1px var(--ow-hair), 0 10px 26px -18px var(--ow-drop), var(--ow-chrome-glow);-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}html.ow-old:not([data-simple="1"]) .ow-feedswitch{background:linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 50%),
+    linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
+    var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)))}
+html[data-fx="safe"]:not([data-simple="1"]) .ow-feedswitch{background:var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));-webkit-backdrop-filter:none;backdrop-filter:none}
+html[data-simple="1"] .ow-feedswitch{padding:4px 8px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ow-hair)}
+
+/* the greeting's name: plain ink, the largest coloured words on the first screen were a gradient (founder/1325) */
+html[data-theme="dark"]:not([data-simple="1"]) body .ow-hello .ow-hello__name.ow-hello__name.ow-hello__name{background:none;color:var(--ow-ink);-webkit-text-fill-color:currentColor}
+.ow-menu__p{font-weight:550;opacity:.78}
+.ow-menu__sh{font-size:20px;font-weight:700;letter-spacing:-.016em;text-transform:none;opacity:1}
+/* a dish in words, no picture: the whole width, its name large, its price quiet at the end; pictures stand first (no letter in a box, ever) */
+.ow-menu__grid{--ow-menu-row:calc(100% - 10px)}
+.ow-menu__grid > :not(:has(.ow-menu__pic)){order:1;flex:1 1 var(--ow-menu-row);max-width:var(--ow-menu-row);min-width:0;background:none;box-shadow:none;border-radius:0;border-bottom:1px solid var(--ow-hair)}
+.ow-menu__grid > :not(:has(.ow-menu__pic)) .ow-menu__b{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:16px;padding:10px 2px 12px}
+.ow-menu__grid > :not(:has(.ow-menu__pic)) .ow-menu__b b{grid-column:1;font-size:17px;font-weight:650}
+.ow-menu__grid > :not(:has(.ow-menu__pic)) .ow-menu__d{grid-column:1}
+.ow-menu__grid > :not(:has(.ow-menu__pic)) .ow-menu__p{grid-column:2;grid-row:1;margin-top:0;align-self:baseline}
+.ow-menu__grid > :not(:has(.ow-menu__pic)) .ow-menu__tag{grid-column:1;justify-self:start}
+@media (min-width:760px){.ow-menu__grid{--ow-menu-row:calc(50% - 10px)}}

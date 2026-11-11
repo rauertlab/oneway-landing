@@ -41,6 +41,31 @@
     try { return global.localStorage.getItem('ow_session_cookie') === '1'; } catch (_) { return false; }
   }
   function sendsHeader() { return !!BASE || !cookieSession(); }
+  /* A VIDEO BEING MADE PLAYABLE SAYS SO WHILE IT RUNS (ask-11; api/media/video.py). An iPhone films HEVC, which most
+     browsers cannot play, so the server converts it to H.264 inside the upload. While a video upload is still in flight
+     after a moment, this asks GET /api/oneway/media/converting and shows the server's own words ("About 12 seconds left")
+     in the toast, until the upload answers. Returns the function that stops it. */
+  function videoWait() {
+    var done = false, said = false, timer = 0;
+    function ask() {
+      if (done) return;
+      var t = token(), h = { 'Accept': 'application/json' };
+      if (t && sendsHeader()) { h['X-Session-Token'] = t; h['Authorization'] = 'Bearer ' + t; }
+      global.fetch(BASE + '/api/oneway/media/converting', { headers: h, credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (j) {
+          var w = j && j.converting && j.converting[0];
+          if (!done && w && w.words && OW.toast) { OW.toast(w.words, { tone: 'ok' }); said = true; }
+        }, function () {})
+        .then(function () { if (!done) timer = global.setTimeout(ask, 1500); });
+    }
+    timer = global.setTimeout(ask, 1200);
+    return function () {
+      done = true;
+      global.clearTimeout(timer);
+      if (said && OW.toast && OW.toast.hide) OW.toast.hide();
+    };
+  }
 
   /* THE SESSION ENDED HERE (PLAN §3.1 SF-6). A 401 to a request that went with a session (the cookie this browser holds,
      or a token) is the server saying there is none any more. What this device kept of that person goes with it, once:
@@ -140,8 +165,53 @@
     if (!watchOutbox()) global.addEventListener('load', watchOutbox, { once: true });
   })();
 
+  /* ═══ READ IT BEFORE IT IS PRESSED (founder/1303: "it should be preloading the post before the post shows, and it should feel instant") ═══════════
+     `cached(path)`: a fresh answer is held for this read, so a surface that has it draws at once with no waiting state at all.
+     `ahead(paths, {idle})`: reads that a person is likely to open next, taken through the same `get` (same key, same dedupe, so the press that follows
+     finds the answer or the read already flying: no second request), held a little longer than a plain read (AHEAD_TTL).
+     NEVER WHEN IT COSTS THE PERSON: not with the data saver on (the setting, or the browser's), not on a 2g line, not in a hidden tab, and at most
+     AHEAD_PARALLEL at once, so a read ahead never queues in front of the page the person is on. It adds no server cost an open does not already pay
+     (the same read, earlier, once: test_open_ratchet counts the server's open, which this does not touch). */
+  var AHEAD_TTL = 45000, AHEAD_PARALLEL = 2, aheadQueue = [], aheadBusy = 0;
+  function saving() {
+    var c = global.navigator && global.navigator.connection;
+    return !!((OW.prefs && OW.prefs.dataSaver) || (c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''))) || (global.document && global.document.hidden));
+  }
+  function aheadPump() {
+    while (aheadBusy < AHEAD_PARALLEL && aheadQueue.length) {
+      var path = aheadQueue.shift();
+      if (data.cached(path) || inflight[path] || saving()) continue;
+      aheadBusy++;
+      (function (p) {
+        data.get(p).then(function (v) { aheadBusy--; if (v && v.ok && cache[p]) cache[p].ttl = AHEAD_TTL; aheadPump(); });
+      })(path);
+    }
+  }
+  /* A READ ANOTHER READ ALREADY ANSWERED (feed speed, 2026-11-10: "I need speed big time"): a feed page carries each post whole, so a
+     card's own read is put here from it, never asked of the network one card at a time (the page made per-post calls, 6 on the first
+     screen, N+1 down the feed). The one cache, so any write or a change heard from elsewhere clears it as it clears every read; never over
+     an answer that is younger or a read in flight; held PRIME_TTL, then asked again as any read is. */
+  var PRIME_TTL = 180000;
   var data = {
+    prime: function (path, answer, ttl) {
+      if (!path || !answer || inflight[path] || data.cached(path)) return false;
+      cache[path] = { at: Date.now(), v: { ok: true, status: 200, data: answer, primed: true }, ttl: ttl || PRIME_TTL };
+      return true;
+    },
+    cached: function (path) { var c = cache[path]; return !!(c && c.v && c.v.ok && (Date.now() - c.at) < (c.ttl || TTL)); },
+    ahead: function (paths, opts) {
+      if (saving()) return 0;
+      var list = (paths || []).filter(function (p) { return p && !data.cached(p) && !inflight[p] && aheadQueue.indexOf(p) < 0; });
+      if (!list.length) return 0;
+      var run = function () { aheadQueue = aheadQueue.concat(list); aheadPump(); };
+      if (opts && opts.idle) {
+        if (global.requestIdleCallback) global.requestIdleCallback(run, { timeout: 2500 }); else global.setTimeout(run, 700);
+      } else run();
+      return list.length;
+    },
     asset: assetUrl,
+    /* the data saver, a 2g line or a hidden tab: nothing is read or fetched ahead of a press (what `ahead` itself asks; Discovery's map hints ask it too) */
+    saving: saving,
     configure: function (opts) {
       opts = opts || {};
       if (opts.base != null) {
@@ -162,17 +232,21 @@
     /* A read. Resolves to {ok, data} or {ok:false, status, error} — it NEVER
        throws and never resolves to invented content, so a caller cannot
        accidentally render a failure as if it were reality. */
+    /* `opts.hold` (ms): an answer this young is still the truth for this caller (Settings holds its reads for the visit, polish P036). It is
+       the one cache, so a write here or on another device (OW.changes, `ow:changed`) clears it all the same: a hold never outlives a change.
+       Only an answer is held; a refusal or a failure is asked again as any read's is. */
     get: function (path, opts) {
       opts = opts || {};
       var key = path;
       var now = Date.now();
-      if (!opts.fresh && cache[key] && (now - cache[key].at) < TTL) {
+      var held = opts.hold && cache[key] && cache[key].v && cache[key].v.ok ? opts.hold : 0;
+      if (!opts.fresh && cache[key] && (now - cache[key].at) < (held || cache[key].ttl || TTL)) {
         return Promise.resolve(cache[key].v);
       }
       if (inflight[key]) return inflight[key];
       var held = cookieSession() || !!token();
       function send() {
-        var t = token(), h = { 'Accept': 'application/json' };
+        var t = token(), h = Object.assign({ 'Accept': 'application/json' }, opts.headers);   /* `opts.headers`: a door that asks for one of its own (a guest's key to their line) */
         if (t && sendsHeader()) { h['X-Session-Token'] = t; h['Authorization'] = 'Bearer ' + t; }
         return global.fetch(BASE + path, { headers: h, credentials: 'same-origin' });
       }
@@ -227,7 +301,7 @@
        error handling drifts from this one's. */
     post: function (path, body, opts) {
       opts = opts || {};
-      var t = token(), h = { 'Content-Type': 'application/json', 'Accept': 'application/json' }, held = cookieSession() || !!t;
+      var t = token(), h = Object.assign({ 'Content-Type': 'application/json', 'Accept': 'application/json' }, opts.headers), held = cookieSession() || !!t;
       if (t && sendsHeader()) { h['X-Session-Token'] = t; h['Authorization'] = 'Bearer ' + t; }
       /* ── EXACTLY ONCE STARTS AT THE FIRST ATTEMPT (PLAN G6) ──────────────
          A write the server honours (GET /api/idempotency/honoured: the gateway runs it once per key) carries a key from the very
@@ -238,8 +312,9 @@
          know about `queued` would draw the write as failed while it sits in the outbox, the person would press it again, and
          the second press (a new key) would be a second write. So a write is queued only when the screen that made it says it can
          show it waiting, and only when the server honours it (`OW.offline.keyFor` answers '' for anything it does not). */
-      var key = (!opts.queueable || !OW.offline || !OW.offline.keyFor) ? '' : OW.offline.keyFor(opts.method || 'POST', path);
+      var key = opts.key || ((!opts.queueable || !OW.offline || !OW.offline.keyFor) ? '' : OW.offline.keyFor(opts.method || 'POST', path));
       if (key) h['X-Idempotency-Key'] = key;
+      var waited = (path === '/api/oneway/media' && body && String(body.data || '').indexOf('data:video/') === 0) ? videoWait() : null;
       return lift(function () {
         var t2 = token();
         if (t2 && sendsHeader()) { h['X-Session-Token'] = t2; h['Authorization'] = 'Bearer ' + t2; }
@@ -248,14 +323,16 @@
           body: body ? JSON.stringify(body) : '{}'
         });
       }).then(function (r) {
+        if (waited) waited();
         if (r.status === 401 && held) sessionEnded();
         return r.json().catch(function () { return null; }).then(function (j) {
-          if (r.ok) wrote(path, opts.method || 'POST');
+          if (r.ok) { wrote(path, opts.method || 'POST'); followAnswered(path, opts.method || 'POST', j); }
           return r.ok ? { ok: true, data: j }
                       : { ok: false, status: r.status,
                           error: failSaid(j, r.status), body: j };
         });
       }).catch(function () {
+        if (waited) waited();
         /* ── THE REQUEST DID NOT COME BACK (C, 2026-08-23) ─────────────────
            Founder, PRODUCT_RESET §24: *"do not unnecessarily reject reversible
            actions just because the network is unavailable"* — and, in the same
@@ -349,6 +426,18 @@
   };
   OW.data = data;
 
+  /* EVERY PUBLIC ADDRESS (founder/1141): the backend builds them (api/oneway/seo/address.py) and a read carries its own, so this says which to use. With none
+     given, a Center's and an event's id still lead home: their old address answers one 301 to where it is now, forever. A person's is theirs by name. */
+  OW.address = {
+    center: function (id, given) {
+      if (given) return given;
+      var r = String(id || '');
+      return r.charAt(0) === '.' ? '/' + encodeURIComponent(r).replace(/^\./, '.') : '/c/' + encodeURIComponent(r);   /* a name is its own address; an id leads there */
+    },
+    event: function (id, given) { return given || '/e/' + encodeURIComponent(id || ''); },
+    person: function (handle) { return '/@' + encodeURIComponent(String(handle || '').replace(/^@/, '')); }
+  };
+
   /* ═══ A WRITE CHANGES WHAT EVERY SCREEN READ (the founder, 2026-10-10) ═══════════════════════════════════════════
      ★ *"when i save a post why doesnt my favorites popit on my home menu update instantly"*, then *"dont just fix favorites
      do any states that dont update user wide to the platform. if cross projection architecrure doesnt even work in our own
@@ -366,6 +455,72 @@
      A path that is not a change of anything drawn (typing, presence, beacons) is not announced. */
   /* the one translator lives in oneway-realtime.js (OW.changes), so every shell shares it; these are the App's doors to it */
   function wrote(path, method) { if (OW.changes) OW.changes.wrote(path, method); }
+  /* FOLLOW COUNTS, LIVE ON EVERY SURFACE (the founder, 2026-10-22: "follwer and following counts need to be live and accurate
+     across all surfaces and must count up number or drop down one when users follows/unfollows user"). Every follow and
+     unfollow in the App and the OS is a write through this one writer, and the graph's answer now carries the followed
+     side's exact counts (api/oneway/graph/service._target_counts) beside the follower's own. So here, once: every count box
+     that says whose it is (data-ow-of: its ids, @handle and id) shows the target's new followers, and a box that is the
+     viewer's own shows their new following. The exact numbers from the server, never a guess; a press that changed nothing
+     changes nothing. Then 'ow:follow' tells any surface that wants more. Held by tools/probe/follow-counts.cjs. */
+  var FOLLOW_PATH = /^\/api\/oneway\/graph\/follow\/([^\/?#]+)/;
+  function bare(x) { return String(x || '').trim().toLowerCase().replace(/^@/, ''); }
+  function followAnswered(path, method, j) {
+    var m = FOLLOW_PATH.exec(String(path || ''));
+    if (!m || !j || typeof j !== 'object') return;
+    var d = { ref: decodeURIComponent(m[1]), on: method !== 'DELETE', changed: j.changed,
+              target_counts: j.target_counts || null, counts: j.counts || null };
+    try { syncFollowCounts(d); } catch (e) {}
+    try { syncFollowButtons(d.ref, d.on); } catch (e) {}
+    try { global.document.dispatchEvent(new CustomEvent('ow:follow', { detail: d })); } catch (e) {}
+  }
+  /* EVERY COPY OF A FOLLOW BUTTON SAYS THE SAME (the founder, 2026-10-30), here and on the person's other devices. A button marks whom it follows
+     (data-ow-follow: its refs; data-ow-follow-on / -off: its words) and its state is set from the graph's word: this tab's own answer, or the
+     server's `follow-state` from a press made elsewhere (graph/service.py _numbers_moved). A press in flight on that very button decides for
+     itself. Every press that changed anything says so once and in order, so the last word heard is the true one. */
+  function syncFollowButtons(ref, on) {
+    var doc = global.document, who = bare(ref); if (!doc || !doc.querySelectorAll || !who) return;
+    [].forEach.call(doc.querySelectorAll('[data-ow-follow]'), function (btn) {
+      if (String(btn.getAttribute('data-ow-follow') || '').split(/\s+/).map(bare).indexOf(who) < 0) return;
+      if (btn.disabled || btn.getAttribute('data-act') === 'working' || btn.getAttribute('aria-disabled') === 'true') return;
+      if (btn.getAttribute('aria-pressed') === String(!!on)) return;
+      btn.setAttribute('aria-pressed', String(!!on));
+      if (btn.hasAttribute('data-act')) btn.setAttribute('data-act', on ? 'on' : 'off');
+      var say = btn.getAttribute(on ? 'data-ow-follow-on' : 'data-ow-follow-off');
+      if (say) btn.textContent = say;
+      if (OW.motion && OW.motion.bounce) OW.motion.bounce(btn, 'bump');
+    });
+  }
+  if (global.document && global.document.addEventListener) global.document.addEventListener('ow:follow-state', function (e) {
+    var d = (e && e.detail) || {};
+    if (!d.ref) return;
+    /* a press from before this page read anything, replayed by the stream as it opens: what the page read is newer */
+    if (d.at && global.performance && global.performance.timeOrigin && d.at * 1000 < global.performance.timeOrigin) return;
+    try { syncFollowButtons(d.ref, d.on); } catch (err) {}
+    try { global.document.dispatchEvent(new CustomEvent('ow:follow', { detail: { ref: d.ref, on: !!d.on, remote: true } })); } catch (err) {}
+  });
+  function putCount(box, key, n) {
+    if (typeof n !== 'number' || !isFinite(n)) return;
+    if (OW.cards && OW.cards.setCount) return OW.cards.setCount(box, key, n);        /* ONE WRITER of a count box (oneway-cards.js): an unchanged number is not rewritten */
+    [].forEach.call(box.querySelectorAll('[data-count="' + key + '"]'), function (el) {
+      var b = el.querySelector('b'); if (!b) return;
+      var say = (OW.cards && OW.cards.number) ? OW.cards.number : String;
+      if (OW.motion && OW.motion.count) OW.motion.count(b, n, say); else b.textContent = say(n);
+      var word = (OW.cards && OW.cards.countWords) ? OW.cards.countWords(key, n) : (key === 'followers' ? (n === 1 ? 'follower' : 'followers') : key);
+      var sp = el.querySelector('span');
+      if (sp) sp.textContent = word;
+      else if (b.nextSibling && b.nextSibling.nodeType === 3) b.nextSibling.textContent = ' ' + word;
+    });
+  }
+  function syncFollowCounts(d) {
+    var doc = global.document; if (!doc || !doc.querySelectorAll) return;
+    var ref = bare(d.ref), mine = [bare(ME)].filter(Boolean);
+    [].forEach.call(doc.querySelectorAll('[data-ow-of]'), function (box) {
+      var of = String(box.getAttribute('data-ow-of') || '').split(/\s+/).map(bare).filter(Boolean);
+      if (ref && of.indexOf(ref) >= 0 && d.target_counts) putCount(box, 'followers', d.target_counts.followers);
+      if (d.counts && (box.getAttribute('data-ow-self') === '1' || of.some(function (x) { return mine.indexOf(x) >= 0; })))
+        putCount(box, 'following', d.counts.following);
+    });
+  }
   OW.onChanged = function (host, fn, opts) {
     return OW.changes ? OW.changes.on(host, fn, opts) : function () {};
   };
@@ -465,6 +620,26 @@
     return global.fetch(full, { credentials: 'same-origin' }).then(function (r) {
       if (!r.ok) throw new Error('That picture could not be read.');
       return r.blob();
+    });
+  };
+  /* A PRESS THAT READS OUTSIDE ANSWERS AT ONCE, AND ITS OUTCOME IS READ BACK AT ITS OWN DOOR (RT2-08, the way Gather's is): `d` is the press's answer, `path` the door, `read` the page's own reader.
+     The answer the press would have had, or its refusal in the same words. An answer with nothing being read goes straight through. */
+  data.untilRead = function (d, path, read) {
+    var turn = d && d.reading;
+    if (!turn || !turn.token) return Promise.resolve(d);
+    var at = path + '?token=' + encodeURIComponent(turn.token), tries = 0;
+    return new Promise(function (done, refused) {
+      (function tick() {
+        read(at).then(function (r) {
+          if (r && r.failed) { refused(new Error(r.failed)); return; }
+          if (r && r.reading) {
+            if (++tries >= 90) { refused(new Error('It is still being read. Look again in a minute.')); return; }
+            setTimeout(tick, 1500);
+            return;
+          }
+          done(r || {});
+        }).catch(refused);
+      })();
     });
   };
   /* a shell's own session at open renews the session; these are its only handles on what this file holds */

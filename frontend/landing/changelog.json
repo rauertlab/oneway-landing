@@ -1,55 +1,101 @@
 {
  "about": "Oneway's changelog (founder/870): one entry per big update, newest first. date is the day (YYYY-MM-DD); words are the founder's. An entry may also have a title and sections, each a title and a list of items (founder/1024). A line marked as pending is not live yet: tools/landing_static.py leaves it out of the published page and file until the mark is cleared. changelog.html is drawn from this file; adding an entry needs no change to the page.",
  "entries": [
-{
-  "date": "2026-10-28",
-  "title": "v50.1 — Discovery and everyday tools",
-  "words": "A follow-up to v50 focused on finding places, filling in the map, browsing as a guest, and keeping everyday tools together.",
-  "sections": [
+  {
+   "date": "2026-11-11",
+   "title": "November update — Profiles, Messages and operating tools",
+   "words": "A consolidated update bringing recent profile, Discovery and operating-tool work together, with everyday fixes and security hardening.",
+   "sections": [
     {
-      "title": "Discovery and places",
-      "items": [
-        "Searchable map places open as Information Centers, including places whose community information has not been filled in yet.",
-        "Imported places and places added by people use the same Center records. Finding an existing match opens that Center instead of creating another copy.",
-        "Nearby places needing information appear in Explore and Contribute without relying on a town Center. The list states its area and when it is only a selection.",
-        "Add an introduction with a short write, review and confirmation flow. Current information is read before editing it.",
-        "Public information changes reach other signed-in viewers through live updates. Open pages retain their follow and post controls.",
-        "Map-place links survive a reload. Both the vector map and basic renderer can open indexed places from a map tap.",
-        "More place categories can appear on the map, with icons appearing at wider zoom levels. Recorded follows and post counts help active places stand out in crowded views, regardless of ownership or Center type.",
-        "Information Centers use category artwork and an information marker; adding a picture keeps the category marker in the corner.",
-        "Imported searchable-place coverage currently includes the supported US regions; missing coverage is stated rather than shown as an empty area.",
-        "Map places missing from the separate search inventory resolve against the actual map source, preserving verified names and points instead of rejecting the place."
-      ]
+     "title": "Profiles and everyday use",
+     "items": [
+      "Names use the reading font while custom wordmarks retain their own lettering.",
+      "Profile pages can be added straight from the page bar with an automatic name, then renamed or arranged through the existing editor.",
+      "Home's Add menu brings the available widgets together in their existing categories.",
+      "Reading a conversation clears its unread count in the conversation list and Messages navigation, including other open tabs. Messages arriving while the conversation is in the background remain unread.",
+      "Home feed pages and less-used operating tools load when opened, reducing the initial download."
+     ]
     },
     {
-      "title": "Location and Waypass",
-      "items": [
-        "Location sharing has an explicit save action and confirmed status. Starting sharing returns to the map, shows your position and follows fresh fixes; hiding other people keeps your own marker visible.",
-        "Your location marker moves smoothly between fresh device fixes. Moving around the map pauses camera-follow, and recentering resumes it.",
-        "Stale locations are marked as last known positions. Watching your own location does not turn on public location sharing.",
-        "Waypass is opt-in for adults and uses the selected device. It collects encounter cards from other people who also enabled it, showing an approximate place and time rather than precise coordinates. On the web it counts while the page is open."
-      ]
+     "title": "Discovery and media",
+     "items": [
+      "Map place markers retain their category colours in both map styles.",
+      "Supported fonts, maps and display libraries are served through Oneway's own origin. Picture requests are bounded and legal picture holds also cover cached server copies.",
+      "Feed pictures retain their aspect ratio while loading, and desktop feed media use the shared media controls."
+     ]
     },
     {
-      "title": "Guests and profiles",
-      "items": [
-        "Open the App from the website and browse public Home and the map without signing in.",
-        "Guest likes count toward the real total. Guests can undo their like, while comments, posting, following and negative reactions remain sign-in actions.",
-        "Eligible visitors can post as themselves at unclaimed Information Centers without becoming members or gaining authority over the place.",
-        "Simple public profiles put identity, links and posts together without a redundant Profile view. Their first public posts load from the existing profile read."
-      ]
+     "title": "Operating tools",
+     "items": [
+      "Hotel work includes room-unit and desk refinements, morning exports, safer queued actions, checkout thank-you handling and complimentary-ticket capacity handling.",
+      "Restaurant tools include recipe-linked stock availability, receiving, pars and host/pre-service refinements.",
+      "Pickup payments retain the paid-order fence while operating records catch up, preventing a second checkout during that interval.",
+      "Connected-work records and the marketing board identify where an item was sent, imported, disconnected or closed.",
+      "Marketing segments respect recorded opt-outs and verified delivery-provider suppression events.",
+      "Business signup, founding, claim and plan-return flows share the existing account and payment controls."
+     ]
     },
     {
-      "title": "Workspace, Opportunities and refinements",
-      "items": [
-        "Workspace brings together the existing Calendar, email tools and connected business workspace.",
-        "Opportunities is the destination for the Marketplace, jobs and bookable spaces. Tonight near you appears in Discovery.",
-        "Calendar views, destination links and phone layouts received additional checks across light, dark and simple presentation.",
-        "Activity colours, server-rendered icons, link insertion and permission checks received targeted fixes. The boost engine remains disabled; this update does not announce active boosting."
-      ]
+     "title": "Account and security",
+     "items": [
+      "Passkeys require user verification and are bound to the account, origin and sign-in challenge.",
+      "Personal automatic Centers stay out of public speaking identities while explicit memberships remain available.",
+      "Session, shared-canvas, import, booking and outbound-request checks are tightened.",
+      "Exporting the entire customer list requires the existing higher-trust approval.",
+      "Requests to speak to a human pause an automatic keyword reply."
+     ]
     }
-  ]
-},
+   ]
+  },
+  {
+   "date": "2026-10-28",
+   "title": "v50.1 — Discovery and everyday tools",
+   "words": "A follow-up to v50 focused on finding places, filling in the map, browsing as a guest, and keeping everyday tools together.",
+   "sections": [
+    {
+     "title": "Discovery and places",
+     "items": [
+      "Searchable map places open as Information Centers, including places whose community information has not been filled in yet.",
+      "Imported places and places added by people use the same Center records. Finding an existing match opens that Center instead of creating another copy.",
+      "Nearby places needing information appear in Explore and Contribute without relying on a town Center. The list states its area and when it is only a selection.",
+      "Add an introduction with a short write, review and confirmation flow. Current information is read before editing it.",
+      "Public information changes reach other signed-in viewers through live updates. Open pages retain their follow and post controls.",
+      "Map-place links survive a reload. Both the vector map and basic renderer can open indexed places from a map tap.",
+      "More place categories can appear on the map, with icons appearing at wider zoom levels. Recorded follows and post counts help active places stand out in crowded views, regardless of ownership or Center type.",
+      "Information Centers use category artwork and an information marker; adding a picture keeps the category marker in the corner.",
+      "Imported searchable-place coverage currently includes the supported US regions; missing coverage is stated rather than shown as an empty area.",
+      "Map places missing from the separate search inventory resolve against the actual map source, preserving verified names and points instead of rejecting the place."
+     ]
+    },
+    {
+     "title": "Location and Waypass",
+     "items": [
+      "Location sharing has an explicit save action and confirmed status. Starting sharing returns to the map, shows your position and follows fresh fixes; hiding other people keeps your own marker visible.",
+      "Your location marker moves smoothly between fresh device fixes. Moving around the map pauses camera-follow, and recentering resumes it.",
+      "Stale locations are marked as last known positions. Watching your own location does not turn on public location sharing.",
+      "Waypass is opt-in for adults and uses the selected device. Two people who both turned it on swap cards when they are really near each other, about 150 metres, at the same moment, and are both told at once a few minutes later, with a place name and a time rather than coordinates. On the web it counts while the page is open."
+     ]
+    },
+    {
+     "title": "Guests and profiles",
+     "items": [
+      "Open the App from the website and browse public Home and the map without signing in.",
+      "Guest likes count toward the real total. Guests can undo their like, while comments, posting, following and negative reactions remain sign-in actions.",
+      "Eligible visitors can post as themselves at unclaimed Information Centers without becoming members or gaining authority over the place.",
+      "Simple public profiles put identity, links and posts together without a redundant Profile view. Their first public posts load from the existing profile read."
+     ]
+    },
+    {
+     "title": "Workspace, Opportunities and refinements",
+     "items": [
+      "Workspace brings together the existing Calendar, email tools and connected business workspace.",
+      "Opportunities is the destination for the Marketplace, jobs and bookable spaces. Tonight near you appears in Discovery.",
+      "Calendar views, destination links and phone layouts received additional checks across light, dark and simple presentation.",
+      "Activity colours, server-rendered icons, link insertion and permission checks received targeted fixes. The boost engine remains disabled; this update does not announce active boosting."
+     ]
+    }
+   ]
+  },
   {
    "date": "2026-10-26",
    "title": "v50",

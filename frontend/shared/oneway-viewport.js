@@ -73,9 +73,35 @@
     } catch (e) { return false; }
   }
 
-  /* WHETHER THE HEAVY WORLD RUNS. Touch, or the person asked for less motion.
-     Width is not consulted, on purpose. */
-  function safeFloor() { return isTouch() || reducedMotion(); }
+  /* ── WHETHER THE HEAVY WORLD RUNS ──────────────────────────────────────
+     ★ FOUNDER, 2026-11-08: *"user choice with liqud glass as its always
+       been"*. Liquid Glass is the material oneway.center has always shown and
+       it is now the DEFAULT EVERYWHERE, a phone included. A touch screen is no
+       longer an answer on its own.
+
+       WHAT THIS FIXES, measured on his instance 2026-11-08: `isTouch()` here
+       stamped data-fx="safe" on EVERY touch device, and eight rules across the
+       frontend are written `:not([data-fx="safe"])`, so they switched off on
+       his phone while rendering on his desktop. Discovery's sheet was one of
+       them: plain load `background-color rgb(0,0,0)`, `backdrop-filter none`;
+       the same element with the gate lifted, `rgba(10,12,24,.52)` and
+       `blur(20px) saturate(1.25)`. The galaxy could never read through on a
+       phone. (The 32 rules written `html[data-fx="safe"]` are substitutes, a
+       deliberate lighter drawing, and are untouched by this.)
+
+       TWO THINGS STILL TURN IT DOWN, in this order:
+       1. the person's own choice, `OW.fx.get()` — 'safe' or 'rich' — which is
+          what he asked for and is offered in the look menu;
+       2. the operating system's own "reduce motion", which we honour without
+          being asked, because a person who set it there meant it everywhere.
+     ─────────────────────────────────────────────────────────────────────── */
+  function chosenFx() {
+    try {
+      var v = (global.OW && OW.fx && OW.fx.get && OW.fx.get()) || '';
+      return (v === 'safe' || v === 'rich') ? v : '';
+    } catch (e) { return ''; }
+  }
+  function safeFloor() { return reducedMotion(); }
 
   /* APPLY IT ONCE, HERE, so no page hand-rolls the gate again. `?fx=` still
      overrides for on-device bisection of the iOS renderer crash. */
@@ -85,6 +111,8 @@
       var q = new URLSearchParams(global.location.search || '');
       var fx = (q.get('fx') || '').toLowerCase();
       if (fx) { d.setAttribute('data-fx', fx); return; }
+      var chose = chosenFx();
+      if (chose) { d.setAttribute('data-fx', chose === 'safe' ? 'safe' : 'rich'); return; }
       if (safeFloor()) { d.setAttribute('data-fx', 'safe'); }
       else { d.removeAttribute('data-fx'); }
     } catch (e) {}

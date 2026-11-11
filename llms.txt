@@ -6,26 +6,35 @@
 
 ## What Oneway is, and what it is not
 
-Oneway is a social network and a business platform in one: the Oneway App gives every person one profile, a For You feed, messages and a map of the people and places near them, and Oneway OS runs the businesses, communities and places behind them. It is in a closed beta, by invitation, in New York City and Long Island. Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
+Oneway is a social network and a business platform in one: the Oneway App gives every person one profile, a For You feed, messages and a map of the people and places near them, and Oneway OS runs the businesses, communities and places behind them. It is opening in a selective server test launch in New York City. Oneway, the Oneway App and Oneway OS are made only by Oneway Technologies LLC, of New York. We are not affiliated with oneway.tools, with the Oneway retail and self-checkout software at tryoneway.com, with the One Way services app, or with any other product that uses the name Oneway.
 
 Oneway Technologies LLC, Oneway's phone: +1 (516) 261-2413.
 
-One standard for the whole ecosystem. The same protections cover every part of Oneway: a person's account, profile and messages in the Oneway App; a community's or a business's Center; the operating side of every Center in Oneway OS, Business OS and Developer OS; every System a Center runs, from a restaurant's floor and a hotel's rooms to a venue, a shop and a casino resort; every website a Center wears; and every integration and app built on the platform.
+One standard for the whole ecosystem. The same protections cover every part of Oneway: your account, profile and messages in the Oneway App; every community’s and business’s Center; the operating side of every Center in Oneway OS, Business OS and Developer OS; every System a Center runs, from a restaurant’s floor and a hotel’s rooms to a venue, a shop and a casino resort; every website a Center wears; and every integration and app built on the platform.
 
 ## Products
 
 The Oneway App is Oneway's flagship product; Oneway OS is the operating system behind it.
 
-- [Oneway App](https://oneway.center/app): The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. You see what your friends and the places you love are posting, and what is coming up at each of them.
+- [Oneway App](https://oneway.center/the-app): The flagship of Oneway. Your fully customizable social network. The Oneway App is a hybrid of what people use Instagram, Snapchat and other social apps for: a For You feed ranked to what you like, a Following feed and custom feeds you make, photo and video posts, stories, messaging of its own with group chats, a live map of friends and places, and communities, together with the places and businesses around them. You see what your friends and the places you love are posting, and what is coming up at each of them.
 - [Oneway OS](https://onewayos.com/): From managing online communities, developing custom tools, to running full businesses and zooming in on the operations of specific locations with the click of a button, within seconds. Its pages, Business OS for each industry and every System, are at onewayos.com.
 
 ## About Oneway
 
 - [Our Mission](https://oneway.center/mission): Oneway aims to bring the web and local community together: one profile for every person, a Center for every place, and Oneway OS to run it.
 - [What Oneway's words mean](https://oneway.center/learn): Oneway's words in plain language: Profile, Center, Canvas, Popit, Systems, Oneway OS, Business OS, Developer OS, the Brain, Cross Projection and more.
-- [Get Oneway OS today](https://oneway.center/contact): Write to Oneway for a business, a developer's project, a community or the App beta. Oneway is in its Closed Selective Server Beta in New York City.
+- [Get Oneway OS today](https://oneway.center/contact): Write to Oneway for a business, a developer's project, a community or the App. Our first launch is New York City.
 - [Changelog](https://oneway.center/changelog): What changed on Oneway, newest first: each big update to the platform, the Oneway App and Oneway OS, dated.
+- [Oneway Technologies](https://oneway.center/about): Oneway Technologies LLC is the New York company developing Oneway and Oneway OS: its mission, products and contact.
+
+## The App's parts
+
 - [Discovery](https://oneway.center/discovery): Discovery in the Oneway App: the places, communities, events and people around you on a map and in a feed, with Waypass and saved lists.
+- [Oneway Profiles](https://oneway.center/profiles): One shareable Profile for your posts, photos, accounts and links. Start as a link hub, then make it your own.
+- [Oneway Centers](https://oneway.center/centers): A Center is a place on Oneway for a restaurant, a neighborhood or a community, built around its purpose.
+- [Waypass](https://oneway.center/waypass): Waypass helps people who opt in discover others whose paths crossed at shared places, without making live location public.
+- [Opportunities](https://oneway.center/opportunities): Find products, services, jobs and places to book through the people and businesses on Oneway.
+- [Cross Projection](https://oneway.center/cross-projection): Prepare one event for a venue's Center, website, supported accounts and connected displays, with approvals.
 
 ## Trust and help
 
@@ -33,7 +42,7 @@ The Oneway App is Oneway's flagship product; Oneway OS is the operating system b
 - [Safety](https://oneway.center/safety): How to block, mute and report on Oneway, the protections teen accounts start with, parent supervision, privacy controls and deleting your data.
 - [Community Guidelines](https://oneway.center/community-guidelines): What is not allowed on Oneway, what Oneway does when someone breaks the rules, and how to ask for a decision to be looked at again.
 - [Accessibility](https://oneway.center/accessibility): How Oneway works toward WCAG 2.2 AA: what the site and the App do today for keyboard, motion, contrast, text size and pictures, and how to report a barrier.
-- [Support](https://oneway.center/support): Help with Oneway: signing in during the Closed Selective Server Beta, Business OS, deleting your data, privacy, safety and how to reach us.
+- [Support](https://oneway.center/support): Help with Oneway: signing in, Business OS, deleting your data, privacy, safety and how to reach us.
 
 ## Policies
 
@@ -45,4 +54,4 @@ The Oneway App is Oneway's flagship product; Oneway OS is the operating system b
 
 - [Every page, in words](https://oneway.center/llms-full.txt)
 
-Read from oneway.center's own pages on 2026-10-21 (tools/site_seo.py).
+Read from oneway.center's own pages on 2026-11-08 (tools/site_seo.py).

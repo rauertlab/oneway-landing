@@ -1,6 +1,6 @@
 /* THE MAP'S PAGES — the galaxy, the bar and the reveals, shared by the pages of the founder's map that are built
    from words (/ecosystem, /approach, /contact, /os/business and its industries, /os/developer; see site-page.css).
-   The galaxy is app.html's field exactly as it stands (bc83371a, and since 2026-10-10 nothing vanishes on the screen): the stars fly in and take no cursor (the
+   The galaxy is the-app.html's field exactly as it stands (bc83371a, and since 2026-10-10 nothing vanishes on the screen): the stars fly in and take no cursor (the
    founder, 2026-10-09: "remove the pale white dots that follow the cursor"), and only the wireframes keep a slight
    parallax. */
   /* THE GALAXY — the same field the landing pages share, retinted from the
@@ -57,7 +57,7 @@
     requestAnimationFrame(frame);
   }());
 
-  /* THE BAR AND THE REVEALS — app.html's: the bar takes its ground once the page moves; a section is visible at
+  /* THE BAR AND THE REVEALS — the-app.html's: the bar takes its ground once the page moves; a section is visible at
      rest, and only one below the first screen waits to rise, with the scroll itself as the fail-open */
   (function(){
     var nav=document.getElementById('nav');

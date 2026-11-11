@@ -116,8 +116,8 @@ strong{color:var(--lg-ink);font-weight:600}
    pages follow the person's light or dark room, so in the light room its wordmark is the black file (founder/519: a
    different file, never a filter), as the bar's is in the OS's light room. */
 @media (prefers-color-scheme:light){
-  html:not([data-theme="dark"]):not([data-theme="light"]) .owfoot-mark img{content:url(/logo-black.png)}
+  html:not([data-theme="dark"]):not([data-theme="light"]) .owfoot-mark img{content:url(/logo-black-400.png)}
 }
-html[data-theme="light"] .owfoot-mark img{content:url(/logo-black.png)}
+html[data-theme="light"] .owfoot-mark img{content:url(/logo-black-400.png)}
 /* Data Deletion's word to Meta wears the sub role too, as every head on these pages does (one type system, 2026-10-17) */
 .meta-hello h2{font-size:var(--lp-fs-sub);font-weight:850;line-height:var(--lp-lh-heading);letter-spacing:var(--lp-ls-heading)}

@@ -17,7 +17,7 @@
   if (OW.deck) return;
   function pair(h){ var p=(OW.hue&&OW.hue.fromAngle)?OW.hue.fromAngle(h):null; return p?{h1:p[0],h2:p[1]||p[0]}:null; }
   function inZone(iso, zone, opts){ var d=new Date(iso); if(isNaN(d)) return ''; try{ return new Intl.DateTimeFormat(undefined, zone?Object.assign({timeZone:zone},opts):opts).format(d); }catch(e){ return new Intl.DateTimeFormat(undefined,opts).format(d); } }
-  function appHref(c){ return '/oneway-app.html'+(c.app||''); }
+  function appHref(c){ return '/app'+(c.app||''); }
   function project(kind, id, from, href){
     if(typeof global.project==='function') global.project(kind, id, from, href); else if(href) global.location.href=href;
   }
@@ -98,7 +98,7 @@
         card.addEventListener('click',function(e){
           if(e.target.closest&&e.target.closest('a:not(.ow-ocard__who)')) return;
           var w=e.target.closest&&e.target.closest('.ow-ocard__who');
-          if(w){ e.preventDefault(); e.stopPropagation(); var id=w.getAttribute('data-id'); if(id) project('person', id, w, '/oneway-app.html#center/'+encodeURIComponent(id)); return; }
+          if(w){ e.preventDefault(); e.stopPropagation(); var id=w.getAttribute('data-id'); if(id) project('person', id, w, '/app#center/'+encodeURIComponent(id)); return; }
           open(a, card);
         });
         card.addEventListener('keydown',function(e){ if(e.target===card && (e.key==='Enter'||e.key===' ')){ e.preventDefault(); open(a,card); } });
@@ -110,7 +110,7 @@
             var iso=e.starts_at||''; var mk=iso?{mon:inZone(iso,zone,{month:'short'}), day:+inZone(iso,zone,{day:'numeric'})}:null;
             var hour=iso?inZone(iso,zone,{hour:'numeric',minute:'2-digit'}):''; var venue=(e.mode==='digital'||e.mode==='online')?'Online':(e.place||'');
             var n=OW.glance({ id:'cn-ev-'+e.id, label:e.title, when:mk, icon:'event', hue:hue, signal:[hour, venue].filter(Boolean).join(' · ') },{open:false});
-            n.addEventListener('click',function(ev){ ev.stopPropagation(); project('event', e.id, n, '/oneway-app.html#event/'+encodeURIComponent(e.id)); });
+            n.addEventListener('click',function(ev){ ev.stopPropagation(); project('event', e.id, n, '/app#event/'+encodeURIComponent(e.id)); });
             list.appendChild(n);
           });
         }
