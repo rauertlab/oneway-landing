@@ -136,7 +136,12 @@
       var href = globeFile(hue);
       if (link.getAttribute('type') !== 'image/png') link.setAttribute('type', 'image/png');
       if (link.getAttribute('sizes') !== '32x32') link.setAttribute('sizes', '32x32');
-      if (link.getAttribute('href') !== href) link.setAttribute('href', href);   /* the same file is never asked for twice */
+      /* the same file is never asked for twice; a new one goes in as a NEW link, because Safari keeps the icon of a link whose href is
+         changed in place (his words 2026-11-15: "browser icon isnt synced to color on sign up") and reads a link that is put in fresh */
+      if (link.getAttribute('href') !== href) {
+        if (document.readyState === 'loading') link.setAttribute('href', href);
+        else { var fresh = link.cloneNode(false); fresh.setAttribute('href', href); link.parentNode.replaceChild(fresh, link); }
+      }
     } catch(_){}
   }
 

@@ -2,10 +2,118 @@
  "about": "Oneway's changelog (founder/870): one entry per big update, newest first. date is the day (YYYY-MM-DD); words are the founder's. An entry may also have a title and sections, each a title and a list of items (founder/1024). A line marked as pending is not live yet: tools/landing_static.py leaves it out of the published page and file until the mark is cleared. changelog.html is drawn from this file; adding an entry needs no change to the page.",
  "entries": [
   {
+   "date": "2026-11-15",
+   "title": "November 15 update — Home, true offers in every post, and screens in zones",
+   "words": "A larger update to Home, settings and Discovery, to how a business's offers stay true across its posts, and to what a paired screen can show.",
+   "sections": [
+    {
+     "title": "Home and the feed",
+     "items": [
+      "Pill mode is back and is the default for anyone who has not chosen, on phones too.",
+      "Home scrolls smoothly with many widgets, and widgets slide to the side as the window narrows.",
+      "Home's first screen has a new greeting and post row, with counts beside the row's icons.",
+      "Posts, TikTok's included, play inside their frame by themselves and open in a black full-screen viewer.",
+      "A feed video starts silent, with its own sound and pause buttons on the video, and your sound choice is remembered. Space pauses the large viewer on a computer.",
+      "Add a photo to Home's What's new? box and keep it while you tap or scroll. A photo-only post lands first in your feed.",
+      "After you post, one press of the profile button shows the new post first, the right post count and \"Make your first post\" ticked, and Home's widgets are still there after you scroll.",
+      "Weather and sports widgets can be added to Home, more than one of each.",
+      "Your story bar shows notes, a profile shows an online dot, and you change your status from your profile.",
+      "A newsletter letter keeps its own size, and you can post from Home after the box moves.",
+      "Posts brought in from Instagram, TikTok or YouTube land on your own profile."
+     ]
+    },
+    {
+     "title": "Sign-in",
+     "items": [
+      "Sign-in and sign-up have one way into the App: \"Back to the app\" when you came from it, \"Check out the app\" when you did not. After signing in you land on the page you were on."
+     ]
+    },
+    {
+     "title": "Settings and notifications",
+     "items": [
+      "Hidden words hide those words on Home, in posts, profiles, Centers, search, the bell, message previews, stories, the Marketplace and events, not only in comments.",
+      "A stranger or a guest sees no count where the author hides counts.",
+      "The bell tells you more, such as when someone likes a post you liked."
+     ]
+    },
+    {
+     "title": "Centers, Discovery and Opportunities",
+     "items": [
+      "A Center's page has the same default layout as a profile: tap the name, bio or picture to edit, and add, name and arrange its own pages.",
+      "A Center's page, its place on Discovery and its events show one row of what the place has: Directions, Ride there with Uber, Call, Menu, Order or Book.",
+      "The Discovery map shows places from further out, and a flick on the map glides further.",
+      "Launches in Opportunities: startups launch on a weekly list with upvotes, each with its own page and a post on its profile. With nothing posted the page says what it is and shows an example card, and you can filter one list by kind while each launch keeps its place in the whole week."
+     ]
+    },
+    {
+     "title": "The website",
+     "items": [
+      "The front page headline reads \"Meet Oneway. The social media that connects more.\" and the mission page carries the mission line.",
+      "The globe on the front page turns by itself and spins with a finger or the mouse. It is round on Retina screens and stands alone on phones.",
+      "Real people show on the front page only when enough of them qualify; otherwise it shows examples, never a mix.",
+      "Terms, Privacy, Community Guidelines and Safety are rewritten for what this update ships.",
+      "Pages open without \".html\" (/login, /terms, /privacy and the rest), and the old addresses still open."
+     ]
+    },
+    {
+     "title": "For businesses: offers that stay true",
+     "items": [
+      "Change an offer, product or event once and it shows on your paired screen and on every post still to go out.",
+      "Edit or take down an offer and no scheduled post goes out with the old deal. For a post already out, Today shows one question that you answer right there: Take them down or Leave them up.",
+      "Change an offer that is already posted on another platform and you are asked once, on a card that names the whole change, before anything changes there. The board does not say Published for a copy that still has the old words.",
+      "Bring a campaign back in step and Undo puts the old posts back at their own times, or says plainly why it cannot. A campaign whose posts were deleted shows amber with Schedule it again.",
+      "Shape an ad on one device and find it again in the Marketing room from a phone or as a Marketing teammate, and a box change is never lost to an older open sheet.",
+      "Open What works to see each of your own posts against your usual, with the number of posts it was measured against, and removed posts shown only as \"This post was removed\".",
+      "A staff member outside Marketing who begins a draft post is told it is theirs to change or skip and that Marketing posts it, and Marketing sees who began it."
+     ]
+    },
+    {
+     "title": "For businesses: screens",
+     "items": [
+      "Split a paired TV into a main zone, a side and a bottom strip from the screen's row in Marketing, and give each its own posters, video, words or a clock.",
+      "A TV left running drops an offer once its last day is over, even with the network down, skips a picture that fails, and shows your own card instead of black when nothing is left."
+     ]
+    },
+    {
+     "title": "For businesses: the OS",
+     "items": [
+      "Ask the Brain \"any bookings tonight?\" in your own words and get them counted and listed. A hotel sees rooms held beside rooms sold. A restaurant server sees only the tables.",
+      "Tell the Brain to change something in any words, and it says plainly that nothing was changed and where to do it.",
+      "Today shows the posts out of step with an offer as one flag, and the question about a post that already went out.",
+      "Runs > Waiting lists every draft that waits for a yes, the same ones and the same number as Approvals and Now.",
+      "At a new restaurant, Turn on all shows the same count everywhere, and Ready 1 opens straight on the one automation still waiting. Only a manager adds a table.",
+      "A restaurant's floor plan shows which course each table is on, and a partly seated table by its half fill and dashed edge.",
+      "A hotel can send one charge code back to the guest's own folio while the stay's other codes keep going to the company, and front-desk staff read the charge and routing codes.",
+      "Keep a review at the bookstore and approve, decline or answer it in your own words, with the card, Today and the page agreeing. See and stop automations that are still on, and read Posts and Integrations in plain words.",
+      "Click around the OS, reload it and open places by link for minutes without being shut out. A link to a page that does not exist leaves you where you were with one plain message. If a real limit is reached the screen counts down the seconds and opens again by itself.",
+      "Press Make my website, undo it all and read whether your website is on the web, not on the web yet or taken off it. After taking a site down, open it straight on Go live and bring it back as a draft.",
+      "Phone numbers appear spaced the way people write them, such as (609) 555-0174, on the restaurant floor, the Table ready line, Find and Customers, and Call still dials the same number.",
+      "Scroll back up on the App page, the OS page or inside the OS and read the wordmark and menu on the page's own sky, with no black bar and no words showing through.",
+      "What your plan does not include shows as a lock with words. Staff on a plan without Business OS get Ask the owner, which opens Team chat."
+     ]
+    },
+    {
+     "title": "Running Oneway (admin)",
+     "items": [
+      "One search on the admin dashboard finds people and Centers together as you type, and you assign from there.",
+      "The OS console lists reported people, Centers, posts and messages by what they are, with their state, and Act on it."
+     ]
+    }
+   ]
+  },
+  {
    "date": "2026-11-11",
    "title": "November update — Profiles, Messages and operating tools",
    "words": "A consolidated update bringing recent profile, Discovery and operating-tool work together, with everyday fixes and security hardening.",
    "sections": [
+    {
+     "title": "Emergency browser repair",
+     "items": [
+      "Restored full App styling and navigation after a release-build failure, including Discovery map styles.",
+      "Fixed the OS menu failing on a fresh Home load.",
+      "Embedded videos wait for their card layout before loading instead of being permanently replaced by a link. Existing playback choices and provider restrictions still apply."
+     ]
+    },
     {
      "title": "Profiles and everyday use",
      "items": [

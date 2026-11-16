@@ -22,7 +22,7 @@ main > .lp:last-child,body > .lp:has(~ footer.owfoot):not(:has(~ .lp)){padding-b
 /* the lockup: the wordmark and the product's word, no rule between them (534) */
 .lk{display:inline-flex;align-items:baseline;gap:.34em;margin:0 0 18px}html.ow-nogap .lk>*+*{margin-left:.34em}
 .lk img{height:20px;height:max(20px,min(2.2vw,26px));height:clamp(20px,2.2vw,26px);width:auto;display:block;align-self:center}
-.lk span{font-family:var(--font-display,var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif));font-style:italic;font-weight:900;letter-spacing:-.03em;font-size:22px;font-size:max(22px,min(2.5vw,30px));font-size:clamp(22px,2.5vw,30px);line-height:1;color:rgba(255,255,255,.92)}
+.lk span{font-family:var(--font-display,var(--font,'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif));font-style:italic;font-weight:900;letter-spacing:-.03em;font-size:22px;font-size:max(22px,min(2.5vw,30px));font-size:clamp(22px,2.5vw,30px);line-height:1;color:#fff}   /* the ink, whole, on every page's lockup (2026-11-12: nothing grey; was 92%) */
 /* ONE BUTTON SHAPE for the whole page: a rounded pill, small, sleek (534) */
 /* THE VISUAL ANCHOR, ONE VOCABULARY FOR EVERY PAGE (the founder, 2026-10-19: "i dont like how the page goes from
    beautfiul header text to subtext everywhere and it gives the eye no where to lead"; agreed on lane A with the system

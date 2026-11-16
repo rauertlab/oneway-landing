@@ -119,6 +119,106 @@
   }
   stamp();
 
+  /* ── THE GLASS, ONLY WHERE THE FRAME HOLDS IT ────────────────────────────
+     ★ FOUNDER, 2026-11-13 ~17:50Z: *"blur only on fast devices make sure
+       design not sacraficed"*.
+       MEASURED (home-speed, Home at 1366 in Popit dark with 25 widgets and the
+       feed, the headless shell painting on the CPU): a steady scroll's middle
+       frame took 74 ms with every backdrop blur on and 33 ms with them off. The
+       blur behind each widget and post face (oneway-surface.css, LIQUID GLASS)
+       is paid again on every frame that something moves behind it, so a
+       device that cannot pay it drops frames all the way down the feed.
+     DECIDED ONCE, FROM THIS DEVICE'S OWN FRAMES, never from its name, its
+     user agent or a guess at its memory: while the glass is on the screen and
+     the page scrolls, the frames are timed in windows of GLASS_FRAMES. ONLY
+     HOME TIMES IT (the review of home-speed, 2026-11-13: this module loads on
+     the landing, the OS and the marketing pages too, and timed from load, so
+     the page a visitor scrolled first, the landing with one glass face, kept
+     'glass' for the whole site and Home's 25 faces were never timed): nothing
+     is timed until a page calls timeGlass(shown), where shown() says its glass
+     is on the screen now; Home calls it once its canvas has mounted
+     (home.js homeGlassOn), and only frames while shown() holds count. The
+     screen's own beat is the quickest tenth of a window; when the middle frame
+     takes longer than one and a half beats and longer than 20 ms (a 60 Hz
+     screen under 40 frames a second, a 120 Hz one under 50: a fast screen
+     held at 60 keeps its glass), the window says solid. One window that holds the frame decides
+     glass; solid is decided only when two windows say it (a slow moment while
+     the page was still arriving does not take a fast device's glass). The
+     answer is kept (localStorage `ow_glass`) and stamped here before the first
+     paint of every later visit: data-glass="solid" on <html>, the same face
+     with an opaque ground where the blur was (oneway-surface.css), so the
+     depth, the edge and the hue are the design's on every device.
+     `?glass=solid|glass` shows either on any device, as `?fx=` does. Simple and
+     the safe floor have no glass to time. PROPOSED: the
+     window, the beat, the one and a half and the 20 ms. Measured in the
+     headless shell (no GPU) on the same Home: at 1366 the glass's middle frame
+     66.6 ms (658 frames dropped in 15 s), the solid's 24.6 ms (185 in 9 s), and
+     a fresh visit decided solid by itself; at 390 the glass held 16.4 ms. */
+  var GLASS_KEY = 'ow_glass', GLASS_FRAMES = 60;
+  function glassAsked() {
+    try { var g = (new URLSearchParams(global.location.search || '').get('glass') || '').toLowerCase(); return (g === 'solid' || g === 'glass') ? g : ''; }
+    catch (e) { return ''; }
+  }
+  function glassKept() {
+    try { var v = global.localStorage ? global.localStorage.getItem(GLASS_KEY) : ''; return (v === 'solid' || v === 'glass') ? v : ''; }
+    catch (e) { return ''; }
+  }
+  function stampGlass() {
+    try {
+      var d = doc.documentElement, v = glassAsked() || glassKept();
+      if (v === 'solid') d.setAttribute('data-glass', 'solid'); else d.removeAttribute('data-glass');
+    } catch (e) {}
+  }
+  stampGlass();
+  /* the glass is on the screen: Popit's look, not the safe floor, and not already solid (a plain world's faces blur its flat ground at
+     the same cost, so it is timed too) */
+  var glassOn = null, glassTiming = false;
+  function glassShown() {
+    var d = doc.documentElement;
+    if (d.getAttribute('data-simple') === '1' || d.getAttribute('data-fx') === 'safe' || d.hasAttribute('data-glass')) return false;
+    try { return !!(glassOn && glassOn()); } catch (e) { return false; }
+  }
+  /* one window of frame times (ms) -> 'glass', 'solid', or '' while it is not full */
+  function frameVerdict(ds) {
+    if (!ds || ds.length < GLASS_FRAMES) return '';
+    var s = ds.slice().sort(function (a, b) { return a - b; });
+    var beat = Math.max(6, Math.min(17.5, s[Math.floor(s.length * 0.1)]));
+    return s[Math.floor(s.length / 2)] > Math.max(beat * 1.5, 20) ? 'solid' : 'glass';
+  }
+  /* `shown`: the page's own answer to "is my glass on the screen now" (Home: Home is the page and a glass face is drawn there). Asked once
+     a burst of scrolling, never per frame. A second call (Home drawn again) only gives the newer answer. */
+  function timeGlass(shown) {
+    if (typeof shown === 'function') glassOn = shown;
+    if (glassTiming || glassAsked() || glassKept()) return;
+    glassTiming = true;
+    var ds = [], last = 0, until = 0, running = false, slow = 0, over = false, live = false;
+    function keep(v) {
+      over = true;
+      try { global.removeEventListener('scroll', onScroll, true); } catch (e) {}
+      try { if (global.localStorage) global.localStorage.setItem(GLASS_KEY, v); } catch (e) {}
+      stampGlass();
+    }
+    function frame(t) {
+      if (over) { running = false; return; }
+      if (last && live && !doc.hidden) { var dt = t - last; if (dt > 0 && dt < 1000) ds.push(dt); }
+      last = t;
+      var v = frameVerdict(ds);
+      if (v) {
+        ds = [];
+        if (v === 'glass') { keep('glass'); running = false; return; }
+        if (++slow >= 2) { keep('solid'); running = false; return; }
+      }
+      if (global.performance.now() < until) global.requestAnimationFrame(frame);
+      else { running = false; last = 0; }
+    }
+    function onScroll() {
+      if (over) return;
+      until = global.performance.now() + 150;
+      if (!running && global.requestAnimationFrame) { live = glassShown(); if (!live) return; running = true; last = 0; global.requestAnimationFrame(frame); }
+    }
+    try { global.addEventListener('scroll', onScroll, { passive: true, capture: true }); } catch (e) {}
+  }
+
   /* A TAB THAT LOADED HIDDEN HAS NO VIEWPORT, AND NOTHING ANNOUNCES THAT IT
      GOT ONE. Anything sized from the viewport must re-measure when the tab is
      first actually looked at, or it keeps whatever it guessed at while nobody
@@ -150,7 +250,9 @@
 
   var api = { width: width, height: height, isTouch: isTouch,
               isNarrow: isNarrow, reducedMotion: reducedMotion,
-              safeFloor: safeFloor, stamp: stamp };
+              safeFloor: safeFloor, stamp: stamp,
+              glass: function () { return doc.documentElement.getAttribute('data-glass') === 'solid' ? 'solid' : 'glass'; },
+              frameVerdict: frameVerdict, timeGlass: timeGlass };
 
   global.OW = global.OW || {};
   global.OW.viewport = api;

@@ -8,7 +8,7 @@
    at the right. A place that has a Center on Oneway is not drawn at all: it is folded into that Center's row (discovery.js
    findRow's fold), so pressing it takes you there.
 
-   Worn by Discovery's results for kind 'place', in both modes (Popit and Simple). `OW.placeRow.fill(button, {title, sub, type})`
+   Worn by Discovery's results for kind 'place', in both modes (Popit and Simple). `OW.placeRow.fill(button, {title, sub, type, origin})`
    where `type` is the geocoder's own kind (OpenStreetMap's: city, county, park, beach, aerodrome ...). Rules: oneway-placerow.css. */
 (function (global) {
   'use strict';
@@ -143,11 +143,21 @@
     return '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + PATHS[name] + '"/></svg>';
   }
 
-  /* the row's inside: icon, name and where it is on ONE line, the kind in a word at the right */
+  /* WHERE IT COMES FROM, ONE QUIET LINE (the founder, 2026-11-11: "the platform needs to be constantly referncing where to get things and
+     where they orginate from"): the server's own words for it (cards/service.py origin_of: `short` for a row, `words` for a card), never
+     composed here; small print, never a box or a row to press. `o` is a card's or a row's `origin`; '' when it says nothing. */
+  function from(o, cls, long) {
+    if (!o || typeof o !== 'object') return '';
+    var w = long ? (o.words || o.short) : (o.short || o.words);
+    if (!w || typeof w !== 'string') return '';
+    return '<span class="ow-from' + (cls ? ' ' + esc(cls) : '') + '" data-ow-origin="' + esc(o.by || '') + '">' + esc(w) + '</span>';
+  }
+
+  /* the row's inside: icon, name and where it is on ONE line, the kind in a word at the right; where it comes from rides on the same line */
   function html(p) {
-    var k = kindOf(p.type);
+    var k = kindOf(p.type), o = p.origin && (p.origin.short || p.origin.words), sub = [p.sub, o].filter(Boolean).join(' \u00b7 ');
     return '<span class="ow-prow__g" data-g="' + k[2] + '" aria-hidden="true">' + mark(p.type,p.information_center?(p.needs_information?'missing':true):false) + '</span>' +
-      '<span class="ow-prow__t"><b dir="auto">' + esc(p.title) + '</b>' + (p.sub ? '<span dir="auto">' + esc(p.sub) + '</span>' : '') + '</span>' +
+      '<span class="ow-prow__t"><b dir="auto">' + esc(p.title) + '</b>' + (sub ? '<span dir="auto"' + (o ? ' data-ow-origin="' + esc(p.origin.by || '') + '"' : '') + '>' + esc(sub) + '</span>' : '') + '</span>' +
       '<i class="ow-prow__k">' + esc(k[1]) + '</i>';
   }
 
@@ -190,5 +200,5 @@
       +'<svg x="11" y="11" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="'+path+'"/></svg>'
       +(information==='missing'?'<path d="M41 32.5 48 45.5H34Z" fill="#fff" stroke-linejoin="round"/><path d="M41 36.5v4.2m0 2.2v.2" stroke="'+fill+'" stroke-width="2" stroke-linecap="round"/>':information?'<circle cx="41" cy="41" r="6.5" fill="#fff"/><text x="41" y="45" text-anchor="middle" font-family="serif" font-size="12" font-weight="700" fill="'+fill+'">i</text>':'')+'</svg>';
   }
-  OW.placeRow = { fill: fill, html: html, kind: kindOf, kinds: KINDS, icon: function(type){return glyph(kindOf(type)[0]);}, paint:paint, mark:mark };
+  OW.placeRow = { fill: fill, html: html, from: from, kind: kindOf, kinds: KINDS, icon: function(type){return glyph(kindOf(type)[0]);}, paint:paint, mark:mark };
 })(window);

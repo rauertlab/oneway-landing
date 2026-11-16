@@ -846,7 +846,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Privacy Policy
 
-Source: https://oneway.center/privacy (last changed 2026-11-08)
+Source: https://oneway.center/privacy (last changed 2026-11-13)
 
 Our Mission
 App
@@ -858,7 +858,7 @@ Sign in
 
 Privacy Policy
 
-Last updated: November 1, 2026
+Last updated: November 14, 2026
 
 Our promises
 
@@ -882,6 +882,34 @@ A real person answers. Write to us about anything here. How
 
 What changed
 
+November 14, 2026
+
+New: looking around the App as a guest . To like, comment, repost or save, you sign in.
+
+New: community edits , and the public history of what a Center’s community changed.
+
+New: a Center’s open rooms , and the rules you agree to before you first write in one.
+
+New: your online status, your note and what you share from services you connect .
+
+New: hidden words , and your choice for words that could upset.
+
+New: the Launchpad , where people put up a startup for a week.
+
+New: the weekly email summary , off until you turn it on.
+
+New: when you like or repost a post someone sent you, they are told .
+
+New: posts brought from TikTok, YouTube, Facebook, Threads and Pinterest, as from Instagram .
+
+New: how a business claims its Center , and the one email a business may get when someone adds it.
+
+New: a report for a child’s safety goes to a person at Oneway, never to a Center’s team.
+
+Clearer: how Oneway’s staff find an account , and how long each new feature keeps what it keeps.
+
+November 1, 2026
+
 The whole policy is rewritten in plain English.
 
 Honest about deletion: what is removed, what is kept, and why.
@@ -900,7 +928,7 @@ This is the Privacy Policy for the Oneway ecosystem: the Oneway App, the Oneway 
 
 Our staff do see a list of every account’s email address and username, to run the service. They see more of an account only when it is reported or our checks flag it, and their live security log shows people by @username and the network they came from. Every look is logged. What Oneway’s staff can see says more.
 
-Contents Who decides what happens to your information What we collect, feature by feature How we use it Who can see what Workspace profiles The Marketplace Paying a Center Messages and the email inbox Location, Waypass and Footsteps The canvas, Popits and widgets Recognition by places Connected accounts Centers and their records The Brain and AI Automatic moderation and account standing Edited posts What Oneway's staff can see Ads Removal requests and child safety Sensitive information Who we share it with How long we keep it Security Your choices Without an account Teens and children Your birthday Talk to a person Where it is handled Changes
+Contents Who decides what happens to your information What we collect, feature by feature How we use it Who can see what Workspace profiles The Marketplace The Launchpad Paying a Center Messages and the email inbox A Center’s open rooms The weekly email summary Location, Waypass and Footsteps The canvas, Popits and widgets Online, your note and your activity Recognition by places Connected accounts Centers and their records Community edits and their history The Brain and AI Automatic moderation and account standing Edited posts What Oneway's staff can see Ads Removal requests and child safety Sensitive information Who we share it with How long we keep it Security Your choices Without an account Teens and children Your birthday Talk to a person Where it is handled Changes
 
 Who decides what happens to your information
 
@@ -928,6 +956,12 @@ Everyone, unless you turn on Private profile. Your birthday: only you.
 Until you change it or delete your account.
 Private profile, Show who follows you, Show who you follow, People can find you by name, Suggest you to people you may know, Show my profile and public posts in search engines.
 
+Online, your note and activity Me, Messages, Settings
+Whether you are online or away, and when you were last here. A note you write, a line of up to 60 characters. While Share what you are doing elsewhere is on: what a service you connect says you are doing, such as a song on Spotify or a game on Steam, with its cover.
+Online: as Who sees when you are online says. Your note: people you follow who follow you back. Each service’s activity: the audience you choose for it, Followers at first.
+An activity stops showing 15 minutes after the service last reported it, and after 6 hours at most. A song you heard stays on your own Now playing for 24 hours. A cover is kept 30 days. Your note shows for 24 hours, then stays stored until you write another, clear it or delete your account.
+Settings: Who sees when you are online, Share what you are doing elsewhere (off until you turn it on), each service’s audience, disconnect a service. Clear your note.
+
 Workspace profile The OS; Settings, Workplace
 A work name and a job title, kept apart from your personal profile, and the Centers where you hold a working role.
 You and your coworkers. A Center's own list of its people shows your work name only. Details below.
@@ -947,10 +981,16 @@ What reached your screen: until you delete your account. How you watch: it shape
 Following, and feeds you set to newest first, are not ranked.
 
 Messages Messages
-Messages, files and reactions in chats, the groups you are in, and when you are typing or online.
+Messages, files and reactions in chats, the groups you are in, and when you are typing or online. Who sent you a post, so they can be told when you like or repost it.
 The people in the conversation. A message to a business goes to whoever it set up to receive it.
 A new conversation: 2 days, then erased. A Marketplace chat keeps its messages. Details below.
 The room’s message timer. Settings: Who can message you, Message requests, Blocked accounts, Show when you are typing, Who sees when you are online.
+
+A Center’s rooms A Center’s page
+What you write in a Center’s open room, and that you accepted the rules for rooms, with the day. Without an account: the name you type, and a one-way mark of the network you write from.
+Anyone who opens the room, signed in or not, sees the words and the name over them. Never search engines. Nobody sees who is in a room.
+A room’s messages have no timer: they stay until they are removed. A guest’s name, network mark and yes stay with the room. Details below.
+Report or block from the message itself.
 
 Email inbox Messages
 The mail accounts you link, their sign-in, and a copy of your mail so you can read it here.
@@ -976,6 +1016,12 @@ People browsing near you see the listing, your name and picture. Never your addr
 Until you remove a listing or delete your account.
 Draft, Publish, Pending, Sold, remove.
 
+Launchpad Opportunities
+A launch you put up: its name, one-line pitch, link, what it is, pictures, its makers and topics. Your upvotes.
+Everyone, signed in or not, sees a launch, its makers and its count of upvotes. Nobody sees who upvoted.
+Until you take it down or delete your account. A closed week keeps its order.
+Edit, take down or put back your launch. Take back an upvote while its week runs.
+
 Centers and events Discovery, a Center's page
 Centers you join, follow, save or visit. Events you answer. An application to a Center's job or class listing, which opens a conversation with that Center.
 The Center sees that you joined, followed, answered or applied. Who else sees it depends on your settings.
@@ -993,6 +1039,12 @@ A booking: your name, email, party size, dates, notes and any deposit. An order:
 You and the Center. Your card details go only to Stripe.
 The Center decides. An order that was never paid is deleted after 7 days.
 Ask the Center to see, correct or delete its record.
+
+Community edits A Center’s About
+A change you suggest to a Center’s facts (its description, hours, address, phone number, photos or links), and your vote where its community decides.
+The Center’s team while it waits. Once decided, its public History shows your name and @handle, what changed and when. Details below.
+A Center’s History keeps its newest 40 changes and 20 suggestions that changed nothing.
+Suggest only where the Center lets you. A waiting suggestion is decided by its team, or by its community’s vote; when its team decides, you are told.
 
 Canvas, Popits and widgets Home, Me, a Center's page
 Which Popits you place and where. The apps you allowed and what you allowed each to do. One token for each device that shows your widgets.
@@ -1018,6 +1070,12 @@ Your Brain: only you. What you give an AI feature: the AI provider that answers 
 Your Brain's record: until you delete your account. Oneway does not keep what you give an AI feature, or its answer, except what you save, post or send.
 An AI feature runs only when you use it.
 
+Hidden words Settings, Content
+The words and phrases you hide, up to 50, and your choice for words that could upset.
+Only you.
+Until you change them or delete your account.
+Settings, Content: Hidden words, and Words that could upset.
+
 Reports and requests Any post, person or Center
 Reports, appeals, copyright notices and requests to remove an intimate picture.
 The people at Oneway who review them. We do not tell a person who reported them, except that a copyright notice shows the claimant’s name.
@@ -1029,6 +1087,12 @@ A score of how filled in your public profile is, how much other people engaged w
 Nobody sees the score. It decides how often your public card is shown to people who do not know you yet.
 Until you delete your account.
 Suggest you to people you may know. People can find you by name.
+
+Weekly email summary Settings, Notifications
+When your next summary goes, and what the last one held.
+Only you, at your own confirmed address.
+Until you turn it off or delete your account.
+Settings, Notifications: Weekly email summary (off until you turn it on).
 
 Sessions and the security log Settings
 When each session started and was last used, and the network address or browser. Sign-ins, refused sign-ins, and changes to your password, two-step sign-in and birthday.
@@ -1132,6 +1196,18 @@ Selling and messaging a seller are for people 18 and over. Under 18, you can bro
 
 Paying. Today every listing is paid in person at pickup. Oneway does not handle the money. Paying through Oneway and shipping are not available on the Marketplace yet.
 
+The Launchpad
+
+Covers: the Launchpad in Opportunities
+
+A launch keeps its name, one-line pitch, link, what it is, pictures, up to three topics, and its makers: you, and a Center you own if you name it. Everyone can see it, signed in or not.
+
+Upvotes. Only the count is shown. Nobody, the makers included, is shown who upvoted.
+
+Your launches and upvotes go when you delete your account, and each upvote you gave comes off its count.
+
+A person you blocked, or who blocked you, never sees your launches, and you never see theirs.
+
 Paying a Center
 
 Covers: buying from a Center, event tickets, booking and stay deposits
@@ -1156,6 +1232,8 @@ Disappearing messages. A new conversation starts with messages that disappear af
 
 A Marketplace chat keeps its messages.
 
+A post someone sent you. When you like or repost a post someone sent you in Messages, or that you saw on their Reposts, they are told once. Taking the like or the repost back takes the notice back. We keep who sent which post to whom so we can tell them; it goes when you delete your account.
+
 The email inbox. You can link up to 50 mail accounts (Gmail, Outlook, Yahoo, AOL, iCloud, Fastmail, Zoho or any other) with an app password or with Google’s or Microsoft’s sign-in. The sign-in is sealed in your own encrypted vault and never shown back. We keep a copy of your mail, folders and attachments so you can read and search them here, and we send mail as that account when you ask. Removing a mail account, or deleting your Oneway account, removes our copy of its mail, folders and attachments and the sign-in we hold for it.
 
 A business address in a Center’s inbox. You can give an address you own to a Center’s inbox, so its team can read and reply to that mail. You can take it back at any time, and it stops at once. The Center never gets its own copy of your mail.
@@ -1163,6 +1241,32 @@ A business address in a Center’s inbox. You can give an address you own to a C
 Unlinking an account removes its sign-in, every copy of its mail here, and every Center it was given to.
 
 Addresses at oneway.center are not available yet.
+
+A Center’s open rooms
+
+Covers: the rooms on a Center’s page
+
+Open to read. A Center’s team can open rooms on its page. Anyone can read an open room, signed in or not. A room’s words are never given to search engines, and nobody is shown who is in a room.
+
+Before you first write, you agree to the rules for rooms, once. We keep that you agreed and the day, never what you wrote with it.
+
+Without an account, where the Center allows it, you write under a name you type. We keep that name with your words and show it over them to everyone who reads the room, and your device keeps the key that lets you write under it again. To make a ban hold, we keep a one-way mark made from the network address you write from; a ban puts that mark on the Center’s block list.
+
+Kept until removed. A room’s messages do not disappear on a timer. The people who answer for the Center can remove a message and ban whoever wrote it.
+
+Nothing that reaches you. A room has no calls, attachments, typing or read receipts. Asking for a link, a phone number, an email, someone’s age, school or where they live is refused. A person under 18 is shown by first name only, with no picture and no way to their profile.
+
+Report or block from the message itself. A report about what someone wrote goes to the people who moderate the Center. A report about the Center’s own words goes to Oneway, and a report for a child’s safety goes only to a person at Oneway.
+
+The weekly email summary
+
+Covers: Settings under Notifications
+
+Off until you turn it on. Once a week, on Monday at the hour you usually open Oneway, we email the notifications you have not opened since the last one. It never quotes a message.
+
+It goes only to your own address, once you have confirmed it, and never to anyone under 18.
+
+Turn it off and the next one is cancelled at once.
 
 Location, Waypass and Footsteps
 
@@ -1185,6 +1289,20 @@ The canvas is how your Home, your profile or a Center’s page is laid out: whic
 Popit apps built by others run in their own sandbox, on their own web address. An app gets only the permissions you allowed, and you can take them back.
 
 Widgets on a phone, tablet, computer or Watch use a token made for that one device. It can only read your own Home as widgets. It is stored as a hash and stops working when the sign-in that made it ends.
+
+Online, your note and your activity
+
+Covers: the dot on your picture, your note, Now playing, Settings under Privacy
+
+Online. Whether you are online or away is shown only to the people Who sees when you are online lets see it. Choose Nobody and you see nobody’s.
+
+Your note is a line of up to 60 characters above your picture. It shows for 24 hours to people you follow who follow you back, and stays stored until you write another, clear it or delete your account.
+
+Activity from services you connect. Off until you turn on Share what you are doing elsewhere. Then a service you connect, such as Spotify, Last.fm, Steam or Twitch, can show what you are doing, each to the audience you choose for it (Everyone, Followers, Close friends or Only me; Followers at first). We read only what the service gives us with your permission. An activity stops showing 15 minutes after the service last reported it, and after 6 hours at most. A song you heard stays on your own Now playing for 24 hours. A cover is kept 30 days.
+
+The Center you are at is shown only if you turn on Show the Center you are at.
+
+Disconnecting a service stops its activity. Deleting your account removes all of it.
 
 Recognition by places
 
@@ -1232,6 +1350,8 @@ What we keep is the access the platform gives us, and the account's name and ID.
 
 We post only what you pick to post. If you start an import, we read your posts on that platform and copy them onto Oneway as your posts, dated when you first posted them.
 
+Bring my new posts. For Instagram, Facebook, Threads, Pinterest, TikTok and YouTube you can turn on Bring my new posts for each connected account. It is off until you turn it on, and you can choose to OK each post first. While it is on we read the account’s newest posts every 15 minutes (YouTube tells us when a video is up, and we read it every 6 hours as well). Each post comes to your profile as your post, marked with where it came from, and a video plays in its platform’s own player. Only posts made after you turned it on are brought; Import brings older ones when you press it.
+
 Google Business Profile lets a Center post updates and read its reviews. Google Ads and Meta ads are read only, while someone at the Center looks, and their numbers are not stored.
 
 YouTube connects through Google’s own sign-in, and Oneway uses YouTube API Services: by using that connection you also agree to the YouTube Terms of Service , and Google’s Privacy Policy covers what Google does with the data it holds. Oneway reads the videos and channel details you allow, keeps the access encrypted, and refreshes what it copied at least every 30 days or deletes it. When you disconnect YouTube in Oneway, we delete our copy of the access, stop using it, and remove the YouTube data we copied, within 7 days. To withdraw Oneway’s access at Google as well, remove it on Google’s security settings page .
@@ -1256,6 +1376,10 @@ A Center can keep records about its customers: name, email, phone, its own custo
 
 The business is responsible for those records. To see, correct or delete one, ask the business. We help it answer. You do not need a Oneway account for a business to hold information about you.
 
+Claiming a Center. A business proves a Center is its own with a code we send to an address at its website’s own domain, or a person at Oneway approves the claim. Then its name and @handle are the owner’s.
+
+When someone adds a business that nobody runs on Oneway, we may email it once, at the address its public map listing gives, never one a person typed. Every such email has a link to never be written to again.
+
 A Center can start as an information page about a place, with its facts checked by a person, before its owner claims it. When a Center is created, Oneway gathers public information about the organization to propose a starting profile; nothing is published until its operator confirms it. To correct or remove information about your organization, email us.
 
 A Center may also have its own website and its own privacy practices. This policy covers Oneway, not a Center's own site.
@@ -1274,6 +1398,20 @@ Reports and cases Currency transaction reports and suspicious-activity cases. A 
 
 Exclusions and limits Exclusion lists, and limits a person sets on themselves, which that person sees in the App
 
+Community edits and their history
+
+Covers: Suggest an edit on a Center’s About, a Center’s History
+
+Who may suggest is the Center’s choice: nobody, its members, its followers or anyone. Only its description, hours, address, phone number, photos and links can be suggested, never its name, @handle, look, pages or team.
+
+Who decides: its owner, Steward, admins or moderators, or its community’s vote if the owner chose that. Nothing changes until it is decided.
+
+The public History. Anyone who can see the Center can read each decided change: who suggested it (their name and @handle), the role of who decided it (such as its owner), when, and what it said before and after. It never shows anyone’s email address. What a suggestion that changed nothing said is shown only to the Center’s team and to whoever suggested it. A phone number is shown only while it is approved and on the page. A photo you suggest is credited to you.
+
+A place nobody runs yet. On an information page, a new name waits at least three days for its community to review it.
+
+When you delete your account, your name in a Center’s History becomes Oneway user.
+
 The Brain and AI
 
 Covers: your Brain in Me, a Center’s Brain in the OS, AI features in Create and in a Center’s inbox
@@ -1283,6 +1421,8 @@ Your Brain is counted from your own activity, such as the Centers you belong to 
 A Center’s Brain reads that Center’s own records, such as follows, bookings, attendance and posts there, to see how people relate to the Center and to recommend what to do. A person at the Center decides. We do not infer health, religion, ethnicity, sexuality, politics or finances.
 
 What a Center’s Brain may do by itself: only the small acts its owner allowed, up to a daily budget, each one recorded (and, if the owner asked, told to them). Larger acts wait for a person to approve. Acts that move money or touch a person’s identity are never the Brain’s to do alone.
+
+Automations. A Center can turn on automations, such as a welcome email, a reminder or a request for a review. One that reaches its customers waits for a person at the Center to say yes each time, unless the owner chose Do it for me. The Center is the sender.
 
 AI features. When you use one, what you give it is sent to an AI provider to produce the answer. Oneway does not train AI models on your posts or messages, and each provider's own terms govern what it does with what it receives. Where an AI answers a message for a Center, the conversation says so.
 
@@ -1310,6 +1450,8 @@ Shield. While Oneway is under attack, our team can switch on Shield for a while:
 
 Reports are reviewed by people.
 
+Your own filters. What the check refuses is never shown to anyone. Beyond that, you choose. Hidden words: up to 50 words or phrases, and a comment by someone else that holds one is hidden from you, however it is spelled. Words that could upset: Hide, Blur with a tap to see (the first choice), or Show; under 18 it is Hide, and it stays Hide. Your own words are always shown to you. Both are in Settings, under Content.
+
 Edited posts
 
 Covers: editing a post you made in Create or Home
@@ -1325,6 +1467,8 @@ Our list of accounts shows only each account’s email address and username, and
 More opens only when an account is reported, or our checks flagged it, and only what the case needs: the reported item and why, the account’s age, and counts of what it did lately. Never a private message beyond the one reported, and never who reported.
 
 Every view and every search is written to the security log first. If it cannot be written, it is not shown.
+
+Staff can find an account by its email address, its username or its name, even when People can find you by name is off. The row they see still shows only the address and the username, and every search is logged.
 
 Only Oneway’s owner, and staff the owner gives this permission, can use it.
 
@@ -1344,6 +1488,8 @@ Copyright notices. We keep the notice. The person who posted is shown the claima
 
 Child sexual abuse material is never allowed. Matching photos and videos against lists of known abuse material needs approval from the service that keeps those lists, which Oneway does not have yet, so that check is not running. When it runs, a match is never shown: it is kept locked as evidence, the account is held, and a person at Oneway files a report with the National Center for Missing & Exploited Children (NCMEC). We keep that record for one year.
 The law: 18 U.S.C. 2258A requires a provider to report apparent child sexual abuse material to NCMEC’s CyberTipline, and to preserve the report’s contents for one year. In plain words: we report it, and we keep the evidence for the authorities.
+
+A report for a child’s safety. Report has its own reason, A child’s safety, on a post, a message or a room. Such a report goes only to the person at Oneway who handles child safety, never to a Center’s team or its moderators. If it turns out not to be a child-safety matter, its words are not kept.
 
 Sensitive information
 
@@ -1403,6 +1549,8 @@ Posts Until you delete them. A deleted post can be brought back for 30 days. Aft
 
 A post brought from Instagram Until you delete it, disconnect Instagram, or remove Oneway in Instagram
 
+A post brought from another platform Until you delete it. From YouTube, the video’s words and picture are read again within 30 days or removed, and removed within 7 days of disconnecting.
+
 Searches Never tied to who searched. A map search’s words and answer are kept until our cleanup runs; we are shortening this to 30 days.
 
 Withdrawn notes Out of view, and kept until our cleanup runs; we are shortening this to 30 days
@@ -1414,6 +1562,18 @@ Reports and their decisions While they are needed to keep Oneway safe; we are se
 Messages New conversations: 2 days, then erased on time, with their files once nothing else uses them. Older conversations: until a timer is turned on. Marketplace chats keep their messages.
 
 Location Your latest shared position, until it expires or you turn sharing off
+
+Activity from services you connect 15 minutes after the service last reported it, 6 hours at most. A song you heard: 24 hours on your own Now playing. A cover: 30 days.
+
+Your note Shown for 24 hours. Stored until you write another, clear it or delete your account
+
+A Center’s room Its messages, until they are removed. That you accepted the rules for rooms: until you delete your account. Without an account, your name, the mark of your network and your yes are kept with the room: nothing deletes them on a timer, and there is no account to delete. A ban keeps the mark on the Center’s block list until the Center is deleted.
+
+A Center’s History of community edits Its newest 40 changes and 20 suggestions that changed nothing
+
+A launch Until you take it down or delete your account
+
+Who sent you a post Until you delete your account
 
 Orders A paid order is kept as the Center’s record of a sale, for as long as the Center keeps its records; the Center decides, and you ask the Center to see or correct it. An order that was never paid is deleted after 7 days.
 
@@ -1461,8 +1621,8 @@ What deleting your account does
 
 Removed Stays
 
-Every session on every device, and every other way in: passkeys, device sign-ins and your widgets’ keys. Your profile, picture, @handle and search listings. Your posts, with their words and pictures, including posts you deleted before. Your comments. Your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected, with the access we held for them, and your linked mail accounts with their mail. Your linked identities. Your shared location, your Footsteps and your Waypass. What reached your screen, and what the feed learned from it. Your list of bookings, your Marketplace listings, your work name and title, your settings, your custom feeds and plans, the record of when you were online, and your notifications. Your profile strength score.
-Messages you sent stay in the other person’s chat, as their copy, shown as from Oneway user with no picture or profile. A business keeps its bookings and its records of your visits, without your name, email address or phone. Records the law requires: payment records, an employer’s wage and time records, a casino’s records and self-exclusions, reports made to keep people safe (a report to child safety is preserved as the law requires), and moderation and legal cases. We have not yet set an end date for each of these; until we do, they are kept. The minimal record described above (your email address and the dates you joined and left). The security log, with your email address and the network address of each entry, never what you wrote.
+Every session on every device, and every other way in: passkeys, device sign-ins and your widgets’ keys. Your profile, picture, @handle and search listings. Your posts, with their words and pictures, including posts you deleted before. Your comments. Your reactions, reposts and saves. Your follows, blocks and mutes. Your Center memberships and your own space. Sites you signed in to with Oneway. Photos, videos and files you uploaded. What your Brain kept. The accounts you connected, with the access we held for them, and your linked mail accounts with their mail. Your linked identities. Your shared location, your Footsteps and your Waypass. What reached your screen, and what the feed learned from it. Your list of bookings, your Marketplace listings, your work name and title, your settings, your custom feeds and plans, the record of when you were online, and your notifications. Your profile strength score. Your note, your hidden words, the activity from services you connected, your launches and upvotes, that you accepted the rules for rooms, and the record of who sent you which post.
+Messages you sent stay in the other person’s chat, as their copy, shown as from Oneway user with no picture or profile. So do your words in a Center’s room, and your name in a Center’s History of community edits. A business keeps its bookings and its records of your visits, without your name, email address or phone. Records the law requires: payment records, an employer’s wage and time records, a casino’s records and self-exclusions, reports made to keep people safe (a report to child safety is preserved as the law requires), and moderation and legal cases. We have not yet set an end date for each of these; until we do, they are kept. The minimal record described above (your email address and the dates you joined and left). The security log, with your email address and the network address of each entry, never what you wrote.
 
 Backup copies of our database are made once a day and kept 14 days, so a copy that still holds your account is gone within 14 days after it is removed.
 
@@ -1476,7 +1636,7 @@ To use a right, email hello@oneway.center . We answer within 30 days, and may ne
 
 Without an account
 
-You can look around Oneway without signing in. We make no account and no record of you for it. A like or dislike you press is kept in your browser, on this device, and is not sent to us; when you sign in, it is sent once, as you. Nothing you do signed out becomes a page or appears in search. To comment, repost or save, you sign in. You can also message a Center from its page, book a table and pay a Center without an account; the sections above say what is kept when you do.
+You can look around Oneway without signing in: open the App as a guest and read posts, profiles and Centers. We make no account and no record of you for it. Nothing you do signed out becomes a page or appears in search. To like, comment, repost or save, you sign in. You can also message a Center from its page, book a table, pay a Center and, where it allows, write in its open rooms without an account. The sections above say what is kept when you do: in an open room, the name you type, shown over your words, and a one-way mark of your network.
 
 Teens and children
 
@@ -1586,7 +1746,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Terms of Service
 
-Source: https://oneway.center/terms (last changed 2026-11-08)
+Source: https://oneway.center/terms (last changed 2026-11-13)
 
 Our Mission
 App
@@ -1598,9 +1758,35 @@ Sign in
 
 Terms of Service
 
-Last updated: November 1, 2026
+Last updated: November 14, 2026
 
 What changed
+
+November 14, 2026
+
+New: looking around as a guest . To like, comment, repost or save, you sign in.
+
+New: community edits : what you may suggest to a Center, who decides, and how you are credited.
+
+New: a Center’s open rooms , and the rules for rooms you agree to before you first write in one.
+
+New: the Launchpad , where people put up a startup for a week.
+
+New: Bring my new posts , and showing what you are doing on services you connect.
+
+New: claiming a Center .
+
+New: automations that reach a Center’s customers ask a person at the Center first, unless its owner chose otherwise.
+
+New: your own filters , hidden words among them.
+
+New: the reason A child’s safety on Report, read only by a person at Oneway.
+
+New: Developer OS .
+
+Moved: Oneway network boosts now sit with section 5 , where boosts are.
+
+November 1, 2026
 
 The whole of the Terms is rewritten in plain English, and each section names the features it covers.
 
@@ -1616,7 +1802,7 @@ The legal wording that must stay exact now has a plain line beside it.
 
 This is the Terms of Service for the Oneway ecosystem: the Oneway App, the Oneway OS, every Sign in with Oneway gateway, oneway.center, and any other or future Oneway service (together, the "Service"). They are an agreement between you and Oneway Technologies LLC, a New York limited liability company ("Oneway", "we"). By creating an account or using the Service you agree to these Terms. If you use Oneway for a business, a city or an organization, you agree for it too. Oneway is in a selective server test launch.
 
-Contents 1. Selective server test launch 2. Who can use it 3. Your account, your workspace profile and your birthday 4. What you post 5. Oneway boosts 6. Rules 7. Reports, moderation and account standing 8. Removing intimate pictures 9. Child safety 10. Copyright 11. Messages and email 12. Connected accounts 13. Centers and the OS 14. Data processing for Centers 15. Bookings, tickets, deposits and disputes 16. The Marketplace 17. Rewards and loyalty programs 18. Sign in with Oneway and apps 19. AI features and the Brain 20. Privacy 21. Our rights 22. Third-party services 23. Plans and billing 24. No warranty 25. Limit of liability 26. Your responsibility 27. Ending 28. Governing law and disputes 29. Notices 30. Changes 31. The rest
+Contents 1. Selective server test launch 2. Who can use it 3. Your account, your workspace profile and your birthday 4. What you post 5. Oneway boosts 6. Rules 7. Reports, moderation and account standing 8. Removing intimate pictures 9. Child safety 10. Copyright 11. Messages and email 12. Connected accounts 13. Centers and the OS 14. Data processing for Centers 15. Bookings, tickets, deposits and disputes 16. The Marketplace and the Launchpad 17. Rewards and loyalty programs 18. Sign in with Oneway and apps 19. AI features and the Brain 20. Privacy 21. Our rights 22. Third-party services 23. Plans and billing 24. No warranty 25. Limit of liability 26. Your responsibility 27. Ending 28. Governing law and disputes 29. Notices 30. Changes 31. The rest
 
 1. Selective server test launch
 
@@ -1636,7 +1822,7 @@ Covers: Me, Settings, workspace sign-up, the OS
 
 Give accurate information. Keep your password and your two-step codes to yourself and tell us at once if someone else has them. You are responsible for what happens under your account.
 
-You may hold one personal account. You do not need an account to look around, to message or book a Center from its page, or to pay a Center; these Terms apply to you when you do.
+You may hold one personal account. You do not need an account to look around, to message or book a Center from its page, or to pay a Center; these Terms apply to you when you do. As a guest you can read the App; to like, comment, repost or save, you sign in.
 
 Your workspace profile is a work name and title you use at the Centers where you work, kept apart from your personal profile. Use your real working name. The Privacy Policy says who sees it.
 
@@ -1669,6 +1855,10 @@ A post’s like count may include Oneway boosts, and the author is told when the
 Boosts, and views that come from them, never count toward advertising reach, Center insights, creator earnings or paid placement.
 
 Posts by people under 18, and posts that are not public, are never boosted.
+
+Oneway network boosts
+
+Oneway may give an eligible public post labeled network boosts over one to three days. A boosted post's displayed like count includes those boosts; they do not represent individual people and never appear as people in its likes list. We tell the author when a boost is planned. Network boosts do not count toward advertising results, paid placement, business engagement insights or creator earnings. They can stop if the post becomes private, is removed, or the network turns boosts off.
 
 6. Rules
 
@@ -1718,6 +1908,8 @@ If we act on your content or account, you can appeal at the address below, and s
 
 Automatic checks. Everything you write is read by an automatic check before it shows. Clear harm (threats, slurs, sexual words beside a child, asking a child to keep secrets or to meet) is refused everywhere, messages included. Words that could be harm may hold a post, so only you see it until you change it or a person reviews it. Cursing at a person is not allowed in public. A message to a Center from someone without an account is not sent if the check finds any flagged word or a link. If we read your words wrong, ask for a review.
 
+Your own filters. You can hide words and phrases from the comments you see, and choose whether words that could upset are hidden, blurred or shown. They change only what you see.
+
 Account standing. Each account has one standing: normal, watched, held or locked. Refusals by the check move it (three in an hour put an account under watch), and our team can restrict an account or change its standing, with a reason. A watched account’s unsure words are refused, a held account’s posts wait for a person, and a locked account cannot post or send for a time. During an attack we may switch on stricter rules for a while (Shield), and a Center’s managers can do the same for their own pages.
 
 8. Removing intimate pictures
@@ -1735,6 +1927,8 @@ Covers: every photo and video upload
 Never upload sexual content involving a minor. Matching photos and videos against lists of known child sexual abuse material needs approval from the service that keeps those lists, which Oneway does not have yet, so that check is not running. When it runs, on a match the file is never shown, the account is held at once, the file is kept locked as evidence, and a person at Oneway reports it to the National Center for Missing & Exploited Children (NCMEC).
 
 The law: 18 U.S.C. 2258A requires a provider that learns of apparent child sexual abuse material on its service to report it to NCMEC’s CyberTipline, and to preserve what it reported for one year. In plain words: we report it, we keep the evidence, and we do not warn the uploader.
+
+Report has its own reason, A child’s safety, on a post, a message or a room. Such a report goes only to the person at Oneway who handles child safety, never to a Center’s team or its moderators.
 
 10. Copyright
 
@@ -1754,6 +1948,8 @@ A message to a business goes to whoever it set up to receive it, and the convers
 
 A Marketplace chat keeps its messages, and warns you when someone asks you to pay ahead.
 
+A Center’s open rooms can be read by anyone, and their messages stay until they are removed. Before you first write in one, you agree to the rules for rooms, which the Community Guidelines set out. The people who run the Center can remove a message and ban whoever wrote it.
+
 The email inbox. You can link mail accounts you are allowed to use and read them in Oneway. When you send mail from Oneway, it goes as that account, and you are responsible for it, as you would be in that provider’s own app. If you give a business address to a Center’s inbox, its team can read and reply to that mail until you take it back.
 
 12. Connected accounts
@@ -1769,6 +1965,10 @@ Oneway posts to a platform only what you pick to post.
 You are responsible for following each platform's rules for what you post there. A platform can end or limit a connection, and we are not responsible when it does.
 
 A post can show another platform’s video player. That platform’s terms apply to its player.
+
+Bring my new posts. When you turn it on for a connected account, new posts from that account come to your profile as your posts, marked with where they came from. Bring only what is yours to post, and keep to that platform’s rules.
+
+What you are doing elsewhere. When you turn on Share what you are doing elsewhere, a service you connect can show what you are doing there, such as a song or a game, to the audience you choose.
 
 Disconnect any time in Settings.
 
@@ -1796,7 +1996,17 @@ A Center that offers itself as a safe meetup spot for the Marketplace confirms i
 
 Two-step sign-in is required in casino, guest, rewards and credential areas. Do not share access.
 
+Claiming a Center. Anyone may add a place to Oneway as an information page. Only the business that runs it may claim its Center: it proves it with a code we send to an address at its website’s own domain, or a person at Oneway approves the claim. Claim only what you run. A claimed Center’s name and @handle are its owner’s.
+
 If you own a Center, hand it over before you delete your account.
+
+Community edits
+
+A Center chooses who may suggest a change to its facts: nobody, its members, its followers or anyone. Only its description, hours, address, phone number, photos and links can be suggested. Its name, @handle, look, pages and team are its own.
+
+Suggest only what is true and what you know first hand. Its owner, Steward, admins or moderators decide, or its community’s vote if the owner chose that. Nothing changes until it is decided.
+
+When you suggest words or a photo, you give the Center and Oneway the licence in section 4 to show them on the Center’s page and in its public History, which names you by your name and @handle as the one who suggested it.
 
 14. Data processing for Centers
 
@@ -1834,9 +2044,9 @@ Deposits. A booking’s deposit is set by the Center’s rule when you book, and
 
 Disputes. If you dispute a payment with your bank, the bank and Stripe decide it with the Center. While a dispute is open, what you bought may be paused, for example a ticket put on hold. Talk to the Center first; most problems are solved faster that way.
 
-16. The Marketplace
+16. The Marketplace and the Launchpad
 
-Covers: Marketplace listings, Message the seller, the listing chat, safe meetup spots
+Covers: Marketplace listings, Message the seller, the listing chat, safe meetup spots, the Launchpad in Opportunities
 
 Who. Selling and messaging a seller are for people 18 and over. Under 18, you can browse.
 
@@ -1847,6 +2057,16 @@ Never sold here: weapons (knives, swords and tasers too), drugs (prescription pi
 Meet safely. Meet in a busy public place in daylight. The chat suggests safe meetup spots first: Centers that offer themselves as public, staffed and lit.
 
 Paying. Today you pay in person at pickup, after you check the item. Never pay ahead by Zelle, Venmo, Cash App, a deposit or a gift card, and never share a code sent to your phone. Oneway is not a party to the sale and does not handle the money. Paying through Oneway and shipping are not available on the Marketplace yet.
+
+The Launchpad
+
+Who. One launch a person a week, free, for people 18 and over. A week runs from Monday to Sunday, in UTC, and a launch goes up in the week running now.
+
+Your launch must be yours to put up, honest about what it is, and its link must go where it says. You are responsible for what it claims. Oneway does not check, endorse or invest in any launch.
+
+Upvotes. One for each signed-in person, never on your own launch, and only while its week runs. Do not buy, trade or ask for upvotes in return for anything. A closed week keeps its order, and its top three keep their mark, which is no prize and no endorsement.
+
+Taking it down. You can edit, take down and put back your launch. A launch taken down after a report stays down for everyone, and you can appeal.
 
 17. Rewards and loyalty programs
 
@@ -1884,6 +2104,8 @@ Some features use AI to write or suggest text and images. It can be wrong or uns
 
 Where an AI answers a message for a Center, the conversation says so.
 
+Automations. A Center’s automation that reaches its customers, such as a welcome email, a reminder or a request for a review, waits for a person at the Center to say yes each time, unless the owner chose Do it for me. The Center is the sender, and what section 13 says of email and texts applies to it.
+
 If you use AI to make an advertisement with an AI-generated person in it, you must disclose that as New York law requires.
 
 As between you and Oneway, you own what an AI feature produces for you, subject to these Terms and to the rights of anyone whose content it may resemble.
@@ -1906,11 +2128,13 @@ The Service connects to services we do not run, such as the platforms you connec
 
 23. Plans and billing
 
-Covers: Oneway OS, Business OS, selling through Oneway
+Covers: Oneway OS, Business OS, Developer OS, selling through Oneway
 
 Oneway is free for people, and Oneway OS is free for any Center.
 
 Business OS is $330 per month for one Center, and Oneway sets it up with you by contact; more than one Business Center is priced by agreement. Any other plan’s price is shown to you before you agree to it. No plan stops your work at a limit it does not show you.
+
+Developer OS is for people who build apps, Systems and integrations on Oneway. Section 18 applies to what they build.
 
 When a Center sells through Oneway, Oneway’s fee is 1% of the sale or less. An order with a fee pays at least 10 cents, never more than the price of what was bought. The Center pays Stripe’s card fees. The fee is refunded in the same share as the sale is refunded, or lost in a dispute.
 
@@ -1967,10 +2191,6 @@ We may notify you in the App, by email to the address on your account, or on thi
 30. Changes
 
 We may change these Terms. We will show a material change in the App at least 14 days before it takes effect, and ask again where the law or a platform requires it. If you keep using the Service after that date, you accept the change. If you do not accept it, delete your account.
-
-Oneway network boosts
-
-Oneway may give an eligible public post labeled network boosts over one to three days. A boosted post's displayed like count includes those boosts; they do not represent individual people and never appear as people in its likes list. We tell the author when a boost is planned. Network boosts do not count toward advertising results, paid placement, business engagement insights or creator earnings. They can stop if the post becomes private, is removed, or the network turns boosts off.
 
 31. The rest
 
@@ -2748,7 +2968,7 @@ Explore the App
 
 Guest
 
-A guest is anyone using Oneway without an account; in the App, “Look around first” starts as one. A guest can explore the map and Discovery, and like a post, which is kept on their device and counts once they sign in. Where a Center lets anyone ask, a guest can ask it a question and get its answer by email, or leave a phone number for the Center to call back. Commenting, reposting and saving need an account.
+A guest is anyone using Oneway without an account: “Go to App” on this site, “Check out the app” on sign-in and sign-up, and “Be a guest” in the App each open the App as one. A guest can explore the map and Discovery, and read what people and Centers post. Where a Center lets anyone ask, a guest can ask it a question and get its answer by email, or leave a phone number for the Center to call back. Liking, commenting, reposting and saving need an account.
 
 Without an account
 
@@ -2881,7 +3101,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Community Guidelines
 
-Source: https://oneway.center/community-guidelines (last changed 2026-11-08)
+Source: https://oneway.center/community-guidelines (last changed 2026-11-13)
 
 Our Mission App OS Security Contact
 
@@ -2893,7 +3113,20 @@ Community Guidelines
 
 The rules for everyone on Oneway, what happens to an account or a Center that breaks them, and how to ask us to look at a decision again.
 
-They apply everywhere on Oneway: profiles, posts, comments, messages and Centers. They sit beside the Terms of Service . Updated 17 October 2026.
+They apply everywhere on Oneway: profiles, posts, comments, messages and Centers. They sit beside the Terms of Service . Updated November 14, 2026.
+
+What changed
+
+November 14, 2026.
+
+Shared places
+New: the rules for a Center’s open rooms , community edits , the Launchpad and the Marketplace .
+
+The word check
+Corrected: what the check does on its own, and what your own filters change.
+
+Reports
+New: whoever reported is told what was decided, and a report for a child’s safety reaches only a person at Oneway.
 
 Not allowed
 
@@ -2920,13 +3153,31 @@ Impersonation
 Do not pretend to be another person, a business, an organization or Oneway.
 
 Spam and scams
-Do not spam people, phish for their passwords or money, or run a scam. Do not fake reviews, or buy followers, likes or comments.
+Do not spam people, phish for their passwords or money, or run a scam. Do not fake reviews, or buy followers, likes, comments or upvotes.
 
 Illegal goods and services
 Do not sell, buy, trade or arrange anything illegal, such as illegal drugs, stolen goods, or weapons sold outside the law.
 
 Private information
-Do not share someone's private information without their consent: their home address, phone number, documents or where they are. Do not use a place's guest list, location sharing or StreetPass to find or follow someone.
+Do not share someone's private information without their consent: their home address, phone number, documents or where they are. Do not use a place's guest list, location sharing or Waypass to find or follow someone.
+
+Shared places
+
+Where everyone joins in.
+
+Some places on Oneway are open to everyone at once. Each has its own rules, on top of the ones above.
+
+A Center’s open rooms
+Anyone can read them. Before you first write in one, you agree to the rules for rooms: be respectful, with no harassment, bullying, hate or threats; no sexual words or pictures, and nothing that sexualizes anyone under 18; no links, phone numbers or emails, no asking anyone to talk somewhere else, and never ask anyone their age, school or where they live; no spam, scams or selling anything illegal. The people who run the Center can remove a message and ban whoever wrote it.
+
+Community edits
+Suggest only what is true and what you know first hand: a Center’s description, hours, address, phone number, photos and links. Never suggest an edit to harm a place, and never give someone’s private number as a Center’s. Your name is on what you suggest.
+
+The Launchpad
+Put up only what is yours to put up, say honestly what it is, and link only where you say. Never buy, trade or ask for upvotes, and never upvote from a second account.
+
+The Marketplace
+Sell only what is yours and what the Marketplace allows, describe it honestly, and meet in a busy public place. What is never sold here is in the Terms .
 
 What happens
 
@@ -2935,10 +3186,13 @@ What Oneway does when a rule is broken.
 A person decides every report. A machine can raise a report for a person to look at, but it never decides one.
 
 Reports
-However often one person reports the same thing, it counts once. How to report someone, or block or mute them, is on Safety .
+However often one person reports the same thing, it counts once. Whoever reported is told what was decided, and the person reported is never told who reported them. How to report someone, or block or mute them, is on Safety .
 
 The word check
-A post written in the App is checked for hateful, threatening and sexual words, some disguised spellings included. What it finds waits for a person, and the check hides nothing by itself.
+Everything written on Oneway is read by an automatic check before it shows, some disguised spellings included. Clear harm is refused everywhere, messages included: threats, slurs, sexual words beside a child, and asking a child to keep secrets or to meet. Words that could be harm hold a post until a person looks. Your own hidden words, and your choice for words that could upset, change only what you see. If the check read you wrong, ask for a person to look.
+
+A child’s safety
+A report for a child’s safety goes only to the person at Oneway who handles it, never to a Center’s team or its moderators.
 
 A Center's own space
 A Center's team can remove comments left on its posts, and you can remove comments left on posts on your own profile. A complaint about a Center is decided by Oneway, never by that Center.
@@ -3006,7 +3260,7 @@ Oneway, the Oneway App and Oneway OS are made by Oneway Technologies LLC, New Yo
 
 ## Safety
 
-Source: https://oneway.center/safety (last changed 2026-11-08)
+Source: https://oneway.center/safety (last changed 2026-11-13)
 
 Our Mission App OS Security Contact
 
@@ -3018,7 +3272,20 @@ Safety on Oneway
 
 The controls you have, the protections teen accounts start with, how a parent can supervise, and how to reach us when something is wrong.
 
-The rules everyone keeps to, and what happens when someone does not, are in the Community Guidelines . How the platform itself is protected is on Security . Updated 17 October 2026.
+The rules everyone keeps to, and what happens when someone does not, are in the Community Guidelines . How the platform itself is protected is on Security . Updated November 14, 2026.
+
+What changed
+
+November 14, 2026.
+
+In a room
+New: what keeps you safe in a Center’s open rooms.
+
+Your own filters
+New: hidden words , and your choice for words that could upset.
+
+A child’s safety
+New: a reason of its own on Report, read only by a person at Oneway, and the whole of a teen’s bedtime .
 
 Block, mute, report
 
@@ -3033,7 +3300,10 @@ Mute
 Their posts stop reaching your feed, and nothing else changes; they are not told. To undo it, find them in Settings, under Muted accounts.
 
 Report
-Choose what is wrong: spam, harassment, hate, violence, nudity, self harm, misinformation, impersonation, intellectual property, illegal, or other. Nobody is told who reported it.
+Choose what is wrong: spam or a scam, bullying or harassment, hate, violence or a threat, nudity or sexual activity, a child’s safety, suicide or self-harm, false information, pretending to be someone, your copyright or trademark, something illegal, or something else. Nobody is told who reported it.
+
+In a room
+In a Center’s open room, report or block from the message itself. A person under 18 is shown there by first name only, and asking anyone their age, school or where they live is refused. The rules for rooms are in the Community Guidelines .
 
 Anything else
 To report a post, a comment, a message or a Center, tell us through the contact page and say where it is on Oneway.
@@ -3051,13 +3321,16 @@ Messages
 Only people a teen follows can message them, whatever their other settings say.
 
 Bedtime
-Between 10 PM and 7 AM their time, no push notification goes to their phone; what comes in waits in their list in the App. No more than three push notifications are sent in a day.
+Between 10 PM and 7 AM their time, and from midnight to 6 AM Eastern, no push notification goes to their phone; what comes in waits in their list in the App. No more than three push notifications are sent in a day.
 
 Daily limit
 After 60 minutes in a day, the App says so and offers to keep going. It never cuts them off. Their time each day and over the week is in Settings, under Supervision.
 
 13 to 15
 Oneway does not suggest their posts to strangers, and a parent must approve before their profile is open to everyone.
+
+No summary email
+The weekly email summary is never sent to anyone under 18.
 
 Not in search
 No one under 18 is listed in Google or any other search engine.
@@ -3107,6 +3380,12 @@ Keep your profile and public posts out of Google and other search engines. A lin
 Online and typing
 Hide when you are online, and when you are typing.
 
+What you are doing elsewhere
+Share what you are doing elsewhere stays off until you turn it on. Then choose, for each service you connect, who sees it. Your note shows only to people you follow who follow you back, for 24 hours. More is in the Privacy Policy .
+
+Hidden words
+Hide up to 50 words or phrases: a comment by someone else that holds one is hidden from you. Words that could upset can be hidden, blurred or shown; under 18 they are hidden. Both are under Content.
+
 Lists and counts
 Hide who follows you and who you follow. Hide the counts of reactions and replies on your posts, or on everything you see.
 
@@ -3123,7 +3402,10 @@ Intimate images and child safety.
 If an intimate image is shared without consent, or anything sexualizes a child, report it as soon as you see it. Do not share it further, and do not send it to us.
 
 In the App
-Open the profile of whoever shared it, press More, then Report, and choose nudity or illegal.
+Press Report on the post, the message or the profile of whoever shared it, and choose A child’s safety, or nudity or sexual activity. A report for a child’s safety goes only to the person at Oneway who handles it, never to a Center’s team or its moderators.
+
+A picture of you
+If an intimate picture of you was shared on Oneway without your consent, ask us to take it down on Take It Down . A person reviews it within 48 hours.
 
 Anywhere else
 Use the contact page and give a link to where it is, or the account's name.

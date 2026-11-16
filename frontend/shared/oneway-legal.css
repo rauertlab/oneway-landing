@@ -31,7 +31,9 @@ html[data-theme="light"]{
 }
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+/* A #PART OPENS BELOW THE SITE BAR (terms-update, 2026-11-14: /terms#community-edits opened with its heading under the fixed 56 px
+   .owbar, so a link to a part showed the part without its name): the bar's height and a gap, the safe area with it */
+html{scroll-behavior:smooth;scroll-padding-top:calc(72px + env(safe-area-inset-top,0px));-webkit-text-size-adjust:100%}
 html,body{min-height:100vh;background:var(--lg-bg);color:var(--lg-ink);font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;   /* a literal stack, never only var() (test_landing_fonts.py) */
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 

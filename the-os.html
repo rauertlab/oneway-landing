@@ -85,8 +85,8 @@
   <!-- /SEO -->
   <!-- THE GALAXY, UNDER THE SHARED RULES: one safe-floor question (touch,
        not width), one hue resolved from the ACCOUNT, one triad. -->
-  <script src="/frontend/shared/oneway-viewport.js?v=7daf33e9"></script>
-  <script src="/frontend/shared/oneway-hue.js?v=965c9bee"></script>
+  <script src="/frontend/shared/oneway-viewport.js?v=5c190037"></script>
+  <script src="/frontend/shared/oneway-hue.js?v=f8d72ee6"></script>
   <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
   <script>
   (function () {
@@ -140,11 +140,15 @@
     html:root{background:#000}
 
     body{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:transparent;color:var(--white);   /* the root font is a literal stack (test_landing_fonts.py) */-webkit-font-smoothing:antialiased;line-height:1.6}
-    body::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:-3;pointer-events:none;background:
+    /* THE BAR'S SKY (oneway-bar.css --owbar-sky; his words "i dont. want black top bars anywhere"): the bar, once the page has moved under it,
+       is painted with these same glows laid out on the viewport as the glow layer below draws them, so it is the sky continuing and not a
+       black lid, and the page's words pass under it unseen. One list, two readers: it cannot drift. */
+    :root{--owbar-sky:
       radial-gradient(115% 75% at 16% 4%, rgba(var(--land-hue-0,6,182,212),.34), transparent 56%),
       radial-gradient(115% 80% at 86% 20%, rgba(var(--land-hue-1,167,139,250),.26), transparent 56%),
-      radial-gradient(70% 60% at 58% 12%, rgba(var(--land-month,0,0,0),.2), transparent 60%),   
-      radial-gradient(140% 95% at 52% 114%, rgba(var(--land-hue-2,245,158,11),.28), transparent 60%)}
+      radial-gradient(70% 60% at 58% 12%, rgba(var(--land-month,0,0,0),.2), transparent 60%),   /* the month's hue, mixed in, never the lead (founder/891, 980) */
+      radial-gradient(140% 95% at 52% 114%, rgba(var(--land-hue-2,245,158,11),.28), transparent 60%);--owbar-fade:none}
+    body::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:-3;pointer-events:none;background:var(--owbar-sky)}
     a{color:inherit;text-decoration:none}
     ::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:#1c1c1c}
     #hero-canvas{position:fixed;top:0;right:0;bottom:0;left:0;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
@@ -386,10 +390,10 @@
   /* the rotating word wears the look's own light, the whole word (founder/976: no fixed orange against a blue look) */
   .rot-word{display:inline-block;white-space:nowrap;background:linear-gradient(120deg,rgb(var(--land-hue-1,167,139,250)),rgb(var(--land-hue-1,167,139,250)));background:linear-gradient(120deg,rgb(var(--land-hue-1,167,139,250)),rgb(var(--land-hue-1,167,139,250)));background:linear-gradient(120deg,rgb(var(--land-hue-1,167,139,250)),color-mix(in srgb,rgb(var(--land-hue-1,167,139,250)) 60%,#fff));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}html.ow-old .rot-word{background:linear-gradient(120deg,rgb(var(--land-hue-1,167,139,250)),rgb(var(--land-hue-1,167,139,250)))}
 </style>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e8823d91"/>
-  <link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=a4406ccc">   <!-- THE ONE POPIT SURFACE for the price boxes -->
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=9baf5e03"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=61d84e5d">   <!-- THE ONE POPIT SURFACE for the price boxes -->
   <link rel="stylesheet" href="/frontend/landing/compat.css?v=e42d0d42">
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=46fa1961">   <!-- the anchors every site page shares (.lp-anchor and its kinds) -->
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=ee187fc6">   <!-- the anchors every site page shares (.lp-anchor and its kinds) -->
 </head>
 <body>
   <canvas id="hero-canvas"></canvas>
@@ -410,7 +414,7 @@
       <a href="#cta" class="nav-os" title="Request access to Oneway OS"><img src="logo-black.png" alt="Oneway"/><span class="os">OS</span></a>
     </div>
   </nav>
-  <script src="/frontend/shared/oneway-bar.js?v=cb58fb5a"></script>
+  <script src="/frontend/shared/oneway-bar.js?v=672ff75d"></script>
 
   <!-- HERO -->
   <header class="hero">

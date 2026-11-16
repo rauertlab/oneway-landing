@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8"/><script>/* OLD BROWSERS (tools/old_browsers.py): html.ow-old where :is() is not understood (Safari before 14, Chrome before 88), html.ow-nogap where a flex row has no gap (Safari before 14.1, Chrome before 84); the published copy's fallbacks wear these */(function(d){var h=d.documentElement,c=' ';try{if(!(window.CSS&&CSS.supports&&CSS.supports('selector(:is(a))')))c+='ow-old '}catch(e){c+='ow-old '}var f=d.createElement('div');f.style.cssText='display:flex;flex-direction:column;row-gap:1px;position:absolute;visibility:hidden';f.appendChild(d.createElement('div'));f.appendChild(d.createElement('div'));h.appendChild(f);if(f.scrollHeight!==1)c+='ow-nogap ';h.removeChild(f);h.className+=c})(document)</script>
-  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page */(function(){var f=window.fetch;window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if(s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})();(function(){var X=window.XMLHttpRequest;if(!X)return;var o=X.prototype.open,s=X.prototype.send;X.prototype.open=function(m,u){u=String(u||"");this.__owApi=u.indexOf("/api/")===0||u.indexOf(location.origin+"/api/")===0;return o.apply(this,arguments)};X.prototype.send=function(){if(!this.__owApi)return s.apply(this,arguments);var x=this;[["readyState",4],["status",404],["responseText","null"]].forEach(function(p){Object.defineProperty(x,p[0],{value:p[1]})});setTimeout(function(){["readystatechange","load","loadend"].forEach(function(e){x.dispatchEvent(new Event(e))})},0)}})()</script>
+  <script>/* static copy: there is no ONEWAY backend here, so /api answers 404 without a request leaving the page, except the front page's one read */(function(){var f=window.fetch,F="/api/oneway/frontpage";window.fetch=function(u,o){var s=typeof u==="string"?u:(u&&u.url)||"";if((s.indexOf("/api/")===0||s.indexOf(location.origin+"/api/")===0)&&s!==F&&s!==location.origin+F)return Promise.resolve(new Response("null",{status:404,headers:{"content-type":"application/json"}}));return f.apply(this,arguments)}})();(function(){var X=window.XMLHttpRequest;if(!X)return;var o=X.prototype.open,s=X.prototype.send;X.prototype.open=function(m,u){u=String(u||"");this.__owApi=u.indexOf("/api/")===0||u.indexOf(location.origin+"/api/")===0;return o.apply(this,arguments)};X.prototype.send=function(){if(!this.__owApi)return s.apply(this,arguments);var x=this;[["readyState",4],["status",404],["responseText","null"]].forEach(function(p){Object.defineProperty(x,p[0],{value:p[1]})});setTimeout(function(){["readystatechange","load","loadend"].forEach(function(e){x.dispatchEvent(new Event(e))})},0)}})()</script>
   <script>/* OPENED AS A FILE, A PAGE HAS NO FONTS, PICTURES OR STYLES (the founder, 2026-10-17: "I don't want to see the font ever do anything like this again"): its paths start at the site's root, which a file:// address does not have, so the font falls back and every picture breaks. Such a view goes to the served page. Never runs on a real host. Held by api/oneway/platform/test_file_view.py. */if(location.protocol==='file:'){var p=location.pathname,i=p.indexOf('/oneway/');location.replace('http://localhost:3050/'+(i>=0?p.slice(i+8):p.split('/').pop())+location.search+location.hash)}</script>
   <script id="ow-look">
   /* THE LOOK THIS LOAD, CHOSEN ONCE, FIRST (founder/829: "the icon doesnt sync to the landing pages color"). The page's
@@ -93,8 +93,8 @@
        checked by two skeptics for slang and for claims about anything not
        built (final.json in the same folder). Nothing here is a number the
        platform did not answer. -->
-  <script src="/frontend/shared/oneway-viewport.js?v=7daf33e9"></script>
-  <script src="/frontend/shared/oneway-hue.js?v=965c9bee"></script>
+  <script src="/frontend/shared/oneway-viewport.js?v=5c190037"></script>
+  <script src="/frontend/shared/oneway-hue.js?v=f8d72ee6"></script>
   <script src="/frontend/shared/oneway-galaxy.js?v=073af2fb"></script>
   <script>
   (function () {
@@ -134,13 +134,13 @@
   })();
   </script>
   <link rel="stylesheet" href="/frontend/shared/oneway-fonts.css?v=47bc6f29"/>
-  <link rel="stylesheet" href="/frontend/landing/landing.css?v=46fa1961"/>
+  <link rel="stylesheet" href="/frontend/landing/landing.css?v=ee187fc6"/>
   <!-- THE APP'S OWN STYLESHEET, for the App's own parts on this page (the founder, 2026-10-09:
        "EXACTlY, not a recreation"). Not blocking: nothing on the first screen uses it (measured at 390: the heading,
        the line and the bar keep their place, size and face when it arrives), the way the landing's build loads it. -->
-  <link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=c02ec9c1" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=c02ec9c1">
-<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=a4406ccc"></noscript>
+  <link rel="preload" as="style" href="/frontend/shared/oneway-popit.css?v=67160ce7" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="/frontend/shared/oneway-popit.css?v=67160ce7">
+<link rel="stylesheet" href="/frontend/shared/oneway-surface.css?v=61d84e5d"></noscript>
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     :root{--font:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;--font-display:var(--font);
@@ -153,11 +153,15 @@
     html:root{background:#000}
     /* the glows on a fixed layer the size of the screen, as the landing paints them: on the page's own background they spread
        over the whole page and the third colour fell below the fold (the red team, round 4) */
-    body::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:-3;pointer-events:none;background:
+    /* THE BAR'S SKY (oneway-bar.css --owbar-sky; his words "i dont. want black top bars anywhere"): the bar, once the page has moved under it,
+       is painted with these same glows laid out on the viewport as the glow layer below draws them, so it is the sky continuing and not a
+       black lid, and the page's words pass under it unseen. One list, two readers: it cannot drift. */
+    :root{--owbar-sky:
       radial-gradient(115% 75% at 16% 4%, rgba(var(--land-hue-0,6,182,212),.34), transparent 56%),
       radial-gradient(115% 80% at 86% 20%, rgba(var(--land-hue-1,167,139,250),.26), transparent 56%),
-      radial-gradient(70% 60% at 58% 12%, rgba(var(--land-month,0,0,0),.2), transparent 60%),   
-      radial-gradient(90% 70% at 10% 98%, rgba(var(--land-hue-2,245,158,11),.28), transparent 60%)}   /* beside the copy, not under the phone */
+      radial-gradient(70% 60% at 58% 12%, rgba(var(--land-month,0,0,0),.2), transparent 60%),   /* the month's hue, mixed in, never the lead (founder/891, 980) */
+      radial-gradient(90% 70% at 10% 98%, rgba(var(--land-hue-2,245,158,11),.28), transparent 60%);--owbar-fade:none}
+    body::before{content:"";position:fixed;top:0;right:0;bottom:0;left:0;inset:0;z-index:-3;pointer-events:none;background:var(--owbar-sky)}   /* beside the copy, not under the phone */
     body{font-family:'ONEWAY Sans',system-ui,-apple-system,'Segoe UI',sans-serif;background:transparent;color:#fff;-webkit-font-smoothing:antialiased;line-height:1.5}   /* a literal stack: the Safari guard */
     a{color:inherit;text-decoration:none}
     h1,h2,h3{text-wrap:balance}
@@ -226,7 +230,7 @@
     .rv.wait{opacity:0;transform:translateY(32px) scale(.965)}
     @media(prefers-reduced-motion:reduce){.rv.wait{opacity:1;transform:none}}
   </style>
-  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=e8823d91"/>
+  <link rel="stylesheet" href="/frontend/shared/oneway-bar.css?v=9baf5e03"/>
 </head>
 <body>
   <canvas id="hero-canvas" aria-hidden="true"></canvas>
@@ -245,7 +249,7 @@
     <div class="owbar-right">
     </div>
   </nav>
-  <script src="/frontend/shared/oneway-bar.js?v=cb58fb5a"></script>
+  <script src="/frontend/shared/oneway-bar.js?v=672ff75d"></script>
 
   <main>
     <!-- 1 · THE OPENING -->
@@ -395,7 +399,7 @@
   <div class="stick" id="stick"></div>
 
   <!-- the one reader and writer (as on index.html) -->
-  <script src="/frontend/shared/oneway-data.js?v=56e03829"></script>
+  <script src="/frontend/shared/oneway-data.js?v=e99dda43"></script>
   <script>
   /* THE GALAXY — the same field the landing pages share, retinted from the
      person's hue (oneway-galaxy.js); the safe floor keeps it light on phones. */

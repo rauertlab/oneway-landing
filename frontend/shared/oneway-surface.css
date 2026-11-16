@@ -222,32 +222,25 @@ html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance :-w
 html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance :is(.po-glance__lb,.po-glance__sig,.po-glance__day){color:var(--ow-ink);text-shadow:none}
 html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance .po-glance__ic svg{stroke:currentColor}
 html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance .po-glance__date{background:var(--ow-wash);box-shadow:inset 0 0 0 1px var(--ow-hair)}
-html.ow-old:not([data-simple="1"]) .ow-crow:matches(:hover,:focus),html.ow-old[data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 1px 1px 0 0 rgba(var(--h),.32),inset -1px -1px 0 0 rgba(var(--h2),.26),
+html.ow-old:not([data-simple="1"]) .ow-crow:focus{box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 1px 1px 0 0 rgba(var(--h),.32),inset -1px -1px 0 0 rgba(var(--h2),.26),
     inset 5px 4px 18px -8px rgba(var(--h),.55),inset -5px -4px 18px -8px rgba(var(--h2),.45),
     -6px -7px 42px -12px rgba(var(--h),.62),6px 7px 42px -12px rgba(var(--h2),.51),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
-html.ow-old:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus),html.ow-old[data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 1px 1px 0 0 rgba(var(--h),.32),inset -1px -1px 0 0 rgba(var(--h2),.26),
-    inset 5px 4px 18px -8px rgba(var(--h),.55),inset -5px -4px 18px -8px rgba(var(--h2),.45),
-    -6px -7px 42px -12px rgba(var(--h),.62),6px 7px 42px -12px rgba(var(--h2),.51),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
-/* the Center row (oneway-centerrow.css) takes its Center's own pair there, and lights up a little more under the pointer or the keyboard;
-   a list's row the same under the pointer */
-html:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible),
-html[data-mode]:not([data-simple="1"]) .po-glance:hover{
+/* the Center row (oneway-centerrow.css) takes its Center's own pair there, and lights up a little more when the keyboard reaches it. A
+   Center row is a Popit card, so the cursor lights nothing (the founder, 2026-11-13: "popit cards better not highlgiht like they currently do on live with cursor"): measured 2026-11-13 at 1366, Popit dark and light,
+   its ring went .18 to .32 and its glow grew under the pointer. Keyboard focus is kept (test_design_rules 14). */
+html:not([data-simple="1"]) .ow-crow:focus-visible{
   box-shadow:inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),inset 1px 1px 0 0 rgba(var(--h),.32),inset -1px -1px 0 0 rgba(var(--h2),.26),
     inset 5px 4px 18px -8px rgba(var(--h),.55),inset -5px -4px 18px -8px rgba(var(--h2),.45),
     -6px -7px 42px -12px rgba(var(--h),.62),6px 7px 42px -12px rgba(var(--h2),.51),0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
-html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:matches(:hover,:focus),html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 1px 1px 0 0 rgba(var(--h),.42),
+html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:focus{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 1px 1px 0 0 rgba(var(--h),.42),
     inset -1px -1px 0 0 rgba(var(--h2),.34),inset 4px 4px 16px -7px rgba(var(--h),.32),inset -4px -4px 16px -7px rgba(var(--h2),.26),
     -4px -5px 30px -13px rgba(var(--h),.5),4px 5px 30px -13px rgba(var(--h2),.41),0 14px 28px -14px rgba(48,40,80,.3)}
-html.ow-old[data-theme="light"]:not([data-simple="1"]) .ow-crow:-webkit-any(:hover,:focus),html.ow-old[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance:hover{box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 1px 1px 0 0 rgba(var(--h),.42),
-    inset -1px -1px 0 0 rgba(var(--h2),.34),inset 4px 4px 16px -7px rgba(var(--h),.32),inset -4px -4px 16px -7px rgba(var(--h2),.26),
-    -4px -5px 30px -13px rgba(var(--h),.5),4px 5px 30px -13px rgba(var(--h2),.41),0 14px 28px -14px rgba(48,40,80,.3)}
-html[data-theme="light"]:not([data-simple="1"]) .ow-crow:is(:hover,:focus-visible),
-html[data-theme="light"][data-mode]:not([data-simple="1"]) .po-glance:hover{
+html[data-theme="light"]:not([data-simple="1"]) .ow-crow:focus-visible{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.9),inset 0 -26px 46px rgba(76,66,120,.055),inset 1px 1px 0 0 rgba(var(--h),.42),
     inset -1px -1px 0 0 rgba(var(--h2),.34),inset 4px 4px 16px -7px rgba(var(--h),.32),inset -4px -4px 16px -7px rgba(var(--h2),.26),
     -4px -5px 30px -13px rgba(var(--h),.5),4px 5px 30px -13px rgba(var(--h2),.41),0 14px 28px -14px rgba(48,40,80,.3)}
-html.ow-old:not([data-simple="1"]):not([data-fx="safe"]) :matches(.po-card__face,.po-face,.ow-cv-face,.po-glance){-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
-html.ow-old:not([data-simple="1"]):not([data-fx="safe"]) :-webkit-any(.po-card__face,.po-face,.ow-cv-face,.po-glance){-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
+html.ow-old:not([data-simple="1"]):not([data-fx="safe"]):not([data-glass="solid"]) :matches(.po-card__face,.po-face,.ow-cv-face,.po-glance){-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
+html.ow-old:not([data-simple="1"]):not([data-fx="safe"]):not([data-glass="solid"]) :-webkit-any(.po-card__face,.po-face,.ow-cv-face,.po-glance){-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
 /* A POST'S LIGHT RUNS ACROSS IT, NEVER DOWN IT (the founder, 2026-11-01: "on posts i want the header to not look like it has a shadow
    or highlight behind it on any theme type"). The one surface above lit a Post from a pool at its top and another at its foot, so the
    header sat on a hue band (measured at 390, content hidden, header against body: light ΔE 7.9-13, dark 23.8; the foot 13-35) and,
@@ -263,8 +256,24 @@ html.ow-old:not([data-simple="1"]):not([data-fx="safe"]) :-webkit-any(.po-card__
    composites BEHIND the face and is seen through the 22 percent the ground already leaves open, which is what makes a pane
    read as glass on iOS rather than as paint. Simple keeps its flat ground, and the no-blur tier (data-fx=safe) is excluded
    because backdrop filters are off there by definition. */
-html:not([data-simple="1"]):not([data-fx="safe"]) :is(.po-card__face,.po-face,.ow-cv-face,.po-glance){
+html:not([data-simple="1"]):not([data-fx="safe"]):not([data-glass="solid"]) :is(.po-card__face,.po-face,.ow-cv-face,.po-glance){
   -webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
+html.ow-old[data-glass="solid"][data-glass="solid"]:not([data-simple="1"]):not([data-fx="safe"]) :matches(.po-card__face,.po-face,.ow-cv-face,.po-glance){background-color:var(--ow-glass-under,var(--ow-ground));background-color:var(--ow-glass-under,var(--ow-ground))}
+html.ow-old[data-glass="solid"][data-glass="solid"]:not([data-simple="1"]):not([data-fx="safe"]) :-webkit-any(.po-card__face,.po-face,.ow-cv-face,.po-glance){background-color:var(--ow-glass-under,var(--ow-ground));background-color:var(--ow-glass-under,var(--ow-ground))}
+/* THE SOLID GLASS, ON A DEVICE WHOSE FRAMES CANNOT PAY THE BLUR (the founder, 2026-11-13 ~17:50Z: "blur only on fast devices make sure
+   design not sacraficed"; decided once from the device's own frames, oneway-viewport.js, data-glass="solid"). The face keeps everything it
+   wears (its hue's radials and wash, the inner light at every edge, its glow and its drop); only the blur goes, and the ground it showed
+   through the face is laid under it as one colour. MEASURED behind the faces on Home at 1366, the faces' own paint off: the blur showed
+   rgb(17,0,21) on average in Popit dark (each face between luminance 2 and 25), which is the night's ground with 9 percent of its two hues;
+   in Popit light it showed rgb(236,234,245), the light ground itself (#eceaf3). A plain world (the light room's own) is its flat ground,
+   which is what the blur showed there; a widget's face in light is otherwise clear (rgba 0 0 0 0: the light face's own background), so
+   without its ground what stands under it (a piece it overlaps) would show through. */
+html[data-glass="solid"][data-glass="solid"]:not([data-simple="1"]):not([data-fx="safe"]) :is(.po-card__face,.po-face,.ow-cv-face,.po-glance){background-color:var(--ow-glass-under,var(--ow-ground));background-color:var(--ow-glass-under,color-mix(in srgb, color-mix(in srgb, rgb(var(--ow-h1)) 50%, rgb(var(--ow-h2))) 9%, var(--ow-ground)))}html.ow-old[data-glass="solid"][data-glass="solid"]:not([data-simple="1"]):not([data-fx="safe"]) :matches(.po-card__face,.po-face,.ow-cv-face,.po-glance){background-color:var(--ow-glass-under,var(--ow-ground))}html.ow-old[data-glass="solid"][data-glass="solid"]:not([data-simple="1"]):not([data-fx="safe"]) :-webkit-any(.po-card__face,.po-face,.ow-cv-face,.po-glance){background-color:var(--ow-glass-under,var(--ow-ground))}
+html.ow-old[data-glass="solid"]:matches([data-theme="light"],[data-world="plain"]):not([data-simple="1"]):not([data-fx="safe"]) :matches(.po-card__face,.po-face,.ow-cv-face,.po-glance){--ow-glass-under:var(--ow-ground)}
+html.ow-old[data-glass="solid"]:-webkit-any([data-theme="light"],[data-world="plain"]):not([data-simple="1"]):not([data-fx="safe"]) :-webkit-any(.po-card__face,.po-face,.ow-cv-face,.po-glance){--ow-glass-under:var(--ow-ground)}
+/* in light and in a plain world, the ground itself (one paint rule above, at the weight the two it replaced had: test_one_button) */
+html[data-glass="solid"]:is([data-theme="light"],[data-world="plain"]):not([data-simple="1"]):not([data-fx="safe"]) :is(.po-card__face,.po-face,.ow-cv-face,.po-glance){
+  --ow-glass-under:var(--ow-ground)}
 
 /* A POST IS A POPIT, AND A POPIT IS WHAT ONEWAY.CENTER ALREADY IS (the founder, 2026-11-08: "leave popits to the
    oneway.center look and fix the discoloring of them anywhere it exists but DO NOT CHANGE THEM LIKE YOUVE BEEN DOING,
@@ -284,9 +293,7 @@ html:not([data-simple="1"]):not([data-fx="safe"]) :is(.po-card__face,.po-face,.o
    one he points at and it is its neighbour. His 2026-11-01 ruling is untouched: the FACE above keeps its flat side-to-side
    light and the header stays unlit - only the reach outside the card changes, which that ruling never spoke about. */
 html:not([data-simple="1"]) .po-river > [data-po-id]:not(.ow-fpos [data-po-id]){box-shadow:0 0 54px -5px rgba(var(--h),calc(.62 * var(--ow-pop-throw,1)))}
-@media (hover:hover) and (pointer:fine){
-  html:not([data-simple="1"]) .po-river > [data-po-id]:not(.ow-fpos [data-po-id]):hover{box-shadow:0 0 60px -4px rgba(var(--h),calc(.82 * var(--ow-pop-throw,1)))}
-}
+/* and nothing more under the cursor (the founder, 2026-11-13: "popit cards better not highlgiht like they currently do on live with cursor"; oneway-popit.css) */
 /* Scroll's text page: the same light, laid across */
 html:not([data-simple="1"]) .ow-fpos .po-card[data-po-id] > .po-card__face{
   background:linear-gradient(90deg, rgba(var(--h),.20), rgba(var(--h2),.14)), linear-gradient(rgba(255,255,255,.05), rgba(255,255,255,.05));
@@ -302,6 +309,17 @@ html.ow-old body .ow-fpos[data-kind="media"] .po-card[data-po-id] .po-card__who 
 html body .ow-fpos[data-kind="media"] .po-card[data-po-id] .po-card__who :is(.po-card__nm,.po-card__when){text-shadow:0 1px 2px rgba(0,0,0,.6)}
 html body .ow-fpos[data-kind="media"] .po-card[data-po-id] > .po-card__from{filter:drop-shadow(0 1px 2px rgba(0,0,0,.7))}
 
+
+/* A POPIT IN SIMPLE THROWS NO LIGHT (the founder, 2026-11-08: "simple mode gains the card mode and pill mode"; founder/1316: Simple is
+   standard, friendly to look at for hours). An element that wears `.ow-popit` draws its surface on its own ::before (the Simple material
+   below: its ground and a hairline), but the element itself kept Popit's halo, `.ow-popit{box-shadow:0 0 54px -5px}` in its hue
+   (oneway-popit.css), in both modes. MEASURED BEFORE (390, rendered pixels, the coloured light within 10px past the edge, the element's own
+   shadow taken away): Settings > Connected accounts' four platform cards (.ow-cx__card) threw 27.8 to 28.3 in Simple dark, MORE than in
+   Popit dark (17.5 to 21.5), and 1.1 in Simple light. So in Simple a Popit's throw is nothing: the token every outer halo is multiplied by
+   (--ow-pop-throw, read by the dark halo, its hover, and since this change the light room's halo in oneway-popit.css) is 0 on it, and its
+   box keeps whatever material it wears; nothing is painted here, so a component also named in the Simple block keeps that block's
+   hairline. Popit never sets the token: its halos are exactly as they were. */
+html[data-simple="1"][data-simple="1"] .ow-popit{--ow-pop-throw:0}
 
 /* ═══ THE SIMPLE SURFACE: the same components in the Simple material (the founder, 2026-10-19: "visual clean interface built for
    simple mode"; the dispatcher's brief: the same layouts and information as Pop-it, flat, calm, clear, real pictures and
@@ -474,13 +492,22 @@ html[data-theme="light"][data-theme="light"][data-simple="1"] .ow-nav__b[aria-cu
       linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 46%),
       linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
       color-mix(in srgb, var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12))) 92%, transparent);border-color:transparent;box-shadow:inset 0 1px 0 var(--ow-chrome-edge,var(--ow-lift)), inset 0 0 0 1px var(--ow-hair), 0 12px 30px -18px var(--ow-drop), var(--ow-chrome-glow);-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}
-  html[data-fx="safe"]:not([data-simple="1"]) body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{
+  /* the safe floor's dock, and the solid glass's (data-glass="solid", above): the same bar with its ground solid */
+  html:is([data-fx="safe"],[data-glass="solid"]):not([data-simple="1"]) body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{
     background:
       linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 46%),
       linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
       var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));
     -webkit-backdrop-filter:none;backdrop-filter:none}
   html[data-theme="light"][data-theme="light"][data-simple="1"] body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{background:#fff;border-color:var(--ow-hair);box-shadow:var(--ow-shade)}
+  /* POPIT LIGHT'S DOCK IS GLASS IN THE PERSON'S HUE TOO (look-walk F1361b, 2026-11-12; his words: "the bottom bar better work with liquid
+     glass and users hue"). Light kept its tint and wash at 0, so the dock over the feed read nearly white while dark's carried the hue.
+     ITS HUE IS THE LIGHT ROUND IT, NOT A TINT IN IT (the pre-merge check, 2026-11-13): a tinted fill (tint 10%, wash .12) took the bar 32 from
+     its own tone, and test_chrome_and_candy holds light's and Simple's bars to the tone their theme wrote (4 at most). So the bar keeps light's
+     own glass (the blur and the lit top edge as before) and throws the person's pair round its edge as dark's does, softer.
+     PROPOSED for his decision: the tinted fill instead, which needs his word to change that guard's light row. */
+  html[data-theme="light"]:not([data-simple="1"]) body:not(:has(:where(#surface).ow-surface--map)) .ow-nav.ow-nav{
+    --ow-chrome-glow:-5px -6px 30px -12px rgba(var(--ow-h1),.42), 5px 6px 30px -12px rgba(var(--ow-h2),.34)}
 }
 html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] :matches(input.ow-bk__in,textarea.ow-bk__in,select.ow-bk__in,.ow-set__search){background:#fff;border-color:var(--ow-field-edge)}
 html.ow-old[data-theme="light"][data-theme="light"][data-simple="1"] :-webkit-any(input.ow-bk__in,textarea.ow-bk__in,select.ow-bk__in,.ow-set__search){background:#fff;border-color:var(--ow-field-edge)}
@@ -639,7 +666,9 @@ html:not([data-simple="1"]) .ow-feedswitch{padding:4px 8px;border-radius:999px;b
     color-mix(in srgb, var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12))) 76%, transparent);box-shadow:inset 0 1px 0 var(--ow-chrome-edge,var(--ow-lift)), inset 0 0 0 1px var(--ow-hair), 0 10px 26px -18px var(--ow-drop), var(--ow-chrome-glow);-webkit-backdrop-filter:blur(16px) saturate(1.25);backdrop-filter:blur(16px) saturate(1.25)}html.ow-old:not([data-simple="1"]) .ow-feedswitch{background:linear-gradient(168deg, var(--ow-chrome-edge,var(--ow-lift)), transparent 50%),
     linear-gradient(104deg, rgba(var(--ow-h1),var(--ow-chrome-wash,0)), rgba(var(--ow-h2),calc(var(--ow-chrome-wash,0) * .8))),
     var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)))}
-html[data-fx="safe"]:not([data-simple="1"]) .ow-feedswitch{background:var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));-webkit-backdrop-filter:none;backdrop-filter:none}
+html.ow-old:matches([data-fx="safe"],[data-glass="solid"]):not([data-simple="1"]) .ow-feedswitch{background:var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));-webkit-backdrop-filter:none;backdrop-filter:none}
+html.ow-old:-webkit-any([data-fx="safe"],[data-glass="solid"]):not([data-simple="1"]) .ow-feedswitch{background:var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));-webkit-backdrop-filter:none;backdrop-filter:none}
+html:is([data-fx="safe"],[data-glass="solid"]):not([data-simple="1"]) .ow-feedswitch{background:var(--ow-chrome-solid,rgb(var(--ow-chrome-rgb,4,5,12)));-webkit-backdrop-filter:none;backdrop-filter:none}
 html[data-simple="1"] .ow-feedswitch{padding:4px 8px;border-radius:999px;box-shadow:inset 0 0 0 1px var(--ow-hair)}
 
 /* the greeting's name: plain ink, the largest coloured words on the first screen were a gradient (founder/1325) */
@@ -655,3 +684,101 @@ html[data-theme="dark"]:not([data-simple="1"]) body .ow-hello .ow-hello__name.ow
 .ow-menu__grid > :not(:has(.ow-menu__pic)) .ow-menu__p{grid-column:2;grid-row:1;margin-top:0;align-self:baseline}
 .ow-menu__grid > :not(:has(.ow-menu__pic)) .ow-menu__tag{grid-column:1;justify-self:start}
 @media (min-width:760px){.ow-menu__grid{--ow-menu-row:calc(50% - 10px)}}
+
+/* ═══ CARDS OR ONE PILL: HOW A PERSON'S POSTS STAND, A SECOND AXIS BESIDE SIMPLE AND POPIT ══════════════════════════════════════
+   ★ THE FOUNDER, 2026-11-07: *"we're going to let simple mode have cards or also the flat threads type of mode, but do not call it the
+     flat threads type of mode. call it the pill mode. and the description should be all your posts are one pill. and all your posts are
+     separate cards"*; *"we must also have a pill mode for poppets ... it just needs to have that glow ... or maybe just add the outline
+     of a pill and have poppets barely change"*; 2026-11-08: *"make sure popits visual glow dont get lost and simple mode gains the card
+     mode and pill mode."*; 2026-11-13: *"is the pill gonna come back to simple mode along with the cards"*.
+   html[data-present] says it before the first paint (oneway-app.html and oneway-os.html, OW.present; the Appearance menu's Posts row).
+   NOTHING CHOSEN IS THE PILL IN BOTH MODES (2026-11-13: "pill mode should be default"); Cards is a choice, and a person who made it keeps
+   it. Cards needs no rule here: Popit's posts are each a lit card (above), and since his card (2026-11-08 ~21:30Z, oneway-popit.css section
+   27 "HIS CARD") Simple's are each his card on the ground. Only the pill is written, once per mode, keyed on the attribute AND the mode. The post river only (`.po-river`, OW.mountRiver), never Scroll's
+   full-screen pager (`.ow-fscroll`, cards/test_simple_scroll.py). Held by tools/probe/pill-walk.cjs (rendered pixels) and
+   people/test_look_present.py (the boot scripts and the account's keys).
+   Posts in the river are addressed as THE ONE POPIT SURFACE above addresses them (`.po-river > [data-po-id]`), and the loading page's grey
+   post (`.po-card--skel`, founder/1302) stands where a real one will, so it wears the same shape. The attribute is written twice: the
+   desktop sheet (oneway-desktop.css, after this one) lights each Popit post at the same weight. */
+
+/* SIMPLE, ONE PILL: his card drawn once round all the posts instead of once round each. The river is ONE card in his card's material
+   (--ow-scard: white in light, the flat near-black in dark; --ow-scard-shadow: light's one soft shadow, none in dark), at the pill's
+   corner (36px, Popit's pill below: one silhouette in both modes). The posts inside paint nothing of their own (no fill, no corner, no
+   shadow) and are divided by the room's hairline. No glow and no line round it (the founder, 2026-11-08: "dont want to see no borders").
+   The radius and the hairline are proposals, for his eye (founder/264). */
+html[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll){
+  gap:0;border:0;border-radius:36px;overflow:hidden;box-sizing:border-box;
+  background:var(--ow-scard,#fff);background-image:none;box-shadow:var(--ow-scard-shadow,none)}
+html.ow-old[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > :matches([data-po-id],.po-card--skel),html.ow-old[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > [data-po-id]:hover{margin:0;border-radius:0;background:none;background-image:none;box-shadow:none;transform:none}
+html.ow-old[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > :-webkit-any([data-po-id],.po-card--skel),html.ow-old[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > [data-po-id]:hover{margin:0;border-radius:0;background:none;background-image:none;box-shadow:none;transform:none}
+html[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > :is([data-po-id],.po-card--skel),
+html[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > [data-po-id]:hover{
+  margin:0;border-radius:0;background:none;background-image:none;box-shadow:none;transform:none}
+html.ow-old[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > :matches([data-po-id],.po-card--skel,.ow-fr-slot) + :matches([data-po-id],.po-card--skel,.ow-fr-slot){border-top:1px solid var(--ow-hair)}
+html.ow-old[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > :-webkit-any([data-po-id],.po-card--skel,.ow-fr-slot) + :-webkit-any([data-po-id],.po-card--skel,.ow-fr-slot){border-top:1px solid var(--ow-hair)}
+/* every row is told from the next by the hairline: the posts, and the first run's "Start your Home" (home.js, set among the posts) */
+html[data-present="pill"][data-present="pill"][data-simple="1"] .po-river:not(.ow-fscroll) > :is([data-po-id],.po-card--skel,.ow-fr-slot) + :is([data-po-id],.po-card--skel,.ow-fr-slot){border-top:1px solid var(--ow-hair)}
+/* a pill stands apart from what comes before it (the install card, the quick post, his card above it), never glued to it */
+html[data-present="pill"][data-present="pill"][data-simple="1"] * + .po-river:not(.ow-fscroll){margin-top:var(--ow-gap,12px)}
+/* "Start your Home" (the first run, home.js) is set among the posts, so inside a pill it is a row of it: inset from the pill's edge as a
+   post's words are, never touching it (its own margins were for the ground between cards). Both modes' pills. */
+html[data-present="pill"][data-present="pill"] .po-river:not(.ow-fscroll) > .ow-fr-slot--in{margin:0;padding:0 14px 12px}
+/* THE FEED'S END IS A ROW OF THE PILL, NEVER A BAND (the review, 2026-11-13: after the last post the pill ran on for about 58px of nothing,
+   then "You are caught up.", measured in the pictures at 390 in Simple and Popit, light and dark). home.js sets the end among the posts
+   (.ow-caught, after the 1px sentinel), and its own padding (38px over, 30px under) was for the ground under cards. Inside a pill it is a
+   row: the hairline over it as over a post, a post's inset, and the pill closes 16px under its line (Popit's pill adds its own 8px).
+   Only after a post: a river with none (Nothing here yet, That did not load) keeps it as it was. Cards keep it on the ground. */
+html[data-present="pill"][data-present="pill"] .po-river:not(.ow-fscroll) > [data-po-id] ~ .ow-caught:not(.ow-caught--cards){
+  margin:0;padding:16px 14px;border-top:1px solid var(--ow-hair)}
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > [data-po-id] ~ .ow-caught:not(.ow-caught--cards){padding-bottom:8px}
+html.ow-old[data-simple="1"] .po-river:not(.ow-fscroll) > .po-card:focus{outline:2px solid rgba(var(--h),.95);outline-offset:3px}
+/* KEYBOARD FOCUS STAYS VISIBLE ON A POST, now that the cursor lights nothing (the founder, 2026-11-13; the brief: "keep keyboard focus
+   visible"). Simple's card rule says outline:0 at rest (oneway-popit.css, his card), and it outweighed .po-card:focus-visible, so a post
+   reached by Tab showed no ring in Simple (measured 2026-11-13 at 1366, cards and pill). The same ring as Popit's, in the author's hue;
+   inside a pill it is drawn just inside the row, because the pill clips at its edge. */
+html[data-simple="1"] .po-river:not(.ow-fscroll) > .po-card:focus-visible{outline:2px solid rgba(var(--h),.95);outline-offset:3px}
+html.ow-old[data-present="pill"] .po-river:not(.ow-fscroll) > .po-card:focus{outline-offset:-3px}
+html[data-present="pill"] .po-river:not(.ow-fscroll) > .po-card:focus-visible{outline-offset:-3px}
+
+/* POPIT, ONE PILL: the whole Popit material, only the silhouette changed. The river becomes ONE lit surface at a pill's proportions: the
+   Post's own face (its light laid across, never down, so no row is lit more than another: founder, 2026-11-01), its hairline and inner
+   light in the person's hues, and the one surface's glow thrown past its edge. The posts inside are unlit (no glow, no face of their own)
+   and divided by the room's hairline (no colour along a card's edge: test_design_rules 13). Not a flat pill, and not an outline drawn
+   round unchanged cards. A design choice not fully in his words: PROPOSED, for his eye (founder/264). */
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll){
+  --h:var(--ow-h1);--h2:var(--ow-h2);--h3:var(--ow-h3,var(--ow-h2));
+  gap:0;border-radius:36px;overflow:hidden;box-sizing:border-box;padding-bottom:8px;
+  background-image:
+    linear-gradient(90deg, rgba(var(--h),.26), rgba(var(--h3),.16) 50%, rgba(var(--h2),.22)),
+    linear-gradient(var(--ow-tile-base,rgba(48,50,92,.50)), var(--ow-tile-base,rgba(48,50,92,.50)));
+  box-shadow:
+    inset 0 2px 1px var(--ow-lift,rgba(255,255,255,.2)),
+    inset 0 0 0 1px rgba(var(--h),.18),
+    inset 0 0 16px -6px rgba(var(--h),.38),
+    -5px -6px 34px -12px rgba(var(--h),calc(.50 * var(--ow-pop-throw,1))),
+    5px 6px 34px -12px rgba(var(--h2),calc(.41 * var(--ow-pop-throw,1))),
+    0 18px 44px -16px var(--ow-drop,rgba(0,0,0,.66))}
+html[data-theme="light"][data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll){
+  background-image:
+    linear-gradient(90deg, rgba(var(--h),.12), rgba(var(--h3),.07) 50%, rgba(var(--h2),.12)),
+    linear-gradient(rgba(252,251,255,.96), rgba(252,251,255,.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.9),
+    inset 0 0 0 1px rgba(var(--h),.28),
+    inset 0 0 14px -6px rgba(var(--h),.22),
+    -4px -5px 26px -13px rgba(var(--h),calc(.38 * var(--ow-pop-throw,1))),
+    4px 5px 26px -13px rgba(var(--h2),calc(.31 * var(--ow-pop-throw,1))),
+    0 14px 28px -14px rgba(48,40,80,.3)}
+/* a pill stands apart from what comes before it (the install card, the quick post), as a card does: never glued to it */
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) * + .po-river:not(.ow-fscroll){margin-top:var(--ow-gap,12px)}
+html.ow-old[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > :matches([data-po-id],.po-card--skel),html.ow-old[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > [data-po-id]:hover{margin:0;border-radius:0;background:none;box-shadow:none;transform:none}
+html.ow-old[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > :-webkit-any([data-po-id],.po-card--skel),html.ow-old[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > [data-po-id]:hover{margin:0;border-radius:0;background:none;box-shadow:none;transform:none}
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > :is([data-po-id],.po-card--skel),
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > [data-po-id]:hover{
+  margin:0;border-radius:0;background:none;box-shadow:none;transform:none}
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > .po-card > .po-card__face,
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > .po-card::before,
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > .po-card::after{display:none}
+html.ow-old[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > :matches([data-po-id],.po-card--skel,.ow-fr-slot) + :matches([data-po-id],.po-card--skel,.ow-fr-slot){border-top:1px solid var(--ow-hair)}
+html.ow-old[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > :-webkit-any([data-po-id],.po-card--skel,.ow-fr-slot) + :-webkit-any([data-po-id],.po-card--skel,.ow-fr-slot){border-top:1px solid var(--ow-hair)}
+html[data-present="pill"][data-present="pill"]:not([data-simple="1"]) .po-river:not(.ow-fscroll) > :is([data-po-id],.po-card--skel,.ow-fr-slot) + :is([data-po-id],.po-card--skel,.ow-fr-slot){border-top:1px solid var(--ow-hair)}

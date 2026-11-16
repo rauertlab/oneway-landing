@@ -67,15 +67,131 @@
     };
   }
 
+  /* ═══ A FILE GOING UP: ONE TABLE, ONE SENTENCE, ONE WAY OF SHOWING IT (blocker M09) ═════════════════════════════════════
+     ★ The founder: "uploads are inconsistent across the platform". Measured 2026-11-11 with files made locally: the composer
+       refused a video past 44 MB, Messages past 60 MB and the server past 64; the OS said "That image is larger than 5MB."
+       where the server said its own words; nothing but Messages showed that a file was still going; and a connection that
+       dropped read "Oneway did not answer", as if nothing had been sent.
+     So, here, at the one writer every surface of the App and the OS already sends through:
+       · UPLOADS is what each door that takes a file takes: the server's own subjects and numbers (api/media/store.py; held
+         equal by api/media/test_upload_words.py, which reads this table as data). No caller keeps a number of its own.
+       · `tooLarge(door, bytes)` is the server's own sentence, said BEFORE anything is sent, and `post` says it for any
+         body that carries a file past its door's size, so a person never waits out an upload that ends in a refusal.
+       · a body that carries a file is sent so its progress can be read, and after a moment says how far it has gone
+         ("Sending… 42%") in the bar that already says what just happened (OW.toast); a screen that shows it itself (the
+         editor's own button) takes it instead by answering the `ow:sending` event.
+       · a connection that drops while a file is going says that, and that nothing was saved. */
+  var UPLOADS = /*uploads:begin*/[
+    {"door": "/api/oneway/media", "what": "Photo or video", "mb": 64},
+    {"door": "/api/me/profile-banner", "what": "Banner image", "mb": 8},
+    {"door": "/api/canvas/sticker", "what": "Sticker", "mb": 5},
+    {"door": "/look", "what": "Picture", "mb": 5}
+  ]/*uploads:end*/;
+  var SENDING_SHOWN_FROM_BYTES = 262144;    /* a body carrying less than this goes in a moment: nothing to show */
+  var SENDING_SAID_AFTER_MS = 700;          /* how long a file is going before the bar says so (a quick one says nothing) */
+  function takes(path) {
+    var p = String(path || '').split('?')[0];
+    for (var i = 0; i < UPLOADS.length; i++) {
+      var d = UPLOADS[i].door;
+      if (p === d || (d === '/look' && /^\/api\/oneway\/centers\/[^/]+\/look$/.test(p))) return UPLOADS[i];      /* '/look': a Center's look, whichever Center */
+    }
+    return null;
+  }
+  function tooLarge(path, bytes, what) {
+    var t = takes(path);
+    if (!t || !(bytes > t.mb * 1048576)) return '';
+    return (what || t.what) + ' is too large. The most this takes is ' + t.mb + ' MB.';
+  }
+  /* the size of the file inside a data: address, without decoding it */
+  function dataBytes(u) {
+    var s = String(u || ''), c = s.indexOf(',');
+    if (s.slice(0, 5) !== 'data:' || c < 0) return 0;
+    var n = s.length - c - 1;
+    if (!/;base64/i.test(s.slice(0, c))) return n;
+    return Math.floor(n * 3 / 4) - (s.charAt(s.length - 1) === '=' ? (s.charAt(s.length - 2) === '=' ? 2 : 1) : 0);
+  }
+  /* the files a body carries at its top level: [{key, bytes}] */
+  function filesIn(body) {
+    var out = [];
+    if (body && typeof body === 'object') {
+      for (var k in body) {
+        if (typeof body[k] === 'string' && body[k].length > 64 && body[k].slice(0, 5) === 'data:') out.push({ key: k, bytes: dataBytes(body[k]) });
+      }
+    }
+    return out;
+  }
+  /* ONE REQUEST WHOSE PROGRESS CAN BE READ. fetch cannot say how much of a body has gone; this can. It answers what `post`
+     reads of a fetch answer (status, ok, json()), carries the session exactly as fetch's same-origin does, and rejects when
+     the connection drops, as fetch does. Only `post` calls it, and only for a body that carries a file. */
+  function sendFile(url, method, headers, text, onProgress) {
+    return new Promise(function (resolve, reject) {
+      var x = new global.XMLHttpRequest();
+      x.open(method, url, true);
+      for (var k in headers) { if (Object.prototype.hasOwnProperty.call(headers, k)) x.setRequestHeader(k, headers[k]); }
+      if (x.upload) x.upload.onprogress = function (e) { if (e && e.lengthComputable && e.total) onProgress(e.loaded / e.total); };
+      x.onload = function () {
+        resolve({ status: x.status, ok: x.status >= 200 && x.status < 300,
+                  json: function () { try { return Promise.resolve(JSON.parse(x.responseText)); } catch (e) { return Promise.reject(e); } } });
+      };
+      x.onerror = x.onabort = x.ontimeout = function () { reject(new Error('the connection dropped')); };
+      x.send(text);
+    });
+  }
+  /* HOW FAR A FILE HAS GONE, SAID ONCE IT HAS BEEN GOING A MOMENT. `at(fraction)` as it goes, `end()` when it is answered. */
+  function sending(path) {
+    var frac = 0, shown = false, done = false, last = 0, mine = '';
+    function say() {
+      if (done) return;
+      var claimed = false;
+      try {
+        var ev = new global.CustomEvent('ow:sending', { cancelable: true, detail: { path: path, fraction: frac } });
+        claimed = !doc.dispatchEvent(ev);                    /* a screen that shows it itself answers preventDefault() */
+      } catch (_) {}
+      if (claimed || !OW.toast) return;
+      mine = frac >= 1 ? 'Finishing\u2026' : 'Sending\u2026 ' + Math.round(frac * 100) + '%';
+      if (shown && OW.toast.say && OW.toast.say(mine)) return;
+      OW.toast(mine, { tone: 'ok', hold: true });
+      shown = true;
+    }
+    var timer = global.setTimeout(function () { timer = 0; say(); }, SENDING_SAID_AFTER_MS);
+    return {
+      at: function (f) {
+        frac = Math.max(0, Math.min(1, f || 0));
+        var now = Date.now();
+        if (!timer && (frac >= 1 || now - last > 200)) { last = now; say(); }
+      },
+      end: function () {
+        done = true;
+        global.clearTimeout(timer);
+        try { doc.dispatchEvent(new global.CustomEvent('ow:sending', { detail: { path: path, fraction: 1, done: true } })); } catch (_) {}
+        /* only the bar this put up, and only while it still says this file's words: another message is never taken down */
+        if (shown && OW.toast && OW.toast.hide && (!OW.toast.said || OW.toast.said() === mine)) OW.toast.hide();
+      }
+    };
+  }
+
   /* THE SESSION ENDED HERE (PLAN §3.1 SF-6). A 401 to a request that went with a session (the cookie this browser holds,
      or a token) is the server saying there is none any more. What this device kept of that person goes with it, once:
      the outbox and the service worker's copies of their reads (OW.offline.purge), which a signed-out device served
      offline to whoever opened it next. A request sent with no session that is answered 401 is only a visitor. */
-  var ended = false;
-  function sessionEnded() {
+  /* AND THE PAGE IS TOLD, ONCE (app-baseline V2; the walker's baseline 2026-11-14: after the server restarted, Home still greeted him
+     by name and Post said "Not posted. no one is signed in." with no way back but signing in again by hand). A 401 from any
+     other door is asked about once, through the one reader of who is signed in (/api/auth/me, as the realtime stream's refusal
+     is), before it is believed: a door may answer 401 for its own reason (a wrong password asked again), and a read that crossed
+     a renewal may too. When /api/auth/me itself answers 401 the session has ended: what this device kept goes (above), and
+     `ow:signed-out` is announced, so the App can keep what the person was writing and take them to sign in. */
+  var ended = false, asking = false, WHO_PATH = '/api/auth/me';
+  function sessionEnded(path) {
     if (ended) return;
+    if (path && path !== WHO_PATH) {
+      if (asking) return;
+      asking = true;
+      data.get(WHO_PATH, { fresh: true }).then(function () { asking = false; }, function () { asking = false; });
+      return;
+    }
     ended = true;
     try { if (OW.offline && OW.offline.purge) OW.offline.purge(); } catch (_) {}
+    try { doc.dispatchEvent(new global.CustomEvent('ow:signed-out', { detail: { path: path || '' } })); } catch (_) {}
   }
 
   /* NOTHING IN FLIGHT ACROSS A RENEWAL (PLAN R22, the founder 2026-10-20: "the app i think needs to be perfect"). A
@@ -261,7 +377,7 @@
       }
       var p = (early || lift(send))
         .then(function (r) {
-          if (r.status === 401 && held) sessionEnded();
+          if (r.status === 401 && held) sessionEnded(path);
           return r.json().catch(function () { return null; }).then(function (j) {
             /* A CACHED ANSWER SAYS SO (PLAN G6; sw.js labels it `X-OW-From-Cache`). With no network the worker answers a read from
                the last time it was made, and a screen that draws it as if it were now is telling a lie by leaving something out. */
@@ -314,17 +430,28 @@
          show it waiting, and only when the server honours it (`OW.offline.keyFor` answers '' for anything it does not). */
       var key = opts.key || ((!opts.queueable || !OW.offline || !OW.offline.keyFor) ? '' : OW.offline.keyFor(opts.method || 'POST', path));
       if (key) h['X-Idempotency-Key'] = key;
+      /* A FILE PAST ITS DOOR'S SIZE IS REFUSED HERE, IN THE DOOR'S OWN WORDS, BEFORE A BYTE IS SENT (M09). A video's poster is
+         a small picture with its own cap at the door, so it is not counted as the file. */
+      var files = filesIn(body), carried = 0, fi;
+      for (fi = 0; fi < files.length; fi++) {
+        carried += files[fi].bytes;
+        var over = files[fi].key === 'poster' ? '' : tooLarge(path, files[fi].bytes);
+        if (over) return Promise.resolve({ ok: false, status: 413, error: over, body: { detail: over } });
+      }
+      var going = (carried >= SENDING_SHOWN_FROM_BYTES && global.XMLHttpRequest) ? sending(path) : null;
       var waited = (path === '/api/oneway/media' && body && String(body.data || '').indexOf('data:video/') === 0) ? videoWait() : null;
       return lift(function () {
         var t2 = token();
         if (t2 && sendsHeader()) { h['X-Session-Token'] = t2; h['Authorization'] = 'Bearer ' + t2; }
+        if (going) return sendFile(BASE + path, opts.method || 'POST', h, JSON.stringify(body), going.at);
         return global.fetch(BASE + path, {
           method: opts.method || 'POST', headers: h, credentials: 'same-origin',
           body: body ? JSON.stringify(body) : '{}'
         });
       }).then(function (r) {
+        if (going) going.end();
         if (waited) waited();
-        if (r.status === 401 && held) sessionEnded();
+        if (r.status === 401 && held) sessionEnded(path);
         return r.json().catch(function () { return null; }).then(function (j) {
           if (r.ok) { wrote(path, opts.method || 'POST'); followAnswered(path, opts.method || 'POST', j); }
           return r.ok ? { ok: true, data: j }
@@ -332,6 +459,7 @@
                           error: failSaid(j, r.status), body: j };
         });
       }).catch(function () {
+        if (going) going.end();
         if (waited) waited();
         /* ── THE REQUEST DID NOT COME BACK (C, 2026-08-23) ─────────────────
            Founder, PRODUCT_RESET §24: *"do not unnecessarily reject reversible
@@ -358,6 +486,8 @@
         }
         /* a WRITE that got no answer says so in words — without claiming
            whose fault it was (the read path's rule, above) */
+        /* A FILE THAT WAS STILL GOING SAYS SO (M09): "did not answer" reads as if nothing had been sent */
+        if (carried) return { ok: false, status: 0, dropped: true, error: 'The connection dropped before this finished sending, so nothing was saved. Try again.' };
         return { ok: false, status: 0, error: 'Oneway did not answer, so nothing was done. Try again.' };
       });
     },
@@ -418,6 +548,8 @@
     token: function () { return token(); },
     /* the one rule for a session that ended, for a shell's own reader (the OS's) and its own sign-out */
     sessionEnded: function () { sessionEnded(); },
+    /* has this page been told its session ended (ow:signed-out, above)? */
+    signedOut: function () { return ended; },
     invalidate: function (match) {
       Object.keys(cache).forEach(function (k) {
         if (!match || k.indexOf(match) >= 0) delete cache[k];
@@ -589,6 +721,84 @@
 
 
   /* WHAT THE SHELLS ASK OF THE SESSION AND OF A REFUSAL, beside the door itself */
+  /* WHAT A DOOR THAT TAKES A FILE TAKES, and its refusal for a file past it, in the server's own words (above): a screen asks
+     before it reads a file (`OW.data.tooLarge('/api/oneway/media', file.size)`), and never keeps a number of its own */
+  data.takes = takes;
+  data.tooLarge = tooLarge;
+  /* WHAT A FILE IS, FROM ITS FIRST SIXTEEN BYTES, read as the server reads them (media/store.sniff; the HEIC brands are oneway/kernel/files.kind_of's): 'png',
+     'webp', 'jpeg', 'gif', 'heic', 'avif', 'video' or '' — for `upload`'s `only`, so a refusal names what was chosen */
+  var FORMAT_NAMES = { png: 'a PNG', webp: 'a WebP', jpeg: 'a JPEG', gif: 'a GIF', heic: 'a HEIC photo', avif: 'an AVIF picture', video: 'a video' };
+  function formatOf(file) {
+    var head = (file && typeof file.slice === 'function') ? Promise.resolve(file.slice(0, 16)).then(function (b) {
+      return (b && typeof b.arrayBuffer === 'function') ? b.arrayBuffer() : b;
+    }) : Promise.resolve(null);
+    return head.then(function (buf) {
+      if (!buf) return '';
+      var b = new Uint8Array(buf), s = '', i;
+      for (i = 0; i < b.length; i++) s += String.fromCharCode(b[i]);
+      if (s.slice(0, 8) === '\x89PNG\r\n\x1a\n') return 'png';
+      if (s.slice(0, 4) === 'RIFF' && s.slice(8, 12) === 'WEBP') return 'webp';
+      if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return 'jpeg';
+      if (s.slice(0, 4) === 'GIF8') return 'gif';
+      if (s.slice(4, 8) === 'ftyp') return /^(heic|heix|mif1|msf1|hevc)/.test(s.slice(8, 12)) ? 'heic' : (/^avi[fs]/.test(s.slice(8, 12)) ? 'avif' : 'video');
+      if (b[0] === 0x1a && b[1] === 0x45 && b[2] === 0xdf && b[3] === 0xa3) return 'video';
+      return '';
+    }, function () { return ''; });
+  }
+  /* ONE FILE A PERSON CHOSE, SENT WHOLE (M09). Each screen that takes a file read it, posted it and unwrapped the answer
+     by hand, and said a failure in words of its own, or not at all (a file that could not be read left the canvas's photo
+     pickers saying "Uploading" for good). `upload(file, {door, body, what})`: the file is refused first if it is past what the
+     door takes (in the door's words, nothing read or sent), read, and sent through `post` (so its progress is shown and
+     a dropped connection is said). It answers {ok, url, item, data} or {ok: false, status, error} with the words to say,
+     and never throws. `door` is the media door unless named; `file` may be a data: address already in hand. */
+  data.upload = function (file, opts) {
+    opts = opts || {};
+    var path = opts.door || '/api/oneway/media';
+    if (!file) return Promise.resolve({ ok: false, status: 0, error: 'No file was chosen.' });
+    var whole = typeof file === 'string';
+    var early = whole ? '' : tooLarge(path, file.size || 0, opts.what);
+    if (early) return Promise.resolve({ ok: false, status: 413, error: early });
+    /* A PLACE THAT TAKES ONLY SOME PICTURES SAYS SO FIRST (M09): a logo given a HEIC went to the media door, which answered
+       for itself ("Photo or video must be a JPG, PNG, GIF or WebP picture or an MP4, MOV or WebM video"), offering a video
+       and a JPG the logo refuses. `only: {formats, subject, takes}` reads the file's first bytes (never its name) and,
+       when it is none of `formats`, answers "<subject> must be <takes>. This one is <what it is>." with nothing sent. */
+    if (opts.only && !whole) {
+      return formatOf(file).then(function (fmt) {
+        var o = opts.only;
+        if ((o.formats || []).indexOf(fmt) >= 0) {
+          var rest = {}, k;
+          for (k in opts) { if (Object.prototype.hasOwnProperty.call(opts, k) && k !== 'only') rest[k] = opts[k]; }
+          return data.upload(file, rest);
+        }
+        return { ok: false, status: 400, error: o.subject + ' must be ' + o.takes + '. ' + (FORMAT_NAMES[fmt] ? 'This one is ' + FORMAT_NAMES[fmt] + '.' : 'This file is not one.') };
+      });
+    }
+    var read = whole ? Promise.resolve(file) : new Promise(function (ok) {
+      var fr = new global.FileReader();
+      fr.onload = function () { ok(String(fr.result || '')); };
+      fr.onerror = fr.onabort = function () { ok(''); };
+      try { fr.readAsDataURL(file); } catch (_) { ok(''); }
+    });
+    return read.then(function (src) {
+      if (!src) return { ok: false, status: 0, error: 'That file could not be read. Nothing was sent. Try again.' };
+      var body = {}, k;
+      body[opts.field || 'data'] = src;
+      if (path === '/api/oneway/media') body.origin = opts.origin || 'uploaded';
+      for (k in (opts.body || {})) { if (Object.prototype.hasOwnProperty.call(opts.body, k)) body[k] = opts.body[k]; }
+      return data.post(path, body, { method: opts.method || 'POST' }).then(function (r) {
+        if (!r || !r.ok) return { ok: false, status: (r && r.status) || 0, error: (r && r.error) || 'That file was not kept, so nothing was saved. Try again.' };
+        var d = r.data || {}, item = d.media || d.item || d.placement || d;
+        return { ok: true, url: (item && (item.url || item.ref)) || d.url || '', item: item, data: d };
+      });
+    });
+  };
+  /* THE FILE AN INPUT WAS GIVEN, AND THE INPUT LEFT EMPTY, so choosing the same file again (after a refusal, to try again)
+     is heard: an input that keeps its value does not say `change` for the file it already holds. `many`: all of them. */
+  data.chosen = function (input, many) {
+    var files = [].slice.call((input && input.files) || []);
+    try { input.value = ''; } catch (_) {}
+    return many ? files : (files[0] || null);
+  };
   data.cookieSession = cookieSession;
   data.sendsHeader = sendsHeader;
   data.failSaid = failSaid;

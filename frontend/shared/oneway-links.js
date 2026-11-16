@@ -496,6 +496,131 @@
   };
 })(window);
 
+/* ══ PHONE NUMBERS READ THE WAY PEOPLE WRITE THEM (OW.phone) ═══════════════════════════════════════════════════════
+   ★ THE FOUNDER, 2026-11-14, testing the OS: "phone numbers do not have any spacing". A number was drawn the way it is stored
+   (+16095550142), and a person cannot read that, say it aloud or check it against a card. ONE FORMATTER, for every place the OS
+   draws a number (the door's waiting parties, a table's bookings, the customer lists and their pages, a job's customer, a vendor,
+   a Center's own details), and nothing else says a number:
+     OW.phone.say('+16095550142')     -> '(609) 555-0142'      a US number; a leading +1 or 1 is the country, said by the format
+     OW.phone.say('+442079460958')    -> '+44 20 7946 0958'    another country keeps its code and is grouped as that country writes it
+     OW.phone.say('609-555-0142 x12') -> '(609) 555-0142 x12'  an extension stays as it was typed
+     OW.phone.say('1-800-FLOWERS')    -> '1-800-FLOWERS'       anything it cannot read comes back exactly as typed, never mangled
+   OW.phone.tel(v) is the plain digits a tel: link dials (a leading + kept, an extension after a comma); OW.phone.inText(line)
+   says the numbers inside a sentence a server wrote ('Phone +16095550163 · Allergy: shellfish'); OW.phone.matches(stored, typed)
+   is the search by digits ('609 555' finds +16095550142, with or without spaces). NOTHING STORED CHANGES: this only draws. */
+(function (global) {
+  'use strict';
+  var OW = global.OW = global.OW || {};
+  if (OW.phone) return;
+  /* the calling codes of two digits (every other code but 1 and 7 has three) */
+  var CC2 = {}; '20 27 30 31 32 33 34 36 39 40 41 43 44 45 46 47 48 49 51 52 53 54 55 56 57 58 60 61 62 63 64 65 66 81 82 84 86 90 91 92 93 94 95 98'.split(' ').forEach(function (c) { CC2[c] = 1; });
+  function digits(s) { return String(s == null ? '' : s).replace(/\D/g, ''); }
+  function codeOf(d) {
+    if (d.charAt(0) === '1' || d.charAt(0) === '7') return d.charAt(0);
+    return CC2[d.slice(0, 2)] ? d.slice(0, 2) : d.slice(0, 3);
+  }
+  function nanp(d) { return '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6); }
+  /* how each country writes the number after its code: the sizes of its groups, by the national number's length and first digits.
+     No row for a country, or a length it does not say: the general grouping below. */
+  function sizesFor(cc, n) {
+    var L = n.length, f = n.charAt(0);
+    switch (cc) {
+      case '44': if (L === 10) return f === '2' ? [2, 4, 4] : [4, 6]; break;
+      case '33': if (L === 9) return [1, 2, 2, 2, 2]; break;
+      case '49': if (L >= 10 && L <= 11) return /^(15|16|17)/.test(n) ? [3, L - 3] : /^(30|40|69|89)/.test(n) ? [2, L - 2] : [3, L - 3]; break;
+      case '52': if (L === 10) return [2, 4, 4]; break;
+      case '61': if (L === 9) return f === '4' ? [3, 3, 3] : [1, 4, 4]; break;
+      case '64': if (L === 9) return [2, 3, 4]; break;
+      case '91': if (L === 10) return [5, 5]; break;
+      case '55': if (L === 11) return [2, 5, 4]; if (L === 10) return [2, 4, 4]; break;
+      case '34': case '351': case '48': if (L === 9) return [3, 3, 3]; break;
+      case '39': if (L === 10) return [3, 3, 4]; if (L === 9) return [3, 3, 3]; break;
+      case '81': if (L === 10) return [2, 4, 4]; if (L === 9) return [1, 4, 4]; break;
+      case '82': if (L === 10) return [2, 4, 4]; if (L === 9) return [1, 4, 4]; break;
+      case '86': if (L === 11) return [3, 4, 4]; break;
+      case '353': if (L === 9) return [2, 3, 4]; if (L === 8) return [1, 3, 4]; break;
+      case '31': if (L === 9) return f === '6' ? [1, 8] : [2, 3, 4]; break;
+      case '32': if (L === 9) return f === '4' ? [3, 2, 2, 2] : [1, 3, 2, 2]; break;
+      case '41': if (L === 9) return [2, 3, 2, 2]; break;
+      case '45': if (L === 8) return [2, 2, 2, 2]; break;
+      case '47': if (L === 8) return [3, 2, 3]; break;
+      case '7': if (L === 10) return [3, 3, 2, 2]; break;
+      case '90': if (L === 10) return [3, 3, 2, 2]; break;
+      case '27': case '971': case '972': if (L === 9) return [2, 3, 4]; break;
+    }
+    return null;
+  }
+  function general(n) {                                  /* a country the table does not know: threes, ending in a three or a four */
+    var out = [], rest = n.length;
+    while (rest > 4) { var take = rest === 5 ? 2 : 3; out.push(take); rest -= take; }
+    out.push(rest);
+    return out;
+  }
+  function group(n, sizes) {
+    var out = [], at = 0;
+    sizes.forEach(function (k) { out.push(n.slice(at, at + k)); at += k; });
+    return out.filter(Boolean).join(' ');
+  }
+  /* the number and an extension typed after it: x12, ext 12, ext. 12, extension 12, #12 */
+  function parts(raw) {
+    var s = String(raw == null ? '' : raw).trim().replace(/^tel:/i, ''), ext = '', m = /^(.*[\d)])[\s,;]*((?:x|ext\.?|extension|#)\s*\d{1,6})$/i.exec(s);
+    if (m) { s = m[1]; ext = m[2]; }
+    return { num: s, ext: ext };
+  }
+  function say(raw) {
+    var typed = String(raw == null ? '' : raw).trim();
+    if (!typed) return typed;
+    var p = parts(typed), s = p.num, tail = p.ext ? ' ' + p.ext : '';
+    if (!/^\+?[\d\s().\-‐-–]+$/.test(s)) return typed;       /* letters, a second +, a slash: not for this to read */
+    var d = digits(s), plus = s.charAt(0) === '+';
+    if (!plus) {
+      if (d.length === 10 && /^[2-9]/.test(d)) return nanp(d) + tail;
+      if (d.length === 11 && d.charAt(0) === '1' && /^[2-9]/.test(d.charAt(1))) return nanp(d.slice(1)) + tail;
+      return typed;
+    }
+    if (d.length < 8 || d.length > 15) return typed;
+    var cc = codeOf(d), n = d.slice(cc.length);
+    if (cc === '1') return n.length === 10 && /^[2-9]/.test(n) ? nanp(n) + tail : typed;
+    if (n.length < 4) return typed;
+    return '+' + cc + ' ' + group(n, sizesFor(cc, n) || general(n)) + tail;
+  }
+  /* what a tel: link dials: the digits, a leading + kept, an extension after a comma (a pause, as phones take it), a number's letters
+     as a phone's keys read them (1-800-FLOWERS); where two numbers were typed the first; '' for no number */
+  var KEYS = { a: 2, b: 2, c: 2, d: 3, e: 3, f: 3, g: 4, h: 4, i: 4, j: 5, k: 5, l: 5, m: 6, n: 6, o: 6, p: 7, q: 7, r: 7, s: 7, t: 8, u: 8, v: 8, w: 9, x: 9, y: 9, z: 9 };
+  /* a word typed beside a number is a note ("cell", "(work)", "call"), not keys: letters become keypad digits only for a vanity number
+     (1-800-FLOWERS), which is a number whose digits alone are too few to be a whole one. An extension may follow a note. */
+  function tel(raw) {
+    var first = String(raw == null ? '' : raw).split(/\s*(?:\/|;|\||\bor\b)\s*/i)[0], p = parts(first);
+    if (!p.ext) {
+      var m = /^(.*?[\d)A-Za-z])[\s,;]*((?:x|ext\.?|extension|#)\s*\d{1,6})$/i.exec(first.trim());
+      if (m && /\d/.test(m[1])) p = { num: m[1], ext: m[2] };
+    }
+    var s = p.num;
+    if (!/^\+?[\d\s().\-A-Za-z\u2010-\u2013]+$/.test(s) || digits(s).length < 3) return '';
+    var plus = /^\s*\+/.test(s), have = digits(s).length, whole = plus ? have >= 8 : have >= 10;
+    var d = whole ? digits(s) : s.replace(/[A-Za-z]/g, function (c) { return KEYS[c.toLowerCase()]; }).replace(/\D/g, '');
+    return (plus ? '+' : '') + d + (p.ext ? ',' + digits(p.ext) : '');
+  }
+  /* the numbers inside a sentence: a + number in one piece, a US number with its separators, or ten digits after the word Phone, Call or Text */
+  var IN_TEXT = /(^|[^\d\w+])(\+\d{8,15}|\(?[2-9]\d{2}\)?[ .-]\d{3}[ .-]\d{4}|(?:Phone|phone|Call|call|Text|at) 1?[2-9]\d{9})(?![\d\w])/g;
+  function inText(line) {
+    return String(line == null ? '' : line).replace(IN_TEXT, function (all, before, num) {
+      var lead = /^(Phone|phone|Call|call|Text|at) /.exec(num);
+      return before + (lead ? lead[0] + say(num.slice(lead[0].length)) : say(num));
+    });
+  }
+  /* a search typed as digits (with or without spaces, dashes, brackets, a +) finds a number however it is stored; text that is not a
+     number's shape is the caller's own search, so this says no */
+  function matches(stored, typed) {
+    var q = String(typed == null ? '' : typed).trim();
+    if (!q || !/^\+?[\d\s().\-]+$/.test(q)) return false;
+    var dq = digits(q), ds = digits(stored);
+    if (dq.length < 3 || !ds) return false;
+    return ds.indexOf(dq) >= 0 || (dq.length > 10 && dq.charAt(0) === '1' && ds.indexOf(dq.slice(1)) >= 0);
+  }
+  OW.phone = { say: say, tel: tel, inText: inText, matches: matches, digits: digits };
+})(window);
+
 /* ══ THE PLATFORMS' OWN PLAYERS, DRAWN LIGHT AND LOADED LATE (OW.embed) ══════════════════════════════════════════════════
    ★ FOUNDER/1139: a post brought in from YouTube or TikTok plays in the platform's own player inside Oneway, with its caption
    and its author; founder/675: never a bare link.
@@ -527,10 +652,18 @@
     players: {
       youtube: { label: 'YouTube', verb: 'Watch', host: 'www.youtube-nocookie.com', path: '/embed/{id}', query: 'enablejsapi=1&playsinline=1&rel=0',
                  origin_param: 'origin', auto: 'autoplay=1&mute=1', id: '[A-Za-z0-9_-]{11}', aspect: 1.7778, site: 'youtube.com' },
-      tiktok: { label: 'TikTok', verb: 'Watch', host: 'www.tiktok.com', path: '/player/v1/{id}', query: '', auto: 'autoplay=1&muted=1', id: '[0-9]{6,25}', aspect: 0.5625, site: 'tiktok.com' },
+      tiktok: { label: 'TikTok', verb: 'Watch', host: 'www.tiktok.com', path: '/player/v1/{id}', query: 'loop=1', auto: 'autoplay=1&muted=1', id: '[0-9]{6,25}', aspect: 0.5625, site: 'tiktok.com' },
       instagram: { label: 'Instagram', verb: 'View', host: 'www.instagram.com', path: '/p/{id}/embed/captioned/', query: '', id: '[A-Za-z0-9_-]{5,40}', aspect: 0.8,
                    site: 'instagram.com' },
       threads: { label: 'Threads', verb: 'View', host: 'www.threads.com', path: '/t/{id}/embed', query: '', id: '[A-Za-z0-9_-]{5,40}', aspect: 0.8, site: 'threads.com' },
+      /* Vimeo, Twitch and Facebook play in frame like the others (his words, 2026-11-13/14), each through its own official embed player */
+      vimeo: { label: 'Vimeo', verb: 'Watch', host: 'player.vimeo.com', path: '/video/{id}', query: 'playsinline=1&dnt=1&loop=1', auto: 'autoplay=1&muted=1',
+               id: '[0-9]{6,12}', aspect: 1.7778, site: 'vimeo.com' },
+      twitch: { label: 'Twitch', verb: 'Watch', host: 'clips.twitch.tv', path: '/embed', query: 'clip={id}', parent_param: 'parent', auto: 'autoplay=true&muted=true',
+                id: '[A-Za-z0-9_-]{4,100}', aspect: 1.7778, site: 'twitch.tv' },
+      facebook: { label: 'Facebook', verb: 'Watch', host: 'www.facebook.com', path: '/plugins/video.php',
+                  query: 'href=https%3A%2F%2Fwww.facebook.com%2Fwatch%2F%3Fv%3D{id}&show_text=false', auto: 'autoplay=true', id: '[0-9]{5,25}', aspect: 1.7778,
+                  site: 'facebook.com' },
       /* X is never framed (X Developer Agreement, clause K): its post is the light card and "Watch on X", which opens x.com */
       x: { label: 'X', verb: 'View', frame: false, id: '[0-9]{1,25}', aspect: 1.0, site: 'x.com' }
     }
@@ -554,6 +687,11 @@
     var s = spec(p), q = s.query.replace('{id}', id);
     if (auto && s.auto) q += (q ? '&' : '') + s.auto;
     if (s.origin_param && origin && /^https?:\/\/[A-Za-z0-9.-]+(:\d+)?$/.test(origin)) q += (q ? '&' : '') + s.origin_param + '=' + encodeURIComponent(origin);
+    /* TWITCH NAMES THE PAGE THAT FRAMES IT (`parent`, required): this page's own host, read from its origin and nothing else */
+    if (s.parent_param) {
+      var pm = /^https?:\/\/([A-Za-z0-9.-]+)(:\d+)?$/.exec(origin || '');
+      if (pm) q += (q ? '&' : '') + s.parent_param + '=' + pm[1];
+    }
     if (OURS.test(s.host) || s.host === (global.location || {}).host) return '';   /* SE1: never a host of ours, nor this page's own */
     return 'https://' + s.host + s.path.replace('{id}', id) + (q ? '?' + q : '');
   }
@@ -563,7 +701,8 @@
     if (!s || !validId(e.provider, e.id)) return '';
     var h = '';
     try { var x = new global.URL(u); h = x.protocol === 'https:' && !x.username && !x.password ? x.hostname.toLowerCase() : ''; } catch (_) {}
-    return (h && (h === s.site || h.slice(-s.site.length - 1) === '.' + s.site)) ? u : src(e.provider, e.id, '');
+    /* else the player's own page with none of our player's asks (no loop, autoplay or API flags): a link out, not a player */
+    return (h && (h === s.site || h.slice(-s.site.length - 1) === '.' + s.site)) ? u : src(e.provider, e.id, '').split('?')[0];
   }
   function clampAR(a, s) { return Math.min(1.91, Math.max(0.5625, +a || s.aspect)); }
   /* THE LINE ON THE CARD, before the press: the same words as platform/outside_origins.json's row for the player (test_no_outside) */
@@ -571,21 +710,51 @@
   /* "PLAY VIDEOS FROM OTHER PLATFORMS BY THEMSELVES" (Settings, Privacy, Other companies): the person's own choice, else on, but off
      where the browser's time zone is in Europe until the person turns it on (consent first there). Key: ow_players_auto, '1' or '0'. */
   var AUTO_KEY = 'ow_players_auto', TOLD_KEY = 'ow_players_told';
-  var TOLD = 'Videos from YouTube, TikTok and Instagram play here, which connects you to them. They see your internet address.';
+  var TOLD = 'Videos from YouTube, TikTok, Instagram, Vimeo, Twitch and Facebook play here, which connects you to them. They see your internet address.';
   function stored(k) { try { return global.localStorage.getItem(k); } catch (_) { return null; } }
   function europe() { try { return /^Europe\//.test(Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (_) { return false; } }
   function autoOk() { var v = stored(AUTO_KEY); return v === '1' ? true : v === '0' ? false : !europe(); }
+  /* MAY A PLAYER START BEFORE A PRESS: the person's choice above, and also nothing starts by itself while "Play video automatically"
+     is off or Data saver is on (Settings, Content; OW.prefs, OW.applyPrefs). The census of 2026-11-14 found those two kept by our
+     own videos and not by other platforms' players. autoOk stays the Other companies switch alone, so that page shows what was chosen. */
+  function held() { var pr = OW.prefs; return !!(pr && (pr.autoplay === false || pr.dataSaver)); }
+  function mayStart() { return !held() && OW.embed.autoOk(); }
+  /* NOTHING MOVES BY ITSELF where the person asked for less: data saver, or reduced motion (the loader's one test, oneway-embed.js) */
+  function motionOk() {
+    var c = global.navigator && global.navigator.connection;
+    return !(c && c.saveData) && !(global.matchMedia && global.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  }
+  /* A CARD THAT WILL START BY ITSELF (unit media-inline, his words to Codex 2026-11-11: "I didn't even want play buttons"): drawn with
+     no play mark and no note over it (data-auto; oneway-popit.css). Only where a press is the consent, the switch off, or where the
+     person asked for nothing to move, is the play mark there, because there a press is what starts it. */
+  function selfStarts() { return mayStart() && motionOk(); }
   /* the account's own choice (settings outside_players: by_region, on, off), kept here so it follows the person to every device (S22) */
   function mirrorAuto(v) {
     var was = autoOk();
     try { if (v === 'on' || v === 'off') global.localStorage.setItem(AUTO_KEY, v === 'on' ? '1' : '0'); else global.localStorage.removeItem(AUTO_KEY); } catch (_) {}
     if (autoOk() !== was) { try { doc.dispatchEvent(new global.CustomEvent('ow:players', { detail: { auto: autoOk() } })); } catch (_) {} }
   }
+  /* returns the account's save (or a kept-here answer when signed out), so the press that asked ends in the one finish once it lands */
   function setAuto(on) {
     mirrorAuto(on ? 'on' : 'off');
     var D = OW.data, signed = !!(D && ((D.token && D.token()) || (D.cookieSession && D.cookieSession())));
-    if (signed && D.post) D.post('/api/me/settings', { settings: { outside_players: on ? 'on' : 'off' } }, { method: 'PUT', queueable: true });
+    if (signed && D.post) return D.post('/api/me/settings', { settings: { outside_players: on ? 'on' : 'off' } }, { method: 'PUT', queueable: true });
+    return Promise.resolve({ ok: true, here: true });
   }
+  /* OVER TIKTOK'S PLAYER, OR BESIDE IT (his words, 2026-11-12 ~08:00 ET: "yes give users the option to have over tiktok videos" / "like a
+     nomral scrolling video"): the person's choice, Settings, Content, TikTok videos in Scroll (settings tiktok_layout, its server check
+     in settings/service.set_person), kept on the page as html[data-tt-layout] for oneway-popit.css, and beside the page (ow_tt_layout) so
+     the first frame of the next visit already has it. Until the account answers, the server's default (LAYOUT). YouTube's page never
+     reads it: nothing of ours is ever over YouTube's player (its terms). */
+  var LAYOUT_KEY = 'ow_tt_layout', LAYOUT = 'over', LAYOUTS = { over: 1, beside: 1 };
+  function layoutNow() { var v = stored(LAYOUT_KEY); return Object.prototype.hasOwnProperty.call(LAYOUTS, v) ? v : LAYOUT; }
+  function paintLayout() { try { if (doc && doc.documentElement) doc.documentElement.setAttribute('data-tt-layout', layoutNow()); } catch (_) {} }
+  function mirrorLayout(v) {
+    if (typeof v !== 'string' || !Object.prototype.hasOwnProperty.call(LAYOUTS, v)) return;      /* only one of the two, here as on the server */
+    try { global.localStorage.setItem(LAYOUT_KEY, v); } catch (_) {}
+    paintLayout();
+  }
+  paintLayout();
   /* the first time a player loads before a press: said once, in plain words, never in the way (a toast, no modal) */
   function tellOnce() {
     if (stored(TOLD_KEY) === '1') return false;
@@ -598,22 +767,30 @@
   /* ── THE LIGHT CARD: what is drawn before any player, and what stays when one does not draw ── */
   /* A CARD THAT FALLS BACK (the player was refused, or said nothing) IS NEVER A BLACK BOX (main, 2026-11-09): our own copy of its
      cover, who posted it there, and "Watch on TikTok" / "View on Instagram", the platform's own page. With no cover of ours it is drawn
-     `data-bare`, a light ground carrying the same two (oneway-popit.css), never the near-black a frame sits on while it loads. */
+     `data-bare`, a light ground carrying the same two (oneway-popit.css), never the near-black a frame sits on while it loads.
+     "Watch on <platform>" over its picture is the family's float button (po-act po-act--secondary po-act--float), never a look of its
+     own (his words, 2026-11-11 14:56 UTC: "a horrible blue link label"; C-1111-1456b). */
   function face(e) {
     var s = spec(e && e.provider);
     if (!s || !validId(e.provider, e.id)) return '';
     var cover = ownCover(e.cover), label = esc(s.label), a = e.author || {};
     var who = a.handle ? '@' + String(a.handle).replace(/^@/, '') : (a.name || '');
     var says = s.frame === false ? '' : notice(s);
-    return '<span class="ow-emb" data-ow-emb="' + esc(e.provider) + '" data-ow-emb-id="' + esc(e.id) + '"'
-      + ' data-ow-emb-to="' + esc(watch(e)) + '"' + (cover ? '' : ' data-bare') + ' style="--ow-emb-ar:' + clampAR(e.aspect, s).toFixed(4) + '"'
+    /* A PLATFORM THAT IS NEVER FRAMED (X) IS THE LINK CARD FROM THE START (review of media-inline, 2026-11-13, B1): only the loader's
+       mount() turned a card into the link card, and it mounts only a card in view; an X card with no cover of ours has no box at all
+       (display:none, oneway-popit.css), so it was never in view, never the link card, and "View on X" under it (shown only on the link
+       card) never came: measured 2026-11-13 at 390 and 1366 in the feed, Scroll and the opened post. Nothing will ever play there, so
+       it is drawn as what it will always be. */
+    return '<span class="ow-emb" data-ow-emb="' + esc(e.provider) + '" data-ow-emb-id="' + esc(e.id) + '"' + (s.frame === false ? ' data-state="link"' : '')
+      + ' data-ow-emb-to="' + esc(watch(e)) + '"' + (cover ? '' : ' data-bare') + (says && selfStarts() ? ' data-auto' : '') + ' style="--ow-emb-ar:' + clampAR(e.aspect, s).toFixed(4) + '"'
       + (says ? ' role="button" tabindex="0" aria-label="' + esc('Play. ' + says) + '"' : '') + '>'
       + (cover ? '<img class="ow-emb__cover" src="' + esc(cover) + '" alt="" loading="lazy" decoding="async" onerror="this.remove()">' : '')
-      + '<span class="ow-emb__play" aria-hidden="true">' + OW.glyph('play') + '</span>'
+      /* no play mark where nothing can ever play (X is never framed): measured 2026-11-13, it stood over an empty box (plat.cjs) */
+      + (s.frame === false ? '' : '<span class="ow-emb__play" aria-hidden="true">' + OW.glyph('play') + '</span>')
       + (e.aigc ? '<span class="ow-emb__ai">' + esc(e.aigc_words || 'AI-generated') + '</span>' : '')
       + (who ? '<span class="ow-emb__who">' + esc(String(who).slice(0, 80)) + '</span>' : '')
       + (says ? '<span class="ow-emb__note" aria-hidden="true">' + esc(says) + '</span>' : '')
-      + '<span class="ow-emb__go" role="link" tabindex="0" data-ow-emb-go>' + esc(s.verb || 'Watch') + ' on ' + label + '</span>'
+      + '<span class="po-act po-act--secondary po-act--float ow-emb__go" role="link" tabindex="0" data-ow-emb-go>' + esc(s.verb || 'Watch') + ' on ' + label + '</span>'
       + '</span>';
   }
 
@@ -645,6 +822,10 @@
     var card = !g && c && c.closest('.ow-emb[role="button"]');
     if (card && !(ev.key && ev.key !== 'Enter' && ev.key !== ' ') && !/^(live|link|loading)$/.test(card.getAttribute('data-state') || '')) {
       ev.preventDefault(); ev.stopPropagation();
+      /* IN A POST, THE PRESS OPENS THE ONE MEDIA VIEWER, where the player is made, centred on the black, with its sound (his words,
+         2026-11-14: integrations "clickable like twitter media"; the viewer's face is an opened player, oneway-embed.js) */
+      var post = viewable(card);
+      if (post) { OW.viewer.open({ card: post, at: card }); return; }
       card.__owTapped = true; card.setAttribute('data-tapped', '');
       if (OW.embed.__play) OW.embed.__play(card); else watchIn(card);
       return;
@@ -655,6 +836,36 @@
   }
   try { doc.addEventListener('click', go, true); doc.addEventListener('keydown', go, true); } catch (e) {}
 
+  /* A POST'S PLATFORM PLAYER, PRESSED, OPENS THE ONE MEDIA VIEWER (his words, 2026-11-14 ~02:10Z: "intergrations will be more in frame
+     and will be clickable like twitter media"; ~00:10Z: "with all intergrations and our own posts seemlessly"). The player is the
+     platform's own frame, so a press on it never reaches this page: the page sees only that the frame took the focus (the window's
+     blur, the frame the active element). Nothing is laid over the player and none of its controls is blocked; the press reaches the
+     platform too, and the viewer draws its player again, centred on the black, the name at the bottom. Scroll's pages keep their own. */
+  function viewable(n) {
+    if (!n || !n.closest || !OW.viewer || n.closest('.ow-viewer, .ow-fscroll')) return null;
+    if (doc.documentElement.getAttribute('data-ow-view') === 'immersive') return null;
+    var op = n.closest('.ow-post__embed');      /* the opened post's page (app/posts/posts.js) holds its embed box */
+    return n.closest('.po-card[data-po-id]') || (op && op.parentElement) || null;
+  }
+  /* A TAB INTO A PLAYING PLAYER IS NOT A PRESS (review3 B2, 2026-11-14: a keyboard Tab into a playing TikTok in Home opened the viewer
+     with no press, and tabbing back to it opened it again, so a keyboard person could never get past it). The keyboard moves the focus
+     into the frame and the window blurs just the same; a blur that comes within a moment of a Tab is the keyboard passing through, and
+     the person goes on into the player and past it. */
+  var tabAt = -1e9;
+  try { doc.addEventListener('keydown', function (e) { if (e.key === 'Tab') tabAt = Date.now(); }, true); } catch (e) {}
+  try {
+    global.addEventListener('blur', function () {
+      if (Date.now() - tabAt < 300) return;
+      global.setTimeout(function () {
+        var f = doc.activeElement, e = f && f.tagName === 'IFRAME' && f.closest ? f.closest('.ow-emb[data-ow-emb]') : null, post = viewable(e);
+        if (!post) return;
+        try { f.blur(); } catch (_) {}
+        OW.viewer.open({ card: post, at: e });
+      }, 0);
+    });
+  } catch (e) {}
+
   OW.embed = { table: TABLE, validId: validId, src: src, watch: watch, face: face, watch_in: watchIn, notice: notice,
-               autoOk: autoOk, setAuto: setAuto, mirrorAuto: mirrorAuto, tellOnce: tellOnce, told: TOLD };
+               autoOk: autoOk, mayStart: mayStart, held: held, motionOk: motionOk, selfStarts: selfStarts, setAuto: setAuto, mirrorAuto: mirrorAuto,
+               tellOnce: tellOnce, told: TOLD, mirrorLayout: mirrorLayout, LAYOUT: LAYOUT };
 })(window);

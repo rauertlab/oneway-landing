@@ -586,6 +586,16 @@
       (said.line ? (site ? '<a class="' + subClass + '" href="' + esc(site.href) + '" target="_blank" rel="noopener noreferrer">' :
         '<span class="' + subClass + '" title="' + esc(said.line) + '" dir="auto">') + esc(said.line) + (site ? '</a>' : '</span>') : '');
   }
+  /* THE ACTIVITY LINE BESIDE THE DOT (his words, 2026-11-13: "with the line where it can appear showing platform and activity";
+     Discord's line under a name): the read's own words (presence.service.line, in the backend's words, S10), which always name where
+     they come from ("Listening on Spotify: ..."); the whole line in its title when it was cut. Only a read that carries one draws it:
+     off until its person turns it on, and only where the dot is (cards/service._activity_line). */
+  function activityHTML(card, size) {
+    var a = card && card.activity, t = a && a.text;
+    if (!t) return '';
+    return '<span class="ow-ocard__act" data-size="' + (size === 'profile' ? 'profile' : 'sm') + '" data-source="' + esc(a.source || '') +
+      '" title="' + esc(a.whole || t) + '" dir="auto">' + esc(t) + '</span>';
+  }
   /* A PERSON'S NOTE, ABOVE THEIR NAME, WHEREVER THEY APPEAR (founder/878, 2026-10-21: "notes are still not appearing above the
      name closley and cleanly"; "the change is it appears everywhere but must look good doing so"). Instagram's Notes: a small
      speech bubble directly over the name, touching it, its tail toward the face; the theme's own ground with a crisp edge,
@@ -645,7 +655,8 @@
     var colW = [0, 1].map(function (c) { return Math.max.apply(null, [0].concat(rows.slice(c * 3, c * 3 + 3).map(function (d) { return String(d.label).length; }))); });
     var facts = rows.length ? rows.map(function (d, i) {
       var v = String(d.value).split('\n')[0];
-      return '<span class="ow-ocard__fact" style="--lw:' + (colW[i < 3 ? 0 : 1] * 0.6).toFixed(1) + 'em" title="' + esc(d.label + ': ' + d.value) + '"><i>' +
+      if (/^(phone|call)$/i.test(String(d.label || '')) && OW.phone) v = OW.phone.say(v);
+      return '<span class="ow-ocard__fact" style="--lw:' + (colW[i < 3 ? 0 : 1] * 0.6).toFixed(1) + 'em" title="' + esc(d.label + ': ' + (/^(phone|call)$/i.test(String(d.label || '')) ? v : d.value)) + '"><i>' +
         esc(d.label) + '</i> <b dir="auto">' + esc(v) + '</b></span>';
     }).join('') : '';
     var lines = rows.length || (facts ? 1 : 0);
@@ -675,14 +686,118 @@
     var nav = global.navigator || {}, ua = nav.userAgent || '';
     return /iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && (nav.maxTouchPoints || 0) > 1);
   }
+  /* a place's point, as the card read carries it: numbers, on the globe, and never a person's (Directions and Ride both ask this) */
+  function pointOf(card) {
+    var p = card && card.kind !== 'person' && card.directions;
+    if (!p || typeof p.lat !== 'number' || typeof p.lng !== 'number' || !isFinite(p.lat) || !isFinite(p.lng) ||
+        Math.abs(p.lat) > 90 || Math.abs(p.lng) > 180) return null;
+    return p;
+  }
   function directions(card) {
-    var p = card && card.directions;
-    if (!p || typeof p.lat !== 'number' || typeof p.lng !== 'number' || !isFinite(p.lat) || !isFinite(p.lng)) return null;
+    var p = pointOf(card);
+    if (!p) return null;
     var dest = encodeURIComponent(p.lat + ',' + p.lng);
     if (appleDevice()) return { app: 'Apple Maps', mark: MAP_MARK.apple, destination: p.lat + ',' + p.lng,
       href: 'https://maps.apple.com/?daddr=' + dest };
     return { app: 'Google Maps', mark: MAP_MARK.google, destination: p.lat + ',' + p.lng,
       href: 'https://www.google.com/maps/dir/?api=1&destination=' + dest };
+  }
+
+  /* RIDE THERE WITH UBER (his words, 2026-11-14: "take from https://apps.apple.com/us/app/up-find-your-next-spot/id6760917951 mainly
+     the uber button"; UP's venue pages carry "directions, an Uber ride, call, menu, and Order or Book").
+     Uber's universal link as its deep-link page documents it (read 2026-11-14): https://m.uber.com/looking with one drop[0], a JSON
+     place {latitude, longitude, addressLine1 (its name), addressLine2 (its address)}. No pickup: Uber starts from where the rider is.
+     No client id, no key, nothing sent to Uber but the place itself, and nothing at all until the press. With the app on a phone it
+     opens the app; anywhere else m.uber.com, in a new tab. The words are Uber's own button copy from its design guidelines
+     ("Ride there with Uber"); no Uber mark is drawn, because its guidelines allow only the assets Uber provides, unaltered.
+     ONLY WITH THE POINT the card read carries (the rule that says who may see it, as Directions): a Center with no point has no Ride.
+     A name and an address are said once, cut to RIDE_WORDS_MAX, their control characters dropped; JSON.stringify quotes them and
+     encodeURIComponent encodes the whole place, so no name can add a parameter or leave its value. PROPOSED: the words. */
+  var RIDE_AT = 'https://m.uber.com/looking';
+  var RIDE_WORDS_MAX = 120;                 /* a place's name or address, at most, in the link */
+  function rideWords(v) {
+    return String(v == null ? '' : v).replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029\u200b-\u200f\u202a-\u202e\u2066-\u2069]/g, ' ')
+      .replace(/\s+/g, ' ').trim().slice(0, RIDE_WORDS_MAX).trim();
+  }
+  /* a link the go row draws: https only, through the one validator the link bar uses (OW.links.postURL: no credentials, no bare
+     numbers for a host, no look-alike host) */
+  function httpsOnly(u) {
+    var ok = OW.links && OW.links.postURL ? OW.links.postURL(u) : null;
+    return ok && ok.protocol === 'https:' ? ok.href : '';
+  }
+  function addressOf(card) {
+    var told = (card && card.details || []).filter(function (d) { return d && /^address$/i.test(String(d.label || '')); })[0];
+    return (told && told.value) || (card && card.address) || (card && card.line) || '';
+  }
+  function ride(card) {
+    var p = pointOf(card);
+    if (!p) return null;
+    var drop = { latitude: p.lat, longitude: p.lng };
+    var name = rideWords(card.title || card.name), addr = rideWords(String(addressOf(card)).split('\n').join(', '));
+    if (name) drop.addressLine1 = name;
+    if (addr && addr !== name) drop.addressLine2 = addr;
+    var href = httpsOnly(RIDE_AT + '?drop%5B0%5D=' + encodeURIComponent(JSON.stringify(drop)));
+    return href ? { words: 'Ride there with Uber', href: href, app: 'Uber' } : null;
+  }
+
+  /* THE GO ROW: what the place really has, one row in the family's buttons (S20, the command rank): Directions, Ride there with
+     Uber, Call, Menu, and Order or Book, each only when the card read carries it (T1). One row for a Center's page, the Discovery
+     place sheet and an event, so the three say the same thing. Every press leaves for the place's own app or page; a phone's maps
+     app is never asked until the press (https links only, never maps://). `opts.directions === false` leaves Directions to a line
+     the surface already draws (a Center's information list, a place sheet's address row). PROPOSED: the order and the words. */
+  var GO_ORDER = ['order', 'booking'];       /* the one "Order or Book": a place that takes orders online says Order */
+  function goActs(card, opts) {
+    opts = opts || {};
+    var out = [];
+    if (!card || card.kind === 'person') return out;
+    var dir = opts.directions === false ? null : directions(card);
+    if (dir) out.push({ key: 'directions', words: 'Directions', href: dir.href, aria: 'Directions in ' + dir.app });
+    var r = ride(card);
+    if (r) out.push({ key: 'ride', words: r.words, href: r.href, aria: r.words });
+    var phone = (card.details || []).filter(function (d) { return d && /^(phone|call)$/i.test(String(d.label || '')); })[0];
+    var tel = phone ? (OW.phone ? OW.phone.tel(phone.href || phone.value || '') : String(phone.href || phone.value || '').replace(/^tel:/i, '').replace(/[^0-9+]/g, '')) : '';
+    if (tel.replace(/\D/g, '').length >= 7) out.push({ key: 'call', words: 'Call', href: 'tel:' + tel, aria: 'Call ' + (OW.phone ? OW.phone.say(phone.value || tel) : (phone.value || tel)) });
+    var byKind = {};
+    (card.links || []).forEach(function (l) {
+      var k = String((l && l.kind) || '').toLowerCase(), u = l && httpsOnly(l.url);
+      if (u && !byKind[k]) byKind[k] = u;
+    });
+    if (byKind.menu) out.push({ key: 'menu', words: 'Menu', href: byKind.menu, aria: 'Menu' });
+    var ob = GO_ORDER.filter(function (k) { return byKind[k]; })[0];
+    if (ob) out.push({ key: ob, words: ob === 'order' ? 'Order' : 'Book', href: byKind[ob], aria: ob === 'order' ? 'Order' : 'Book' });
+    return out;
+  }
+  /* EACH BUTTON SAYS WHAT IT DOES AT A GLANCE (the review, 2026-11-14: four text-only pills of Message's rank lost beside Google
+     Maps' chips and Apple Maps' tiles): its mark from the one set (OW.glyph). The go row's own roles, so a detail's rule (ROLE, which
+     the TV and the Watch mirror, test_apple_profiles 5) is not widened for it. The car is the set's own, never Uber's mark. */
+  var GO_MARK = { directions: 'navigation-arrow', ride: 'car', call: 'phone', menu: 'fork-knife', order: 'shopping-bag', booking: 'calendar-check' };
+  function goButton(a) {
+    var tel = /^tel:/.test(a.href), mark = OW.glyph && GO_MARK[a.key] ? OW.glyph(GO_MARK[a.key]) : '';
+    return '<a class="po-act po-act--secondary ow-go__a" data-ow-go="' + esc(a.key) + '" href="' + esc(a.href) + '"' +
+      (tel ? '' : ' target="_blank" rel="noopener noreferrer"') + ' aria-label="' + esc(a.aria) + '">' + mark + '<span>' + esc(a.words) + '</span></a>';
+  }
+  /* RIDE ON A LINE OF ITS OWN, THE REST IN EQUAL PARTS UNDER IT (the review, 2026-11-14: one line cut its last button to a bare "B"
+     at 390 and on the 350px place sheet, and scrolled with no sign). Uber's design guidelines give "Ride there with Uber" a full-width
+     button; Directions, Call, Menu and Order or Book share the row under it as the header's own buttons share theirs (.ow-ph__acts),
+     `data-n` saying how many so the sheet lays them out (oneway-popit.css "THE GO ROW"). Nothing runs past an edge. */
+  function goHTML(card, opts) {
+    var acts = goActs(card, opts);
+    if (!acts.length) return '';
+    var rest = acts.filter(function (a) { return a.key !== 'ride'; });
+    return acts.filter(function (a) { return a.key === 'ride'; }).map(goButton).join('') +
+      (rest.length ? '<div class="ow-go__rest" data-n="' + rest.length + '">' + rest.map(goButton).join('') + '</div>' : '');
+  }
+  function goRow(card, opts) {
+    var inner = goHTML(card, opts);
+    if (!inner || !doc) return null;
+    var row = doc.createElement('div');
+    row.className = 'po-acts ow-go';
+    row.setAttribute('role', 'group');
+    row.setAttribute('aria-label', 'Get there and get in touch');
+    row.innerHTML = inner;
+    /* a press is the link's, never the card's under it (a place sheet's card opens a level on a press) */
+    row.addEventListener('click', function (e) { e.stopPropagation(); });
+    return row;
   }
 
   /* THE INFORMATION LIST, the profile header's own (ASKS row 162: "Location: Directions: ... Catagory: all directly on
@@ -746,7 +861,10 @@
     if (!card || (kindOf(card) === 'center' && !(opts && opts.centers))) return out;   /* the compact card's own (founder/834) */
     var site = websiteOf(card);
     if (site) list.push({ url: site.href });
-    (card.links || []).forEach(function (l) { if (l) list.push(l); });
+    /* `opts.go`: the surface draws the go row (goRow), so a link that row already draws (its menu, its Order or Book) is not drawn twice */
+    var drawn = {};
+    if (opts && opts.go) goActs(card, { directions: false }).forEach(function (a) { drawn[a.href] = 1; });
+    (card.links || []).forEach(function (l) { if (l && !(opts && opts.go && drawn[httpsOnly(l.url)])) list.push(l); });
     list.forEach(function (l) {
       var href = String(l.url || '');
       if (!SAFE_HREF.test(href)) return;
@@ -954,9 +1072,9 @@
     if (!card) return '';
     /* THE COMPACT PROJECTIONS draw the same parts for both kinds (founder/797: "condensed versions of the cards") */
     if (as === 'chip') return face(card) + '<b class="ow-ocard__name" title="' + esc(card.title || '') + '">' + esc(card.title) + '</b>';
-    if (mode === 'micro') return slimFace(card) + '<span class="ow-ocard__id">' + identityHTML(card, { secondary: false, noteSize: 'sm' }) + '</span>';
+    if (mode === 'micro') return slimFace(card) + '<span class="ow-ocard__id">' + identityHTML(card, { secondary: false, noteSize: 'sm' }) + activityHTML(card) + '</span>';
     if (mode === 'mini' || as === 'row') return slimFace(card) + '<span class="ow-ocard__id">' +
-      identityHTML(card, { line: handleOf(card), noteSize: 'sm' }) + countsHTML(card) + '</span>' + compactAside(card);
+      identityHTML(card, { line: handleOf(card), noteSize: 'sm' }) + activityHTML(card) + countsHTML(card) + '</span>' + compactAside(card);
     if (as === 'simple') {
       return '<span class="po-card__face" aria-hidden="true"></span>' + face(card) + '<span class="ow-ocard__id">' + identityHTML(card, { line: handleOf(card), noteSize: 'sm' }) + '</span>';
     }
@@ -1365,7 +1483,7 @@
 
   OW.wordmark = { html: wordmarkHTML, draw: wordmarkDraw, has: function (who) { return !!wmLogo(who); }, MIN_PX: WM_MIN_PX };
   OW.cards = { card: theCard, smart: smartHTML, worthSuggesting: worthSuggesting, fit: fitCard, ready: cardReady, informationFace: informationFace, event: eventCard, events: eventCards, number: number, lineMarks: lineMarks, detailIcon: detailIcon, read: read, deck: deck, html: html, face: face, fill: fill, inside: inside, node: node, mount: mount, forget: forget,
-    identityReady: identityReady, nameHTML:nameHTML, identityHTML: identityHTML, noteHTML: noteHTML, informationHTML: informationHTML, countsHTML: countsHTML, cardKey: cardKey, refreshCounts: refreshCounts, setCount: setCount, counts: counts, countWords: countWords,
-    linksHTML: linksHTML, linksInner: linksInner, directions: directions, handle: handleOf, handleLine: handleLine,
+    identityReady: identityReady, nameHTML:nameHTML, identityHTML: identityHTML, noteHTML: noteHTML, activityHTML: activityHTML, informationHTML: informationHTML, countsHTML: countsHTML, cardKey: cardKey, refreshCounts: refreshCounts, setCount: setCount, counts: counts, countWords: countWords,
+    linksHTML: linksHTML, linksInner: linksInner, directions: directions, ride: ride, goActs: goActs, goHTML: goHTML, goRow: goRow, handle: handleOf, handleLine: handleLine,
     sayOnce: sayOnce, shortPlace: shortPlace, mark: mark, menu: menu, menuStep: menuStep, menuSay: menuSay };
 })(window);

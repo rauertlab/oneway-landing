@@ -9,6 +9,34 @@
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return [].slice.call((r || document).querySelectorAll(s)); };
 
+  /* ── 0 · THE FRONT PAGE'S REAL PEOPLE AND CENTERS: ONE READ, THREE VIEWS (founder/1365: "for them to appear on the landing page as
+     rotating centers, example user cards, and globe icons"; founder/1376: "swap to whole new users and their most updated cards").
+     GET /api/oneway/frontpage (api/oneway/frontpage) gives the people and Centers who said yes and qualify, as the cards a stranger may
+     read; the Centers deck and the strip's lead (5, 4), the profiles deck (5) and the globe's people and places (1) all take this one
+     answer, asked once, without the visitor's session. Nobody (closed, a host with no backend, a failed read, too few of a kind) and
+     the made examples stand (frontend/landing/examples.js), as before. The decks wait for it at most REAL_WAIT_MS, so nothing is drawn
+     twice; the globe takes it whenever it comes. PROPOSED for his eye: the wait and REAL_MIN. */
+  var REAL_WAIT_MS = 1500, REAL_MIN = 3;
+  function realCard(c) { return !!(c && (c.kind === 'person' || c.kind === 'center') && c.id && typeof c.title === 'string' && !c.example); }
+  var REAL = (function () {
+    if (!window.fetch) return Promise.resolve(null);
+    return fetch('/api/oneway/frontpage', { credentials: 'omit', headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) {
+        if (!j || !j.ok || !j.open) return null;
+        var out = { people: (j.people || []).filter(realCard), centers: (j.centers || []).filter(realCard), until: String(j.until || '') };
+        return out.people.length || out.centers.length ? out : null;
+      })
+      .catch(function () { return null; });
+  })();
+  function inTime(p, ms) { return Promise.race([p, new Promise(function (ok) { setTimeout(function () { ok(null); }, ms); })]); }
+  /* a picture the platform serves, or one on https: nothing else is ever put in a src (a card's fields are a person's own words) */
+  function safePic(card) {
+    var u = String(((card || {}).picture || {}).url || '').trim();
+    if (!/^(\/(?!\/)|https:\/\/)/.test(u)) return '';
+    return window.OW && OW.imageUrl ? OW.imageUrl(u) : u;
+  }
+
   /* ── 1 · THE GLOBE ─────────────────────────────────────────────────────────────────────────────────────────────────────────
      THE PLATFORM'S OWN GLOBE, TURNING (founder/1082: "make globe more like ours"): the mark's drawing (api/oneway/kernel/mark.py,
      oneway-globe.svg): five parallels, the limb, and meridians every 36 degrees from 18, each line a wide dim halo under a bright
@@ -140,6 +168,62 @@
     }
     return gl;
   }).filter(Boolean);
+  /* ── 1a · THE GLOBE'S PEOPLE AND PLACES BECOME REAL ONES (section 0's read): each person on the sphere takes a person who said yes, each
+     place a Center who did, in the set's order, and keeps its spot, its words and its turn. A face is drawn as Discovery draws a pin:
+     the picture the platform serves, else the initials on their own hue; every word goes in as text, never as markup. Only the sphere's
+     sprites: the network around it acts out payments, bookings and messages, and no real person is drawn doing what they did not do
+     (T1); its cast stays the made one. PROPOSED for his eye.
+     NEVER A MADE PERSON BESIDE A REAL ONE (the coordinator, 2026-11-14, PROPOSED, on his words "they will become real profiles once
+     platform becomes active"): the sphere's people are all real or all the examples, by the decks' own rule (REAL_MIN, section 5: "a
+     deck is never one real card and three made ones"). With REAL_MIN or more, each person spot takes a real person and a spot left over
+     is emptied, never a made face; with fewer, every person stays the example and no real one is drawn. A place spot with no Center
+     keeps its place's kind (a park, a beach), a picture of a kind of place, not a made one. Both globes, the hero's and the closing
+     one, carry the same set, so the foot of the page never shows made people after real faces at the top. */
+  function castReal(real) {
+    if (!real) return;
+    var people = real.people.length >= REAL_MIN ? real.people.slice() : [], centers = real.centers.slice();
+    globes.forEach(function (gl) {
+      var pi = 0, ci = 0;
+      gl.items.forEach(function (it) {
+        var card = it.s.p ? people[pi++] : centers[ci++];
+        if (!card) { if (it.s.p && people.length) { it.el.style.display = 'none'; it.el.setAttribute('data-real', 'none'); } return; }
+        var person = card.kind === 'person', px = person ? PERSON_PX : PLAIN_PIN_PX, pic = safePic(card);
+        var hue = typeof card.hue === 'number' ? card.hue : (it.s.p ? it.s.hue : null);
+        var face = document.createElement('i');
+        face.setAttribute('data-kind', person ? 'person' : 'center');
+        face.setAttribute('data-shape', person ? 'round' : 'rounded');
+        face.style.setProperty('--face', px + 'px');
+        if (hue != null) { var hc = fromAngle(hue); face.style.setProperty('--pin', 'rgb(' + hc[0] + ')'); face.style.setProperty('--ch1', hc[0]); face.style.setProperty('--ch2', hc[1]); }
+        if (pic) {
+          face.setAttribute('data-face', 'picture');
+          var img = document.createElement('img');
+          img.className = 'ow-map__face-img'; img.alt = ''; img.decoding = 'async'; img.src = pic;
+          img.addEventListener('error', function () { img.remove(); face.setAttribute('data-face', 'mono'); face.appendChild(mono(card)); });
+          face.appendChild(img);
+        } else {
+          face.setAttribute('data-face', person ? 'mark' : 'mono');
+          face.appendChild(mono(card));
+        }
+        it.el.textContent = '';
+        it.el.appendChild(face);
+        it.el.classList.toggle('is-person', person); it.el.classList.toggle('is-plain', !person);
+        it.el.style.setProperty('--face', px + 'px');
+        if (hue != null) it.el.style.setProperty('--ring', strong(hue).join(','));
+        it.el.setAttribute('data-real', card.kind);
+      });
+    });
+  }
+  /* the letters are the one renderer's (OW.cards.face says them as data-ini, its own rule for a person and a Center), read from its markup
+     in an inert template and put in as text */
+  function mono(card) {
+    var m = document.createElement('span'), t = document.createElement('template');
+    m.className = 'ow-map__mono';
+    t.innerHTML = window.OW && OW.cards && OW.cards.face ? OW.cards.face(card) : '';
+    var f = t.content.firstElementChild;
+    m.textContent = f ? f.getAttribute('data-ini') || '' : '';
+    return m;
+  }
+  REAL.then(castReal);
   /* the mark's parallels and limb, read from the SVG the server sent (index.html, the mark's own drawing), once */
   function markLines(core) {
     var out = [];
@@ -157,7 +241,11 @@
     gl.box = box;
     if (!gl.ctx) return;
     var dpr = Math.min(2, window.devicePixelRatio || 1), px = Math.round(box * dpr);
-    if (gl.cv.width !== px) { gl.cv.width = px; gl.cv.height = px; }
+    /* BOTH SIDES, ALWAYS (his words, 2026-11-14 ~02:55Z: "globe glitch already"): a new canvas is 300 x 150. Checking the width
+       alone left the height at 150 whenever the buffer came to 300 exactly, a 150 px globe on a Retina screen (a laptop under
+       882 px tall, since the hero's globe is clamp(150px, 17vh, ...)), and the globe drew twice as tall with its bottom half cut
+       off, a dome. Held by tools/probe/landing-globe-walk.cjs at 1366 x 820 at 2x. */
+    if (gl.cv.width !== px || gl.cv.height !== px) { gl.cv.width = px; gl.cv.height = px; }
     gl.px = px / 100;
   }
   function merPath(c, s) {                     /* a meridian as the SVG draws it: pole to pole on the side it faces */
@@ -327,6 +415,12 @@
 
     /* ── THE BAND AND THE GRID, measured from the page itself (offsets, never a transformed rect: the wordmark flies) ── */
     var W = 1, H = 1, GX = 0, GY = 0, GR = 1, MK = null, mode = 'wide', pad = 10, dpr = 1, SLOTS = 4;
+    /* ON A PHONE, THE GLOBE ALONE (his words, 2026-11-14 ~02:58Z: "just show the globe on mobile it doesnt need to sourrdinidn
+       lines and profiles it can have the ones inside the globe though"): at the hero's phone width (index.html's 640, where the
+       globe takes its phone size) the cast around the globe, its lines, its riding icons and its badges are left out, and the band
+       neither measures nor draws, so a phone spends nothing on it. The people and places riding the globe itself stay (section 1).
+       Wider again (a turned tablet, a widened window), the band comes back at the next measure. */
+    var PHONE = window.matchMedia ? matchMedia('(max-width: 640px)') : null, off = false;
     var CH_X = { '-1': [], '1': [] }, CH_Y = [], HUB_Y = [], BRIDGE_Y = [], REST_PAIRS = [], cache = {}, lineRGB = '120,160,255', lineCol = 'rgb(120,160,255)';
     function offs(el) { var x = 0, y = 0; while (el && el !== hero) { x += el.offsetLeft; y += el.offsetTop; el = el.offsetParent; } return [x, y]; }
     /* how far a node may reach at its own height: the globe's CIRCLE, not its box, and never under the wordmark (founder/1345) */
@@ -337,6 +431,9 @@
       return e;
     }
     function measure() {
+      off = !!(PHONE && PHONE.matches);
+      layer.style.display = off ? 'none' : '';
+      if (off) { nodes.forEach(function (n) { n.on = false; n.busy = 0; n.el.style.display = 'none'; setBadge(n, '', null); }); reset(); return; }
       W = Math.max(1, hero.clientWidth);
       var top = Math.max((nav ? nav.offsetHeight : 0) + 6, 6), ho = offs(h1);
       H = Math.max(60, ho[1] - 14 - top);
@@ -640,6 +737,7 @@
     /* ── ONE FRAME: every line on one canvas, the icons by transform, the badges only when their state changes ── */
     function ease(t) { return t <= 0 ? 0 : t >= 1 ? 1 : t * t * (3 - 2 * t); }
     function step(now) {
+      if (off) return;
       if (last && now - last > 250) {                     /* a hidden tab or a scrolled-away hero: pick up where it left off */
         var gap = now - last - 16;
         flows.forEach(function (f) { f.born += gap; }); rests.forEach(function (r) { r.born += gap; });
@@ -748,7 +846,47 @@
   })();
 
   var TURN0 = 0, PERIOD = 90000, t0 = performance.now();   /* at rest (and still, under reduced motion) the globe is the mark exactly */
+  /* ITS OWN PACE IS THE CLOCK'S (360 degrees in PERIOD, 4 a second, toward the west), and a hand may spin it (PROPOSED: the
+     coordinator's must-have of 2026-11-14, not his words; the live site had no drag). `spin` is what hands have added to the
+     clock's angle. Held, the globe stays under the pointer: the surface at its middle moves a pixel for a pixel (the mark's
+     radius is 44 of its box of 100). Let go, it coasts on what the hand gave it, eases out, and turns on at its own pace from
+     where it was left. Nothing here counts frames: the coast is stepped by the frame's own time. Under reduced motion there is
+     no drag: the globe stands still (held by tools/probe/landing-globe-turn-walk.cjs). */
+  var spin = 0, grab = null, coast = 0, coastAt = 0;
+  function clock(now) { return TURN0 - ((now - t0) / PERIOD) * 360; }
+  function turnAt(now) { return still ? TURN0 : grab ? grab.turn : clock(now) + spin; }
   globes.forEach(function (gl) { light(gl, 'more'); draw(gl, TURN0); });
+  if (!still && window.PointerEvent) globes.forEach(function (gl) {
+    var g = gl.g;
+    g.style.touchAction = 'pan-y';             /* a finger moving up or down still scrolls the page; across, it spins the globe */
+    g.style.cursor = 'grab';
+    g.addEventListener('pointerdown', function (e) {
+      if (grab || e.isPrimary === false || (e.pointerType === 'mouse' && e.button !== 0)) return;
+      var now = performance.now();
+      grab = { id: e.pointerId, x: e.clientX, turn0: turnAt(now), turn: turnAt(now), per: 180 / Math.PI / (.44 * (gl.box || 100)), lastX: e.clientX, lastT: now, v: 0 };
+      coast = 0;
+      try { g.setPointerCapture(e.pointerId); } catch (err) {}
+      g.style.cursor = 'grabbing';
+      if (e.pointerType === 'mouse') e.preventDefault();          /* a drag across the globe selects no words */
+    });
+    g.addEventListener('pointermove', function (e) {
+      if (!grab || e.pointerId !== grab.id) return;
+      var now = performance.now(), dt = now - grab.lastT;
+      grab.turn = grab.turn0 + (e.clientX - grab.x) * grab.per;
+      if (dt > 0) grab.v = .5 * grab.v + .5 * ((e.clientX - grab.lastX) * grab.per / dt * 1000);   /* degrees a second, smoothed */
+      grab.lastX = e.clientX; grab.lastT = now;
+    });
+    function drop(e, flick) {
+      if (!grab || e.pointerId !== grab.id) return;
+      var now = performance.now();
+      spin = (grab.turn - clock(now)) % 360;
+      /* a flick carries on; a hand that stopped before it let go, or a touch the page took back to scroll, leaves it where it is */
+      coast = flick && now - grab.lastT < 90 ? Math.max(-360, Math.min(360, grab.v)) : 0;
+      coastAt = now; grab = null; g.style.cursor = 'grab';
+    }
+    g.addEventListener('pointerup', function (e) { drop(e, true); });
+    g.addEventListener('pointercancel', function (e) { drop(e, false); });
+  });
   if (NET) { NET.measure(); if (still) NET.freeze(); }
   if (globes.length && !still) {
     if ('IntersectionObserver' in window) {
@@ -765,7 +903,12 @@
     (function frame(now) {
       requestAnimationFrame(frame);
       if (document.hidden) return;
-      var turn = TURN0 - ((now - t0) / PERIOD) * 360;
+      if (coast) {                               /* what a flick left (a turn a second at most): eased out within two and a half seconds, then the clock alone */
+        var dt = Math.min(64, Math.max(0, now - coastAt)); coastAt = now;
+        spin = (spin + coast * dt / 1000) % 360; coast *= Math.exp(-dt / 450);
+        if (Math.abs(coast) < 2) coast = 0;
+      }
+      var turn = turnAt(now);
       globes.forEach(function (gl) { if (gl.seen) draw(gl, turn); });
       if (NET && heroSeen()) NET.step(now);      /* the network rides the globe's one frame (founder/1364 §7) */
     })(t0);
@@ -785,7 +928,7 @@
     }).observe($('.hero-inner'));
   }
   addEventListener('resize', function () {
-    globes.forEach(function (gl) { draw(gl, TURN0 - ((performance.now() - t0) / PERIOD) * 360 * (still ? 0 : 1)); });
+    globes.forEach(function (gl) { draw(gl, turnAt(performance.now())); });
     if (!NET) return;
     clearTimeout(sizing);                        /* the band is re-measured once the window settles, never per resize event */
     sizing = setTimeout(function () { NET.measure(); if (still) NET.freeze(); }, 120);
@@ -860,8 +1003,14 @@
     var dealing = published
       ? fetch(published).then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) { return (j && j.cards) || []; }).catch(function () { return []; })
       : OW.cards.deck('center', 12);
-    dealing.then(function (cs) {
-      cs = (cs || []).slice();
+    Promise.all([dealing, inTime(REAL, REAL_WAIT_MS)]).then(function (got) {
+      var cs = (got[0] || []).slice(), real = got[1];
+      /* THE CENTERS WHO SAID YES LEAD THE STRIP (section 0), the platform's own after them, each once */
+      if (real && real.centers.length) {
+        var had = {};
+        real.centers.forEach(function (c) { had[c.id] = 1; });
+        cs = real.centers.concat(cs.filter(function (c) { return c && !had[c.id]; }));
+      }
       if (cs.length < 4) return;                    /* nothing to show is shown as nothing (402) */
       function make(c, dup) {
         var b = OW.cards.node(c, { as: 'chip', className: 'eco-it', onOpen: published ? false : function (x) { location.href = '/app' + (x.app || ''); } });
@@ -880,10 +1029,22 @@
      profiles and Centers (frontend/landing/examples.js, his placeholders of 2026-10-17: "we are gonna publish the placeholders for
      now its alright if nothings clickable"), each drawn by the one card renderer through OW.lcard and stacked by OW.deck with
      their faces to press. Nothing on them opens, and the page says they are examples. With no script the decks take no room. */
+  /* THE REAL ONES WHEN THERE ARE ENOUGH (section 0): the profiles deck takes the people who said yes, the Centers deck the Centers, each
+     only with REAL_MIN or more of its kind, so a deck is never one real card and three made ones. A real card opens its profile or its
+     Center (the deck's own press, OW.deck); the line under the decks names only what is still an example, and goes when nothing is. */
   if (window.OW && OW.deck && OW.landingExamples && OW.lcard) {
     var pd = $('#deck'), cd = $('#cnDeck');
-    if (pd) OW.deck.people(pd, $('#deckFaces'), OW.landingExamples.people, { make: OW.lcard, fit: true });
-    if (cd) OW.deck.people(cd, $('#cnFaces'), OW.landingExamples.centers, { make: OW.lcard, fit: true });
+    inTime(REAL, REAL_WAIT_MS).then(function (real) {
+      var rp = real && real.people.length >= REAL_MIN ? real.people : null, rc = real && real.centers.length >= REAL_MIN ? real.centers : null;
+      if (pd) OW.deck.people(pd, $('#deckFaces'), rp || OW.landingExamples.people, { make: OW.lcard, fit: true });
+      if (cd) OW.deck.people(cd, $('#cnFaces'), rc || OW.landingExamples.centers, { make: OW.lcard, fit: true });
+      var ex = $('.hm-ex');
+      if (ex && (rp || rc)) {
+        if (rp && rc) ex.hidden = true;
+        else ex.textContent = (rp ? 'These Centers are' : 'These profiles are') + ' examples, until the beta\u2019s own\u00a0arrive.';
+      }
+      if (rp || rc) document.documentElement.setAttribute('data-ow-real', (rp ? 'people' : '') + (rp && rc ? ' ' : '') + (rc ? 'centers' : ''));
+    });
   }
 
   /* ── 6 · THE SECTIONS THAT WERE WORDS ONLY, DRAWN IN THE PAGE'S OWN MATERIAL (founder/1082: "the whole landing page still has a

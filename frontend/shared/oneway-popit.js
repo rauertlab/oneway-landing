@@ -46,9 +46,12 @@
                                    list that redraws itself later does not replay it
        OW.motion.bounce(el, k, r)  a held icon pressed on ('on') or off ('off'), or a change in place ('bump'), from what is on
                                    screen now to rest (r), so a press in the middle of one carries on from it
+       OW.motion.pop(el, at)       a like's little burst from the middle of el, or from the point `at` ({x, y, big}: a double tap's); false when nothing is thrown
        OW.motion.jump(el, then)    a mark's one hop, then `then` as it lands; at once when el is off screen or the person asked for less motion
        OW.motion.count(el, n, f)   a number moving to n (f says it: OW.cards.number for "1,204"), a short eased count; one step settles in
-       OW.motion.countOf(el)       the number el is at or on its way to: every reader asks here, never el.textContent */
+       OW.motion.countOf(el)       the number el is at or on its way to: every reader asks here, never el.textContent
+       OW.compact(n)               a count said short ("12.4K", "98.2K", "92.4M"): a post's tallies and the eye; a tally drawn with it
+                                   keeps its whole figure on data-n, and OW.motion.count says it short again when it moves */
   OW.motion = (function () {
     var EASE = { 'spring': 'cubic-bezier(.34,1.56,.64,1)', 'spring-soft': 'cubic-bezier(.22,1.12,.36,1)',
                  'ease-out': 'cubic-bezier(.22,1,.36,1)', 'ease-leave': 'cubic-bezier(.55,0,.45,1)', 'ease': 'cubic-bezier(.4,0,.2,1)' };
@@ -114,7 +117,8 @@
        only one runs per element. `rest` is the transform the element rests at ('' for none; a toast rests translated). */
     var SHAPES = {   /* [transform, offset]; the founder's four gestures (2026-08-29: "expressive ... for like dislike repost
                         and favorite"), each its own meaning, then giving back and a change in place */
-      like:    [['scale(.84) rotate(-6deg)', .16], ['scale(1.3) rotate(6deg)', .4], ['scale(.94) rotate(-2deg)', .62], ['scale(1.05) rotate(1deg)', .82]],
+      /* livelier (the founder, 2026-11-07: "spruce up the liking animation ... more pizzazz than it does now"): a deeper squeeze, further past its size, sooner */
+      like:    [['scale(.72) rotate(-8deg)', .12], ['scale(1.38) rotate(7deg)', .34], ['scale(.92) rotate(-2deg)', .56], ['scale(1.05) rotate(1deg)', .78]],
       dislike: [['translateY(3px) scale(1.14)', .34], ['translateY(1px) scale(.95)', .66]],
       repost:  [['rotate(200deg) scale(1.16)', .45], ['rotate(360deg) scale(1)', .999]],
       save:    [['translateY(-6px) scale(1.14)', .3], ['translateY(1px) scale(.96)', .62]],
@@ -141,6 +145,60 @@
         return a;
       } catch (_) { return null; }
     }
+    /* THE LITTLE POP (the founder, 2026-11-07: "could you give it like some confetti that pops out ... do it natural. A natural like little popping out animation of like
+       confetti and stuff ... Just give it more pizzazz than it does now"). A few pieces thrown from the heart: the air slows each one and then lets it down, and it fades as it
+       falls. Each has its own direction, speed, weight, spin, size and life, and each burst its own turn, so no two are the same. They are real elements with their own paths
+       (the first try was eight shadows on one element, which could only turn together: "yo WHAT did u add around the heart"). Only for a like a person makes: an unlike, a like
+       that arrives from the server and a post drawn already liked throw nothing. Transform and opacity only, drawn over the page so no card clips a piece and nothing in the page
+       moves; gone in about a second; POP.most at once, and none when the person asked for less motion.
+       THE NUMBERS ARE ONE TABLE, px and seconds, and the iPhone throws by the same ones: tools/apple_phone.py reads this line into native-screens.json (LikePop.swift). */
+    var POP = {"count": 9, "big": 15, "reach": 1.6, "speed": [150, 330], "lift": 70, "drag": [4.6, 6.6], "fall": [480, 760], "spin": 720, "life": [0.7, 1.05], "size": [0.75, 1.2], "wait": 0.04, "most": 3};
+    var POP_STEPS = 12, popsUp = 0;
+    function between(r) { return r[0] + Math.random() * (r[1] - r[0]); }
+    function pop(el, at) {
+      if (still() || popsUp >= POP.most || !doc.body || typeof doc.body.animate !== 'function') return false;
+      var r = at || (el && el.getBoundingClientRect && el.getBoundingClientRect());
+      if (!r || (!at && !(r.width || r.height))) return false;
+      var box = doc.createElement('div'), big = !!(at && at.big), count = big ? POP.big : POP.count, reach = big ? POP.reach : 1;
+      var left = count, turn = Math.random() * Math.PI * 2, gone = false, longest = 0, pieces = [];
+      var away = function () { if (gone) return; gone = true; popsUp -= 1; if (box.parentNode) box.parentNode.removeChild(box); };
+      var done = function () { left -= 1; if (left <= 0) away(); };
+      var mark = global.OW && OW.glyph ? OW.glyph((OW.likes && OW.likes.glyph()) || 'heart', { w: 'f', sel: false }) : '';
+      box.className = 'ow-pop';
+      box.setAttribute('aria-hidden', 'true');
+      box.style.left = (at ? at.x : r.left + r.width / 2) + 'px';
+      box.style.top = (at ? at.y : r.top + r.height / 2) + 'px';
+      for (var n = 0; n < count; n++) {
+        var i = doc.createElement('i'), kind = n % 3 === 1 && mark ? 'mark' : n % 3 === 2 ? 'bit' : 'dot';
+        i.setAttribute('data-k', kind);
+        i.setAttribute('data-t', kind === 'mark' ? '0' : String(Math.floor(n / 3) % 3));      /* a small heart is the red; a dot or a strip is the red or the red let down */
+        if (kind === 'mark') i.innerHTML = mark;
+        var angle = turn + (n + Math.random() * .7) / count * Math.PI * 2, speed = between(POP.speed) * reach;
+        var vx = Math.cos(angle) * speed, vy = Math.sin(angle) * speed - POP.lift * reach;      /* thrown a little upward */
+        var drag = between(POP.drag), fall = between(POP.fall), spin = (Math.random() - .5) * POP.spin, life = between(POP.life), size = between(POP.size), frames = [];
+        for (var f = 0; f <= POP_STEPS; f++) {
+          /* thrown at v, slowed by the air: v(1 - e^-kt)/k; let down by it: (g/k)(t - (1 - e^-kt)/k), which nears a steady fall as paper does */
+          var p = f / POP_STEPS, t = p * life, slowed = (1 - Math.exp(-drag * t)) / drag;
+          var grow = p < .12 ? .3 + p / .12 * .7 : 1 - Math.max(0, p - .55) * .7;
+          frames.push({ transform: 'translate(' + (vx * slowed).toFixed(1) + 'px,' + (vy * slowed + fall / drag * (t - slowed)).toFixed(1) + 'px) rotate(' + (spin * t).toFixed(1)
+            + 'deg) scale(' + (size * grow).toFixed(3) + ')', opacity: p > .6 ? +(1 - (p - .6) / .4).toFixed(3) : 1 });
+        }
+        var wait = Math.random() * POP.wait;
+        longest = Math.max(longest, life + wait);
+        pieces.push([i, frames, life * 1000, wait * 1000]);
+        box.appendChild(i);
+      }
+      try {
+        doc.body.appendChild(box);
+        popsUp += 1;
+        pieces.forEach(function (x) {
+          var a = x[0].animate(x[1], { duration: x[2], delay: x[3], easing: 'linear', fill: 'forwards' });
+          a.onfinish = a.oncancel = done;
+        });
+        global.setTimeout(away, longest * 1000 + 400);      /* and never left behind: a tab put away mid-burst finishes nothing */
+        return true;
+      } catch (_) { if (box.parentNode) { gone = true; popsUp -= 1; box.parentNode.removeChild(box); } return false; }
+    }
     /* A MARK'S ONE HOP, AND WHAT WAITS FOR IT TO LAND (his words, 2026-11-06: "then lightbulb jumps when they hit the +  button on home to arrange that cavnas"): by the clock and by transform alone, so it
        holds at 120 and at 60 frames. A second press in the hop starts nothing. `then` runs once: on landing, at once when there is nothing to watch, and never later than the moment plus a spare beat,
        so a page put away mid-hop holds nothing back. */
@@ -165,7 +223,8 @@
     function countOf(el) {
       if (!el) return 0;
       if (typeof el.__owTo === 'number' && (el.__owRun || el.textContent === el.__owSaid)) return el.__owTo;
-      var n = parseInt(String(el.textContent || '').replace(/[^\d]/g, ''), 10);
+      var held = el.getAttribute ? el.getAttribute('data-n') : null;      /* a tally said short ("12.4K") keeps its whole figure here */
+      var n = parseInt(held != null && held !== '' ? held : String(el.textContent || '').replace(/[^\d]/g, ''), 10);
       return isFinite(n) ? n : 0;
     }
     function countQuiet(el, on) {   /* a live region says the number it reached, not the ones it passed */
@@ -175,6 +234,11 @@
     function countSettle(el, to, said) {
       el.__owRun = null; el.__owTo = to; el.__owSaid = said;
       if (el.textContent !== said) el.textContent = said;
+      if (el.hasAttribute && el.hasAttribute('data-n')) {
+        el.setAttribute('data-n', String(to));
+        var row = el.closest && el.closest('[data-po-responses]');
+        if (row) rowSaid(row);
+      }
     }
     function countStep(el) {
       if (typeof el.animate !== 'function') return;
@@ -202,7 +266,7 @@
       to = Math.max(0, Math.round(Number(to)));
       if (!isFinite(to)) return;
       if (to) el.removeAttribute('data-zero'); else el.setAttribute('data-zero', '');
-      say = say || String;
+      say = say || (el.hasAttribute && el.hasAttribute('data-n') ? compact : String);      /* a post's tally is said short, as it was drawn */
       if (el.__owRun && el.__owTo === to) return;                     /* already on its way there: the answer to a press finds nothing to do */
       var from = el.__owRun ? el.__owRun.now : countOf(el), said = say(to), far = Math.abs(to - from);
       if (!far) { if (el.__owRun) { countQuiet(el, false); countSettle(el, to, said); } return; }
@@ -219,7 +283,209 @@
       countQuiet(el, true);
       if (!countFrame) countFrame = global.requestAnimationFrame(countTick);
     }
-    return { still: still, ms: ms, ease: ease, arrive: arrive, bounce: bounce, jump: jump, count: count, countOf: countOf };
+    /* THE ONE FINISH (the founder, 2026-11-11: "a smooth checkmark animation for a thing like profile pictures ... Nothing should
+       just click save and be just to a blank state again"). OW.motion.done(target, { words }) is called once the SERVER has said
+       yes, never on the press. A check draws itself in the place of what was pressed: on a button the button becomes the check,
+       in the button's own paint and its own ink; on a picture (an img, or a box that holds one and no words) it lands on the
+       picture in the toast's colours. About half a second (--ow-dur-enter), transform, opacity and stroke only, with a small
+       settle; it starts from what is on screen, so a second save on the same target carries on and never jumps, and only one
+       runs per target. `words` are said beside it and to a screen reader. Reduced motion: the check simply appears. The
+       Promise resolves (with the target) when the check has landed, so the caller shows the saved thing then. Drawn on the
+       page, not inside the target, so a caller that rebuilds the button after the save takes nothing from it.
+       Never a checkmark of a unit's own: every save calls this, guarded `if (OW.motion && OW.motion.done)`.
+       Held by api/oneway/platform/test_motion.py. */
+    var DONE_SPARE_MS = 80, DONE_HOLD_STILL_MS = 900, DONE_WORDS_MAX = 120;
+    var dones = typeof WeakMap === 'function' ? new WeakMap() : null;
+    var sayEl = null;
+    function doneSay(words) {
+      if (!words || !doc.body) return;
+      if (!sayEl || !sayEl.isConnected) {
+        sayEl = doc.createElement('span');
+        sayEl.className = 'ow-done-say';
+        sayEl.setAttribute('role', 'status');
+        sayEl.setAttribute('aria-live', 'polite');
+        doc.body.appendChild(sayEl);
+      }
+      sayEl.textContent = '';
+      global.setTimeout(function () { if (sayEl) sayEl.textContent = words; }, 30);   /* a live region says a change, so it is emptied first */
+    }
+    function donePicture(t) {
+      if (t.tagName === 'IMG' || t.tagName === 'PICTURE' || t.tagName === 'VIDEO' || t.tagName === 'CANVAS') return true;
+      return !!(t.querySelector && t.querySelector('img,picture,video') && !String(t.textContent || '').trim());
+    }
+    function donePlace(run) {
+      var t = run.target, box = run.box;
+      if (!t.isConnected) return;                       /* rebuilt away after the save: the check stays where it was pressed */
+      var r = t.getBoundingClientRect();
+      if (!r.width || !r.height) return;
+      var w = run.picture ? 0 : r.width, h = run.picture ? 0 : r.height;
+      box.style.minWidth = w ? Math.round(w) + 'px' : '';
+      box.style.minHeight = h ? Math.round(h) + 'px' : '';
+      /* on a picture smaller than its words, the check alone lands on it (the words are still said, by the live region) */
+      if (run.picture && box.hasAttribute('data-words') && box.offsetWidth > r.width) box.removeAttribute('data-words');
+      /* grown past a button by its words into a control beside it (Publish beside its "..." at 390), the check alone stays inside the
+         button; the words are still said, by the live region */
+      if (!run.picture && box.hasAttribute('data-words') && box.offsetWidth > r.width + 1 && doneCrowded(run, r, box.offsetWidth)) box.removeAttribute('data-words');
+      /* grown wider than a button by its words, it grows from the button's leading edge, and never past the screen's */
+      var bw = box.offsetWidth || r.width, vw = global.innerWidth || 0, cx = r.left + r.width / 2;
+      if (!run.picture && bw > r.width + 1) cx = r.left + bw / 2;
+      if (vw) cx = Math.max(bw / 2 + 8, Math.min(cx, vw - bw / 2 - 8));
+      box.style.left = Math.round(cx) + 'px';
+      box.style.top = Math.round(r.top + r.height / 2) + 'px';
+    }
+    /* would a box this wide, grown from the button (and held inside the screen), lie over another control? */
+    function doneCrowded(run, r, bw) {
+      var vw = global.innerWidth || 0, cx = r.left + bw / 2;
+      if (vw) cx = Math.max(bw / 2 + 8, Math.min(cx, vw - bw / 2 - 8));
+      var lo = cx - bw / 2, hi = cx + bw / 2, t = run.target, scope = t.parentElement;
+      for (var up = 0; up < 2 && scope && scope.parentElement && scope !== doc.body; up++) scope = scope.parentElement;   /* its bar or row */
+      var near = scope ? scope.querySelectorAll('button,a[href],input,select,textarea,[role="button"]') : [];
+      for (var i = 0; i < near.length; i++) {
+        var c = near[i];
+        if (c === t || c.contains(t) || t.contains(c)) continue;
+        var q = c.getBoundingClientRect();
+        if (q.width && q.height && q.left < hi && q.right > lo && q.top < r.bottom && q.bottom > r.top) return true;
+      }
+      return false;
+    }
+    function doneBuild(target, picture) {
+      var box = doc.createElement('div');
+      box.className = 'ow-done';
+      box.setAttribute('aria-hidden', 'true');           /* said once, by the live region */
+      /* AN ANSWER GIVEN ON THE ONE ALERT LANDS ON IT (the front page's ask, OW.askOffer; landing-showcase 2026-11-14): over that alert, which
+         every other finish stays under (oneway-popit.css) */
+      if (target && target.closest && target.closest('.ow-pq')) box.setAttribute('data-over', 'ask');
+      if (picture) box.setAttribute('data-on', 'picture');
+      else {
+        /* the button's own paint and ink, read once: no colour of the finish's own */
+        try {
+          /* the paint it is going TO: a choice just made is still crossing to its chosen colour, and a mid-crossing read gave a dark
+             check on a dark pill (walked 2026-11-12, Settings > who sees when you are online); it lands under the finish anyway */
+          var was = target.style.transition;
+          target.style.transition = 'none';
+          var cs = global.getComputedStyle(target);
+          var bg = cs.backgroundColor, img = cs.backgroundImage;
+          var clear = !bg || bg === 'transparent' || /rgba\([^)]*,\s*0\)$/.test(bg);
+          var thin = !clear && /rgba\(/.test(bg);       /* a see-through paint is laid on the ground, so the words under it never show through */
+          var layers = [];
+          if (img && img !== 'none') layers.push(img);
+          if (thin) layers.push('linear-gradient(' + bg + ',' + bg + ')');
+          if (layers.length) box.style.backgroundImage = layers.join(',');
+          if (!clear && !thin) box.style.backgroundColor = bg;
+          else box.setAttribute('data-clear', '');
+          box.style.color = cs.color;
+          box.style.borderRadius = cs.borderRadius;
+          target.style.transition = was;
+        } catch (_) {}
+      }
+      box.innerHTML = '<svg class="ow-done__mark" viewBox="0 0 24 24" focusable="false">'
+        + '<path class="ow-done__tick" pathLength="1" d="M5.5 12.6l4.2 4.1L18.6 7.6"/></svg><span class="ow-done__words"></span>';
+      return box;
+    }
+    function done(target, opts) {
+      opts = opts || {};
+      var words = String(opts.words == null ? '' : opts.words).replace(/\s+/g, ' ').trim().slice(0, DONE_WORDS_MAX);
+      doneSay(words);
+      var r = target && target.getBoundingClientRect && target.isConnected ? target.getBoundingClientRect() : null;
+      var vw = global.innerWidth || 0, vh = global.innerHeight || 0;
+      var seen = r && r.width > 0 && r.height > 0 && r.bottom > 0 && r.right > 0 && (!vh || r.top < vh) && (!vw || r.left < vw);
+      /* nothing on screen to land on (gone, hidden, scrolled away, a hidden tab): the words are said and it resolves now */
+      if (!seen || doc.hidden || !doc.body) return Promise.resolve(target || null);
+      var run = dones && dones.get(target);
+      if (run && run.box.isConnected) {
+        if (words) run.box.querySelector('.ow-done__words').textContent = words;
+        run.box.toggleAttribute('data-words', !!run.box.querySelector('.ow-done__words').textContent);
+        if (run.phase === 'draw') { donePlace(run); return run.landed; }      /* one at a time: the second save is the same finish, its words placed again */
+        return doneAgain(run);
+      }
+      var picture = opts.on === 'picture' || (opts.on !== 'button' && donePicture(target));
+      var box = doneBuild(target, picture);
+      box.querySelector('.ow-done__words').textContent = words;
+      if (words) box.setAttribute('data-words', '');
+      doc.body.appendChild(box);
+      run = { target: target, box: box, picture: picture, phase: 'draw', anims: [], timer: 0 };
+      donePlace(run);
+      if (dones) dones.set(target, run);
+      var tick = box.querySelector('.ow-done__tick');
+      var resolve;
+      run.landed = new Promise(function (y) { resolve = y; });
+      var land = function () {
+        if (run.phase !== 'draw') return;
+        run.phase = 'hold';
+        resolve(target);
+        doneHold(run);
+      };
+      if (still() || typeof box.animate !== 'function') {
+        box.setAttribute('data-still', '');
+        global.setTimeout(land, 0);
+        return run.landed;
+      }
+      var T = ms('enter');
+      try {
+        /* on a picture the pill lands from small and see-through; on a button the button's place is covered in its own paint on the
+           first frame (the old label never shows under the new words) and what is inside it, the check and its words, arrives */
+        var from = picture ? 'translate(-50%,-50%) scale(.6)' : 'translate(-50%,-50%) scale(1)';
+        run.anims.push(box.animate([
+          { opacity: picture ? 0 : 1, transform: from, offset: 0, easing: ease('ease-out') },
+          { opacity: 1, transform: 'translate(-50%,-50%) scale(1.04)', offset: .5, easing: 'cubic-bezier(.45,0,.55,1)' },
+          { opacity: 1, transform: 'translate(-50%,-50%) scale(1)', offset: 1 }
+        ], { duration: T, fill: 'both' }));
+        if (!picture) {
+          var inner = [box.querySelector('.ow-done__mark'), box.querySelector('.ow-done__words')];
+          for (var k = 0; k < inner.length; k++) {
+            run.anims.push(inner[k].animate([{ opacity: 0, transform: 'scale(.9)' }, { opacity: 1, transform: 'scale(1)' }],
+              { duration: Math.round(T * .36), delay: Math.round(T * .06), easing: ease('ease-out'), fill: 'both' }));
+          }
+        }
+        run.anims.push(tick.animate([{ strokeDashoffset: 1 }, { strokeDashoffset: 0 }],
+          { duration: Math.round(T * .62), delay: Math.round(T * .22), easing: ease('ease-out'), fill: 'both' }));
+        Promise.all(run.anims.map(function (a) { return a.finished; })).then(land, land);
+      } catch (_) { box.setAttribute('data-still', ''); }
+      global.setTimeout(land, T + DONE_SPARE_MS);          /* never later than the moment and a spare beat */
+      return run.landed;
+    }
+    function doneHold(run) {
+      global.clearTimeout(run.timer);
+      run.timer = global.setTimeout(function () { doneLeave(run); }, still() ? DONE_HOLD_STILL_MS : ms('open'));
+    }
+    function doneLeave(run) {
+      if (run.phase !== 'hold') return;
+      run.phase = 'leave';
+      var gone = function () {
+        if (run.phase !== 'leave') return;
+        run.phase = 'gone';
+        if (run.box.parentNode) run.box.parentNode.removeChild(run.box);
+        if (dones && dones.get(run.target) === run) dones.delete(run.target);
+      };
+      if (still() || typeof run.box.animate !== 'function') { gone(); return; }
+      var cs = global.getComputedStyle(run.box);
+      try {
+        run.leaving = run.box.animate([{ opacity: cs.opacity, transform: cs.transform }, { opacity: 0, transform: 'translate(-50%,-50%) scale(.98)' }],
+          { duration: ms('leave'), easing: ease('ease-leave'), fill: 'forwards' });
+        run.leaving.finished.then(gone, function () {});
+      } catch (_) { gone(); }
+      global.setTimeout(gone, ms('leave') + DONE_SPARE_MS);
+    }
+    /* a second save while the first is held or leaving: from what is on screen back to rest, one small bump, no redraw */
+    function doneAgain(run) {
+      var cs = global.getComputedStyle(run.box), o = cs.opacity, tf = cs.transform;
+      if (run.leaving) { try { run.leaving.cancel(); } catch (_) {} run.leaving = null; }
+      run.phase = 'draw';
+      donePlace(run);
+      var resolve;
+      run.landed = new Promise(function (y) { resolve = y; });
+      var land = function () { if (run.phase !== 'draw') return; run.phase = 'hold'; resolve(run.target); doneHold(run); };
+      if (still() || typeof run.box.animate !== 'function') { global.setTimeout(land, 0); return run.landed; }
+      try {
+        var a = run.box.animate([{ opacity: o, transform: tf === 'none' ? 'translate(-50%,-50%)' : tf, easing: ease('ease-out') },
+          { opacity: 1, transform: 'translate(-50%,-50%) scale(1.04)', offset: .45, easing: 'cubic-bezier(.45,0,.55,1)' },
+          { opacity: 1, transform: 'translate(-50%,-50%) scale(1)' }], { duration: ms('state'), fill: 'both' });
+        a.finished.then(land, land);
+      } catch (_) {}
+      global.setTimeout(land, ms('state') + DONE_SPARE_MS);
+      return run.landed;
+    }
+    return { still: still, ms: ms, ease: ease, arrive: arrive, bounce: bounce, pop: pop, jump: jump, count: count, countOf: countOf, done: done };
   })();
 
   /* ── tiny helpers ────────────────────────────────────────────────────── */
@@ -227,6 +493,22 @@
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
     });
+  }
+  /* A COUNT SAID SHORT, ONE WAY EVERYWHERE (home-first-screen's pre-merge check, 2026-11-14): "92.4M" is the founder's own example
+     (it was OW.profileKit's, which now asks here). On a phone a post with real counts (12408 likes, 873 comments, 1520 reposts, 341
+     shares, 98213 views) pushed Save and More off the card; said short, the row holds all seven. The whole figure stays on the tally
+     (data-n) and in the labels that say a number. */
+  /* how many characters a post's row says in its counts: the row's spacing gives up only that much room (oneway-popit.css --po-said) */
+  function rowSaid(row) {
+    var n = 0, bs = row.querySelectorAll(':scope > :not([hidden]) > b[data-n]:not([data-zero])');
+    for (var i = 0; i < bs.length; i++) n += String(bs[i].textContent || '').length;
+    if (row.style && row.style.setProperty) row.style.setProperty('--po-said', String(n));
+  }
+  var COMPACT = null;
+  function compact(n) {
+    n = +n || 0;
+    try { COMPACT = COMPACT || new Intl.NumberFormat('en-US', { notation: 'compact', maximumFractionDigits: 1 }); return COMPACT.format(n); }
+    catch (_) { return String(n); }
   }
   /* what a repost needs, in the server's own words (service.repost) so the button and the refusal say the same thing; popit-live.js reads them too */
   var REPOST_NEEDS = { like: 'Like this post to repost it.', dislike: 'You disliked this post, so you can\'t repost it.' };
@@ -246,6 +528,14 @@
      another host (development, a native shell). Set by OW.data.configure
      so there is one place that knows where the runtime lives. */
   OW.assetBase = '';
+  /* HELD BY THE READER'S HIDDEN WORDS (moderation/viewer.quiet, the one rule): the server sent a thing without its words and with its
+     quiet line in `hidden`; a surface that draws a thing's name draws this in its place ("Hidden: holds a word you hid."), never a
+     blank or a generic name. '' when the thing is not held. */
+  OW.held = function (x) {
+    var h = x && x.hidden;
+    return (h && h.by === 'words' && h.words) ? String(h.words) : '';
+  };
+
   OW.imageUrl = function (v) {
     var u = String(v == null ? '' : v).trim();
     if (!u) return '';
@@ -266,8 +556,9 @@
   OW.imgFail = function (img) {
     if (!img || !img.parentNode) return;
     if (img.__owAskedAgain) {
-      var frame = img.parentNode;
+      var frame = img.parentNode, group = img.closest && img.closest('[data-ow-pics]');
       img.remove();
+      if (group && OW.picsCheck) OW.picsCheck(group);
       if (frame.getAttribute && !frame.querySelector('img') && !frame.hasAttribute('aria-label')) { frame.setAttribute('role', 'img'); frame.setAttribute('aria-label', 'This picture could not be loaded'); }
       return;
     }
@@ -295,6 +586,66 @@
   /* the widest a post's picture is drawn on a desktop (his compare with Instagram's desktop feed, 2026-11-10: a narrow centred column,
      the whole post in one window); oneway-popit.css draws the same number */
   var MEDIA_MAX_PX = 620;
+  /* A PHOTO'S SIZES AS A srcset, ONE HELPER (the card's strip and cover here, the opened post in posts.js): the upload's WebP widths
+     (media/sizes.py), and the photo as sent only when it is wider than every size; `sizes` is the room a post's picture has.
+     DATA SAVER (Settings, Content: "Smaller photos"): the browser is told the photo has half its room, so it takes the size about half
+     as wide, and the photo as sent is never a choice. Read when the photo is drawn (OW.prefs, OW.applyPrefs): OW.mediaSizes is read
+     each time, never kept. */
+  function saverOn() { return !!(OW.prefs && OW.prefs.dataSaver); }
+  try { Object.defineProperty(OW, 'mediaSizes', { configurable: true, enumerable: true, get: function () {
+    return saverOn() ? '(max-width: 660px) 50vw, ' + Math.round(MEDIA_MAX_PX / 2) + 'px'
+                     : '(max-width: 660px) 100vw, ' + MEDIA_MAX_PX + 'px';
+  } }); } catch (_) { OW.mediaSizes = '(max-width: 660px) 100vw, ' + MEDIA_MAX_PX + 'px'; }
+  OW.mediaSrcset = function (sizes, orig, ow) {
+    if (!sizes || !sizes.length) return '';
+    var set = [], k, widest = 0;
+    for (k = 0; k < sizes.length; k++) {
+      var su = OW.imageUrl((sizes[k] || {}).url || '');
+      if (su && sizes[k].w) { set.push(su + ' ' + sizes[k].w + 'w'); widest = Math.max(widest, +sizes[k].w); }
+    }
+    if (!saverOn() && ow && orig && ow > widest) set.push(orig + ' ' + ow + 'w');
+    return set.join(', ');
+  };
+  /* THE COVER FIRST, THEN THE NEXT FEW, THEN THE REST (a strip here, an opened post in posts.js): a group of pictures is marked
+     data-ow-pics, each picture data-ow-pic; the cover carries its address, the next ones data-later="1", the rest data-later="2", their
+     address as data-src / data-srcset (no request). When every picture already asked for is complete (painted, or failed), the next
+     stage is given its address; a swipe of the strip gives every one at once. Called from each picture's own load and error, so it holds
+     on every surface that draws the group, with no observer and no timer. */
+  function giveStage(group, all) {
+    var imgs = group.querySelectorAll('img[data-later]');
+    if (!imgs.length) return;
+    var next = Infinity;
+    Array.prototype.forEach.call(imgs, function (img) { next = Math.min(next, +img.getAttribute('data-later') || 1); });
+    Array.prototype.forEach.call(imgs, function (img) {
+      if (!all && (+img.getAttribute('data-later') || 1) !== next) return;
+      var ss = img.getAttribute('data-srcset'), sr = img.getAttribute('data-src');
+      img.removeAttribute('data-later'); img.removeAttribute('data-srcset'); img.removeAttribute('data-src');
+      if (ss) img.setAttribute('srcset', ss);
+      if (sr) img.setAttribute('src', sr);
+    });
+  }
+  OW.picsCheck = function (group) {
+    if (!group || !group.querySelectorAll) return;
+    var asked = group.querySelectorAll('img[data-ow-pic]:not([data-later])');
+    for (var i = 0; i < asked.length; i++) if (!asked[i].complete) return;
+    giveStage(group, false);
+  };
+  OW.shotsLater = function (img) { OW.picsCheck(img && img.closest && img.closest('[data-ow-pics]')); };
+  try { doc.addEventListener('scroll', function (e) {
+    var t = e.target; if (t && t.hasAttribute && t.hasAttribute('data-ow-pics')) giveStage(t, true);
+  }, { capture: true, passive: true }); } catch (_) {}
+  /* A STRIP PICTURE'S LOAD AND FAILURE ARE HEARD HERE, NOT WRITTEN INTO ITS TAG (gate-fix-a, 2026-11-14; the page's script rule allows
+     only the handlers script_policy.py names): load and error do not bubble, so the document hears them on the way down, for a strip
+     cell's own picture only (.po-shot > img[data-ow-pic]; posts.js's pictures carry their own listeners). A failure is asked again
+     first (OW.imgFail), then the next pictures of the strip are let go, exactly as the old onload and onerror did. */
+  function shotHeard(e) {
+    var t = e.target;
+    if (!t || t.tagName !== 'IMG' || !t.hasAttribute('data-ow-pic') || !t.parentNode || !t.parentNode.classList
+        || !t.parentNode.classList.contains('po-shot')) return;
+    if (e.type === 'error') OW.imgFail(t);
+    OW.shotsLater(t);
+  }
+  try { doc.addEventListener('load', shotHeard, true); doc.addEventListener('error', shotHeard, true); } catch (_) {}
   OW.picsAhead = (function () {
     var io = null;
     function ready(img) {
@@ -369,8 +720,17 @@
     var m = /^#?([0-9a-f]{6})$/i.exec(s0);
     if (m) { var n = parseInt(m[1], 16);
       return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; }
-    var p = s0.split(',').map(function (n) { return parseInt(n, 10); });
-    return (p.length === 3 && p.every(function (n) { return !isNaN(n); })) ? p : null;
+    /* THREE WHOLE NUMBERS FROM 0 TO 255, NOTHING AROUND THEM (hue-everywhere review, 2026-11-13): parseInt read
+       '255,0,0);background:url(javascript:alert(1)' as 255,0,0, so a string written to the device's ow_user_pair passed as a
+       colour and was carried onto --sh1 and into the chooser. A triplet is all this accepts; anything else is not a colour. */
+    var parts = s0.split(','), p = [];
+    if (parts.length !== 3) return null;
+    for (var i = 0; i < 3; i++) {
+      var d = /^\s*(\d{1,3})\s*$/.exec(parts[i]);
+      if (!d || +d[1] > 255) return null;
+      p.push(+d[1]);
+    }
+    return p;
   }
 
   function hsl2rgb(h, s, l) {
@@ -640,6 +1000,7 @@
      different question ("who is the viewer?") and was silently answering this
      one too; see the note on hue.bind. */
   var boundAngle = null, ownAngle = null, ctxPair = null, inContext = false;
+  var ownExact = null;   /* the viewer's own exact colour ('R,G,B') when they chose one, else null; set where ownAngle is */
 
   function applyPair(p1, p2, ms, angle) {
     /* ── THE PAIR MOVED AND THE WORLD DID NOT ────────────────────────────
@@ -711,10 +1072,28 @@
     if (a != null) hue.bind({ angle: a }); else hue.bind({ month: true });
   };
 
+  /* THE PERSON'S OWN COLOUR, SAID EACH TIME IT IS BOUND (founder/1378 W39, W41: "When you change hues on the app or OS, the whole
+     thing should change instantly"; hue-everywhere). A month picked in the OS repainted the App tab beside it, and the App's chooser
+     kept the old one as chosen (its chip, marker and month), drawn once from what the device held. Whoever binds it (a pick here,
+     another tab, another device, the account), what holds the person's colour hears it: 'ow:hue-own' {angle (null: No hue, the
+     month's), exact 'R,G,B' or null}. The viewer's own, never a context's; not while the neutral (no answer yet) is worn. */
+  function tellOwn(angle, exact) {
+    try { global.dispatchEvent(new CustomEvent('ow:hue-own', { detail: { angle: angle == null ? null : angle, exact: exact || null } })); }
+    catch (_) {}
+  }
+
   /* Bind the surface to the viewer's own hue. Call once at boot in the App.
      `hue` may be a pair {h1,h2} (an authored identity — always wins) or an
      angle (the backend's resolved_hue, bridged to a pair). */
   hue.bind = function (opts) {
+    var worn = bindOwn(opts);
+    if (!wearingQuiet) { ownKnown = true; tellOwn(ownAngle, ownExact); }
+    return worn;
+  };
+  /* the same answer, asked: the person's own colour as bound now, { angle (null: No hue), exact }, or null before it is known */
+  var ownKnown = false;
+  hue.own = function () { return ownKnown ? { angle: ownAngle, exact: ownExact } : null; };
+  function bindOwn(opts) {
     opts = opts || {};
     wearingQuiet = false;
     /* ── BIND CAN GLIDE, BECAUSE THE PICKER HAS TO USE IT ─────────────────
@@ -740,6 +1119,12 @@
        adjacent and brighter. Remembered locally as well, because a reload that
        shows the platform default for 400ms before the profile arrives is the
        same defect briefly. */
+    /* the one writer takes a colour or nothing: a pair is two triplets as parseTriplet reads them (a hex among them), written
+       back as the triplets read, never the strings handed in (hue-everywhere review, 2026-11-13) */
+    if (opts.pair && opts.pair.h1) {
+      var pt1 = parseTriplet(opts.pair.h1), pt2 = pt1 && parseTriplet(opts.pair.h2 || opts.pair.h1);
+      opts = Object.assign({}, opts, { pair: (pt1 && pt2) ? { h1: pt1.join(','), h2: pt2.join(',') } : null });
+    }
     if (opts.pair && opts.pair.h1) {
       /* THE COMPAT ANGLE DESCRIBES THE COLOUR, NOT THE FIELD BESIDE IT. This
          took `opts.angle` — the account's `accent_hue` — which is still 266
@@ -752,6 +1137,7 @@
       boundAngle = (derived != null) ? derived
                  : ((opts.angle != null) ? parseInt(opts.angle, 10) : null);
       ownAngle = boundAngle;          /* this IS the viewer; remember it */
+      ownExact = opts.pair.h1;
       ctxPair = opts.pair;
       try {
         global.localStorage.setItem('ow_user_pair',
@@ -794,22 +1180,25 @@
       try { global.localStorage.removeItem('ow_user_pair'); } catch (_) {}
     } else {
       var saved = readUserPair();
-      if (saved) { ctxPair = saved;
+      if (saved) { ctxPair = saved; ownExact = saved.h1;
         var sa = hue.angleOf(saved.h1);
         if (sa != null) { boundAngle = sa; ownAngle = sa; }
         return applyPair(saved.h1, saved.h2, _ms); }
     }
     var a = (opts.angle != null) ? parseInt(opts.angle, 10) : readUserAngle();
-    if (a == null || isNaN(a)) { ctxPair = null; ownAngle = null;
+    if (a == null || isNaN(a)) { ctxPair = null; ownAngle = null; ownExact = null;
       /* a viewer who has chosen nothing must not repaint the world in the
          PLATFORM DEFAULT over somebody else's identity either */
       /* {month:true} is the one press that asks for the month's by name: No hue in Settings (founder/891); the account cannot say so yet, so it holds for that page */
       if (opts.month) answeredNone = true;
       var none = opts.month ? { h1: DEF1, h2: DEF2 } : unknownPair();
       wearingQuiet = none.h1 === QUIET_INK;
-      return inContext ? null : applyPair(none.h1, none.h2, _ms); }
+      /* the month's pair with the month's angle: without it the angle stayed the last one worn, and what paints from one angle
+         (Home's Popit faces, the galaxy: --ow-user-hue) kept the old colour after No hue (hue-everywhere, measured 228 for 0) */
+      return inContext ? null : applyPair(none.h1, none.h2, _ms, wearingQuiet ? null : MONTH_NOW[1]); }
     boundAngle = a;
     ownAngle = a;                     /* this IS the viewer; remember it */
+    ownExact = null;
     /* ── AN ANGLE HAS TO SURVIVE THE NAVIGATION TOO ──────────────────────
        Only the `pair` branch above persisted anything, so binding by ANGLE
        painted the current page and was forgotten the moment it unloaded —
@@ -838,14 +1227,15 @@
        URL of a person who chose 310, signed in as 150, still read 150. */
     if (inContext) return ctxPair;
     applyPair(p[0], p[1], _ms);
-  };
+  }
 
   /* a colour a person actually chose, held for the next cold boot */
   function readUserPair() {
     try {
       var v = (global.localStorage.getItem('ow_user_pair') || '').split('|');
-      if (v.length === 2 && parseTriplet(v[0]) && parseTriplet(v[1]))
-        return { h1: v[0], h2: v[1] };
+      var t1 = v.length === 2 && parseTriplet(v[0]), t2 = t1 && parseTriplet(v[1]);
+      /* the colour as read, never the string the device held */
+      if (t1 && t2) return { h1: t1.join(','), h2: t2.join(',') };
     } catch (_) {}
     return null;
   }
@@ -1004,7 +1394,12 @@
          falls through to the angle. */
       var p = readUserPair();
       if (p) hue.bind({ pair: p });
-      else if (e.key === 'ow_user_hue') hue.bind({ angle: e.newValue });
+      /* the key taken away is No hue (or an account with none): the month's here too, never the neutral grey of "not answered
+         yet" (142,142,150), which an angle of null bound (hue-everywhere) */
+      else if (e.key === 'ow_user_hue' && e.newValue == null) hue.bind({ month: true });
+      /* an angle is a whole number; anything else written there is not a colour, and the colour worn stays (it was the neutral
+         grey of "not answered yet", 142,142,150: hue-everywhere review, 2026-11-13) */
+      else if (e.key === 'ow_user_hue' && /^\s*-?\d{1,4}\s*$/.test(e.newValue)) hue.bind({ angle: parseInt(e.newValue, 10) });
     });
   } catch (_) {}
 
@@ -1115,7 +1510,7 @@
   };
   /* PHOSPHOR BOOT (built by tools/phosphor_build.py; do not edit by hand) */
   var PH_BOOT = {"bookmark-simple":{"b":"<path d=\"M184,28H72A20,20,0,0,0,52,48V224a12,12,0,0,0,18.36,10.18l57.63-36,57.65,36A12,12,0,0,0,204,224V48A20,20,0,0,0,184,28Zm-4,174.35-45.65-28.53a12,12,0,0,0-12.72,0L76,202.35V52H180Z\"/>","f":"<path d=\"M184,32H72A16,16,0,0,0,56,48V224a8,8,0,0,0,12.24,6.78L128,193.43l59.77,37.35A8,8,0,0,0,200,224V48A16,16,0,0,0,184,32Z\"/>"},"calendar-blank":{"b":"<path d=\"M208,28H188V24a12,12,0,0,0-24,0v4H92V24a12,12,0,0,0-24,0v4H48A20,20,0,0,0,28,48V208a20,20,0,0,0,20,20H208a20,20,0,0,0,20-20V48A20,20,0,0,0,208,28ZM68,52a12,12,0,0,0,24,0h72a12,12,0,0,0,24,0h16V76H52V52ZM52,204V100H204V204Z\"/>","f":"<path d=\"M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32Zm0,48H48V48H72v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24Z\"/>"},"chat":{"b":"<path d=\"M216,44H40A20,20,0,0,0,20,64V224A19.82,19.82,0,0,0,31.56,242.1a20.14,20.14,0,0,0,8.49,1.9,19.91,19.91,0,0,0,12.82-4.72l.12-.11L84.47,212H216a20,20,0,0,0,20-20V64A20,20,0,0,0,216,44Zm-4,144H80a11.93,11.93,0,0,0-7.84,2.92L44,215.23V68H212Z\"/>","f":"<path d=\"M232,64V192a16,16,0,0,1-16,16H83l-32.6,28.16-.09.07A15.89,15.89,0,0,1,40,240a16.05,16.05,0,0,1-6.79-1.52A15.84,15.84,0,0,1,24,224V64A16,16,0,0,1,40,48H216A16,16,0,0,1,232,64Z\"/>"},"chat-circle":{"b":"<path d=\"M128,20A108,108,0,0,0,31.85,177.23L21,209.66A20,20,0,0,0,46.34,235l32.43-10.81A108,108,0,1,0,128,20Zm0,192a84,84,0,0,1-42.06-11.27,12,12,0,0,0-6-1.62,12.1,12.1,0,0,0-3.8.62l-29.79,9.93,9.93-29.79a12,12,0,0,0-1-9.81A84,84,0,1,1,128,212Z\"/>","f":"<path d=\"M232,128A104,104,0,0,1,79.12,219.82L45.07,231.17a16,16,0,0,1-20.24-20.24l11.35-34.05A104,104,0,1,1,232,128Z\"/>"},"compass":{"b":"<path d=\"M128,20A108,108,0,1,0,236,128,108.12,108.12,0,0,0,128,20Zm0,192a84,84,0,1,1,84-84A84.09,84.09,0,0,1,128,212ZM163.27,77l-56,24a12,12,0,0,0-6.3,6.3l-24,56A12,12,0,0,0,92.73,179l56-24a12,12,0,0,0,6.3-6.3l24-56A12,12,0,0,0,163.27,77Zm-28.41,57.89-24,10.29,10.29-24,24-10.29Z\"/>","f":"<path d=\"M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm51.58,57.79-32,64a4.08,4.08,0,0,1-1.79,1.79l-64,32a4,4,0,0,1-5.37-5.37l32-64a4.08,4.08,0,0,1,1.79-1.79l64-32A4,4,0,0,1,179.58,81.79Z\"/>"},"export":{"b":"<path d=\"M220,112v96a20,20,0,0,1-20,20H56a20,20,0,0,1-20-20V112A20,20,0,0,1,56,92H76a12,12,0,0,1,0,24H60v88H196V116H180a12,12,0,0,1,0-24h20A20,20,0,0,1,220,112ZM96.49,72.49,116,53v83a12,12,0,0,0,24,0V53l19.51,19.52a12,12,0,1,0,17-17l-40-40a12,12,0,0,0-17,0l-40,40a12,12,0,1,0,17,17Z\"/>","f":"<path d=\"M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40A8,8,0,0,0,93.66,69.66L120,43.31V96h16Z\"/>"},"eye":{"b":"<path d=\"M251,123.13c-.37-.81-9.13-20.26-28.48-39.61C196.63,57.67,164,44,128,44S59.37,57.67,33.51,83.52C14.16,102.87,5.4,122.32,5,123.13a12.08,12.08,0,0,0,0,9.75c.37.82,9.13,20.26,28.49,39.61C59.37,198.34,92,212,128,212s68.63-13.66,94.48-39.51c19.36-19.35,28.12-38.79,28.49-39.61A12.08,12.08,0,0,0,251,123.13Zm-46.06,33C183.47,177.27,157.59,188,128,188s-55.47-10.73-76.91-31.88A130.36,130.36,0,0,1,29.52,128,130.45,130.45,0,0,1,51.09,99.89C72.54,78.73,98.41,68,128,68s55.46,10.73,76.91,31.89A130.36,130.36,0,0,1,226.48,128,130.45,130.45,0,0,1,204.91,156.12ZM128,84a44,44,0,1,0,44,44A44.05,44.05,0,0,0,128,84Zm0,64a20,20,0,1,1,20-20A20,20,0,0,1,128,148Z\"/>"},"hammer":{"b":"<path d=\"M250.18,105.17,186.71,41.25a100.11,100.11,0,0,0-141.43,0l-.13.14L31.37,55.61a12,12,0,1,0,17.24,16.7L62.32,58.16A75.68,75.68,0,0,1,77.49,46.43L119,88,25.85,181.16a20,20,0,0,0,0,28.29l20.69,20.69a20,20,0,0,0,28.28,0L168,137l1.51,1.51h0l23.65,23.66a20,20,0,0,0,28.29,0l28.69-28.7A20,20,0,0,0,250.18,105.17ZM60.68,210.34l-15-15L108,133l15,15ZM140,131l-15-15,19.51-19.51a12,12,0,0,0,0-17L102.24,37.24a75.94,75.94,0,0,1,67.47,20.95l31.44,31.67L178,113l-1.51-1.51a12,12,0,0,0-17,0Zm67.32,11.31L195,130l23.09-23.09,12.3,12.39Z\"/>","f":"<path d=\"M251.34,112,183.88,44.08a96.1,96.1,0,0,0-135.77,0l-.09.09L34.25,58.4A8,8,0,0,0,45.74,69.53L59.47,55.35a79.92,79.92,0,0,1,18.71-13.9L124.68,88l-96,96a16,16,0,0,0,0,22.63l20.69,20.69a16,16,0,0,0,22.63,0l96-96,32,32a16,16,0,0,0,22.63,0l28.69-28.69A16,16,0,0,0,251.34,112Zm-89,2.33L140,136.67,119.31,116l22.35-22.35a8,8,0,0,0,0-11.32L94.32,35a80,80,0,0,1,78.23,20.41l44.22,44.51L188,128.66l-14.34-14.34A8,8,0,0,0,162.34,114.32Zm49,37.66-12-12L228,111.25l12,12Z\"/>"},"heart":{"b":"<path d=\"M178,36c-20.09,0-37.92,7.93-50,21.56C115.92,43.93,98.09,36,78,36a66.08,66.08,0,0,0-66,66c0,72.34,105.81,130.14,110.31,132.57a12,12,0,0,0,11.38,0C138.19,232.14,244,174.34,244,102A66.08,66.08,0,0,0,178,36Zm-5.49,142.36A328.69,328.69,0,0,1,128,210.16a328.69,328.69,0,0,1-44.51-31.8C61.82,159.77,36,131.42,36,102A42,42,0,0,1,78,60c17.8,0,32.7,9.4,38.89,24.54a12,12,0,0,0,22.22,0C145.3,69.4,160.2,60,178,60a42,42,0,0,1,42,42C220,131.42,194.18,159.77,172.51,178.36Z\"/>","f":"<path d=\"M240,102c0,70-103.79,126.66-108.21,129a8,8,0,0,1-7.58,0C119.79,228.66,16,172,16,102A62.07,62.07,0,0,1,78,40c20.65,0,38.73,8.88,50,23.89C139.27,48.88,157.35,40,178,40A62.07,62.07,0,0,1,240,102Z\"/>"},"house":{"b":"<path d=\"M222.14,105.85l-80-80a20,20,0,0,0-28.28,0l-80,80A19.86,19.86,0,0,0,28,120v96a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V164h24v52a12,12,0,0,0,12,12h64a12,12,0,0,0,12-12V120A19.86,19.86,0,0,0,222.14,105.85ZM204,204H164V152a12,12,0,0,0-12-12H104a12,12,0,0,0-12,12v52H52V121.65l76-76,76,76Z\"/>","f":"<path d=\"M224,120v96a8,8,0,0,1-8,8H160a8,8,0,0,1-8-8V164a4,4,0,0,0-4-4H108a4,4,0,0,0-4,4v52a8,8,0,0,1-8,8H40a8,8,0,0,1-8-8V120a16,16,0,0,1,4.69-11.31l80-80a16,16,0,0,1,22.62,0l80,80A16,16,0,0,1,224,120Z\"/>"},"lightbulb":{"b":"<path d=\"M180,232a12,12,0,0,1-12,12H88a12,12,0,0,1,0-24h80A12,12,0,0,1,180,232Zm40-128a91.51,91.51,0,0,1-35.17,72.35A12.26,12.26,0,0,0,180,186v2a20,20,0,0,1-20,20H96a20,20,0,0,1-20-20v-2a12,12,0,0,0-4.7-9.51A91.57,91.57,0,0,1,36,104.52C35.73,54.69,76,13.2,125.79,12A92,92,0,0,1,220,104Zm-24,0a68,68,0,0,0-69.65-68C89.56,36.88,59.8,67.55,60,104.38a67.71,67.71,0,0,0,26.1,53.19A35.87,35.87,0,0,1,100,184h56.1A36.13,36.13,0,0,1,170,157.49,67.68,67.68,0,0,0,196,104Zm-20.07-5.32a48.5,48.5,0,0,0-31.91-40,12,12,0,0,0-8,22.62,24.31,24.31,0,0,1,16.09,20,12,12,0,0,0,23.86-2.64Z\"/>","f":"<path d=\"M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-32.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z\"/>"},"repeat":{"b":"<path d=\"M20,128A76.08,76.08,0,0,1,96,52h99l-3.52-3.51a12,12,0,1,1,17-17l24,24a12,12,0,0,1,0,17l-24,24a12,12,0,0,1-17-17L195,76H96a52.06,52.06,0,0,0-52,52,12,12,0,0,1-24,0Zm204-12a12,12,0,0,0-12,12,52.06,52.06,0,0,1-52,52H61l3.52-3.51a12,12,0,1,0-17-17l-24,24a12,12,0,0,0,0,17l24,24a12,12,0,1,0,17-17L61,204h99a76.08,76.08,0,0,0,76-76A12,12,0,0,0,224,116Z\"/>","f":"<path d=\"M24,128A72.08,72.08,0,0,1,96,56h96V40a8,8,0,0,1,13.66-5.66l24,24a8,8,0,0,1,0,11.32l-24,24A8,8,0,0,1,192,88V72H96a56.06,56.06,0,0,0-56,56,8,8,0,0,1-16,0Zm200-8a8,8,0,0,0-8,8,56.06,56.06,0,0,1-56,56H64V168a8,8,0,0,0-13.66-5.66l-24,24a8,8,0,0,0,0,11.32l24,24A8,8,0,0,0,64,216V200h96a72.08,72.08,0,0,0,72-72A8,8,0,0,0,224,120Z\"/>"},"storefront":{"b":"<path d=\"M236,96a12,12,0,0,0-.44-3.3L221.2,42.51A20.08,20.08,0,0,0,202,28H54A20.08,20.08,0,0,0,34.8,42.51L20.46,92.7A12,12,0,0,0,20,96h0v16a43.94,43.94,0,0,0,16,33.92V216a12,12,0,0,0,12,12H208a12,12,0,0,0,12-12V145.92A43.94,43.94,0,0,0,236,112V96ZM57.05,52H199l9.14,32H47.91Zm91,56v4a20,20,0,0,1-40,0v-4ZM53,128.71A20,20,0,0,1,44,112v-4H84v4a20,20,0,0,1-20,20,19.76,19.76,0,0,1-9.07-2.2A11.54,11.54,0,0,0,53,128.71ZM196,204H60V155.81c1.32.12,2.65.19,4,.19a43.86,43.86,0,0,0,32-13.85,43.89,43.89,0,0,0,64,0A43.86,43.86,0,0,0,192,156c1.35,0,2.68-.07,4-.19Zm16-92a20,20,0,0,1-9,16.71,11.66,11.66,0,0,0-1.88,1.09A20,20,0,0,1,172,112v-4h40Z\"/>","f":"<path d=\"M231.69,93.81,217.35,43.6A16.07,16.07,0,0,0,202,32H54A16.07,16.07,0,0,0,38.65,43.6L24.31,93.81A7.94,7.94,0,0,0,24,96v16a40,40,0,0,0,16,32v72a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V144a40,40,0,0,0,16-32V96A7.94,7.94,0,0,0,231.69,93.81ZM88,112a24,24,0,0,1-35.12,21.26,7.88,7.88,0,0,0-1.82-1.06A24,24,0,0,1,40,112v-8H88Zm64,0a24,24,0,0,1-48,0v-8h48Zm64,0a24,24,0,0,1-11.07,20.2,8.08,8.08,0,0,0-1.8,1.05A24,24,0,0,1,168,112v-8h48Z\"/>"},"thumbs-down":{"b":"<path d=\"M243.78,156.53l-12-96A28,28,0,0,0,204,36H32A20,20,0,0,0,12,56v88a20,20,0,0,0,20,20H72.58l36.69,73.37A12,12,0,0,0,120,244a44.05,44.05,0,0,0,44-44V188h52a28,28,0,0,0,27.78-31.47ZM68,140H36V60H68Zm151,22.65a4,4,0,0,1-3,1.35H152a12,12,0,0,0-12,12v24a20,20,0,0,1-13.18,18.8L92,149.17V60H204a4,4,0,0,1,4,3.5l12,96A4,4,0,0,1,219,162.65Z\"/>","f":"<path d=\"M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Z\"/>"},"thumbs-up":{"b":"<path d=\"M237,77.47A28,28,0,0,0,216,68H164V56a44.05,44.05,0,0,0-44-44,12,12,0,0,0-10.73,6.63L72.58,92H32a20,20,0,0,0-20,20v88a20,20,0,0,0,20,20H204a28,28,0,0,0,27.78-24.53l12-96A28,28,0,0,0,237,77.47ZM36,116H68v80H36ZM220,96.5l-12,96a4,4,0,0,1-4,3.5H92V106.83L126.82,37.2A20,20,0,0,1,140,56V80a12,12,0,0,0,12,12h64a4,4,0,0,1,4,4.5Z\"/>","f":"<path d=\"M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32Z\"/>"},"user":{"b":"<path d=\"M234.38,210a123.36,123.36,0,0,0-60.78-53.23,76,76,0,1,0-91.2,0A123.36,123.36,0,0,0,21.62,210a12,12,0,1,0,20.77,12c18.12-31.32,50.12-50,85.61-50s67.49,18.69,85.61,50a12,12,0,0,0,20.77-12ZM76,96a52,52,0,1,1,52,52A52.06,52.06,0,0,1,76,96Z\"/>","f":"<path d=\"M230.93,220a8,8,0,0,1-6.93,4H32a8,8,0,0,1-6.92-12c15.23-26.33,38.7-45.21,66.09-54.16a72,72,0,1,1,73.66,0c27.39,8.95,50.86,27.83,66.09,54.16A8,8,0,0,1,230.93,220Z\"/>"}};
-  var PH_JS = '/frontend/shared/oneway-icons.js?v=2b35eb18';
+  var PH_JS = '/frontend/shared/oneway-icons.js?v=457dae60';
   var PH_PICK = '/frontend/shared/oneway-iconpicker.js?v=e8e956ef';
   /* PHOSPHOR BOOT END */
   var PH = {}, PH_NAMES = null, PH_TAGS = null, PH_LOAD = {}, PH_ALL = '/assets/icons/phosphor/all/';
@@ -1728,7 +2123,10 @@
                       do:'sign_in' },
     forbidden:      { who:'permission', title:'Not yours to open',
                       detail:'Your account does not have access to this.', do:null },
-    needs_plan:     { who:'permission', title:'This needs a different plan',
+    /* a banned account (identity/restrict): the server's own sentence carries the reason and how to appeal */
+    restricted:     { who:'permission', title:'This account is restricted',
+                      detail:'You can appeal it with the link in the email we sent you.', do:null },
+    needs_plan:    { who:'permission', title:'This needs a different plan',
                       detail:'The Center this belongs to is not on a plan that includes it.',
                       do:'plans' },
     needs_role:     { who:'permission', title:'Your role does not cover this',
@@ -2159,7 +2557,8 @@
     if (other) other.innerHTML = '';
     var inter = g.interactions || {}, offers = inter.offers || [], mine = inter.mine || '';
     var guest = typeof OW.signedIn === 'function' && !OW.signedIn();
-    if (guest) offers = offers.filter(function (verb) { return verb === 'like'; });
+    /* a guest sees the heart and its count, never one of their own (his word, 2026-11-12: guests do not like); its press opens the way in */
+    if (guest) { offers = offers.filter(function (verb) { return verb === 'like'; }); mine = ''; }
     var counts = inter.counts || {};
     /* ★ FOUNDER/471: *"why doesnt saves and reposts have a count."* The
        tallies for repost, share and save arrive on the row's `actions`
@@ -2299,10 +2698,25 @@
        once, here, rather than per act. */
     function tally(n) {
       if (hideCounts) return '';
-      return '<b' + (+n ? '' : ' data-zero') + '>' + esc(String(n == null ? 0 : n)) + '</b>';     /* a count shows from 1 (his word, 2026-11-07, L7) */
+      n = +n || 0;
+      /* a count shows from 1 (his word, 2026-11-07, L7), said short (OW.compact: "12.4K"), its whole figure kept on data-n */
+      return '<b' + (n ? '' : ' data-zero') + ' data-n="' + n + '">' + esc(compact(n)) + '</b>';
     }
+    /* ── THE ROW: FOUR THAT LEAD, THEN SAVE AND MORE AT ITS END (home-first-screen, 2026-11-14; his words: "what are the 7 icons",
+       then "are you insane" when Save and the eye were folded into More) ───────────────────────────────────────────────────────
+       Like, Comment, Repost (his word: its own button) and Share lead, each with its count; how many opened the post (the eye) stands
+       after them, because every count shows on the card (founder/488: "everything should have counts visible, no matter what feed it
+       is viewed in"); Save stands at the row's right end as Instagram keeps it (founder/831), and More right after it (po-act--end on
+       both: the first takes the row's free room, so the two stand together at the edge). Not for me is in the row only by the
+       viewer's own choice (FOLD_DISLIKE). A guest has no More. One renderer, so the row is the same on every surface. */
+    var hasMore = !guest && !!(OW.postMenu && OW.cards && OW.cards.mark);
+    /* DISLIKE ONLY BY YOUR CHOICE (his words, 2026-11-14 ~00:45Z: "Remove dislikes to show by default unless a user chooses to have
+       them on all posts"): Not for me stands in the row when the server says this viewer turned on "Show dislike on all posts"
+       (social/service.hide_dislike_count, `dislike_in_row`), and is off the row on every page otherwise, a page with no More
+       included. Its count stays the author's (dislike_count_hidden). */
+    var FOLD_DISLIKE = inter.dislike_in_row === true ? '' : ' hidden data-po-fold';
     function act(verb, icon, label, on, count) {
-      return '<button type="button" class="po-act po-act--icon"'
+      return '<button type="button" class="po-act po-act--icon"' + (verb === 'dislike' ? FOLD_DISLIKE : '')
         + ' data-po-respond="' + esc(verb) + '" data-obj="' + esc(g.id) + '"'
         + ' data-okind="' + esc(okind) + '"'
         + ' aria-pressed="' + (on ? 'true' : 'false') + '"'
@@ -2315,6 +2729,25 @@
       var icon = ({ like: OW.likes.glyph(), dislike: 'thumbdown' })[verb] || 'spark';
       return act(verb, icon, OW.word(verb), mine === verb, counts[verb] || 0);
     }).join('');
+    /* THE AUTHOR'S PICTURE HEADS THE RAIL, A FOLLOW PLUS ON IT (his words, 2026-11-13: "def put follow button on the profile picture
+       like tiktok"). Drawn in the one row, shown only where the row is Scroll's rail (oneway-popit.css: Home's row keeps its shape).
+       The plus only where the server says the viewer does not follow the author yet (you.follows_author false, from
+       social/service._attach_follows; absent on your own post, signed out, or unread: no plus). The face opens the author as the
+       head's face does (data-po-who, data-po-center); the plus follows through the one graph door (popit-live.js), and every copy
+       of it for that author keeps up (data-ow-follow, oneway-data.js). */
+    html = (function () {
+      var who = g.author || {}, center = who.kind === 'center' || who.kind === 'community';
+      var ref = center ? String(g.destination || '') : String(who.ref || '');
+      if (!ref || (!center && ref.charAt(0) !== '@')) return '';
+      var name = String(who.name || '').slice(0, 80) || (center ? 'this place' : 'this person');
+      var plus = you.follows_author === false && !you.mine && !guest;
+      return '<span class="po-railwho">'
+        + '<span class="po-act po-railwho__f" ' + (center ? 'data-po-center' : 'data-po-who') + '="' + esc(ref) + '" role="button" tabindex="0"'
+        + ' aria-label="' + esc('Open ' + name) + '">' + OW.face(who, { size: 44 }) + '</span>'
+        + (plus ? '<button type="button" class="po-act po-act--primary po-act--round po-railwho__plus" data-po-follow-author="' + esc(ref) + '" data-ow-follow="' + esc(ref) + '"'
+          + ' aria-pressed="false" aria-label="' + esc('Follow ' + name) + '">' + OW.glyph('plus') + '</button>' : '')
+        + '</span>';
+    })() + html;
 
     /* ── COMMENT — THE CONTROL THAT DID NOT EXIST ─────────────────────────
        ★ FOUNDER, 2026-08-30: *"comments are still gone at least on my last
@@ -2384,7 +2817,7 @@
        built here and placed last, after Share and the views. */
     /* A FAVORITE IS YOURS (the founder, 2026-10-30: "posts shouldnt have the faviorite count go up like that when users fav a post"): no number on the button, for anyone */
     var saves = 0;
-    var saveHTML = '<button type="button" class="po-act po-act--icon" data-po-save'
+    var saveHTML = '<button type="button" class="po-act po-act--icon po-act--end" data-po-save'
       + ' data-obj="' + esc(g.id) + '" data-okind="' + esc(okind) + '"'
       + ' aria-pressed="' + (saved ? 'true' : 'false') + '"'
       + ' aria-label="' + (saved ? 'Saved' : 'Save') + '"'
@@ -2413,7 +2846,7 @@
     if (g.views && !hideCounts) {
       html += '<span class="po-act po-act--icon po-act--stat" aria-label="'
         + esc(g.views + ' opened this') + '">' + OW.glyph('eye')
-        + '<b>' + esc(g.views) + '</b></span>';
+        + '<b data-n="' + (+g.views || 0) + '">' + esc(compact(g.views)) + '</b></span>';
     }
     html += saveHTML;
     /* MORE (the half-baked audit, 2026-11-01, unit 5): Not interested, Mute, Add a note and Report, in the one menu a More opens
@@ -2422,8 +2855,8 @@
        where the post was made (PROPOSED, for his eye: Instagram and X put it at the head's right). ON YOUR OWN POST it is the
        author's More (founder/1204, the pages inside a Post): Edit, Insights and Delete, as Instagram's is; before, your own
        post had no More at all and its Edit and Delete lived only on the post's own page. */
-    if (!guest && OW.postMenu && OW.cards && OW.cards.mark) {
-      html += '<button type="button" class="po-act po-act--icon po-act--more" data-po-more-menu' + (you.mine ? ' data-po-mine="1"' : '') + (you.may_remove_from_center ? ' data-po-takeoff="1"' : '')
+    if (hasMore) {
+      html += '<button type="button" class="po-act po-act--icon po-act--more po-act--end" data-po-more-menu' + (you.mine ? ' data-po-mine="1"' : '') + (you.may_remove_from_center ? ' data-po-takeoff="1"' : '')
         + ' data-obj="' + esc(g.id) + '" data-okind="' + esc(okind) + '"'
         + ' aria-label="More" aria-expanded="false">' + OW.cards.mark('more') + '</button>';
     }
@@ -2438,6 +2871,22 @@
     if (inter.dislike_count_hidden) slot.setAttribute('data-dislike-count-hidden', '1');
     else slot.removeAttribute('data-dislike-count-hidden');
     slot.innerHTML = html;
+    rowSaid(slot);
+    /* THE SAME PLUS ON THE AUTHOR LINE'S PICTURE, WHERE THE RAIL DOES NOT CARRY THE PICTURE (review of media-inline, 2026-11-13, B2:
+       on YouTube's page on a phone the rail stands under its player and carries no picture, so nothing reaches the player, and the
+       author could not be followed from Scroll at 390). The rail's own button, copied whole (its class aside), stands right after the
+       author line; oneway-popit.css shows it only where the rail has no picture and lays it on the line's picture. Both copies carry
+       data-ow-follow, so one press makes both go (oneway-data.js). It is a sibling of the line, never inside it: the line is one button
+       that opens the author, and a button inside a button is lost to a screen reader. */
+    var linePlus = card.querySelector('.po-card__whoplus');
+    if (linePlus && linePlus.parentNode) linePlus.parentNode.removeChild(linePlus);
+    var railPlus = slot.querySelector('.po-railwho__plus');
+    var line = railPlus && card.querySelector('.po-card__who');
+    if (line && line.parentNode === card) {
+      linePlus = railPlus.cloneNode(true);
+      linePlus.className = linePlus.className.replace(/\bpo-railwho__plus\b/, 'po-card__whoplus');
+      card.insertBefore(linePlus, line.nextSibling);
+    }
   };
 
   /* A glyph by name, for callers that build markup as strings. Same icon
@@ -2598,6 +3047,231 @@
   };
 
   OW.glyph = glyph;
+  OW.compact = compact;
+
+  /* ── A WEEK OF OPENING HOURS, SAID ONE WAY EVERYWHERE (the review of community edits, item 6: the App's Check, its waiting row, the
+     OS's card and the community's vote card said hours as one run-on line in a 24-hour clock, while the Center's header says "11 AM–2 PM,
+     5–10 PM"). The words are the header's (api/oneway/centers/hours.py door_sign; center.js's About asks this). A week is
+     { mon: [['11:00','14:00'], ...], ... }: a day absent is not said, [] is closed.
+       OW.hours.time('17:00')                 '5 PM'
+       OW.hours.sign([['11:00','14:00'],['17:00','22:00']])   '11 AM–2 PM, 5–10 PM'
+       OW.hours.day(week, 'sun')              its sign, 'Closed' or 'Not listed'
+       OW.hours.summary(week)                 'Mon–Fri · 11 AM–2 PM, 5–10 PM; Sat · 11 AM–10 PM' (days that say the same, together)
+       OW.hours.changed(now, next)            the days whose hours differ, in the week's order
+       OW.hours.compare(now, next, o)         seven rows, Day | Now | Suggested, each changed day marked (data-ow-changed) and said in
+                                              words for a screen reader; o: { now: 'Now', next: 'Suggested', cls }. Escaped markup.
+     ─────────────────────────────────────────────────────────────────────────────── */
+  OW.hours = (function () {
+    var DAYS = [['mon', 'Mon', 'Monday'], ['tue', 'Tue', 'Tuesday'], ['wed', 'Wed', 'Wednesday'], ['thu', 'Thu', 'Thursday'],
+                ['fri', 'Fri', 'Friday'], ['sat', 'Sat', 'Saturday'], ['sun', 'Sun', 'Sunday']];
+    function time(t) {
+      var h = parseInt(String(t).slice(0, 2), 10), m = parseInt(String(t).slice(3, 5), 10) || 0;
+      if (isNaN(h)) return String(t || '');
+      if ((h === 0 || h === 24) && !m) return 'midnight';
+      var h12 = h % 12 || 12;
+      return (m ? h12 + ':' + (m < 10 ? '0' : '') + m : String(h12)) + (h < 12 ? ' AM' : ' PM');
+    }
+    function sign(spans) {
+      return (spans || []).map(function (x) {
+        if (x[0] === '00:00' && x[1] === '24:00') return 'Open all day';
+        var a = time(x[0]), b = time(x[1]);
+        if (a.slice(-2) === b.slice(-2) && /[AP]M$/.test(a)) a = a.slice(0, -3);
+        return a + '–' + b;
+      }).join(', ');
+    }
+    function has(week, d) { return !!week && typeof week === 'object' && Array.isArray(week[d]); }
+    function day(week, d) { return !has(week, d) ? 'Not listed' : (week[d].length ? sign(week[d]) : 'Closed'); }
+    /* a day's words as markup: each opening time kept on one line, a line breaking only between two of them ("11 AM–2 PM," / "5–10 PM") */
+    function dayHtml(week, d) {
+      return has(week, d) && week[d].length ? week[d].map(function (x) { return '<span class="ow-hours__s">' + esc(sign([x])) + '</span>'; }).join(', ') : esc(day(week, d));
+    }
+    function summary(week) {
+      var said = [];
+      DAYS.forEach(function (d) {
+        if (!has(week, d[0])) { said.push(null); return; }
+        var txt = day(week, d[0]), last = said[said.length - 1];
+        if (last && last.txt === txt) { last.to = d[1]; return; }
+        said.push({ from: d[1], to: d[1], txt: txt });
+      });
+      var out = said.filter(Boolean).map(function (g) { return (g.from === g.to ? g.from : g.from + '–' + g.to) + ' · ' + g.txt; });
+      return out.length ? out.join('; ') : 'Not listed';
+    }
+    function changed(now, next) {
+      return DAYS.filter(function (d) { return day(now, d[0]) !== day(next, d[0]); }).map(function (d) { return d[0]; });
+    }
+    function compare(now, next, o) {
+      o = o || {};
+      var diff = changed(now, next), e = function (s) { return esc(s); };
+      return '<div class="ow-hours ' + e(o.cls || '') + '" role="table" aria-label="' + e(o.label || 'Opening hours, now and suggested') + '">' +
+        '<div class="ow-hours__r ow-hours__r--h" role="row"><span role="columnheader">Day</span><span role="columnheader">' + e(o.now || 'Now') +
+        '</span><span role="columnheader">' + e(o.next || 'Suggested') + '</span></div>' +
+        DAYS.map(function (d) {
+          var on = diff.indexOf(d[0]) >= 0;
+          return '<div class="ow-hours__r" role="row"' + (on ? ' data-ow-changed=""' : '') + '><span class="ow-hours__d" role="rowheader">' + e(d[1]) +
+            (on ? '<span class="ow-hours__mk">Changed</span>' : '') + '</span><span class="ow-hours__was" role="cell">' + dayHtml(now, d[0]) +
+            '</span><span class="ow-hours__new" role="cell">' + dayHtml(next, d[0]) + '</span></div>';
+        }).join('') + '</div>';
+    }
+    return { DAYS: DAYS, time: time, sign: sign, day: day, summary: summary, changed: changed, compare: compare };
+  })();
+
+  /* ── A CENTER'S HISTORY, LIKE A WIKIPEDIA PAGE'S (his words 2026-11-12 ~18:30Z: "must be like wikipedia community correction"; the
+     server's centers/information_review.history, GET /api/oneway/places/{id}/community/edits/history). One full screen (OW.askFlow, wide):
+     every change its community suggested and its team decided or undid, newest first. Each says what changed and when; who suggested it
+     ("You", or "A community member" for someone the Center keeps out or quiets); who decided it (by role, its team reads the name); and
+     the before and after, a week of hours as OW.hours.compare's seven rows, never one line. A number not approved, or a photo not on its
+     page, is never shown. To its team, Undo on a change that is still on its page: one check (Now beside Goes back to), Undo change, and
+     the one finish lands on the new entry. The words are PROPOSED. Called by About (center.js) and the OS's Suggested edits:
+       OW.editHistory({ url: '/api/oneway/places/{id}/community/edits', data: <the history answer>, get(url) -> Promise<data|null>,
+                        post(url) -> Promise<{ ok, data, error }>, changed() }) -> Promise
+  ── */
+  OW.editHistory = (function () {
+    var FIELD = { description: ['Description', 'article'], hours: ['Hours', 'clock'], address: ['Address', 'map-pin'], phone: ['Phone number', 'phone'],
+                  photo: ['Photo', 'image'], links: ['Link', 'link'], name: ['Name', 'tag'], category: ['Category', 'tag'], website: ['Website', 'link'] };
+    var STATE = { approved: 'Approved', declined: 'Declined', set_aside: 'Set aside', not_applied: 'Not applied', undone: 'Undone', changed: 'Changed' };
+    var ROLE = { owner: ['its owner', 'owner'], steward: ['its Steward', 'Steward'], admin: ['an admin', 'admin'], moderator: ['a moderator', 'moderator'],
+                 team: ['its team', 'team'], community: ['the community vote', ''] };
+    function when(iso) { var t = new Date(iso); return isNaN(t) ? '' : t.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' }); }
+    function decider(d) { d = d || {}; var r = ROLE[d.role] || ROLE.team; return d.name ? d.name + (r[1] ? ' (' + r[1] + ')' : '') : r[0]; }
+    function cap(t) { t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
+    function ic(name) { return OW.glyph ? OW.glyph(name) : ''; }
+    function said(e, side) {
+      var v = e[side];
+      if ((e.hidden || []).indexOf(side) >= 0) return 'A number, not shown';
+      if (e.field === 'links') return v && v.value ? (v.label ? v.label + ' · ' : '') + v.value : (side === 'after' ? 'Taken off' : 'Not on it');
+      if (e.field === 'phone' && !v && e.kind === 'undo' && side === 'after') return 'Taken off';
+      return v ? String(v) : 'Not given';
+    }
+    function pair(label, words) { return '<div><dt>' + esc(label) + '</dt><dd>' + esc(words) + '</dd></div>'; }
+    /* before and after, as the fact is said: a week day by day, a photo as itself, a link as its words (never a live link from here) */
+    function change(e, a, b, now, next) {
+      if (e.field === 'photo') return e.picture ? '<img class="ow-cedit__pic ow-chist__pic" alt="The photo, as its page shows it" src="' + esc(e.picture) + '">'
+        : '<p class="ow-cedit__fine">' + esc(e.kind === 'correction' ? (e.still ? 'Its photo now. It is not shown here.' : 'It is no longer its photo.') :
+          e.state === 'declined' ? 'A photo that was not approved is never shown.' : e.state === 'undone' || e.undone ? 'The photo was taken off its page.' : 'The photo is no longer on its page.') + '</p>';
+      /* a suggestion that changed nothing: its words are its team's and its suggester's (the server leaves them out for anyone else) */
+      if (e.words_hidden) return '<p class="ow-cedit__fine" data-ow-words-hidden="">What was suggested is shown only to its team and the person who suggested it.</p>';
+      if (e.field === 'hours' && OW.hours) return OW.hours.compare(e[a], e[b], { now: now, next: next, label: 'Opening hours, ' + now.toLowerCase() + ' and ' + next.toLowerCase(), cls: 'ow-hours--flat' });
+      if (e.field === 'links' && e.kind !== 'undo' && a === 'before') return '<dl class="ow-chist__ba">' + pair(next, said(e, b)) + '</dl>';
+      return '<dl class="ow-chist__ba">' + pair(now, said(e, a)) + pair(next, said(e, b)) + '</dl>';
+    }
+    /* who and when, as a record says it (S28: rows, never a sentence under a title): Suggested by, then Approved or Declined by, then Undone by */
+    function who(e) {
+      var rows = [], by = function (d) { return cap(decider(d)); };
+      if (e.kind === 'undo') return '<dl class="ow-chist__by">' + pair('Undone by', by(e.decided_by) + ' · ' + when(e.decided_at)) + '</dl>';
+      /* an Information Center's correction: made at once by the person who made it, as nobody runs it */
+      if (e.kind === 'correction') return '<dl class="ow-chist__by">' + pair('Changed by', (e.mine ? 'You' : (e.by || {}).name || 'Someone') + ' · ' + when(e.at)) + '</dl>';
+      rows.push(pair('Suggested by', (e.mine ? 'You' : ((e.by || {}).name || 'Someone') + ((e.by || {}).ambassador ? ', an Ambassador' : '')) + ' · ' + when(e.at)));
+      if (e.state === 'approved' || e.state === 'declined') rows.push(pair(STATE[e.state] + ' by', by(e.decided_by) + ' · ' + when(e.decided_at)));
+      else if (e.state === 'set_aside') rows.push(pair('Set aside', 'It no longer matched its page · ' + when(e.decided_at)));
+      else if (e.state === 'not_applied') rows.push(pair('Not applied', 'Its community approved it, but it could not be written'));
+      if (e.undone) rows.push(pair('Undone by', by(e.undone.by) + ' · ' + when(e.undone.at)));
+      return '<dl class="ow-chist__by">' + rows.join('') + '</dl>';
+    }
+    function card(e) {
+      var f = FIELD[e.field] || ['A fact', 'pencil-simple'];
+      var top = e.kind === 'undo' ? f[0] + ' · Undone' : f[0] + ' · ' + (STATE[e.state] || '') + (e.undone ? ', then undone' : '');
+      /* a suggestion that changed nothing says what its page said and what was suggested, never "Before" and "After": the After would read
+         as if its page says it now */
+      var kept = e.kind === 'undo' || e.state === 'approved' || e.state === 'changed';
+      return '<div class="ow-chist__e" data-ow-hist="' + esc(e.id) + '"' + (e.undone ? ' data-ow-undone=""' : '') + '>' +
+        '<div class="ow-chist__top"><span class="ow-cedit__ic" aria-hidden="true">' + ic(e.kind === 'undo' ? 'arrow-counter-clockwise' : f[1]) + '</span>' +
+        '<span class="ow-chist__what"><b>' + esc(top) + '</b></span></div>' +
+        who(e) + change(e, 'before', 'after', kept ? 'Before' : 'It said', kept ? 'After' : 'Suggested') +
+        (e.can_undo ? '<span class="ow-chist__do"><button type="button" class="po-act po-act--secondary" data-ow-undo="' + esc(e.id) + '">Undo</button></span>' : '') +
+        '</div>';
+    }
+    function lede(d) {
+      var n = d.name || 'This place';
+      if (d.information_center) return 'Every correction people made to ' + n + ', newest first. Nobody runs it, so a correction shows at once; a new name waits for a community vote.';
+      return 'Every change ' + n + '’s community suggested, and what was decided. Newest first.' +
+        (d.may_undo ? ' You can undo a change that is still on its page.' : '');
+    }
+    function open(o) {
+      return Promise.resolve(OW.need ? OW.need('ask') : null).then(function () {
+        if (!OW.askFlow) return null;
+        var flow = OW.askFlow(), landed = '', words = '';
+        var mark = function (name) { return '<span class="ow-cedit__mk">' + ic(name) + '</span>'; };
+        var wide = function (slot) { var root = slot.closest('.ow-pqs'); if (root) root.classList.add('ow-pqs--cedit'); return root; };
+        function list(d) {
+          return flow.step({ icon: mark('clock-counter-clockwise'), title: 'Edit history', text: lede(d), wide: true, go: 'Done',
+            fill: function (slot, close) {
+              wide(slot);
+              var host = doc.createElement('div');
+              host.className = 'ow-chist';
+              host.setAttribute('data-ow-history', '');
+              host.innerHTML = (words ? '<p class="ow-cpage__said ow-chist__said" role="status">' + esc(words) + '</p>' : '') +
+                ((d.entries || []).length ? (d.entries || []).map(card).join('') : '<p class="ow-cedit__fine">Nothing has been decided here yet.</p>') +
+                /* its last line, when older entries have left it (information_review._kept: the newest changes and declined suggestions are kept) */
+                (d.older_left ? '<p class="ow-cedit__fine" data-ow-history-older="">Older changes are no longer listed here.</p>' : '');
+              slot.appendChild(host);
+              host.addEventListener('click', function (ev) {
+                var b = ev.target.closest && ev.target.closest('[data-ow-undo]');
+                if (b) close('undo:' + b.getAttribute('data-ow-undo'));
+              });
+              if (landed) {
+                var el = host.querySelector('[data-ow-hist="' + landed + '"]');
+                landed = ''; words = '';
+                if (el) {
+                  try { el.scrollIntoView({ block: 'center' }); } catch (_) {}
+                  if (OW.motion && OW.motion.done) OW.motion.done(el, { words: 'Undone' });
+                }
+              }
+            } }).then(function (id) {
+            id = String(id || '');
+            if (id.indexOf('undo:') === 0) {
+              var e = (d.entries || []).filter(function (x) { return x.id === id.slice(5); })[0];
+              return e ? check(d, e) : list(d);
+            }
+            return null;
+          });
+        }
+        function check(d, e) {
+          var f = FIELD[e.field] || ['A fact', 'pencil-simple'], by = e.mine ? 'You' : ((e.by || {}).name || 'The person who suggested it');
+          var text = e.field === 'photo' ? 'The photo comes off its page. It stays on their profile, and they are told.' :
+                     e.field === 'links' ? 'The link comes off its page. ' + by + ' is told.' :
+                     'Its page goes back to what it said before. ' + by + ' is told.';
+          return flow.step({ icon: mark('arrow-counter-clockwise'), title: 'Undo this change to its ' + f[0].toLowerCase() + '?', text: text, wide: true,
+            go: 'Undo change', quiet: [{ id: 'back', words: 'Back' }],
+            fill: function (slot, close) {
+              var root = wide(slot), box = doc.createElement('div'), note = doc.createElement('p');
+              box.className = 'ow-chist__check';
+              box.innerHTML = e.field === 'links' ? '<dl class="ow-chist__ba">' + pair('Comes off', said(e, 'after')) + '</dl>' :
+                              e.field === 'photo' ? change(e, 'before', 'after', 'Now', 'Goes back to') : change(e, 'after', 'before', 'Now', 'Goes back to');
+              note.className = 'ow-cedit__note'; note.setAttribute('role', 'status');
+              slot.appendChild(box); slot.appendChild(note);
+              var go = root && root.querySelector('[data-asks="go"]');
+              if (!go) return;
+              go.setAttribute('data-ow-undo-send', '');
+              go.addEventListener('click', function (ev) {
+                ev.stopPropagation();
+                if (go.getAttribute('aria-busy')) return;
+                var all = root.querySelectorAll('[data-asks]');
+                [].forEach.call(all, function (b) { if (b !== go) b.disabled = true; });
+                go.setAttribute('aria-busy', 'true'); go.textContent = 'Undoing…'; note.textContent = '';
+                var again = function (why) {
+                  go.removeAttribute('aria-busy'); go.textContent = 'Undo change'; note.textContent = why || 'That could not be undone. Try again.';
+                  [].forEach.call(all, function (b) { b.disabled = false; });
+                };
+                Promise.resolve(o.post(o.url + '/' + encodeURIComponent(e.id) + '/undo')).then(function (r) {
+                  if (!r || !r.ok) { again(r && r.error); return; }
+                  landed = ((r.data || {}).entry || {}).id || ''; words = (r.data || {}).words || 'Undone.';
+                  close('done');
+                }, function () { again(); });
+              });
+            } }).then(function (id) {
+            if (id === 'done') {
+              if (o.changed) { try { o.changed(); } catch (_) {} }
+              return Promise.resolve(o.get(o.url + '/history')).then(function (fresh) { return list(fresh || d); }, function () { return list(d); });
+            }
+            if (id === 'back') return list(d);
+            return null;
+          });
+        }
+        return list(o.data || {}).then(function () { flow.end(); }, function () { flow.end(); });
+      });
+    }
+    return open;
+  })();
 
   /* ── SOMEBODY IS TYPING UNDER A POST, AND THE POST'S CARD SAYS SO LIVE ────────
      ★ FOUNDER, 2026-10-10: *"when a user is typing under a video even if the user watching doesnt have it open still
@@ -2938,6 +3612,9 @@
       _from: (p.posted_in && p.posted_in.words) ? String(p.posted_in.words) : '',
       /* AND AN IMPORTED POST SAYS WHERE IT CAME FROM (founder/1143): "From TikTok", the server's words, beside where it was posted */
       _imported: (p.imported_from && p.imported_from.words) ? String(p.imported_from.words) : '',
+      /* HELD BY THE READER'S HIDDEN WORDS (moderation/viewer.quiet; his words 2026-11-13: "they arent only for comments"): the server
+         sent no words, pictures or player, only its quiet line and See it, which the card draws in the words' place */
+      _hidden: (p.hidden && p.hidden.by === 'words' && p.hidden.words) ? p.hidden : null,
       /* THE PLATFORM'S OWN PLAYER (founder/1139): a platform and an id the server read again, drawn by OW.embed */
       _embed: (p.embed && p.embed.provider && p.embed.id) ? p.embed : null,
       /* the post's own page on its platform, the server's address (players.page_of), where its one mark goes (founder/1307) */
@@ -2971,6 +3648,8 @@
       _product: (p.about && p.about.kind === 'product' && p.about.product && p.about.product.id) ? p.about.product : null,
       /* and when it was taken down, the Post says so under its words rather than losing the row (S11) */
       _productGone: (p.about && p.about.kind === 'product' && !p.about.product) ? (p.about.title || 'This product') : '',
+      /* A LAUNCH IT CARRIES (opportunities/launchpad, the founder 2026-11-11): drawn by the one launch card (OW.launchpad.intoPost) */
+      _launch: (p.about && p.about.kind === 'launch' && p.about.id) ? p.about : null,
       state: p.state || '',
       publish_at: p.publish_at || '',
       edited_at: p.edited_at || '',
@@ -3004,12 +3683,16 @@
       v.addEventListener('loadeddata', function () { try { v.currentTime = 0.001; } catch (_) { end(''); } }, { once: true });
       v.addEventListener('seeked', function () {
         try {
+          /* a clip this browser plays without its picture (an HEVC .mov in a browser without HEVC) has no width: an empty
+             canvas says "data:," and the server refused the whole message for that poster (M09). No picture, no poster. */
+          if (!(v.videoWidth > 0 && v.videoHeight > 0)) { end(''); return; }
           var k = Math.min(1, STILL_EDGE / Math.max(v.videoWidth, v.videoHeight));
           var cv = doc.createElement('canvas');
           cv.width = Math.round(v.videoWidth * k); cv.height = Math.round(v.videoHeight * k);
           cv.getContext('2d').drawImage(v, 0, 0, cv.width, cv.height);
           var webp = cv.toDataURL('image/webp', 0.8);
-          end(webp.indexOf('data:image/webp') === 0 ? webp : cv.toDataURL('image/jpeg', 0.86));
+          var still = webp.indexOf('data:image/webp') === 0 ? webp : cv.toDataURL('image/jpeg', 0.86);
+          end(String(still).indexOf('data:image/') === 0 ? still : '');
         } catch (_) { end(''); }
       }, { once: true });
       v.src = url;
@@ -3151,7 +3834,7 @@
   OW.mediaAhead=function(card){
     function warm(){
       var near=card.getBoundingClientRect(),visible=near.top<global.innerHeight&&near.bottom>0;
-      Array.prototype.forEach.call(card.querySelectorAll('.po-card__cover > img,.po-shot:first-child > img,.po-card__who img'),function(img){
+      Array.prototype.forEach.call(card.querySelectorAll('.po-card__cover > img,.po-shot:nth-child(-n+3) > img:not([data-later]),.po-card__who img'),function(img){
         img.loading='eager';img.decoding='async';if(visible)img.fetchPriority='high';
       });
     }
@@ -3468,15 +4151,9 @@
        also writes the photo's own width (media/sizes.py), so the JPEG as sent (265 to 750 KB measured) is listed only for a photo stored
        before that, and only when it is wider than every size. `sizes` is the card's own room: the screen's width on a phone, at most
        MEDIA_MAX_PX beside the window on a desktop (oneway-popit.css, "THE WHOLE POST IN ONE WINDOW"). */
-    var srcsetOf = function (sizes, orig, ow) {
-      if (!sizes || !sizes.length) return '';
-      var set = [], k, widest = 0;
-      for (k = 0; k < sizes.length; k++) {
-        var su = OW.imageUrl((sizes[k] || {}).url || '');
-        if (su && sizes[k].w) { set.push(su + ' ' + sizes[k].w + 'w'); widest = Math.max(widest, +sizes[k].w); }
-      }
-      if (ow && orig && ow > widest) set.push(orig + ' ' + ow + 'w');
-      return set.length ? ' srcset="' + esc(set.join(', ')) + '" sizes="(max-width: 660px) 100vw, ' + MEDIA_MAX_PX + 'px"' : '';
+    var srcsetOf = function (sizes, orig, ow, later) {
+      var set = OW.mediaSrcset(sizes, orig, ow);
+      return set ? ' ' + (later ? 'data-srcset' : 'srcset') + '="' + esc(set) + '" sizes="' + OW.mediaSizes + '"' : '';
     };
     var shots = (g._media && g._media.length > 1) ? g._media : null;
     var shotsHTML = '';
@@ -3486,18 +4163,29 @@
         if ((shots[i2] || {}).caption) { anyCap = true; break; }
       }
       var cells = '';
+      /* THE COVER AND THE FIRST FEW FIRST (unit media-inline; his words to Codex, 2026-11-11: "must always load the first few photos first
+         esp the cover so user isn't shown a loading state"). Measured before, 4 Mbit/s at 390: every photo of a six-photo album and every
+         card's cover were asked for in the same millisecond, and the album's cover painted fourth (3218 ms, photo 4 at 2561). So the cover
+         carries its address, at high priority; the next FIRST_SHOTS - 1 are asked for once it has painted, the rest once those have
+         (OW.shotsLater, from their own load), or every one the moment the person swipes the strip. */
+      var FIRST_SHOTS = 3, nImg = 0;
       for (i2 = 0; i2 < shots.length; i2++) {
         var it = shots[i2] || {};
         var u = OW.imageUrl(it.url || it.src || '');
         if (!u) continue;
         var vid = (it.kind === 'video') || /\.(mp4|m4v|mov|webm)(\?|#|$)/i.test(u);
+        var later = vid ? 0 : nImg === 0 ? 0 : nImg < FIRST_SHOTS ? 1 : 2;
+        if (!vid) nImg++;
         cells += '<span class="po-shot" data-i="' + i2 + '">'
           + (vid
              ? '<video src="' + esc(u) + '" muted playsinline preload="metadata"'
                + ((it.thumb || it.poster) ? ' poster="' + esc(OW.imageUrl(it.thumb || it.poster)) + '"' : '')
                + ' tabindex="-1" aria-hidden="true" onerror="this.remove()"></video>'
-             : '<img src="' + esc(u) + '"' + srcsetOf(it.sizes, u, it.width) + ' alt="' + esc(it.alt || '')
-               + '" loading="lazy" decoding="async" onerror="OW.imgFail(this)">')
+             : later
+               ? '<img data-ow-pic data-later="' + later + '" data-src="' + esc(u) + '"' + srcsetOf(it.sizes, u, it.width, true) + ' alt="' + esc(it.alt || '')
+                 + '" decoding="async">'
+               : '<img data-ow-pic src="' + esc(u) + '"' + srcsetOf(it.sizes, u, it.width) + ' alt="' + esc(it.alt || '')
+                 + '" fetchpriority="high" loading="lazy" decoding="async">')
           + '</span>';
       }
       var dots = '';
@@ -3505,7 +4193,7 @@
         dots += '<i' + (i2 === 0 ? ' data-on="1"' : '') + '></i>';
       }
       shotsHTML =
-        '<span class="po-shots" data-n="' + shots.length + '"'
+        '<span class="po-shots" data-ow-pics data-n="' + shots.length + '"'
         + ' role="group" aria-label="' + shots.length + ' pieces">' + cells + '</span>'
         + '<span class="po-shots__dots" aria-hidden="true">' + dots + '</span>'
         + (anyCap ? '<span class="po-shots__cap"></span>' : '');
@@ -3551,8 +4239,10 @@
        a Gallery still gets the fallback, because a Gallery is a named thing. */
     /* A POST'S WORDS: its #tags are presses (OW.postWords); anything else a card carries stays plain words */
     var saidHTML = function (s) { return g._post ? OW.postWords(s) : esc(s); };
-    var bodyHTML =
-      '<span class="po-card__body">' +
+    var bodyHTML = g._hidden
+      ? '<span class="po-card__body po-card__body--hidden"><span class="po-card__d ow-msg__gone">' + esc(g._hidden.words) + '</span>'
+        + '<span class="po-act po-card__see" data-po-see role="button" tabindex="0">' + esc(g._hidden.see || 'See it') + '</span></span>'
+      : '<span class="po-card__body">' +
         (g._post
           ? (g.title ? '<span class="po-card__t">' + saidHTML(g.title) + '</span>' : '')
           : '<span class="po-card__t">' + esc(g.title || 'Untitled') + '</span>') +
@@ -3650,11 +4340,12 @@
        being in the top right, dude, unless that button is needed. But make it as small as possible."). The mark above is the link. Where
        the platform's own player is not drawn (it refused, or it is never framed, as X) the post still names where it is from and links to
        it, as its terms ask: one small line under the words, shown only then (oneway-popit.css, "THE MARK IS THE LINK"), never a button
-       over the picture. */
+       over the picture. It is the family's button (po-act po-act--secondary), never an underlined link (his words, 2026-11-11 14:56 UTC:
+       "a horrible blue link label"; C-1111-1456b); on Scroll's black page it reads in the dark room's ink (oneway-popit.css). */
     var origWho = embedFace && g._embed.author && g._embed.author.handle ? '@' + String(g._embed.author.handle).replace(/^@/, '').slice(0, 60) : '';
     var origHTML = (embedFace && oneTo)
-      ? '<a class="ow-orig" hidden href="' + esc(oneTo) + '" data-ow-orig="' + esc(oneTo) + '" target="_blank" rel="noopener noreferrer">'
-        + esc((OW.embed.table.players[oneKey].verb || 'View') + ' on ' + oneName + (origWho ? ' · ' + origWho : '')) + '</a>'
+      ? '<a class="po-act po-act--secondary ow-orig" hidden href="' + esc(oneTo) + '" data-ow-orig="' + esc(oneTo) + '" target="_blank" rel="noopener noreferrer">'
+        + '<span class="ow-orig__t">' + esc((OW.embed.table.players[oneKey].verb || 'View') + ' on ' + oneName + (origWho ? ' · ' + origWho : '')) + '</span></a>'
       : '';
     if (g._post && !coverSrc) n.setAttribute('data-text', '1');   /* a text Post: the words are the card (470) */
 
@@ -3857,6 +4548,9 @@
       '<span class="po-card__media"><span class="po-card__cover' + (shotsHTML ? ' ow-shotsbox' : '') + '"' + emptyNote + coverAR + '>' + cover + '</span></span>') +
       (capAbove || capBelow ? '' : bodyHTML) +
       productHTML +
+      (g._launch ? '<span class="po-card__launch" data-po-launch="' + esc(g._launch.id) + '"><span class="ow-cpage__t"><b>'
+        + esc((g._launch.launch && g._launch.launch.name) || g._launch.title || 'A launch') + '</b><span>'
+        + (g._launch.launch ? 'A launch on Oneway' : 'This launch was taken down.') + '</span></span></span>' : '') +
       /* ── SOCIAL PROOF, WHERE A PERSON LOOKS FOR IT ─────────────────────
          ★ FOUNDER, 2026-08-29: *"no where to see if other users the user knows
            have liked this post."*
@@ -3911,6 +4605,40 @@
       prodEl.addEventListener('click', press);
       prodEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') press(e); });
       prodEl.addEventListener('dblclick', function (e) { e.stopPropagation(); });
+    }
+
+    /* SEE IT (a post held by the reader's hidden words): the reader's own choice, kept on their row by the server
+       (POST /api/oneway/moderation/hidden-words/see), then the post read again and drawn whole in this card's place. The press
+       is its own: it neither opens the post nor likes it. */
+    var seeEl = g._hidden ? n.querySelector('[data-po-see]') : null;
+    if (seeEl) {
+      var seeIt = function (e) {
+        e.preventDefault(); e.stopPropagation();
+        if (seeEl.getAttribute('aria-busy') === 'true' || !OW.data) return;
+        seeEl.setAttribute('aria-busy', 'true');
+        OW.data.post('/api/oneway/moderation/hidden-words/see', { thing: String(g._hidden.thing || g.id || '') }).then(function (r) {
+          if (!(r && r.ok)) { seeEl.removeAttribute('aria-busy'); if (OW.toast) OW.toast('That could not be shown just now. Try again.'); return null; }
+          return OW.data.get('/api/posts/' + encodeURIComponent(g.id), { fresh: true }).then(function (x) {
+            var fresh = x && x.ok && x.data && x.data.post;
+            if (!fresh || !n.parentNode) { seeEl.removeAttribute('aria-busy'); return; }
+            var again = OW.card(Object.assign({}, item, { post: fresh }), opts);
+            n.parentNode.replaceChild(again, n);
+          });
+        });
+      };
+      seeEl.addEventListener('click', seeIt);
+      seeEl.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') seeIt(e); });
+      seeEl.addEventListener('dblclick', function (e) { e.stopPropagation(); });
+    }
+
+    /* THE LAUNCH IT CARRIES, by the one launch card (frontend/app/opportunities/launchpad.js), loaded when a post carries one; until
+       then, and where it cannot load, its name and what it is, as above */
+    var lchEl = g._launch ? n.querySelector('[data-po-launch]') : null;
+    if (lchEl) {
+      var lchDraw = function () { if (OW.launchpad && OW.launchpad.intoPost) OW.launchpad.intoPost(lchEl, g._launch); };
+      if (OW.launchpad && OW.launchpad.intoPost) lchDraw();
+      else if (OW.need) OW.need('launchpad').then(lchDraw).catch(function () {});
+      lchEl.addEventListener('dblclick', function (e) { e.stopPropagation(); });
     }
 
     n._po = {
@@ -4019,7 +4747,9 @@
       var shape = function () {
         /* THE ROOM THE SERVER SAID IS THE ROOM (--po-ar, from the upload's own size): a srcset's narrower candidate rounds to a slightly different
            ratio, which moved the card by a pixel as its picture arrived (measured 2026-10-30) */
-        if (im && box.style.getPropertyValue('--po-ar')) return;
+        /* a clip too (his words, 2026-11-13: "in frame no matter what platform"): its inline shape outran the desktop's "whole post in one
+           window", so a 9:16 clip was 504 x 896 at 1366 x 900 in Popit (measured 2026-11-13, tall.cjs); the room's own --po-ar holds it */
+        if (box.style.getPropertyValue('--po-ar')) return;
         var w = im ? im.naturalWidth : vd.videoWidth;
         var h = im ? im.naturalHeight : vd.videoHeight;
         if (!w || !h) return;
@@ -6974,8 +7704,22 @@
       toastEl.setAttribute('data-on', '1');
     }
     /* an error gets the second he asked for; something with an action to press
-       gets long enough to press it */
-    toastTimer = global.setTimeout(OW.toast.hide, opts.action ? 8000 : Math.min(10000, Math.max(opts.big ? 7000 : 4000, String(msg).length * 45)));
+       gets long enough to press it. `hold`: what it says is still happening (a file going up, oneway-data.js), so it
+       stays until whoever put it up takes it down, and never longer than TOAST_HOLD_MAX_MS if they never do. */
+    toastTimer = global.setTimeout(OW.toast.hide, opts.hold ? TOAST_HOLD_MAX_MS : opts.action ? 8000 : Math.min(10000, Math.max(opts.big ? 7000 : 4000, String(msg).length * 45)));
+  };
+  var TOAST_HOLD_MAX_MS = 180000;
+  /* THE WORDS OF THE BAR THAT IS UP, CHANGED IN PLACE (a file's progress: "Sending… 42%"): no second bar and no breath for
+     every step. Answers false when no bar is up, so the caller puts one up. `said()` is what the bar says now, or ''. */
+  OW.toast.say = function (msg) {
+    var tt = toastEl && toastEl.parentNode && toastEl.hasAttribute('data-on') ? toastEl.querySelector('.ow-toast__t') : null;
+    if (!tt || !msg) return false;
+    tt.textContent = String(msg);
+    return true;
+  };
+  OW.toast.said = function () {
+    var tt = toastEl && toastEl.parentNode && toastEl.hasAttribute('data-on') ? toastEl.querySelector('.ow-toast__t') : null;
+    return tt ? tt.textContent : '';
   };
   OW.toast.hide = function () {
     if (toastTimer) { global.clearTimeout(toastTimer); toastTimer = 0; }

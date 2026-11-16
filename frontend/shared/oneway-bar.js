@@ -228,16 +228,116 @@
   window.addEventListener('load', function () { if (onPhone()) { if (isOpen()) fit(); else phoneOpen(); } });
   if (phoneQ && phoneQ.addEventListener) phoneQ.addEventListener('change', function () { if (onPhone()) phoneOpen(); else { touchOpen = false; set(false); } });
 
+  /* THE BAR'S GROUND (oneway-bar.css): the page's own background colour, read from the body, else the page (html), so a bar that is back
+     over the page's words has the page's ground and not a see-through one. Set on the page as --owbar-g ("r,g,b"); a page that has its
+     own ground the body does not carry may set --owbar-g on the bar itself, which wins. Read when the bar becomes scrolled and when the
+     page's theme changes, never on every scroll. */
+  function paintGround() {
+    var els = [document.body, document.documentElement], i, m, c, v;
+    for (i = 0; i < els.length; i++) {
+      if (!els[i]) continue;
+      c = getComputedStyle(els[i]).backgroundColor || '';
+      m = /^rgba?\(\s*(\d+)[\s,]+(\d+)[\s,]+(\d+)(?:[\s,/]+([\d.]+))?/.exec(c);
+      if (m) v = [+m[1], +m[2], +m[3], m[4] === undefined ? 1 : +m[4]];
+      else {                                           /* a mixed colour computes to color(srgb r g b / a) in 0..1 */
+        m = /^color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?/.exec(c);
+        v = m ? [Math.round(m[1] * 255), Math.round(m[2] * 255), Math.round(m[3] * 255), m[4] === undefined ? 1 : +m[4]] : null;
+      }
+      if (v && v[3] > 0.9) { document.documentElement.style.setProperty('--owbar-g', v[0] + ',' + v[1] + ',' + v[2]); paintSky(els[i]); return; }
+    }
+    document.documentElement.style.removeProperty('--owbar-g');
+    paintSky(null);
+  }
+  /* THE BAR'S SKY, WHERE THE PAGE'S GLOW IS ITS OWN BACKGROUND (his words: "i dont. want black top bars anywhere"). Most site pages paint their
+     glows as gradients on the page itself (html, else body), laid out on the whole page and scrolling with it, over a flat colour. The bar's
+     flat ground was then a darker strip across the glow. So the bar wears the same gradients, as the page lays them out: the page's size, moved
+     up by how far the page has scrolled (--owbar-sky-y, set on every scroll while the bar is grounded). A page that names its own sky
+     (:root --owbar-sky: the landing, the-os, the-app: glows on a fixed layer) is left alone; a gradient fixed to the window or sized or placed by
+     the page is not copied (the flat ground is the fallback). Nothing is stored. */
+  var skyOn = false;
+  function topLevel(list) { var out = [], d = 0, at = 0, i, c; for (i = 0; i < list.length; i++) { c = list.charAt(i); if (c === '(') d++; else if (c === ')') d--; else if (c === ',' && d === 0) { out.push(list.slice(at, i).trim()); at = i + 1; } } out.push(list.slice(at).trim()); return out; }
+  function skyHeight() { var h = Math.round(document.documentElement.getBoundingClientRect().height); if (h > 0) bar.style.setProperty('--owbar-sky-h', h + 'px'); }
+  function skyY() { if (skyOn) bar.style.setProperty('--owbar-sky-y', (-(window.pageYOffset || window.scrollY || 0)) + 'px'); }
+  function paintSky(from) {
+    var props = ['--owbar-sky', '--owbar-fade', '--owbar-sky-h', '--owbar-sky-y'], i, j;
+    skyOn = false;
+    for (i = 0; i < props.length; i++) bar.style.removeProperty(props[i]);
+    if (!from || getComputedStyle(document.documentElement).getPropertyValue('--owbar-sky').trim()) return;
+    var cs = getComputedStyle(from), img = topLevel(cs.backgroundImage || ''), att = topLevel(cs.backgroundAttachment || ''), siz = topLevel(cs.backgroundSize || ''),
+        pos = topLevel(cs.backgroundPosition || ''), keep = [];
+    for (j = 0; j < img.length; j++) {
+      if (img[j].indexOf('gradient(') < 0) continue;
+      if ((att[j % att.length] || 'scroll') !== 'scroll' || (siz[j % siz.length] || 'auto') !== 'auto' && siz[j % siz.length] !== 'auto auto' || !/^0(%|px)? 0(%|px)?$/.test(pos[j % pos.length] || '0% 0%')) return;
+      keep.push(img[j]);
+    }
+    if (!keep.length) return;
+    skyOn = true;
+    bar.style.setProperty('--owbar-sky', keep.join(','));
+    bar.style.setProperty('--owbar-fade', 'none');
+    skyHeight(); skyY();
+  }
+  if (window.MutationObserver) new MutationObserver(paintGround).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'data-simple'] });
   function grounded() {
     if (bar.classList.contains('owbar--solid')) return;
-    bar.classList.toggle('owbar--scrolled', flight ? flight.docked() : window.scrollY > 16);
+    var on = flight ? flight.docked() : window.scrollY > 16;
+    if (on && !bar.classList.contains('owbar--scrolled')) paintGround();
+    bar.classList.toggle('owbar--scrolled', on);
   }
   function onScroll() {
     if (bar.classList.contains('owbar--roomy') !== roomy()) fit();
     if (isOpen() && !touchOpen && Math.abs(window.scrollY - openY) > 8) { clearTimeout(linger); set(false); }
+    skyY();
     if (flight) flight.frame(); else grounded();
   }
   window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { if (skyOn) skyHeight(); });
+  window.addEventListener('load', function () { if (skyOn) skyHeight(); });
+  /* ── THE BAR GETS OUT OF THE WAY (his words, 2026-11-08: "The word mark should go away as a user starts scrolling and then
+     reappear as they scroll up"; A0995, os-chrome: the OS head and the landing, sign-in and sign-up tops as the App does since
+     723880a19). The App's asymmetry: going down needs intent (6 px of travel past the bar's own height), coming up answers on
+     the first 4 px. It follows whatever scrolls the page, the window or a box at least 60% of the screen tall (Everything on
+     a computer scrolls itself), each with its own last position. Never while the bar is open, a page's menu hangs from it
+     (.owbar-menu-open), or the wordmark is still flying into it (the landing's flight): the mark leaves only once it is home.
+     Nothing is drawn behind it (oneway-bar.css): it is safe on the page only because it leaves. ── */
+  var away = { src: null, last: (typeof WeakMap === 'function' ? new WeakMap() : null), travel: 0, up: 0, tick: false, WIN: {} };
+  function awayY(t) { return t === away.WIN ? (window.pageYOffset || document.documentElement.scrollTop || 0) : t.scrollTop; }
+  function awayApply() {
+    away.tick = false;
+    var t = away.src || away.WIN; away.src = null;
+    var y = awayY(t), known = !!(away.last && away.last.has(t)), last = known ? away.last.get(t) : y;
+    if (away.last) away.last.set(t, y);
+    /* the first scroll heard from a scroller only says where it is (a reload put back mid-page, a page opened at an anchor): that is
+       nobody going down, so the bar stays; travel counts from there */
+    if (!known) return;
+    var d = y - last;
+    if (t !== away.WIN && !d) return;
+    /* open on a computer is its menu out under the pointer; a phone's bar stands open (its row a swipe away), and leaves all the same */
+    /* a page holds its bar while a page of its own stands over it (data-owbar-stay: the OS's Everything on a phone, under its head) */
+    if (y < 56 || (isOpen() && !onPhone()) || (flight && !flight.docked()) || document.documentElement.hasAttribute('data-owbar-stay') || bar.querySelector('[aria-expanded="true"]')) { bar.classList.remove('owbar--away'); away.travel = away.up = 0; awaySay(); return; }
+    if (d > 0) { away.travel += d; away.up = 0; } else if (d < 0) { away.travel = 0; away.up -= d; }
+    if (away.travel > 6) bar.classList.add('owbar--away');
+    else if (away.up > 4) bar.classList.remove('owbar--away');
+    awaySay();
+  }
+  /* the flown wordmark (the landing's, a fixed picture of its own over the bar's mark) leaves and comes back with the bar */
+  function awaySay() {
+    var on = bar.classList.contains('owbar--away');
+    if (on === away.was) return;
+    away.was = on;
+    document.documentElement.classList.toggle('owbar-away', on);
+    /* the flown wordmark is placed on the bar's mark where it stands NOW: through the bar's slide it is placed each frame, so it is
+       on the mark again the moment the bar is back (else it stayed where the bar had slid to, measured by wordmark-fly) */
+    if (flight && flight.frame) { var t0 = Date.now(); (function follow() { flight.frame(); if (Date.now() - t0 < 360) requestAnimationFrame(follow); })(); }
+  }
+  document.addEventListener('scroll', function (e) {
+    var el = e.target;
+    var t = (!el || el === document || el === document.documentElement || el === document.body) ? away.WIN : el;
+    if (t !== away.WIN && !(el.clientHeight >= window.innerHeight * 0.6)) return;
+    away.src = t;
+    if (!away.tick) { away.tick = true; requestAnimationFrame(awayApply); }
+  }, { passive: true, capture: true });
+  /* a press in the bar (its menu, the bell, a face) brings it back where it stands */
+  bar.addEventListener('focusin', function () { bar.classList.remove('owbar--away'); away.travel = 0; awaySay(); });
   grounded();
   fit();
   window.addEventListener('load', fit);
@@ -549,9 +649,8 @@
   if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', goTo); } else { goTo(); }
   function goTo() {
   var marks = document.querySelectorAll ? document.querySelectorAll('[data-ow-go]') : [];
-  var hero = document.querySelector ? document.querySelector('[data-owbar-hero], .hero-mark') : null;
   var closedNote = document.getElementById ? document.getElementById('owClosed') : null;
-  if ((!marks.length && !hero && !closedNote) || typeof XMLHttpRequest === 'undefined') return;
+  if ((!marks.length && !closedNote) || typeof XMLHttpRequest === 'undefined') return;
   var x = new XMLHttpRequest();
   x.open('GET', '/api/oneway/platform/public');
   x.onload = function () {
@@ -560,7 +659,6 @@
     if (!s || typeof s !== 'object') return;
     /* the landing's closed note: said only when the switch answered closed, never when it could not be read */
     if (closedNote) closedNote.hidden = !!(s.open && (s.app || s.os));
-    try { sticker(s, hero); } catch (e) {}                         /* a sticker that cannot be drawn never stops the doors */
     for (var i = 0; i < marks.length; i++) {
       var a = marks[i], side = a.getAttribute('data-ow-go');
       if ((side !== 'app' && side !== 'os') || s[side] !== true) continue;
@@ -580,56 +678,5 @@
     }
   };
   x.send();
-  }
-  /* THE WORDMARK'S STICKER, ON EVERY PAGE WITH A HERO WORDMARK (founder/913: a Minecraft-style splash beside the wordmark,
-     never on its letters, saying what the switch has open for sign-up; the founder, 2026-10-22: "that sticker card is still
-     broken make it thinner and longer to appear on phones" and "on app and os landing pages and others too the buttons and
-     the STICEKER"). One sticker, drawn here from the same one read of the switch as the go-to doors; its look is
-     oneway-bar.css's .ow-splash. On a phone it is two lines across most of the screen, and the wordmark keeps room under it
-     so the sticker never sits on the headline. Held by tools/probe/splash-phone.cjs. */
-  function sticker(s, hero) {
-    if (!hero || !s.open) return;
-    var x = s.app && s.os ? 'Oneway' : s.app ? 'The Oneway App' : s.os ? 'Oneway OS' : '';
-    if (!x) return;
-    var lockup = hero.parentNode; if (!lockup) return;
-    var lr0 = lockup.getBoundingClientRect(), hr0 = hero.getBoundingClientRect();
-    var isLock = hr0.height > 0 && lr0.height < hr0.height * 2.6;      /* the wordmark paired with a word in one small box */
-    /* the sticker lives BESIDE a lockup, never inside it: a page's rules for its lockup's word (.lk span) would style the
-       sticker's words too (measured: the App and Mission pages drew "Go learn the ecosystem!" blank) */
-    var box = isLock ? (lockup.parentNode || lockup) : lockup;
-    if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
-    var el = document.createElement('a'); el.className = 'ow-splash'; el.href = '/beta';
-    el.innerHTML = '<b class="ow-splash__x"></b><span class="ow-splash__go">Go learn the ecosystem!</span><small>(Selective server test launch)</small>';
-    el.querySelector('.ow-splash__x').textContent = x + ' is as of now open for sign up,';
-    el.setAttribute('aria-label', x + ' is as of now open for sign up. Go learn the ecosystem! Selective server test launch.');
-    box.appendChild(el);
-    function narrow() { return (window.innerWidth || 0) <= 640; }
-    function place() {
-      var b = box.getBoundingClientRect(), m = hero.getBoundingClientRect();
-      if (!m.width) return;
-      /* the wordmark's own lockup: a page that pairs the wordmark with a word (App, OS, Mission) holds both in one small box,
-         and the sticker goes under the whole lockup, never on its word; the landing's wordmark stands alone */
-      var lock = isLock ? lockup : hero;
-      hero.style.marginBottom = ''; lockup.style.marginBottom = '';
-      /* Reserve the sticker's rotated height on every screen, including desktop. */
-      lock.style.marginBottom = Math.round(el.getBoundingClientRect().height + 12) + 'px';   /* its own room, off the headline */
-      m = hero.getBoundingClientRect(); b = box.getBoundingClientRect();
-      var lb = lock.getBoundingClientRect().bottom;
-      var w = el.offsetWidth, vw = window.innerWidth || document.documentElement.clientWidth;
-      var left;
-      {                                                      /* centred: on the SCREEN on a phone, on the lockup on a desktop */
-        var lr = lock.getBoundingClientRect();
-        left = narrow() ? (vw - w) / 2 - b.left : (lr.left + lr.right) / 2 - w / 2 - b.left;
-        left = Math.min(Math.max(left, 12 - b.left), vw - 12 - w - b.left);  /* inside the screen's 12px gutters */
-      }
-      el.style.left = left + 'px';
-      var tilt = (el.getBoundingClientRect().height - el.offsetHeight) / 2;   /* the tilt's overhang above its box */
-      el.style.top = (lb - b.top + 4 + Math.max(0, tilt)) + 'px';   /* it catches the wordmark's corner and leaves its letters */
-    }
-    function fade() { var away = (window.scrollY || 0) > 40; el.style.opacity = away ? '0' : '1'; el.style.pointerEvents = away ? 'none' : 'auto'; }
-    place(); fade();
-    if (hero.complete === false) hero.addEventListener('load', place);
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(place);
-    window.addEventListener('resize', place); window.addEventListener('scroll', fade, { passive: true });
   }
 })();
